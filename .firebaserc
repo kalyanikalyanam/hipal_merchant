@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "hipal-9a554"
+  },
+  "targets": {
+    "hipal-9a554": {
+      "hosting": {
+        "merchanthipal": [
+          "merchanthipal"
+        ]
+      }
+    }
+  }
+}
