@@ -13,7 +13,7 @@ class AddCategoryMenu extends React.Component {
             item_category:'',
             item_sub_category:'',
             item_categoty_list:'',
-
+display_category:false,
             employer_sevice_message: "",
             validError:false,
             mobile_message: '',
@@ -30,7 +30,7 @@ class AddCategoryMenu extends React.Component {
         };
 
 
-
+// this.explore=this.explore.bind(this);
         this.onChange = this
         .onChange
         .bind(this);
@@ -158,13 +158,19 @@ class AddCategoryMenu extends React.Component {
                       
                         sub_category_name:childSnapShot
                         .val().sub_category_name,
+
                         parent_category_select:childSnapShot
                         .val().parent_category_select,
+
                         parent_category:childSnapShot
                         .val().parent_category,
         
-                        category_photo:childSnapShot
-                        .val().category_photo,
+                        parent_category_photo:childSnapShot
+                        .val().parent_category_photo,
+
+                        sub_category_photo:childSnapShot
+                        .val().sub_category_photo,
+
                         color:childSnapShot
                         .val().color,
 
@@ -289,7 +295,13 @@ class AddCategoryMenu extends React.Component {
             .then(url => this.setState({category_photo: url}));
     };
 
-
+explore=(e)=>{
+e.preventDefault();
+console.log(e.target);
+this.setState({
+    display_category:true,
+})
+}
        handleSubmit = (event) => {
         event.preventDefault();
         if (this.validator.allValid()) {
@@ -311,7 +323,7 @@ class AddCategoryMenu extends React.Component {
                 parent_category_select:this.state.parent_category_select,
                 parent_category:this.state.parent_category,
 
-                category_photo:this.state.category_photo,
+                sub_category_photo:this.state.category_photo,
                 color:this.state.color,
                 sessionId:sessionId,
                 username:username,
@@ -335,7 +347,7 @@ class AddCategoryMenu extends React.Component {
                 parent_category_select:this.state.parent_category_select,
                 // parent_category:this.state.parent_category,
                 sub_category_name:"No",
-                category_photo:this.state.category_photo,
+                parent_category_photo:this.state.category_photo,
                 color:this.state.color,
 
                 sessionId:sessionId,
@@ -1153,7 +1165,7 @@ return (
 <div class="cate_img_box  shadow_box" style={{background:category.color}}>
      
 
-<img class="img_empty2" src={category.category_photo}></img>
+<img class="img_empty2" src={category.parent_category_photo}></img>
 
 <p> {category.parent_category}</p>                  
 </div>
@@ -1162,6 +1174,7 @@ return (
 ''
 :
 <button class="btn m-t-10 btn_explore">Explore</button>
+//  onClick={this.explore()}
 }
 </div>
 )})}

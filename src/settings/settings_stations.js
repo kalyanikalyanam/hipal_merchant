@@ -177,7 +177,7 @@ componentDidMount() {
 <div className="col-md-12">
 
 <div className="row form-group mb-0">
-{/* {this
+{this
                                                     .state
                                                     .stationList&&this.state.stationList
                                                     .map((data, index) => {
@@ -197,15 +197,15 @@ componentDidMount() {
                                      )})}
 </div>
 </div>
-                                                    )})} */}
-<div className="col-md-4">
+                                                    )})}
+{/* <div className="col-md-4">
 <div className="billion_stations">
 <span className="edit_billing"><button className="edit_small_button">EDIT</button></span>
 <p>Billing Counter</p>
 <p>Number Of Printers : <span>1</span></p>
 <p>Added Printer : <span>(hP00123)</span></p>
 </div>
-</div>
+</div> */}
 <div className="col-md-4">
 <Link to="/SettingsAddStation">
 <div className="add_station">
