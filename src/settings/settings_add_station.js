@@ -4,6 +4,7 @@ import Sidebar from '../component/sidebar';
 import Header from '../component/header';
 import {Form} from 'reactstrap';
 import SimpleReactValidator from "simple-react-validator";
+import {Link} from "react-router-dom";
 class SettingsAddStation extends React.Component {
     constructor(props) {
         super(props);
@@ -256,7 +257,7 @@ onChange = (event) => {
             
             var ref = firebase
             .database()
-            .ref('station/').orderByChild("station_name").equalTo(e.target.value);
+            .ref('settings_station/').orderByChild("station_name").equalTo(e.target.value);
             ref.on('value', snapshot => {
                 var  user_exist = snapshot.numChildren();
                 console.log(user_exist);
@@ -335,7 +336,7 @@ placeholder="BAR" className="form-control edit_product"/>
                                                         name="printer_name"
                                                         // value={printer_details.printer_name}
                                                         onChange={this.handleprinterShareholderNameChange(idx)}>
-                                                        <option>Select Station Name</option>
+                                                        <option>Select Printer ID</option>
                                                         {this.state.printeridList && this
                                                             .state
                                                             .printeridList
@@ -388,32 +389,26 @@ className="btn create_add_more_btn m-r-10">Add More
 
 
 
-{/* <div className="col-12 w-100-row">                                            
+<div className="col-12 w-100-row">                                            
 
 <div className="row form-group">
 <div className="col col-md-4">
-<label className=" form-control-label">Select Printer  :</label>
+<label className=" form-control-label">Add Printer  :</label>
 </div>
 <div className="col-12 col-md-6">
 
-<select 
-  name="printer_name"
-  value={this.state.printer_name}
-  onChange={this.onChange}
-id="select" className="form-control edit_product">
-<option value="0">Select Printer :</option>
-<option value="0">1st Floor</option>
-<option value="0">2nd Floor</option>
-<option value="0">3rd Floor</option>
-</select>
 
+<Link to="/AddPrinterId">
+<div className="btn add_btn_pop_orange addmode_pad m-t-15">
+Add Printer Id</div>
+</Link>
 
 </div>
 
 </div>
 
 
-</div> */}
+</div>
 
 
 

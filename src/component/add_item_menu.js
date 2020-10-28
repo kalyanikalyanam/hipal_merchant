@@ -27,7 +27,7 @@ class AddItemMenu extends React.Component {
 
         item_hash_tags:[],
         input: '',
-
+        bestrecommendation:'UnSelect',
 
         item_price:'',
         item_tax:'',
@@ -730,7 +730,7 @@ handleRemoveItem(index) {
 
 
                 created_on:this.state.created_on,
-
+                bestrecommendation:'UnSelect',
                 
                 // carbs:'',
                 // protien:'',

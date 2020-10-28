@@ -6,11 +6,17 @@ import SettingsInfo from '../settings/settinga_info';
 import SettingsGstInfo from '../settings/settings_gst_info';
 import SettingsFssaiInfo from '../settings/settings_fssai_info';
 import SettingsStation from '../settings/settings_stations';
+import SettingsUploadCaurosel from '../settings/settings_upload_caurosel';
+import SettingsBestRecommendations from '../settings/settings_best_recommendations';
+import SettingsMedia from '../settings/settings_media';
 import SimpleReactValidator from "simple-react-validator";
+import SettingsTimings from '../settings/settings_timings';
 import FileUploader from "react-firebase-file-uploader";
 import {Form} from 'reactstrap';
 import {Link} from "react-router-dom";
 import swal from 'sweetalert';
+import { Alert } from 'reactstrap';
+
 class Settings extends React.Component {
     constructor(props) {
         super(props);
@@ -31,9 +37,7 @@ class Settings extends React.Component {
         .onChange
         .bind(this);
 
-        this.deleteItem = this
-        .deleteItem
-        .bind(this);
+      
     this.validator = new SimpleReactValidator({
         className: "text-danger",
         validators: {
@@ -134,47 +138,39 @@ class Settings extends React.Component {
             });
         }
 
-        this.customersList();
+        this.Force();
            
        }
-
-       customersList=()=>{
-
-        this.setState({loading: true});
-        var ref = firebase
-            .database()
-            .ref("customers/");
-
-        ref.on('value', snapshot => {
-            const data = [];
-            snapshot.forEach(childSnapShot => {
-
-                const GSTData = {
-                    customerId: childSnapShot.key .toString(),
-                       
-                    customer_name: childSnapShot.val().customer_name,
-                    customer_email: childSnapShot.val().customer_email,
-                    customer_phonenumber: childSnapShot.val().customer_phonenumber,
-                    customer_notes: childSnapShot.val().customer_notes,
-                      
-
-                       
-
- };
-
-                data.push(GSTData);
-            });
-
-            this.setState({customersList: data, countPage: data.length, loading: false});
-            console.log(this.state.customersList);
+       Force() {
+        this.setState({ loading: false });
+        var user=null;
+        var sessionId = sessionStorage.getItem("RoleId");
+    if(sessionId){
+       
+      
     
+        firebase
+            .database().ref('settings_Force/' + sessionId).on('value', snapshot => {
+                
+         var info = snapshot.val();
+         if(snapshot.numChildren()>0){
+       console.log(info);
+        this.setState({
+            
+            Force:info.Force,
+           
+            
+
+            
+          });
+         
+        }
+        else{
+
+        }
         });
-
-
     }
-
-
-  
+      }
 
        handleSubmit = (event) => {
         event.preventDefault();
@@ -182,25 +178,15 @@ class Settings extends React.Component {
           
             var sessionId = sessionStorage.getItem("RoleId");
             var username = sessionStorage.getItem("username");
+            var ref = firebase
+            .database()
+            .ref(`settings_Force/${sessionId}`);
+           
+            ref.update({
+           
 
-            let dbCon = firebase
-                .database()
-                .ref('/customers');
-            
-              
-            dbCon.push({
+                Force:this.state.Force,
                
-
-
-                customer_name:this.state.customer_name,
-                customer_email:this.state.customer_email,
-                customer_phonenumber:this.state.customer_phonenumber,
-
-                customer_notes:this.state.customer_notes,
-
-                
-
-                
                 sessionId:sessionId,
                 username:username,
 
@@ -208,14 +194,10 @@ class Settings extends React.Component {
            
         
              });
-             this.setState({
-                employer_sevice_message:"Data Added",
-                customer_name:'',
-                customer_email:'',
-                customer_phonenumber:'',
-                customer_notes:'',
-             })
-window.location.href="/AllCustomers";
+             this.setState({employer_sevice_message:  <Alert color="success">
+      Information has been updated ...!
+      </Alert>});
+window.location.href="/Settings";
 
             // this
             //     .props
@@ -230,94 +212,14 @@ window.location.href="/AllCustomers";
 
     };
 
-    customeremailchange  = (e) => {
-        this.setState({
-            customer_email: e.target.value
-        });
-        if(this.state.validError!=true){
-           
-            
-            var ref = firebase
-            .database()
-            .ref('customers/').orderByChild("customer_email").equalTo(e.target.value);
-            ref.on('value', snapshot => {
-                var  user_exist = snapshot.numChildren();
-                console.log(user_exist);
-           
-            if(user_exist>0 && this.state.validError!=true){
-               
-               
-                this.setState({email_message: "customer email id  already exist",validError:false});
-
-            }
-          
-            else
-            {
-                this.setState({email_message: "",validError:true});
-               
-            }
-           
-        })
-    }
-       
-    };
-
-    customerphonenumberchange  = (e) => {
-        this.setState({
-            customer_phonenumber: e.target.value
-        });
-        if(this.state.validError!=true){
-           
-            
-            var ref = firebase
-            .database()
-            .ref('customers/').orderByChild("customer_phonenumber").equalTo(e.target.value);
-            ref.on('value', snapshot => {
-                var  user_exist = snapshot.numChildren();
-                console.log(user_exist);
-           
-            if(user_exist>0 && this.state.validError!=true){
-               
-               
-                this.setState({mobile_message: "customer Phone Number already exist",validError:false});
-
-            }
-          
-            else
-            {
-                this.setState({mobile_message: "",validError:true});
-               
-            }
-           
-        })
-    }
-       
-    };
-
-
-
-
-
-    deleteItem = id => {
-        swal({title: "Are you sure?", text: "Do your really want to remove?", icon: "warning", buttons: true, dangerMode: true}).then(willDelete => {
-            if (willDelete) {
-        console.log(id);
-        var playersRef = firebase
-            .database()
-            .ref(`/customers/${id}`);
-        playersRef.remove();
-            }else{
-    
-            }
-    });
-    };
-
-      onChange = (event) => {
+  
+    onChange = (event) => {
 
         this.setState({
             [event.target.name]: event.target.value
         });
     };
+    
     render() {
         return (
          
@@ -401,7 +303,7 @@ Your Store Settings
 
 
 
-<div className="row business_reg_box">
+{/* <div className="row business_reg_box">
 
 <div className="col-md-6">
 
@@ -419,22 +321,38 @@ Your Store Settings
 
 
 <div className="force_close_open">
-<div className="force"><span className="close_shop"></span>Force Closed </div>
-<div className="force"><span className="open_shop"></span>Force Open </div>
+<div className="force"><span className="close_shop"> 
+                                                                    <input
+                                                                        type="radio"
+                                                                        name="Force"
+                                                                        value="Force Closed"
+                                                                        onChange={this.onChange}
+                                                                        checked={this.state.Force === 'Force Closed'}/>
+                                                              </span> 
+                                                              Force Closed
+                                                              </div>
+<div className="force"><span className="open_shop">
+                                                                      <input
+                                                                        type="radio"
+                                                                        name="Force"
+                                                                        value="Force Open"
+                                                                        onChange={this.onChange}
+                                                                        checked={this.state.Force === 'Force Open'}/>
+    </span>Force Open </div>
 </div>
 
 
 </div>
 
 
-</div>
+</div> */}
 
 
 
-<hr></hr>
+{/* <hr></hr> */}
+<SettingsTimings/>
 
-
-<div className="row business_reg_box">
+{/* <div className="row business_reg_box">
 
 <div className="col-md-12"><h3>Timing</h3></div>
 
@@ -669,7 +587,7 @@ To
 
 <div className="col-md-12 text-right m-t-10"><span><button className="save_small_button">Save</button></span></div>
 
-</div>
+</div> */}
 
 <hr></hr>
 
@@ -742,9 +660,9 @@ for 2 People</label>
 
 <hr></hr>
 
+<SettingsUploadCaurosel/>
 
-
-<div className="row business_reg_box">
+{/* <div className="row business_reg_box">
 
 <div className="col-md-12"><h3>Upload Home Page Courosal</h3></div>
 
@@ -816,13 +734,13 @@ for 2 People</label>
 
 <div className="col-md-12 text-right m-t-10"><span><button className="save_small_button">Save</button></span></div>
 
-</div>
+</div> */}
 
 <hr></hr>
 
 
-
-<div className="row business_reg_box">
+<SettingsBestRecommendations/>
+{/* <div className="row business_reg_box">
 
 <div className="col-md-12"><h3>Best recommendation</h3></div>
 
@@ -914,13 +832,13 @@ for 2 People</label>
 
 <div className="col-md-12 text-right m-t-10"><span><button className="save_small_button">Save</button></span></div>
 
-</div>
+</div> */}
 
 <hr></hr>
 
+<SettingsMedia/>
 
-
-<div className="row business_reg_box">
+{/* <div className="row business_reg_box">
 
 <div className="col-md-12"><h3>Media</h3></div>
 
@@ -1090,7 +1008,7 @@ Videos
 
 <div className="col-md-12 text-right m-t-10"><span><button className="save_small_button">Save</button></span></div>
 
-</div></div>
+</div></div> */}
 
 <hr></hr>
 

@@ -90,7 +90,16 @@ import Settele from './updateddesigns/settele';
 import Table from './updateddesigns/tables_view_for_updated_order';
 
 import SettingsAddStation from './settings/settings_add_station';
+import SettingsEditStation from './settings/settings_edit_station';
 import AddPrinterId from './settings/add_printer_id';
+
+import SettingsAddUploadCaurosel from './settings/settings_add_upload_caurosel';
+import SettingsEditUploadCaurosel from './settings/settings_edit_upload_caurosel';
+
+import SettingsItemsList from './settings/settings_items_list';
+
+import SettingsAddImageMedia from './settings/settings_add_media image';
+import SettingsEditImageMedia from './settings/settings_edit_media_page';
 
 
 export const PrivateRoute = ({
@@ -232,8 +241,19 @@ class Routing extends React.Component {
                  <PrivateRoute path="/Table" component={Table}/>
 
                  <PrivateRoute path="/SettingsAddStation" component={SettingsAddStation}/>
+                 <PrivateRoute path="/SettingsEditStation/:stationId" component={SettingsEditStation} />
+                 
                  <PrivateRoute path="/AddPrinterId" component={AddPrinterId}/>
 
+                 <PrivateRoute path="/SettingsAddUploadCaurosel" component={SettingsAddUploadCaurosel}/>
+                 <PrivateRoute path="/SettingsEditUploadCaurosel/:uploadcauroselIdId" component={SettingsEditUploadCaurosel} />
+                 
+                 <PrivateRoute path="/SettingsItemsList" component={SettingsItemsList}/>
+
+                 <PrivateRoute path="/SettingsAddImageMedia" component={SettingsAddImageMedia}/>
+                 <PrivateRoute path="/SettingsEditImageMedia/:mediaimageId" component={SettingsEditImageMedia} />
+                 
+                 
                  
                  
             </Router>

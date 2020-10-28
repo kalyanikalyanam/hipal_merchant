@@ -150,6 +150,7 @@ componentDidMount() {
                     printer_details: childSnapShot
                     .val()
                     .printer_details,
+                    printer_name: childSnapShot.val().printer_name,
                     
                   
                  
@@ -167,6 +168,7 @@ componentDidMount() {
 }
 
     render() {
+             
         return (
      
 <>
@@ -184,17 +186,24 @@ componentDidMount() {
                                                         return (
 <div className="col-md-4"  key={index}>
 <div className="billion_stations">
-<span className="edit_billing"><button className="edit_small_button">EDIT</button></span>
+<span className="edit_billing">   <Link to={`/SettingsEditStation/${data.stationId}`}><button className="edit_small_button">EDIT</button></Link></span>
 <p>{data.station_name}</p>
 {this.state.printer_details.map((data,index) =>{
                                      
                                        
                                      return(
                                          <>
-<p>Number Of Printers : <span>1</span></p>
-<p key={index}>Added Printer : <span>({data.printer_name})</span></p>
-</>
-                                     )})}
+                                        <p>Number Of Printers : <span> {data.printer_name.length}</span></p>
+                                         
+                                        <p >Added Printer : <span key={index}>({data.printer_name})</span></p>
+                                        </>
+                                       
+                                     )
+
+                                 } )}
+
+{/* </>
+                                     )})} */}
 </div>
 </div>
                                                     )})}
