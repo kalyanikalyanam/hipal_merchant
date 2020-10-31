@@ -696,8 +696,8 @@ handleRemoveItem(index) {
                 item_price:this.state.item_price,
                 item_tax:this.state.item_tax,
 
-               category:this.state.category,
-               sub_category:this.state.sub_category,
+            //    category:this.state.category,
+            //    sub_category:this.state.sub_category,
 
 
                 sessionId: sessionId,
@@ -1350,7 +1350,7 @@ onKeyDown={this.handleInputKeyDown} />
     {this.validator.message("Tax", this.state.item_tax, "required")}
     </div>
     
-    <div className="row form-group">
+    {/* <div className="row form-group">
     <div className="col col-md-4">
     <label className=" form-control-label">Choose 
     Category</label>
@@ -1378,8 +1378,8 @@ onKeyDown={this.handleInputKeyDown} />
   
     
     </div>
-    </div>
-    <div className="row form-group">
+    </div> */}
+    {/* <div className="row form-group">
     <div className="col col-md-4">
     <label className=" form-control-label">Choose Sub
     Category</label>
@@ -1407,7 +1407,7 @@ onKeyDown={this.handleInputKeyDown} />
     
    
     </div>
-    </div>
+    </div> */}
     
   
     

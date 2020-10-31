@@ -6,6 +6,7 @@ import SimpleReactValidator from "simple-react-validator";
 import FileUploader from "react-firebase-file-uploader";
 import {Form} from 'reactstrap';
 import {Link} from "react-router-dom";
+import Iframe from 'react-iframe'
 class EditBusiness extends React.Component {
     constructor(props) {
         super(props);
@@ -773,6 +774,15 @@ else {
     <div className="col-12 col-md-8">
 
     {/* {this.state.business_fssai_form && <img src={this.state.business_fssai_form} />} */}
+
+
+    <Iframe url={this.state.business_fssai_form}
+        width="50%"
+        height="50%"
+        id="myId"
+        className="myClassname"
+        display="initial"
+        position="relative"/>
                                                  <FileUploader
                                                 accept="file/*"
                                                 name="business_fssai_form"

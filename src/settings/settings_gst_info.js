@@ -8,6 +8,7 @@ import {Form} from 'reactstrap';
 import {Link} from "react-router-dom";
 import swal from 'sweetalert';
 import { Alert } from 'reactstrap';
+import Iframe from 'react-iframe'
 class SettingsGstInfo extends React.Component {
     constructor(props) {
         super(props);
@@ -28,7 +29,7 @@ class SettingsGstInfo extends React.Component {
             isUploading: false,
             progress: 0,
             avatarURL: "",
-            // filenames: [],
+            filenames: [],
            uploadProgress: 0,
            
         };
@@ -166,6 +167,7 @@ class SettingsGstInfo extends React.Component {
 
             
           });
+          console.log(this.state.gst_registration_form);
          
         }
         else{
@@ -329,7 +331,22 @@ placeholder="Text here" className="form-control"/>
 </div>
 <div className="col-12 col-md-8">
 {/* <input type="file" id="text-input" name="text-input" placeholder="Text here" className="form-control"/> */}
+{/* <iframe
+  type="application/pdf"
+    src={this.state.gst_registration_form}
+    frameBorder="0"
+    scrolling="auto"
+    height="50%"
+    width="50%"
+></iframe> */}
 
+<Iframe url={this.state.gst_registration_form}
+        width="50%"
+        height="50%"
+        id="myId"
+        className="myClassname"
+        display="initial"
+        position="relative"/>
 <FileUploader
                                                 accept="files/*"
                                                 name="gst_registration_form"

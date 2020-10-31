@@ -8,6 +8,7 @@ import {Form} from 'reactstrap';
 import {Link} from "react-router-dom";
 import swal from 'sweetalert';
 import { Alert } from 'reactstrap';
+import Iframe from 'react-iframe'
 class SettingsFssaiInfo extends React.Component {
     constructor(props) {
         super(props);
@@ -327,7 +328,13 @@ placeholder="Text here" className="form-control"/>
 </div>
 <div className="col-12 col-md-8">
 {/* <input type="file" id="text-input" name="text-input" placeholder="Text here" className="form-control"/> */}
-
+<Iframe url={this.state.fssai_form}
+        width="50%"
+        height="50%"
+        id="myId"
+        className="myClassname"
+        display="initial"
+        position="relative"/>
 <FileUploader
                                                 accept="files/*"
                                                 name="fssai_form"

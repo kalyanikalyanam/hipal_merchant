@@ -24,6 +24,8 @@ import ViewTableBillView from './component/view_table_billview';
 
 
 import AddCategoryMenu from './component/add_category_menu';
+import AddCategoryMenuDuplicate from './component/add_category_menu_duplicate';
+
 import ViewCategory from './component/view_category';
 
 import AddItemMenu from './component/add_item_menu';
@@ -174,6 +176,10 @@ class Routing extends React.Component {
 
 
                  <PrivateRoute path="/AddCategoryMenu" component={AddCategoryMenu}/>
+
+
+                 <PrivateRoute path="/AddCategoryMenuDuplicate" component={AddCategoryMenuDuplicate}/>
+                 
                  <PrivateRoute path="/ViewCategory" component={ViewCategory}/>
                  
 
