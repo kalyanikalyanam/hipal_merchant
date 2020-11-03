@@ -4,20 +4,15 @@ import Sidebar from './sidebar';
 import Header from './header';
 import {Form} from 'reactstrap';
 import SimpleReactValidator from "simple-react-validator";
-class AddStation extends React.Component {
+class AddItemType extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-          
- printer_details:[
-{
-    printer_name:'',
-}
-    ],
-
-    employer_sevice_message: "",
-    validError:false,
-    mobile_message: '',
+            item_type:'',
+           
+            created_on: new Date().toLocaleString(),
+            mobile_message:'',
+            validError:false,
          
 };
 this.onChange = this
@@ -103,44 +98,7 @@ onChange = (event) => {
     });
 };
     
- handleprinterRemoveShareholder = idx => () => {
-        this.setState({
-            printer_details: this
-                .state
-                .printer_details
-                .filter((s, sidx) => idx !== sidx)
-        });
-    };
 
-    handleprinterShareholderNameChange = (idx) => evt => {
-        const printer_details = this
-            .state
-            .printer_details
-            .map((printer_details, sidx) => {
-                if (idx !== sidx) 
-                    return printer_details;
-                return {
-                    ...printer_details,
-                    [evt.target.name]: evt.target.value
-                };
-            });
-
-        this.setState({printer_details: printer_details});
-    };
-
-   
-    handleprinterAddShareholder = () => {
-        this.setState({
-            printer_details: this
-                .state
-                .printer_details
-                .concat([
-                    {
-                        printer_name: ""
-                    }
-                ])
-        });
-    };
     handleSubmit = (event) => {
         event.preventDefault();
         if (this.validator.allValid()) {
@@ -150,30 +108,19 @@ onChange = (event) => {
 
             let dbCon = firebase
                 .database()
-                .ref('/station');
+                .ref('/ItemType');
                
               
             dbCon.push({
               
-
-
-                sessionId: sessionId,
-               
-                username:username,
-
-
-
-                station_name:this.state.station_name,
-                // printer_name:this.state.printer_name,
-                printer_details:this.state.printer_details,
-
-
-
-               
+                item_type: this.state.item_type,                   
+                created_on:this.state.created_on,
+                sessionId:sessionId,
 
             });
             // window.location.href="/AddItemMenu";
             this.props.onClose();
+
           
         } else {
             this
@@ -183,16 +130,16 @@ onChange = (event) => {
         }
 
     };
-    stationNameChange  = (e) => {
+    itemTypeChange  = (e) => {
         this.setState({
-            station_name: e.target.value
+            item_type: e.target.value
         });
         if(this.state.validError!=true){
            
             
             var ref = firebase
             .database()
-            .ref('station/').orderByChild("station_name").equalTo(e.target.value);
+            .ref('ItemType/').orderByChild("item_type").equalTo(e.target.value);
             ref.on('value', snapshot => {
                 var  user_exist = snapshot.numChildren();
                 console.log(user_exist);
@@ -200,7 +147,7 @@ onChange = (event) => {
             if(user_exist>0 && this.state.validError!=true){
                
                
-                this.setState({mobile_message: "Station Name already exist",validError:false});
+                this.setState({mobile_message: "Type Name already exist",validError:false});
 
             }
           
@@ -225,8 +172,14 @@ onChange = (event) => {
 
 
 <div className="modal-header">
-<h5 className="modal-title" id="smallmodalLabel">Add Station
+<h5 className="modal-title" id="smallmodalLabel">Add Item Type
 </h5></div>
+ <div className="single-product-tab-area ">
+
+<div className="single-pro-review-area">
+    <div className="container-fluid">
+        <div className="row">
+                                            <div className="product-tab-list tab-pane fade active in"></div>
 <Form onSubmit={this.handleSubmit}>
 
 <div className="modal-body product_edit">
@@ -235,108 +188,27 @@ onChange = (event) => {
 <div className="col-12 w-100-row">
 <div className="row form-group">
 <div className="col col-md-4">
-<label className=" form-control-label">Station name</label>
+<label className=" form-control-label"> Item Type</label>
 </div>
 <div className="col-12 col-md-6">
-<input type="text" id="text-input" 
-name="station_name" onChange={this.stationNameChange} value={this.state.station_name}
-placeholder="BAR" className="form-control edit_product"/>
-</div>
-{this.validator.message("Station Name", this.state.station_name, "required")}
-<div className="text-danger">
+<input
+                                                                type="text"
+                                                                className="form-control"
+                                                                placeholder="Item Type Name*"
+                                                                id="Edit_Role"
+                                                                name="item_type"
+                                                                onChange={this.itemTypeChange}
+                                                                value={this.state.item_type}/> {this
+                                                                .validator
+                                                                .message("Item Type Name", this.state.item_type, "required|whitespace|specialChar|min:3|max:70")}
+  <div className="text-danger">
                                                         {" "}
                                                         {this.state.mobile_message}
-                                                        </div>
-</div>
-</div>
-
-
-
-
-<div className="col-12 w-100-row">
-{this
-                                                                .state
-                                                                .printer_details
-                                                                // .slice(0, this.state.desired_Machines)
-                                                                .map((printer_details, idx) => (
-                                                                 
-
-<div className="row form-group" key={idx}>
-<div className="col col-md-4">
-<label className=" form-control-label">Select Printer {idx+1} :</label>
-</div>
-<div className="col-12 col-md-6">
-
-<select 
-  name="printer_name"
-  value={printer_details.printer_name}
-  onChange={this.handleprinterShareholderNameChange(idx)}
-id="select" className="form-control edit_product">
-<option value="0">Select Printer :</option>
-<option value="1st Floor">1st Floor</option>
-<option value="2st Floor">2nd Floor</option>
-<option value="3st Floor">3rd Floor</option>
-</select>
-
-
-</div>
-
-
-
-
-{idx != 0
-    ?
-<button
-type="button" onClick={this.handleprinterRemoveShareholder(idx)}
-className="btn btn-danger m-r-10">Remove
-</button>
-    : ''}
-
-
-<button
-type="button" onClick={this.handleprinterAddShareholder}
-className="btn create_add_more_btn m-r-10">Add More 
-</button>
-
-</div>
-))}
-
-</div>
-
-
-
-
-
-{/* <div className="col-12 w-100-row">                                            
-
-<div className="row form-group">
-<div className="col col-md-4">
-<label className=" form-control-label">Select Printer  :</label>
-</div>
-<div className="col-12 col-md-6">
-
-<select 
-  name="printer_name"
-  value={this.state.printer_name}
-  onChange={this.onChange}
-id="select" className="form-control edit_product">
-<option value="0">Select Printer :</option>
-<option value="0">1st Floor</option>
-<option value="0">2nd Floor</option>
-<option value="0">3rd Floor</option>
-</select>
-
-
+                                                    </div>
 </div>
 
 </div>
-
-
-</div> */}
-
-
-
-
+</div>
 
 
 
@@ -352,6 +224,11 @@ id="select" className="form-control edit_product">
 </Form>
 </div>
 </div>
+</div>
+</div>
+
+</div>
+</div>
 {/* </div> */}
 
 
@@ -364,4 +241,4 @@ id="select" className="form-control edit_product">
     }
 }
 
-export default AddStation;
+export default AddItemType;

@@ -722,9 +722,9 @@ return (
 
     
     <td>
-    <Link to={`/EditEmployee/${employee.employeeId}`}>
+    {/* <Link to={`/EditEmployee/${employee.employeeId}`}>
         <img src="/images/icon/edit_icon_blue.svg" className="edit_delete"/>
-</Link>
+</Link> */}
      <img src="/images/icon/delete_cross.svg" onClick={this.deleteItem.bind(this, employee.employeeId)} className="edit_delete"/></td>
     </tr>
     

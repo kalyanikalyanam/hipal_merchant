@@ -6,11 +6,17 @@ import SimpleReactValidator from "simple-react-validator";
 import FileUploader from "react-firebase-file-uploader";
 import {Form} from 'reactstrap';
 import {Link} from "react-router-dom";
+import "react-responsive-modal/styles.css";
+import { Modal } from "react-responsive-modal";
+// import Modal from 'react-responsive-modal';
+import AddItemType from './add_item_type';
+import AddStation from './add_station';
 class AddItemMenu extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            open: false,
+            open1: false,
             created_on: new Date().toLocaleString(),
         item_id:'',
         item_name:'',
@@ -205,11 +211,91 @@ class AddItemMenu extends React.Component {
         this.restautantList();
         this.categoryList();
         this.stationList();
+        this.itemMenuList();
           
         
       }
 
 
+      itemMenuList=()=>{
+
+        this.setState({loading: true});
+        var ref = firebase
+            .database()
+            .ref("merchant_menu_items/");
+
+        ref.on('value', snapshot => {
+            const data = [];
+            snapshot.forEach(childSnapShot => {
+
+                const GSTData = {
+                    itemmenuid: childSnapShot
+                        .key
+                        .toString(),
+                        item_unique_id:childSnapShot.val().item_unique_id,
+
+            item_id:childSnapShot.val().item_id,
+            item_name:childSnapShot.val().item_name,
+            item_description:childSnapShot.val().item_description,
+            item_halal:childSnapShot.val().item_halal,
+            item_image:childSnapShot.val().item_image,
+            item_points:childSnapShot.val().item_points,
+
+            station_name:childSnapShot.val().station_name,
+            item_restaurant_id:childSnapShot.val().item_restaurant_id,
+            item_type:childSnapShot.val().item_type,
+            item_hash_tags:childSnapShot.val().item_hash_tags,
+            item_price:childSnapShot.val().item_price,
+            item_tax:childSnapShot.val().item_tax,
+
+           category:childSnapShot.val().category,
+           sub_category:childSnapShot.val().sub_category,
+
+
+            sessionId: childSnapShot.val().sessionId,
+            status: childSnapShot.val().status,
+            username:childSnapShot.val().username,
+
+
+
+            portions:childSnapShot.val().portions,
+            portions_details:childSnapShot.val().portions_details,
+
+
+
+            advance:childSnapShot.val().advance,
+            carbs:childSnapShot.val().carbs,
+            protien:childSnapShot.val().protien,
+            fat:childSnapShot.val().fat,
+            item_video:childSnapShot.val().item_video,
+            item_multiple_image:childSnapShot.val().downloadURLs,
+
+
+            extra:childSnapShot.val().extra,
+            healthytag:childSnapShot.val().healthytag,
+            bestsellertag:childSnapShot.val().bestsellertag,
+
+
+            recommend:childSnapShot.val().recommend,
+           
+            recommendations:childSnapShot.val().recommendations,
+
+
+            created_on:childSnapShot.val().created_on,
+
+
+                };
+
+                data.push(GSTData);
+            });
+
+            this.setState({itemMenuList: data, countPage: data.length, loading: false});
+            console.log(this.state.itemMenuList);
+    
+        });
+
+
+    }
 
     
 
@@ -371,6 +457,23 @@ class AddItemMenu extends React.Component {
     
         });
     }
+
+    onOpenModal = () => {
+
+        this.setState({open: true});
+    };
+    onOpenModal1 = () => {
+
+        this.setState({open1: true});
+    };
+
+    onCloseModal = () => {
+        this.setState({open: false});
+    };
+    onCloseModal1 = () => {
+        this.setState({open1: false});
+    };
+
 
 handleInputChange(evt) {
   this.setState({ input: evt.target.value });
@@ -747,11 +850,11 @@ handleRemoveItem(index) {
 
 
             });
-            window.location.href="/AddItemMenu";
-            // this
-            //     .props
-            //     .history
-            //     .push("/Orders");
+            // window.location.href="/ViewItemMenu";
+            this
+                .props
+                .history
+                .push("/ViewItemMenu");
         } else {
             this
                 .validator
@@ -836,7 +939,7 @@ handleRemoveItem(index) {
 
 
     render() {
-   
+        const {open,open1 } = this.state;
         const styles = {
             container: {
               border: '1px solid #ddd',
@@ -844,15 +947,15 @@ handleRemoveItem(index) {
               borderRadius: '5px',
             },
       
-            item_hash_tags: {
-              display: 'inline-block',
-              padding: '2px',
-              border: '1px solid blue',
-              fontFamily: 'Helvetica, sans-serif',
-              borderRadius: '5px',
-              marginRight: '5px',
-              cursor: 'pointer'
-            },
+            // item_hash_tags: {
+            //   display: 'inline-block',
+            //   padding: '2px',
+            //   border: '1px solid blue',
+            //   fontFamily: 'Helvetica, sans-serif',
+            //   borderRadius: '5px',
+            //   marginRight: '5px',
+            //   cursor: 'pointer'
+            // },
       
             input: {
               outline: 'none',
@@ -957,8 +1060,8 @@ handleRemoveItem(index) {
 <div className="col-md-7 p-0">
 <div className="orders_menu">
 <ul>
-<li><a href="#" className="activemenu">Add Items</a></li>
-<li><a href="#">View Items</a></li>
+<li><a href="/AddItemMenu" className="activemenu">Add Items</a></li>
+<li><a href="/ViewItemMenu">View Items</a></li>
 </ul>
 </div>
 
@@ -1207,10 +1310,10 @@ handleRemoveItem(index) {
 </select> */}
 {/* <button type="button" data-toggle="modal" data-target="#add_station"> */}
 
-<Link to="/AddStation">
-<div className="btn add_btn_pop_orange addmode_pad m-t-15">
+{/* <Link to="/AddStation"></Link> */}
+<div onClick={this.onOpenModal1} className="btn add_btn_pop_orange addmode_pad m-t-15">
 Add Station</div>
-</Link>
+
 {/* </button> */}
 </div>
 {this .validator.message("Station Name", this.state.station_name, "required")}
@@ -1280,6 +1383,10 @@ Add Station</div>
 
                                                     </select>
   
+                                                    {/* <Link to="/AddItemType"></Link> */}
+<div onClick={this.onOpenModal}  className="btn add_btn_pop_orange addmode_pad m-t-15">
+Type Your own</div>
+
    
     </div>
     {this.validator.message("Item Type", this.state.item_type, "required")}
@@ -1294,11 +1401,11 @@ Add Station</div>
     <label className=" form-control-label">Hash Tags</label>
     </div>
     <div className="col-12 col-md-8">
-    <ul style={styles.container}>
+    <ul className="hashtags"  style={styles.container}>
           {this.state.item_hash_tags.map((item, i) => 
-            <li key={i} style={styles.item_hash_tags} onClick={this.handleRemoveItem(i)}>
+            <li key={i}  onClick={this.handleRemoveItem(i)}>
               {item}
-              <span>(x)</span>
+           {/* (x) */}
             </li>
           )}
             <input
@@ -1310,9 +1417,9 @@ onKeyDown={this.handleInputKeyDown} />
 </ul>
         {/* <input type="text" name="item_hash_tags" onChange={this.onChange} value={this.state.item_hash_tags} className="form-control"/> */}
        
-        
+        <div>Press <b>Ctrl</b> To Enter the Hash Tag</div>
         </div>
-        <div>Press CTRL</div>
+      
         {this.validator.message("hash Tags", this.state.item_hash_tags, "required")}
 
     </div>
@@ -1838,10 +1945,38 @@ id="select" className="form-control edit_portion">
 <label className=" form-control-label">Item {idx+1}</label>
 </div>
 <div className="col-12 col-md-8">
+{/* <select
+                                                      className="form-control edit_product"
+                                                        name="printer_name"
+                                                        // value={printer_details.printer_name}
+                                                        onChange={this.handleprinterShareholderNameChange(idx)}>
+                                                        <option>Select Printer ID</option>
+                                                        {this.state.printeridList && this
+                                                            .state
+                                                            .printeridList
+                                                            .map((data, index) => {
+
+                                                                return (
+                                                                    <option value={data.printer_id}  id={data} key={index}>{data.printer_id}</option>
+                                                                )
+
+                                                            })}
+
+                                                    </select> */}
 <select name="recommenditem" value={recommendations.recommenditem} onChange={this.handleShareholderNameChange(idx)} id="select" className="form-control">
-<option value="select">select</option>
-    <option value="item1">item1</option>
-    <option value="item2">item2</option>
+<option value="select">select Item</option>
+
+
+    {this.state.itemMenuList && this
+                                                            .state
+                                                            .itemMenuList
+                                                            .map((data, index) => {
+
+                                                                return (
+                                                                    <option value={data.item_name}  id={data} key={index}>{data.item_name}</option>
+                                                                )
+
+                                                            })}
 </select>
 </div>
 
@@ -1993,6 +2128,21 @@ id="select" className="form-control edit_portion">
 
 
 
+    {open
+                    ?  <Modal open={open} onClose={this.onCloseModal}>
+                          
+                                    <AddItemType onClose={this.onCloseModal}/>
+
+                        </Modal>
+                    : ''}
+                        {open1
+                    ?  <Modal open={open1} onClose={this.onCloseModal1}>
+                          
+                                    <AddStation onClose={this.onCloseModal1}/>
+
+                        </Modal>
+                    : ''}
+
 
 
 
@@ -2099,7 +2249,6 @@ className="btn create_add_more_btn m-r-10">Add More
 </div>
 </div>
 </div> */}
-
 
 
 

@@ -301,7 +301,7 @@ this.setState({
 
 
                 name:this.state.name,
-               
+                IsParent:this.state.IsParent,
                photo:this.state.photo,
                 color:this.state.color,
 
@@ -476,21 +476,21 @@ placeholder="Main course" class="form-control"/>
 
 <div class="row form-group">
 <div class="col col-md-4">
-<label class="form-control-label">Parent category</label>
+<label class="form-control-label">IsParent</label>
 </div>
 <div class="col-12 col-md-8">
-<select name="parent_category_select" id="select" 
-     value={this.state.parent_category_select}
+<select name="IsParent" id="select" 
+     value={this.state.IsParent}
      onChange={this.onChange}
     className="form-control">
           <option value="select">select</option>
-    <option value="Yes">Yes</option>
-    <option value="No">No</option>
+    <option value="True">True</option>
+    <option value="False">False</option>
     </select>
     </div>
-    {this.validator.message("Parent Ctaegory ", this.state.parent_category_select, "required")}
+    {this.validator.message("IsParent  ", this.state.IsParent, "required")}
 </div>
-{this.state.parent_category_select=="Yes"
+{this.state.IsParent=="True"
 ?
 <div class="row form-group">
 <div class="col col-md-4">

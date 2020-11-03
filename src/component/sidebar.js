@@ -23,30 +23,30 @@ class Sidebar extends React.Component {
     //                 <nav className="navbar-sidebar">
     //                     <ul className="list-unstyled navbar__list">
                             
-    // <li className={this.isPathActive('/Home') ? 'active' : null}><a href="/Home" className="home"> Home</a></li>
+    // <li className={this.isPathActive('/Home') ? 'active' : null}><Link to="/Home" className="home"> Home</Link></li>
 
-    // <li className={this.isPathActive('/Tables') ? 'active' : null}><a href="/Tables" className="oders">Orders</a></li>
+    // <li className={this.isPathActive('/Tables') ? 'active' : null}><Link to="/Tables" className="oders">Orders</Link></li>
 
-    //   <li className={this.isPathActive('/AddItemMenu') ? 'active' : null}><a href="/AddItemMenu" className="bills">Menu</a></li>
+    //   <li className={this.isPathActive('/AddItemMenu') ? 'active' : null}><Link to="/AddItemMenu" className="bills">Menu</Link></li>
 
-    // <li><a href="#" className="customers">Customers</a></li>
+    // <li><Link to="#" className="customers">Customers</Link></li>
 
-    // <li><a href="#"  className="employees">My Restaurent</a></li>
-    // <li><a href="/TablesList"  className="employees">Tables</a></li>
+    // <li><Link to="#"  className="employees">My Restaurent</Link></li>
+    // <li><Link to="/TablesList"  className="employees">Tables</Link></li>
 
 
     
 
 
-    // <li className={this.isPathActive('/AllEmployees') ? 'active' : null}><a href="/AllEmployees" className="employees">Employees</a></li>
+    // <li className={this.isPathActive('/AllEmployees') ? 'active' : null}><Link to="/AllEmployees" className="employees">Employees</Link></li>
     
 
-    // <li><a href="#"  className="messages">Messages</a></li>
+    // <li><Link to="#"  className="messages">Messages</Link></li>
 
-    // <li className={this.isPathActive('/Bills') ? 'active' : null}><a href="/Bills" className="bills">Bills</a></li>
+    // <li className={this.isPathActive('/Bills') ? 'active' : null}><Link to="/Bills" className="bills">Bills</Link></li>
    
 
-    // <li><a href="#" className="settings">Settings</a></li>
+    // <li><Link to="#" className="settings">Settings</Link></li>
     
                             
                             
@@ -70,17 +70,17 @@ class Sidebar extends React.Component {
                 <nav className="navbar-sidebar">
                     <ul className="list-unstyled navbar__list">
                         
-<li><a href="#" className="home">Home</a></li>
-<li><a href="/Tables" className="oders">Orders</a></li>
-<li><a href="/AllCustomers" className="customers">Customers</a></li>
-<li><a href="/AddItemMenu"  className="resturent">Menu</a></li>
-<li><a href="#"  className="resturent">My Restaurent</a></li>
-<li><a href="/AllEmployees"  className="employees">Employees</a></li>
-<li><a href="/AllMessages"  className="messages">Messages</a></li>
-<li><a href="#"  className="bills">Bills</a></li>
-<li><a href="/TablesList"  className="tabels">Tabels</a></li>
-<li><a href="/Settings" className="settings">Settings</a></li>
-<li><a href="/BusinessList" className="settings">Business List</a></li>
+<li><Link to="/Dashboard" className="home">Home</Link></li>
+<li><Link to="/Table" className="oders">Orders</Link></li>
+<li><Link to="/AllCustomers" className="customers">Customers</Link></li>
+<li><Link to="/AddItemMenu"  className="resturent">Menu</Link></li>
+<li><Link to="#"  className="resturent">My Restaurent</Link></li>
+<li><Link to="/AllEmployees"  className="employees">Employees</Link></li>
+<li><Link to="/AllMessages"  className="messages">Messages</Link></li>
+<li><Link to="/Bills"  className="bills">Bills</Link></li>
+<li><Link to="/TablesList"  className="tabels">Tabels</Link></li>
+<li><Link to="/Settings" className="settings">Settings</Link></li>
+<li><Link to="/BusinessList" className="settings">Business List</Link></li>
 
 						
 						

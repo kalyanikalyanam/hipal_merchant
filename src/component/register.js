@@ -265,7 +265,7 @@ class Register extends React.Component {
                             email_id: "",
                             password: "",
                             confirm_password: "",
-                            business:'',
+                            // business:'',
 
                          });
 
@@ -648,7 +648,7 @@ value={this.state.contact_number}/>
 
 </div>
 
-<div className="row form-group">
+{/* <div className="row form-group">
 <div className="col col-md-5">
 <label className=" form-control-label">Business</label>
 </div>
@@ -659,7 +659,7 @@ value={this.state.business}
 onChange={this.onChange}  className="form-control"/>
 </div>
 {this.validator.message("Business", this.state.business, "required|specialCharText|whitespace|min:2|max:70")}
-</div>
+</div> */}
 
 {/* <div className="row form-group">
 <div className="col col-md-5">
