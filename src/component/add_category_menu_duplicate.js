@@ -6,6 +6,7 @@ import SimpleReactValidator from "simple-react-validator";
 import FileUploader from "react-firebase-file-uploader";
 import {Form} from 'reactstrap';
 import {Link} from "react-router-dom";
+import CategoryList from "./category_list";
 class AddCategoryMenuDuplicate extends React.Component {
     constructor(props) {
         super(props);
@@ -26,6 +27,7 @@ class AddCategoryMenuDuplicate extends React.Component {
            color: '#1569a8',
            active: false,
            status:'select',
+           parentId:'',
          
         };
 
@@ -143,7 +145,7 @@ class AddCategoryMenuDuplicate extends React.Component {
         this.setState({loading: true});
         var ref = firebase
             .database()
-            .ref("duplicate/");
+            .ref("dummy/");
             // .orderByChild('parent_category_select').equalTo('No');
 
         ref.on('value', snapshot => {
@@ -155,11 +157,15 @@ class AddCategoryMenuDuplicate extends React.Component {
                         .key
                         .toString(),
                        
-                      
+                     
                         name:childSnapShot.val().name,
+                        isParent:childSnapShot.val().isParent,
                         photo:childSnapShot.val().photo,
                         color:childSnapShot.val().color,
                         created_on: childSnapShot.val().created_on,
+                        parentId:childSnapShot.val().parentId,
+                        sessionId:childSnapShot.val().sessionId,
+                        username:childSnapShot.val().username,
 
 
                 };
@@ -172,6 +178,39 @@ class AddCategoryMenuDuplicate extends React.Component {
     
         });
     }
+    explore=(e)=>{
+        e.preventDefault();
+        let {id} = e.target;
+        let exp = firebase.database().ref("/dummy").orderByChild("parentId").equalTo(id);
+        exp.on('value', snapshot => {
+            const data = [];
+            snapshot.forEach(childSnapShot => {
+                // console.log(childSnapShot.val())
+                const GSTData = {
+                    categoryId: childSnapShot
+                        .key
+                        .toString(),
+                       
+                     
+                        name:childSnapShot.val().name,
+                        isParent:childSnapShot.val().isParent,
+                        photo:childSnapShot.val().photo,
+                        color:childSnapShot.val().color,
+                        created_on: childSnapShot.val().created_on,
+                        parentId:childSnapShot.val().parentId,
+                        sessionId:childSnapShot.val().sessionId,
+                        username:childSnapShot.val().username,
+
+
+                };
+
+                data.push(GSTData);
+            })
+            this.setState({CategoryList1: data, countPage: data.length, loading: false});
+            console.log(this.state.CategoryList1);
+        })
+        console.log(exp);
+        }
 
     itemMenuList=()=>{
 
@@ -277,14 +316,8 @@ class AddCategoryMenuDuplicate extends React.Component {
             .then(url => this.setState({photo: url}));
     };
 
-explore=(e)=>{
-e.preventDefault();
-console.log(e.target);
-this.setState({
-    display_category:true,
-})
-}
-       handleSubmit = (event) => {
+
+       handleSubmit =async (event) => {
         event.preventDefault();
         if (this.validator.allValid()) {
           
@@ -293,25 +326,24 @@ this.setState({
      
                 let dbCon = firebase
                 .database()
-                .ref('/duplicate');
+                .ref('/dummy');
             
-              
-            dbCon.push({
-               
-
-
+           
+           await dbCon.push({
                 name:this.state.name,
-                IsParent:this.state.IsParent,
+                isParent:this.state.IsParent,
                photo:this.state.photo,
                 color:this.state.color,
-
+                parentId:this.state.parentId,
                 sessionId:sessionId,
                 username:username,
-
-               
-           
-        
              });
+            
+      await firebase
+        .database()
+        .ref("/dummy/" + "-MLBsiolHjpaZPh-Si1n")
+        // .ref("/dummy/" + "-MLBsiolHjpaZPh-Si1n")
+        .update({ isParent: true });
     
             // this
             //     .props
@@ -327,6 +359,8 @@ this.setState({
         }
 
     };
+
+ 
 
     CategoryChange  = (e) => {
         this.setState({
@@ -476,7 +510,7 @@ placeholder="Main course" class="form-control"/>
 
 <div class="row form-group">
 <div class="col col-md-4">
-<label class="form-control-label">IsParent</label>
+<label class="form-control-label">Add as child</label>
 </div>
 <div class="col-12 col-md-8">
 <select name="IsParent" id="select" 
@@ -484,13 +518,13 @@ placeholder="Main course" class="form-control"/>
      onChange={this.onChange}
     className="form-control">
           <option value="select">select</option>
-    <option value="True">True</option>
-    <option value="False">False</option>
+    <option value="true">True</option>
+    <option value="false">False</option>
     </select>
     </div>
     {this.validator.message("IsParent  ", this.state.IsParent, "required")}
 </div>
-{this.state.IsParent=="True"
+{this.state.IsParent=="true"
 ?
 <div class="row form-group">
 <div class="col col-md-4">
@@ -689,15 +723,94 @@ return (
 <div class="cate_img_box  shadow_box" style={{background:category.color}}>
      
 
-<img class="img_empty2" src={category.parent_photo}></img>
+<img class="img_empty2" src={category.photo}></img>
 
-<p> {category.parent_category}</p>                  
+<p> {category.name}</p>                  
 </div>
 
-{category.sub_name=="No"?
-''
-:
-<button class="btn m-t-10 btn_explore">Explore</button>
+{category.isParent===true?
+<button class="btn m-t-10 btn_explore" data-toggle="modal" data-target="#add_parent_category1" id={category.categoryId} onClick={this.explore}>Explore</button>:null
+
+}
+</div>
+)})}
+
+
+</div>
+
+
+
+</div>
+</div>
+
+
+
+
+</div>
+
+
+
+<div class="modal-footer">
+<button type="button" class="btn save_btn">Add here</button>
+</div>
+
+
+</div>
+</div>
+</div>
+
+<div class="modal fade" id="add_parent_category1" tabindex="-1" role="dialog" aria-labelledby="smallmodalLabel" aria-hidden="true">
+<div class="modal-dialog modal-sm hipal_pop" role="document">
+<div class="modal-content">
+
+
+<div class="modal-header">
+<h5 class="modal-title" id="smallmodalLabel">Choose Parent Category
+</h5></div>
+
+
+<div class="modal-body product_edit">
+
+
+
+<div class="col-12 w-100-row">
+
+<div class="row">
+
+<div class="col col-md-6 font-15">
+Menu : <Link to="#">Maincourse</Link> / 
+<Link to="#">Parent</Link>
+</div>
+
+<div class="col col-md-6 text-center">
+<img src="images/icon/back_arrow_left_o.svg"/>
+</div>
+
+</div>
+</div>
+
+
+
+
+
+<div class="col-12 w-100-row">
+<div class="row">
+
+
+<div class="row">
+{this.state.CategoryList1 && this.state.CategoryList1.map((category,index) => {
+return (
+<div class="col-md-4 mb-15 text-center" key={index}>
+<div class="cate_img_box  shadow_box" style={{background:category.color}}>
+     
+
+<img class="img_empty2" src={category.photo}></img>
+
+<p> {category.name}</p>                  
+</div>
+
+{category.isParent===true?
+<button class="btn m-t-10 btn_explore" id={category.categoryId} onClick={this.explore}>Explore</button>:null
 
 }
 </div>

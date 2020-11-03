@@ -371,6 +371,18 @@ this.setState({
 
     };
 
+// handleSubmit = (event)=>{
+//     event.preventDefault();
+//     let data = {
+//         color:this.state.color
+//         color:this.state.color
+//         color:this.state.color
+//         color:this.state.color
+//         color:this.state.color
+//         color:this.state.color
+//     }
+//     var snap = firebase.database().ref("/dummy").push(data);
+// }
     CategoryChange  = (e) => {
         this.setState({
             category_name: e.target.value
