@@ -1,7 +1,7 @@
-import firebase from 'firebase/app';
-import 'firebase/auth';
-import 'firebase/database';
-import 'firebase/storage';
+import firebase from "firebase/app";
+import "firebase/auth";
+import "firebase/database";
+import "firebase/storage";
 // import firebase from 'firebase';
 
 const config = {
@@ -12,9 +12,8 @@ const config = {
   storageBucket: "hipal-9a554.appspot.com",
   messagingSenderId: "21824345210",
   appId: "1:21824345210:web:676367f6156449d9d017c3",
-  measurementId: "G-80GNZFV89N"
+  measurementId: "G-80GNZFV89N",
 };
-
 
 firebase.initializeApp(config);
 
