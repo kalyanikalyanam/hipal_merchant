@@ -19,7 +19,7 @@ class LoginPage extends React.Component {
             last_name:'',
             mobile_number:'',
             city:'',
-         
+
         };
         this.validator = new SimpleReactValidator({
             className: "text-danger",
@@ -78,11 +78,11 @@ class LoginPage extends React.Component {
 //                              sessionStorage.setItem("role", gstData.role);
 //                             sessionStorage.setItem("UserName", gstData.user_name);
 //                             sessionStorage.setItem("Email", gstData.email_id);
-                            
+
 //                             this
 //                             .props
 //                             .history
-                            
+
 //                             .push("/");
 //       }else{
 //                             this.setState({employer_sevice_message: "your email id is not verified. please verify your email"});
@@ -92,15 +92,15 @@ class LoginPage extends React.Component {
 //                         }else{
 //                             this.setState({employer_sevice_message: "Invalid username/Password"});
 //                         }
-                      
-                      
-                       
+
+
+
 //                     });
 
-                   
-                 
 
-                   
+
+
+
 //                     // if(user.emailVerified){
 //                     //     sessionStorage.setItem("RoleId", user.uid);
 //                     // console.log(sessionStorage.getItem("RoleId"));  }
@@ -110,12 +110,12 @@ class LoginPage extends React.Component {
 //                     //     .push("/Dashboard");
 
 //                 //   else{
-//                 //         this.setState({employer_sevice_message: 
+//                 //         this.setState({employer_sevice_message:
 //                 //             "E-Mail confirmation sent: Check you E-Mails (Spamfolder included) for a confirmation E-Mail. Refresh this page once you confirmed your E-Mail."});
 
 //                 //     }
 
-                    
+
 
 //                 })
 //                 .catch(error => {
@@ -138,11 +138,11 @@ handleSubmit = (event) => {
     event.preventDefault();
     var loginpage = JSON.parse(localStorage.getItem('loginpage'))||[];
     // const {productId} = this.props.match.params;
-    
 
-       
+
+
     // var newItem =true;
-   
+
     // if (loginpage == null || loginpage == "") {
 
     //     newItem = true;
@@ -151,13 +151,13 @@ handleSubmit = (event) => {
 
     //     for (var i = 0; i < loginpage.length; i++) {
     //         if (loginpage[i]['productId'] == productId &&  newItem == true) {
-              
-          
+
+
     //             newItem = false;
     //             console.log(newItem);
-            
 
-    //         } 
+
+    //         }
 
     //     }
     // }
@@ -174,8 +174,8 @@ handleSubmit = (event) => {
             city:this.state.city,
             email:this.state.email,
             password:this.state.password,
-        
-            
+
+
         }
 
         loginpage.push(data);
@@ -222,7 +222,7 @@ console.log(JSON.stringify(loginpage));
                                             <label className="control-label">First Name</label>
                                             <input
                                                 type="text"
-                                             
+
                                                 name="first_name"
                                                 value={this.state.first_name}
                                                 onChange={this.onChange}
@@ -239,7 +239,7 @@ console.log(JSON.stringify(loginpage));
                                             <label className="control-label">Last Name</label>
                                             <input
                                                 type="text"
-                                             
+
                                                 name="last_name"
                                                 value={this.state.last_name}
                                                 onChange={this.onChange}
@@ -255,7 +255,7 @@ console.log(JSON.stringify(loginpage));
                                             <label className="control-label">Mobile Number</label>
                                             <input
                                                 type="number"
-                                             
+
                                                 name="mobile_number"
                                                 value={this.state.mobile_number}
                                                 onChange={this.onChange}
@@ -271,7 +271,7 @@ console.log(JSON.stringify(loginpage));
                                             <label className="control-label">City</label>
                                             <input
                                                 type="text"
-                                             
+
                                                 name="city"
                                                 value={this.state.city}
                                                 onChange={this.onChange}
@@ -333,7 +333,7 @@ console.log(JSON.stringify(loginpage));
                 </div>
             </div>
 
-          
+
         );
     }
 }
