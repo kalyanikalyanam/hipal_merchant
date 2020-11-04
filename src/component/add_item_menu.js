@@ -209,10 +209,10 @@ class AddItemMenu extends React.Component {
            
         this.itemTypeList();
         this.restautantList();
-        this.categoryList();
+      
         this.stationList();
         this.itemMenuList();
-          
+          this.itemCategoryList();
         
       }
 
@@ -384,11 +384,13 @@ class AddItemMenu extends React.Component {
     }
 
 
-    categoryList() {
+   
+    itemCategoryList() {
         this.setState({loading: true});
         var ref = firebase
             .database()
-            .ref("categories/");
+            .ref("dummy/");
+            // .orderByChild('parent_category_select').equalTo('No');
 
         ref.on('value', snapshot => {
             const data = [];
@@ -398,17 +400,16 @@ class AddItemMenu extends React.Component {
                     categoryId: childSnapShot
                         .key
                         .toString(),
-                        category: childSnapShot
-                        .val()
-                        .category,
-                        category_photo: childSnapShot
-                        .val()
-                        .category_photo,
-                        
-                      
-                        created_on: childSnapShot
-                        .val()
-                        .created_on,
+                       
+                     
+                        name:childSnapShot.val().name,
+                        isParent:childSnapShot.val().isParent,
+                        photo:childSnapShot.val().photo,
+                        color:childSnapShot.val().color,
+                        created_on: childSnapShot.val().created_on,
+                        parentId:childSnapShot.val().parentId,
+                        sessionId:childSnapShot.val().sessionId,
+                        username:childSnapShot.val().username,
 
 
                 };
@@ -416,12 +417,11 @@ class AddItemMenu extends React.Component {
                 data.push(GSTData);
             });
 
-            this.setState({categoryList: data, countPage: data.length, loading: false});
-            console.log(this.state.categoryList);
+            this.setState({CategoryList: data, countPage: data.length, loading: false});
+            console.log(this.state.CategoryList);
     
         });
     }
-
     stationList() {
         this.setState({loading: true});
         var ref = firebase
@@ -1038,7 +1038,7 @@ handleRemoveItem(index) {
     <span className="btn add_categoty_menu"> <span className="active"></span> items 
     </span>
     </Link>
-    <Link to="/AddCategoryMenu">
+    <Link to="/AddCategoryMenuDuplicate">
     <span className="btn add_categoty_menu">Category</span>
     </Link>
     {/* <Link to="/AddCategory">
@@ -1456,6 +1456,24 @@ onKeyDown={this.handleInputKeyDown} />
     </div>
     {this.validator.message("Tax", this.state.item_tax, "required")}
     </div>
+
+    <div class="row form-group">
+<div class="col col-md-4">
+<label class=" form-control-label">Add to Catagory</label>
+</div>
+<div class="col-12 col-md-8 menu_cate_links">
+<span> <a href="#">Menu</a>/<a href="#">MainCourse</a></span>
+</div>
+</div>
+
+<div class="row form-group">
+<div class="col col-md-12">
+{/* <button type="button" class="btn btn-secondary mb-1" data-toggle="modal" data-target="#choose_category">
+Choose Category
+</button> */}
+<span class="pull-right addmore_btn" data-toggle="modal" data-target="#choose_category">Add more categories</span>
+</div>
+</div>
     
     {/* <div className="row form-group">
     <div className="col col-md-4">
@@ -2253,6 +2271,86 @@ className="btn create_add_more_btn m-r-10">Add More
 
 
 
+<div class="modal fade" id="choose_category" tabindex="-1" role="dialog" aria-labelledby="smallmodalLabel" aria-hidden="true">
+<div class="modal-dialog modal-sm hipal_pop" role="document">
+<div class="modal-content">
+
+
+<div class="modal-header">
+<h5 class="modal-title" id="smallmodalLabel">Choose  Category
+</h5></div>
+
+
+<div class="modal-body product_edit">
+
+
+
+<div class="col-12 w-100-row">
+
+<div class="row">
+
+<div class="col col-md-6 font-15">
+Menu : <Link to="#">Maincourse</Link> / 
+<Link to="#">Parent</Link>
+</div>
+
+<div class="col col-md-6 text-center">
+<img src="images/icon/back_arrow_left_o.svg"/>
+</div>
+
+</div>
+</div>
+
+
+
+
+
+<div class="col-12 w-100-row">
+<div class="row">
+
+
+<div class="row">
+{this.state.CategoryList && this.state.CategoryList.map((category,index) => {
+return (
+<div class="col-md-4 mb-15 text-center" key={index}>
+<div class="cate_img_box  shadow_box" style={{background:category.color}}>
+     
+
+<img class="img_empty2" src={category.photo}></img>
+
+<p> {category.name}</p>                  
+</div>
+
+{category.isParent===true?
+<button class="btn m-t-10 btn_explore" data-toggle="modal" data-target="#add_parent_category1" id={category.categoryId} onClick={this.explore}>Explore</button>:null
+
+}
+</div>
+)})}
+
+
+</div>
+
+
+
+</div>
+</div>
+
+
+
+
+</div>
+
+
+
+<div class="modal-footer">
+<button type="button" class="btn save_btn">Add here</button>
+</div>
+
+
+</div>
+</div>
+</div>
 
     </>
 

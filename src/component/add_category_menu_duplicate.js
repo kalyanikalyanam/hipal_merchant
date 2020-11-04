@@ -143,10 +143,11 @@ class AddCategoryMenuDuplicate extends React.Component {
 
        itemCategoryList() {
         this.setState({loading: true});
+        var sessionId = sessionStorage.getItem("RoleId");
         var ref = firebase
             .database()
-            .ref("dummy/");
-            // .orderByChild('parent_category_select').equalTo('No');
+            .ref("dummy/")
+            .orderByChild('sessionId').equalTo(sessionId);
 
         ref.on('value', snapshot => {
             const data = [];
@@ -463,7 +464,7 @@ class AddCategoryMenuDuplicate extends React.Component {
 <Link to="/AddItemMenu">
 <span class="btn add_categoty_menu">Items</span>
 </Link>
-<Link to="/AddCategoryMenu">
+<Link to="/AddCategoryMenuDuplicate">
 <span class="btn add_categoty_menu"><span className="active"></span>Category</span>
 </Link>
 <span class="btn add_categoty_menu">coupon</span>

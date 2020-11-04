@@ -1034,8 +1034,12 @@ handleRemoveItem(index) {
 
 <div class="row mt-30">
 <div class="col-md-12 p-0">
+<Link to="/AddItemMenu">
 <span class="btn add_categoty_menu">Items <span class="active"></span></span>
+</Link>
+<Link to="/AddCategoryMenuDuplicate">
 <span class="btn add_categoty_menu">Category</span>
+</Link>
 <span class="btn add_categoty_menu">Coupon</span>
 </div>
 </div>
