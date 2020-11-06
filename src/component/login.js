@@ -76,7 +76,7 @@ class Login extends React.Component {
                                 sessionStorage.setItem("RoleId", user.uid);
                                 sessionStorage.setItem("username", gstData.user_name);
                                 sessionStorage.setItem("role", gstData.role);
-                                sessionStorage.setItem("emai", gstData.email_id);
+                                sessionStorage.setItem("email", gstData.email_id);
                                 this
                                     .props
                                     .history

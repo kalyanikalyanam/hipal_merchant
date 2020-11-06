@@ -18,17 +18,17 @@ class TablesList extends React.Component {
             table_name:'',
             table_capacity:"",
             table_floor:"",
-            
+
             table_icon:'',
             table_notes:'',
-            
 
-           
+
+
 
             table_qrcode:'',
             status:"Vacant",
-         
-         
+
+
         };
 
 
@@ -44,7 +44,7 @@ class TablesList extends React.Component {
         this.viewTable = this
         .viewTable
         .bind(this);
-        
+
     this.validator = new SimpleReactValidator({
         className: "text-danger",
         validators: {
@@ -117,7 +117,7 @@ class TablesList extends React.Component {
         }
     });
 }
-    
+
 
 
 
@@ -127,7 +127,7 @@ class TablesList extends React.Component {
         var businessId = sessionStorage.getItem("businessId");
         if (sessionId) {
           //console.log(sessionId);
-    
+
           firebase
             .database()
             .ref("merchant_users/" + sessionId)
@@ -136,13 +136,13 @@ class TablesList extends React.Component {
               //console.log(Users);
               sessionStorage.setItem("username", Users.user_name);
               sessionStorage.setItem("email", Users.email_id);
-    
+
               this.setState({
                 userRole: Users.Role,
                 loading: false,
               });
             });
-    
+
             firebase
             .database().ref('merchaant_business_details/' + businessId).on('value', snapshot => {
          var business = snapshot.val();
@@ -150,23 +150,23 @@ class TablesList extends React.Component {
          sessionStorage.setItem("BusinessId", business.businessId);
          sessionStorage.setItem("BusinessName", business.business_name);
          sessionStorage.setItem("BusinessLogo", business.business_logo);
-       
+
         this.setState({
-        
-            
-            
+
+
+
           });
-    
-          
-         
-         
+
+
+
+
         });
         }
 
         this.floorsList();
       this.tableList();
- 
-           
+
+
        }
 
        floorsList=()=>{
@@ -183,13 +183,13 @@ class TablesList extends React.Component {
 
                 const GSTData = {
                     floorId: childSnapShot.key .toString(),
-                       
+
                     floor_capacity: childSnapShot.val().floor_capacity,
                     floor_name: childSnapShot.val().floor_name,
                     floor_notes: childSnapShot.val().floor_notes,
                     sessionId: childSnapShot.val().sessionId,
                     businessId: childSnapShot.val().businessId,
-                        
+
 
 
                 };
@@ -203,7 +203,7 @@ class TablesList extends React.Component {
 
             this.setState({floorsList: sortedKeys, countPage: data.length, loading: false});
             console.log(this.state.floorsList);
-    
+
         });
 
 
@@ -224,20 +224,15 @@ class TablesList extends React.Component {
 
                 const GSTData = {
                     tableId: childSnapShot.key .toString(),
-                       
                     table_name: childSnapShot.val().table_name,
                     table_capacity: childSnapShot.val().table_capacity,
                     table_floor: childSnapShot.val().table_floor,
-
-                    table_icon: childSnapShot.val().table_icon, 
+                    table_icon: childSnapShot.val().table_icon,
                     table_notes: childSnapShot.val().table_notes,
-
-                  table_qrcode:  childSnapShot.val().table_qrcode,
+                    table_qrcode:  childSnapShot.val().table_qrcode,
                   status:childSnapShot.val().status,
                   sessionId: childSnapShot.val().sessionId,
                   businessId: childSnapShot.val().businessId,
-
-
                 };
 
                 data.push(GSTData);
@@ -248,7 +243,7 @@ class TablesList extends React.Component {
 
             this.setState({tableList: sortedKeys, countPage: data.length, loading: false});
             console.log(this.state.tableList);
-    
+
         });
 
 
@@ -258,11 +253,11 @@ class TablesList extends React.Component {
     viewTable= id=> {
         const {tableId} = this.props.match.params;
         console.log(tableId);
-  
+
         var ref = firebase
             .database()
             .ref(`tables_with_floors/${id}`);
-  
+
         ref.on('value', snapshot => {
             var userData = snapshot.val();
             console.log(userData)
@@ -274,16 +269,16 @@ class TablesList extends React.Component {
               table_notes:userData.table_notes,
               table_qrcode:userData.table_qrcode,
               status:userData.status,
-  
-             
+
+
             });
             //console.log(this.state.pageTitle);
         });
-  
+
     }
 
     handleUploadStart = () => this.setState({isUploading: true, uploadProgress: 0});
-    
+
     handleFrontImageUploadStart = () => this.setState({isUploading: true, uploadProgress: 0, avatarURL: ''});
     handleProgress = progress => this.setState({uploadProgress: progress});
 
@@ -320,18 +315,18 @@ class TablesList extends React.Component {
        handleSubmit = (event) => {
         event.preventDefault();
         if (this.validator.allValid()) {
-          
+
             var sessionId = sessionStorage.getItem("RoleId");
             var username = sessionStorage.getItem("username");
             var businessId = sessionStorage.getItem("businessId");
             let dbCon = firebase
                 .database()
                 .ref('/tables_with_floors');
-                var key=(Math.round((new Date().getTime() / 1000))); 
-            
-              
+                var key=(Math.round((new Date().getTime() / 1000)));
+
+
             dbCon.push({
-              
+
                 created_on:this.state.created_on,
 
 
@@ -339,27 +334,27 @@ class TablesList extends React.Component {
                 table_name:this.state.table_name,
                 table_capacity:this.state.table_capacity,
                 table_floor:this.state.table_floor,
-                
+
                 table_icon:this.state.table_icon,
                 table_notes:this.state.table_notes,
                 status:"Vacant",
-                
 
-               
+
+
 
                 table_qrcode: "https://chart.googleapis.com/chart?cht=qr&chl="+this.state.table_name+"&chs=160x160&chld=L|0",
 
-              
-              
-                
+
+
+
                 sessionId:sessionId,
                 username:username,
                 businessId:businessId,
-               
-           
-        
+
+
+
              });
-           
+
 
              window.location.href="/TablesList";
             // this
@@ -375,7 +370,7 @@ class TablesList extends React.Component {
 
     };
 
- 
+
 
 
     tablenameChange  = (e) => {
@@ -383,31 +378,31 @@ class TablesList extends React.Component {
             table_name: e.target.value
         });
         if(this.state.validError!=true){
-           
-            
+
+
             var ref = firebase
             .database()
             .ref('tables_with_floors/').orderByChild("table_name").equalTo(e.target.value);
             ref.on('value', snapshot => {
                 var  user_exist = snapshot.numChildren();
                 console.log(user_exist);
-           
+
             if(user_exist>0 && this.state.validError!=true){
-               
-               
+
+
                 this.setState({mobile_message: "Table Name already exist",validError:false});
 
             }
-          
+
             else
             {
                 this.setState({mobile_message: "",validError:true});
-               
+
             }
-           
+
         })
     }
-       
+
     };
 
 
@@ -422,7 +417,7 @@ class TablesList extends React.Component {
             .ref(`/tables_with_floors/${id}`);
         playersRef.remove();
             }else{
-    
+
             }
     });
     };
@@ -433,7 +428,7 @@ class TablesList extends React.Component {
             [event.target.name]: event.target.value
         });
     };
-  
+
     createPdf = (html) => Doc.createPdf(html);
 
     render() {
@@ -443,37 +438,37 @@ class TablesList extends React.Component {
         return (
             <>
             <div className="page-wrapper">
-   
+
 
          <Sidebar/>
-    
+
             {/* <!-- PAGE CONTAINER--> */}
             <div className="page-container">
                 <Header/>
-       
+
                 {/* <header className="header-desktop">
-                
+
                 <div className="logo_hipal">
                     <a href="#">
                         <img src="images/icon/logo.svg" alt="Hipal Admin" />
                     </a>
                 </div>
-                
-                
+
+
                 Welcome Back Varun
                 </header> */}
                 {/* <!-- HEADER DESKTOP--> */}
-    
+
                 {/* <!-- MAIN CONTENT--> */}
                 <div className="main-content">
                     <div className="section__content">
-                    
-                    
-                    
-            
-                    
+
+
+
+
+
     <div className="container-fluid">
-    
+
     <div className="row">
 <div className="col-md-12 p-0">
 <div className="search_profile">
@@ -489,7 +484,7 @@ class TablesList extends React.Component {
 </div>
 <div className="col-md-3">
 <div className="search_top">
-<a href="#" className="search_icon"><i className="fas fa-search"></i></a>       
+<a href="#" className="search_icon"><i className="fas fa-search"></i></a>
 <input className="search_input" type="text" name="" placeholder="Search..."/>
 </div>
 </div>
@@ -508,42 +503,42 @@ class TablesList extends React.Component {
 </div>
 </div>
 </div>
-    
-    
-    
+
+
+
     <div className="row mt-30">
-    
+
     <div className="col-md-5 p-0">
     <div className="overview-wrap">
     <div className="order_btns">
     <button type="button"  data-toggle="modal" data-target="#add_table">
     <span className="btn add_ord m-l-0">
-   <img src="images/icon/add_plus_icon_w.svg"/> 
+   <img src="images/icon/add_plus_icon_w.svg"/>
 
-  
+
 
 
     ADD Tables
     </span>
     </button>
-    
-  
+
+
     </div>
     </div>
     </div>
-            
-            
+
+
     <div className="col-md-7 p-0">
     <div className="track_box">
-    
-    
+
+
     <div className="track_ord_block">
     <div className="track_bg">
     <div className="track-50">
     <form>
     <div className="input-group">
     <input type="text" className="form-control" placeholder="Track here"/>
-    
+
     </div>
     </form>
     </div>
@@ -554,10 +549,10 @@ class TablesList extends React.Component {
     </div>
     </div>
     </div>
-                        
+
     </div>
-    
-    
+
+
     <div className="row mt-30">
     <div className="col-md-12 p-0">
     <div className="orders_menu">
@@ -566,23 +561,23 @@ class TablesList extends React.Component {
 
     <li><a href="/TablesList"  className="activemenu">Tables</a></li>
 
-    
-    
+
+
     </ul>
     </div>
-    </div>			
     </div>
-    
-    
-    
-    
+    </div>
+
+
+
+
     <div className="row mt-30">
     <div className="col-md-12 p-0 employes_table">
-    
+
     <div className="table-responsive table-data">
     <table className="table">
     <thead>
-    
+
     <tr>
     <td>S.no</td>
     <td>Table Number</td>
@@ -590,27 +585,27 @@ class TablesList extends React.Component {
     <td>Table floor</td>
     <td>Table Icon</td>
     <td>Actions</td>
-    
-   
+
+
     </tr>
-    
+
     </thead>
     <tbody  id="myTable">
     {this.state.tableList && this.state.tableList.map((table,index) => {
 return (
-    
-<tr key={index}> 
+
+<tr key={index}>
 <td>{index+1}</td>
-    
-   
+
+
     <td>{table.table_name}</td>
     <td>{table.table_capacity}</td>
     <td>{table.table_floor}</td>
     <td><img src={table.table_icon} width="15%"/></td>
-   
-  
 
-    
+
+
+
     <td>
     <Link to={`/EditTable/${table.tableId}`}>
         <img src="images/icon/edit_icon_blue.svg" className="edit_delete"/>
@@ -618,43 +613,43 @@ return (
      <img src="images/icon/delete_cross.svg" onClick={this.deleteItem.bind(this, table.tableId)} className="edit_delete"/>
      <button type="button"  data-toggle="modal" data-target="#view_table">
 
-  
+
      <span className="btn view_order_btn_td" onClick={this.viewTable.bind(this, table.tableId)}>View Table</span></button>
      </td>
-   
+
    </tr>
-    
-   
+
+
 )})}
-    
-    
-    
-    
+
+
+
+
     </tbody>
     </table>
     </div>
-    
-    
-    </div>			
+
+
     </div>
-    
-    
-    
-    
-    
-    
-    
-    
-    </div>
-    </div>
-    </div>
-    
-    
-    </div>   
     </div>
 
 
-   
+
+
+
+
+
+
+    </div>
+    </div>
+    </div>
+
+
+    </div>
+    </div>
+
+
+
 
 
 <div className="modal fade" id="add_table" tabindex="-1" role="dialog" aria-labelledby="smallmodalLabel" aria-hidden="true">
@@ -663,7 +658,7 @@ return (
 
 <Form onSubmit={this.handleSubmit}>
 <div className="modal-header">
-<h5 className="modal-title" id="smallmodalLabel">Add Table 
+<h5 className="modal-title" id="smallmodalLabel">Add Table
 </h5></div>
 
 
@@ -676,7 +671,7 @@ return (
 <label className=" form-control-label">Table Name</label>
 </div>
 <div className="col-12 col-md-6">
-<input type="text" id="text-input" 
+<input type="text" id="text-input"
  name="table_name"
  value={this.state.table_name}
  onChange={this.tablenameChange}
@@ -693,7 +688,7 @@ placeholder="T1" className="form-control edit_product"/>
 <label className=" form-control-label">Capacity</label>
 </div>
 <div className="col-12 col-md-6">
-<select 
+<select
  name="table_capacity"
 //  value={this.state.table_capacity}
  onChange={this.onChange}
@@ -746,7 +741,7 @@ id="select" className="form-control edit_product">
             </span>
             <input type="text" className="form-control" readonly=""/>
         </div>
-        
+
     </div></div> */}
 
 
@@ -789,7 +784,7 @@ id="select" className="form-control edit_product">
 <label className=" form-control-label">Notes</label>
 </div>
 <div className="col-12 col-md-6">
-<textarea 
+<textarea
 name="table_notes"
 value={this.state.table_notes}
 onChange={this.onChange}
@@ -857,7 +852,7 @@ id="textarea-input" rows="3" placeholder="Table on first floor with window view"
 <label className=" form-control-label">Table Name</label>
 </div>
 <div className="col-12 col-md-6">
-<input type="text" id="text-input" 
+<input type="text" id="text-input"
  name="table_name"
  value={this.state.table_name}
  onChange={this.tablenameChange}
@@ -874,7 +869,7 @@ placeholder="T1" className="form-control edit_product"/>
 <label className=" form-control-label">Capacity</label>
 </div>
 <div className="col-12 col-md-6">
-<select 
+<select
  name="table_capacity"
  value={this.state.table_capacity}
  onChange={this.onChange}
@@ -957,7 +952,7 @@ id="select" className="form-control edit_product">
 <label className=" form-control-label">Notes</label>
 </div>
 <div className="col-12 col-md-6">
-<textarea 
+<textarea
 name="table_notes"
 value={this.state.table_notes}
 onChange={this.onChange}
@@ -1013,7 +1008,7 @@ id="textarea-input" rows="3" placeholder="Table on first floor with window view"
 
 
 <div className="modal-header">
-<h5 className="modal-title" id="smallmodalLabel">View Table 
+<h5 className="modal-title" id="smallmodalLabel">View Table
 </h5></div>
 
 <PdfContainer createPdf={this.createPdf}>
@@ -1117,8 +1112,8 @@ Tabel {this.state.table_name}
 
 
     </>
-              
-                                                                                               
+
+
         );
     }
 }

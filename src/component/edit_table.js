@@ -17,17 +17,17 @@ class EditTable extends React.Component {
             table_name:'',
             table_capacity:"",
             table_floor:"",
-            
+
             table_icon:'',
             table_notes:'',
-            
 
-           
+
+
 
             table_qrcode:'',
             status:"Vacant",
-         
-         
+
+
         };
 
 
@@ -36,8 +36,8 @@ class EditTable extends React.Component {
         .onChange
         .bind(this);
 
-       
-        
+
+
     this.validator = new SimpleReactValidator({
         className: "text-danger",
         validators: {
@@ -110,7 +110,7 @@ class EditTable extends React.Component {
         }
     });
 }
-    
+
 
 
 
@@ -120,7 +120,7 @@ class EditTable extends React.Component {
         var businessId = sessionStorage.getItem("businessId");
         if (sessionId) {
           //console.log(sessionId);
-    
+
           firebase
             .database()
             .ref("merchant_users/" + sessionId)
@@ -129,13 +129,13 @@ class EditTable extends React.Component {
               //console.log(Users);
               sessionStorage.setItem("username", Users.user_name);
               sessionStorage.setItem("email", Users.email_id);
-    
+
               this.setState({
                 userRole: Users.Role,
                 loading: false,
               });
             });
-    
+
             firebase
             .database().ref('merchaant_business_details/' + businessId).on('value', snapshot => {
          var business = snapshot.val();
@@ -143,26 +143,26 @@ class EditTable extends React.Component {
          sessionStorage.setItem("BusinessId", business.businessId);
          sessionStorage.setItem("BusinessName", business.business_name);
          sessionStorage.setItem("BusinessLogo", business.business_logo);
-       
+
         this.setState({
-        
-            
-            
+
+
+
           });
-    
-          
-         
-         
+
+
+
+
         });
         }
 
         this.floorsList();
       this.tableList();
-  
-           
+
+
        }
 
-   
+
 
 
     floorsList=()=>{
@@ -179,13 +179,13 @@ class EditTable extends React.Component {
 
                 const GSTData = {
                     floorId: childSnapShot.key .toString(),
-                       
+
                     floor_capacity: childSnapShot.val().floor_capacity,
                     floor_name: childSnapShot.val().floor_name,
                     floor_notes: childSnapShot.val().floor_notes,
                     sessionId: childSnapShot.val().sessionId,
                     businessId: childSnapShot.val().businessId,
-                        
+
 
 
                 };
@@ -195,11 +195,11 @@ class EditTable extends React.Component {
 
             let sortedKeys = data.filter((res) => {
                 return res.businessId === businessId;
-              });
+            });
 
             this.setState({floorsList: sortedKeys, countPage: data.length, loading: false});
             console.log(this.state.floorsList);
-    
+
         });
 
 
@@ -216,22 +216,22 @@ class EditTable extends React.Component {
 
             ref.on('value', snapshot => {
                 var table = snapshot.val();
-    
+
                 // console.log(categories)
-    
+
                 this.setState({
-                   
-                       
+
+
                     table_name: table.table_name,
                     table_capacity: table.table_capacity,
                     table_floor: table.table_floor,
 
-                    table_icon: table.table_icon, 
+                    table_icon: table.table_icon,
                     table_notes: table.table_notes,
 
                   table_qrcode:  table.table_qrcode,
                   status:table.status,
-                        
+
                    });
         });
 
@@ -239,9 +239,9 @@ class EditTable extends React.Component {
 
     }
 
-   
+
     handleUploadStart = () => this.setState({isUploading: true, uploadProgress: 0});
-    
+
     handleFrontImageUploadStart = () => this.setState({isUploading: true, uploadProgress: 0, avatarURL: ''});
     handleProgress = progress => this.setState({uploadProgress: progress});
 
@@ -275,9 +275,9 @@ class EditTable extends React.Component {
 
 
 
-    
 
- 
+
+
     handleSubmit = (event) => {
         event.preventDefault();
         if (this.validator.allValid()) {
@@ -287,11 +287,11 @@ class EditTable extends React.Component {
             var username = sessionStorage.getItem("username");
 
             let dbCon = firebase.database().ref(`/tables_with_floors/${tableId}`);
-                var key=(Math.round((new Date().getTime() / 1000))); 
-            
-              
+                var key=(Math.round((new Date().getTime() / 1000)));
+
+
            dbCon.update ({
-              
+
                 created_on:this.state.created_on,
 
 
@@ -299,25 +299,25 @@ class EditTable extends React.Component {
                 table_name:this.state.table_name,
                 table_capacity:this.state.table_capacity,
                 table_floor:this.state.table_floor,
-                
+
                 table_icon:this.state.table_icon,
                 table_notes:this.state.table_notes,
-              
-                
 
-               
+
+
+
 
                 table_qrcode: "https://chart.googleapis.com/chart?cht=qr&chl="+this.state.table_name+"&chs=160x160&chld=L|0",
 
-              
-              
-                
+
+
+
                 sessionId:sessionId,
                 username:username,
                 businessId:businessId,
-               
-           
-        
+
+
+
              });
              window.location.href="/TablesList";
              // this
@@ -325,7 +325,7 @@ class EditTable extends React.Component {
              //     .history
              //     .push("/AllEmploTablesListees");
             }
-           
+
  else {
             this
                 .validator
@@ -333,44 +333,44 @@ class EditTable extends React.Component {
             this.forceUpdate();
           }
       };
-    
+
 
     tablenameChange  = (e) => {
         this.setState({
             table_name: e.target.value
         });
         if(this.state.validError!=true){
-           
-            
+
+
             var ref = firebase
             .database()
             .ref('tables_with_floors/').orderByChild("table_name").equalTo(e.target.value);
             ref.on('value', snapshot => {
                 var  user_exist = snapshot.numChildren();
                 console.log(user_exist);
-           
+
             if(user_exist>0 && this.state.validError!=true){
-               
-               
+
+
                 this.setState({mobile_message: "Table Name already exist",validError:false});
 
             }
-          
+
             else
             {
                 this.setState({mobile_message: "",validError:true});
-               
+
             }
-           
+
         })
     }
-       
+
     };
 
 
 
 
-  
+
 
       onChange = (event) => {
 
@@ -378,7 +378,7 @@ class EditTable extends React.Component {
             [event.target.name]: event.target.value
         });
     };
-  
+
 
 
     render() {
@@ -406,7 +406,7 @@ class EditTable extends React.Component {
 <label className=" form-control-label">Table Name</label>
 </div>
 <div className="col-12 col-md-6">
-<input type="text" id="text-input" 
+<input type="text" id="text-input"
  name="table_name"
  value={this.state.table_name}
  onChange={this.tablenameChange}
@@ -423,7 +423,7 @@ placeholder="T1" className="form-control edit_product"/>
 <label className=" form-control-label">Capacity</label>
 </div>
 <div className="col-12 col-md-6">
-<select 
+<select
  name="table_capacity"
  value={this.state.table_capacity}
  onChange={this.onChange}
@@ -476,7 +476,7 @@ id="select" className="form-control edit_product">
             </span>
             <input type="text" className="form-control" readonly=""/>
         </div>
-        
+
     </div></div> */}
 
 
@@ -496,7 +496,7 @@ id="select" className="form-control edit_product">
                                                         name="table_floor"
                                                         value={this.state.table_floor}
                                                         onChange={this.onChange}>
-                                                      
+
                                                         {this.state.floorsList && this
                                                             .state
                                                             .floorsList
@@ -504,7 +504,7 @@ id="select" className="form-control edit_product">
 
                                                                 return (
                                                                     <option value={data.floor_name} key={index} selected={data.floor_name == this.state.floor_name}>{data.floor_name}</option>
-                                                          
+
                                                                 )
 
                                                             })}
@@ -521,7 +521,7 @@ id="select" className="form-control edit_product">
 <label className=" form-control-label">Notes</label>
 </div>
 <div className="col-12 col-md-6">
-<textarea 
+<textarea
 name="table_notes"
 value={this.state.table_notes}
 onChange={this.onChange}
@@ -569,8 +569,8 @@ id="textarea-input" rows="3" placeholder="Table on first floor with window view"
 </div>
 {/* </div> */}
           </>
-              
-                                                                                               
+
+
         );
     }
 }

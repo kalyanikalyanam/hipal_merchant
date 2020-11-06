@@ -92,6 +92,7 @@ import SettingsItemsList from './settings/settings_items_list';
 
 import SettingsAddImageMedia from './settings/settings_add_media image';
 import SettingsEditImageMedia from './settings/settings_edit_media_page';
+import LiveCartPage from "./updateddesigns/liveCartComponents";
 
 
 export const PrivateRoute = ({
@@ -128,8 +129,7 @@ class Routing extends React.Component {
 
                  <Route exact strict path="/" component={Login1}/>
                  <Route path="/EmployeeLogin" component={EmployeeLogin}/>
-                 
-                 <Route path="/Register" component={Register}/>
+                <Route path="/test/:params" component={LiveCartPage} />
 
 
                  <PrivateRoute path="/BusinessList" component={BusinessList}/>

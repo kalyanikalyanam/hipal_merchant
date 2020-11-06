@@ -1,139 +1,7 @@
-// import React from "react";
-// import {Link} from "react-router-dom";
-// import firebase from '../config';
-// import Sidebar from './sidebar';
-// class Register extends React.Component {
-//     constructor(props) {
-//         super(props);
-//         this.state = {
-
-
-//         };
-//     }
-
-//     componentWillMount(){
-//         document.getElementById('root').className='h-100'
-
-//       }
-//         componentWillUnmount(){
-//         document.getElementById('root').className=''
-
-// 	  }
-//     render() {
-//         return (
-
-// <div className="page-wrapper login_register_box">
-
-// <div className="row h-100">
-// <div className="col-md-5 h-100">
-
-// <div className="logo_login">
-// <img src="images/icon/logo.svg"/>
-// </div>
-
-// </div>
-// <div className="col-md-7 h-100">
-
-// <div className="box_login_register h-100 col-12">
-
-// <div className="login_signup_box register">
-// <div className="login_regi_row col-12 m-b-50">
-// <a href="/"><span className="btn">Login</span></a>
-
-// <span className="btn active">Register</span>
-// </div>
-// <form>
-
-// <div className="row form-group">
-// <div className="col col-md-5">
-// <label className=" form-control-label">Username</label>
-// </div>
-// <div className="col-12 col-md-7">
-// <input type="text" id="text-input" name="text-input"  className="form-control"/>
-// </div>
-// </div>
-
-// <div className="row form-group">
-// <div className="col col-md-5">
-// <label className=" form-control-label">Password</label>
-// </div>
-// <div className="col-12 col-md-7">
-// <input type="text" id="text-input" name="text-input"  className="form-control"/>
-// </div>
-// </div>
-
-// <div className="row form-group">
-// <div className="col col-md-5">
-// <label className=" form-control-label">Phone Number</label>
-// </div>
-// <div className="col-12 col-md-7">
-// <input type="text" id="text-input" name="text-input"  className="form-control"/>
-// </div>
-// </div>
-
-// <div className="row form-group">
-// <div className="col col-md-5">
-// <label className=" form-control-label">Business</label>
-// </div>
-// <div className="col-12 col-md-7">
-// <input type="text" id="text-input" name="text-input"  className="form-control"/>
-// </div>
-// </div>
-
-// <div className="row form-group">
-// <div className="col col-md-5">
-// <label className=" form-control-label">Email</label>
-// </div>
-// <div className="col-12 col-md-7">
-// <input type="text" id="text-input" name="text-input"  className="form-control"/>
-// </div>
-// </div>
-
-// <div className="row form-group">
-// <div className="col col-md-5">
-// <label className=" form-control-label">Re-enter Password</label>
-// </div>
-// <div className="col-12 col-md-7">
-// <input type="text" id="text-input" name="text-input"  className="form-control"/>
-// </div>
-// </div>
-
-// <div className="row form-group">
-// <div className="col col-md-5"></div>
-// <div className="col-12 col-md-7">
-// <div className="btn login_btn_menu">Get Started</div>
-// </div>
-// </div>
-
-
-
-
-
-
-// </form>
-// </div>
-
-
-
-// </div>
-
-// </div>
-// </div>
-
-// </div>
-
-
-
-//         );
-//     }
-// }
-
-// export default Register;
 import React from "react";
 import {Link} from "react-router-dom";
-
 import {Form} from 'reactstrap';
-import firebase from '../config';
+import firebase, {db} from '../config';
 import SimpleReactValidator from "simple-react-validator";
 import FileUploader from "react-firebase-file-uploader";
 // import axios from "axios";
@@ -228,19 +96,20 @@ class Register extends React.Component {
             var userID = res.user
             var user = firebase.auth().currentUser
             console.log(user)
-
-            let dbRef = firebase
-                .database()
-                .ref('merchant_users/'+ userID.uid)
-            dbRef.set({
-                user_name: this.state.user_name,
-                role: "Merchant",
-                status: "InActive",
-                password: this.state.password,
-                email_id: this.state.email_id,
-                confirm_password: this.state.confirm_password,
-                created_on: this.state.created_on
-            })
+            try{
+                await db.collection('merchant_users').doc(res.user.uid).set({
+                    user_name: this.state.user_name,
+                    role: "Merchant",
+                    status: "InActive",
+                    password: this.state.password,
+                    email_id: this.state.email_id,
+                    confirm_password: this.state.confirm_password,
+                    created_on: this.state.created_on
+                })
+            }
+            catch(e) {
+                console.log(e)
+            }
             this.setState(initState)
             if(userID !== null){
                 userID.sendEmailVerification()

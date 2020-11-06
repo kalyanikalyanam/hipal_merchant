@@ -14,7 +14,6 @@ class Dashboard extends React.Component {
             employer_sevice_message:'',
             email_message:'',
             mobile_message:'',
-
             customer_name:'',
             customer_email:'',
             customer_phonenumber:'',
@@ -102,7 +101,7 @@ class Dashboard extends React.Component {
         }
     });
 }
-    
+
 
 
 
@@ -110,51 +109,31 @@ class Dashboard extends React.Component {
         this.setState({ loading: true });
         var sessionId = sessionStorage.getItem("RoleId");
         var businessId = sessionStorage.getItem("businessId");
-
-      
         if(sessionId){
-           
-      console.log(sessionId);
-        
+            console.log(sessionId);
             firebase
                 .database().ref('merchant_users/' + sessionId).on('value', snapshot => {
-             var Users = snapshot.val();
-             console.log(Users);
-             sessionStorage.setItem("username", Users.user_name);
-             sessionStorage.setItem("email", Users.email_id);
-           
-            this.setState({
-              userRole:Users.Role,loading: false
-                
-                
-              });
-
-              
-             
-             
-            });
-
+                    var Users = snapshot.val();
+                    console.log(Users);
+                    sessionStorage.setItem("username", Users.user_name);
+                    sessionStorage.setItem("email", Users.email_id);
+                    this.setState({
+                        userRole:Users.Role,loading: false
+                    });
+                });
             firebase
-            .database().ref('merchaant_business_details/' + businessId).on('value', snapshot => {
-         var business = snapshot.val();
-         console.log(business);
-         sessionStorage.setItem("BusinessName", business.business_name);
-         sessionStorage.setItem("BusinessLogo", business.business_logo);
-       
-        this.setState({
-        
-            
-            
-          });
-
-          
-         
-         
-        });
+                .database().ref('merchaant_business_details/' + businessId).on('value', snapshot => {
+                    var business = snapshot.val();
+                    console.log(business);
+                    sessionStorage.setItem("BusinessName", business.business_name);
+                    sessionStorage.setItem("BusinessLogo", business.business_logo);
+                    this.setState({
+                    });
+                });
         }
 
         this.customersList();
-           
+
        }
 
        customersList=()=>{
@@ -170,14 +149,14 @@ class Dashboard extends React.Component {
 
                 const GSTData = {
                     customerId: childSnapShot.key .toString(),
-                       
+
                     customer_name: childSnapShot.val().customer_name,
                     customer_email: childSnapShot.val().customer_email,
                     customer_phonenumber: childSnapShot.val().customer_phonenumber,
                     customer_notes: childSnapShot.val().customer_notes,
-                      
 
-                       
+
+
 
  };
 
@@ -186,29 +165,29 @@ class Dashboard extends React.Component {
 
             this.setState({customersList: data, countPage: data.length, loading: false});
             console.log(this.state.customersList);
-    
+
         });
 
 
     }
 
 
-  
+
 
        handleSubmit = (event) => {
         event.preventDefault();
         if (this.validator.allValid()) {
-          
+
             var sessionId = sessionStorage.getItem("RoleId");
             var username = sessionStorage.getItem("username");
 
             let dbCon = firebase
                 .database()
                 .ref('/customers');
-            
-              
+
+
             dbCon.push({
-               
+
 
 
                 customer_name:this.state.customer_name,
@@ -217,15 +196,15 @@ class Dashboard extends React.Component {
 
                 customer_notes:this.state.customer_notes,
 
-                
 
-                
+
+
                 sessionId:sessionId,
                 username:username,
 
-               
-           
-        
+
+
+
              });
              this.setState({
                 employer_sevice_message:"Data Added",
@@ -254,31 +233,28 @@ window.location.href="/AllCustomers";
             customer_email: e.target.value
         });
         if(this.state.validError!=true){
-           
-            
             var ref = firebase
             .database()
             .ref('customers/').orderByChild("customer_email").equalTo(e.target.value);
             ref.on('value', snapshot => {
                 var  user_exist = snapshot.numChildren();
                 console.log(user_exist);
-           
             if(user_exist>0 && this.state.validError!=true){
-               
-               
+
+
                 this.setState({email_message: "customer email id  already exist",validError:false});
 
             }
-          
+
             else
             {
                 this.setState({email_message: "",validError:true});
-               
+
             }
-           
+
         })
     }
-       
+
     };
 
     customerphonenumberchange  = (e) => {
@@ -286,31 +262,31 @@ window.location.href="/AllCustomers";
             customer_phonenumber: e.target.value
         });
         if(this.state.validError!=true){
-           
-            
+
+
             var ref = firebase
             .database()
             .ref('customers/').orderByChild("customer_phonenumber").equalTo(e.target.value);
             ref.on('value', snapshot => {
                 var  user_exist = snapshot.numChildren();
                 console.log(user_exist);
-           
+
             if(user_exist>0 && this.state.validError!=true){
-               
-               
+
+
                 this.setState({mobile_message: "customer Phone Number already exist",validError:false});
 
             }
-          
+
             else
             {
                 this.setState({mobile_message: "",validError:true});
-               
+
             }
-           
+
         })
     }
-       
+
     };
 
 
@@ -326,7 +302,7 @@ window.location.href="/AllCustomers";
             .ref(`/customers/${id}`);
         playersRef.remove();
             }else{
-    
+
             }
     });
     };
@@ -339,10 +315,10 @@ window.location.href="/AllCustomers";
     };
     render() {
         return (
-         
+
 <>
 <div className="page-wrapper">
-   
+
 
   <Sidebar/>
    <div className="page-container">
@@ -350,11 +326,11 @@ window.location.href="/AllCustomers";
      <Header/>
        <div className="main-content">
            <div className="section__content">
-           
-           
-           
-   
-           
+
+
+
+
+
 <div className="container-fluid">
 
 {/* <div className="row">
@@ -363,7 +339,7 @@ window.location.href="/AllCustomers";
 <div className="row">
 <div className="col-md-8">
 <div className="search_top">
-<a href="#" className="search_icon"><i className="fas fa-search"></i></a>       
+<a href="#" className="search_icon"><i className="fas fa-search"></i></a>
 <input className="search_input" type="text" name="" placeholder="Search..."/>
 </div>
 </div>
@@ -400,7 +376,7 @@ window.location.href="/AllCustomers";
 </div>
 <div class="col-md-3">
 <div class="search_top">
-<a href="#" class="search_icon"><i class="fas fa-search"></i></a>       
+<a href="#" class="search_icon"><i class="fas fa-search"></i></a>
 <input class="search_input" type="text" name="" placeholder="Search..."/>
 </div>
 </div>
@@ -425,20 +401,20 @@ window.location.href="/AllCustomers";
 
 
 <div className="row mt-30">
-<div className="col-md-12 p-0 text-right">	
+<div className="col-md-12 p-0 text-right">
 <span className="register_details_box">Registration Details</span>
 </div></div>
 
 <div className="row mt-30">
 
-<div className="col-md-7 p-0 text-left dash_board">	
+<div className="col-md-7 p-0 text-left dash_board">
 
 <h4>Good Afternoon <span>Varun</span></h4>
 <p>It’s so great to see you back again.</p>
 
 </div>
 
-<div className="col-md-5 p-0 text-right">	
+<div className="col-md-5 p-0 text-right">
 <span className="register_details_box downlod_report">Download Report</span>
 </div>
 
@@ -447,7 +423,7 @@ window.location.href="/AllCustomers";
 
 
 <div className="row mt-30">
-<div className="col-md-12 p-0 text-left dash_board">	
+<div className="col-md-12 p-0 text-left dash_board">
 <h5>We are <span className="open">OPen</span> , here is the summary for <span className="date">23/07/2020 </span></h5>
 </div></div>
 
@@ -467,7 +443,7 @@ window.location.href="/AllCustomers";
 <div className="sale_report">
 <div className="sales_head">Total Orders</div>
 <div className="sales_counts">
-<span className="number">242</span> 
+<span className="number">242</span>
 <span className="sales_position up">
 <span><i className="fa fa-caret-up" aria-hidden="true"></i></span>
 (+12%)</span>
@@ -477,7 +453,7 @@ window.location.href="/AllCustomers";
 <div className="sale_report">
 <div className="sales_head">New Customers</div>
 <div className="sales_counts">
-<span className="number">150</span> 
+<span className="number">150</span>
 <span className="sales_position down">
 <span><i className="fa fa-caret-down" aria-hidden="true"></i></span>
 (+12%)</span>
@@ -487,7 +463,7 @@ window.location.href="/AllCustomers";
 <div className="sale_report">
 <div className="sales_head">Total Transactions</div>
 <div className="sales_counts">
-<span className="number">412</span> 
+<span className="number">412</span>
 <span className="sales_position up">
 <span><i className="fa fa-caret-up" aria-hidden="true"></i></span>
 (+12%)</span>
@@ -497,7 +473,7 @@ window.location.href="/AllCustomers";
 <div className="sale_report">
 <div className="sales_head">Current Balance</div>
 <div className="sales_counts">
-<span className="number up">₹ 12000</span> 
+<span className="number up">₹ 12000</span>
 <span className="sales_position">
 <span><i className="fa fa-caret-up" aria-hidden="true"></i></span>
 (+12%)</span>
@@ -541,7 +517,7 @@ window.location.href="/AllCustomers";
 </div>
 
 </div>
-</div>			
+</div>
 
 
 
@@ -565,7 +541,7 @@ window.location.href="/AllCustomers";
 <div className="sale_report">
 <div className="sales_head">Total Orders</div>
 <div className="sales_counts">
-<span className="number">242</span> 
+<span className="number">242</span>
 <span className="sales_position up">
 <span><i className="fa fa-caret-up" aria-hidden="true"></i></span>
 (+12%)</span>
@@ -575,7 +551,7 @@ window.location.href="/AllCustomers";
 <div className="sale_report">
 <div className="sales_head">New Customers</div>
 <div className="sales_counts">
-<span className="number">150</span> 
+<span className="number">150</span>
 <span className="sales_position down">
 <span><i className="fa fa-caret-down" aria-hidden="true"></i></span>
 (+12%)</span>
@@ -603,7 +579,7 @@ window.location.href="/AllCustomers";
 <div className="sale_report">
 <div className="sales_head">Total Orders</div>
 <div className="sales_counts">
-<span className="number">242</span> 
+<span className="number">242</span>
 <span className="sales_position up">
 <span><i className="fa fa-caret-up" aria-hidden="true"></i></span>
 (+12%)</span>
@@ -613,7 +589,7 @@ window.location.href="/AllCustomers";
 <div className="sale_report">
 <div className="sales_head">New Customers</div>
 <div className="sales_counts">
-<span className="number">150</span> 
+<span className="number">150</span>
 <span className="sales_position down">
 <span><i className="fa fa-caret-down" aria-hidden="true"></i></span>
 (+12%)</span>
@@ -623,7 +599,7 @@ window.location.href="/AllCustomers";
 <div className="sale_report">
 <div className="sales_head">Total Transactions</div>
 <div className="sales_counts">
-<span className="number">412</span> 
+<span className="number">412</span>
 <span className="sales_position up">
 <span><i className="fa fa-caret-up" aria-hidden="true"></i></span>
 (+12%)</span>
@@ -633,7 +609,7 @@ window.location.href="/AllCustomers";
 <div className="sale_report">
 <div className="sales_head">Current Balance</div>
 <div className="sales_counts">
-<span className="number">₹ 12000</span> 
+<span className="number">₹ 12000</span>
 <span className="sales_position up">
 <span><i className="fa fa-caret-up" aria-hidden="true"></i></span>
 (+12%)</span>
@@ -651,7 +627,7 @@ window.location.href="/AllCustomers";
 </div>
 
 
-</div>			
+</div>
 </div>
 
 
@@ -746,7 +722,7 @@ window.location.href="/AllCustomers";
 
 
 
-</div>			
+</div>
 </div>
 
 
@@ -801,15 +777,9 @@ window.location.href="/AllCustomers";
 </div>
 
 
-</div>			
-
-
-
-
-
 </div>
-</div>			
-</div>
+
+
 
 
 
@@ -818,12 +788,18 @@ window.location.href="/AllCustomers";
 </div>
 
 
-</div>   
+
+</div>
+</div>
 </div>
 
 
-</>  
-                                                                                               
+</div>
+</div>
+
+
+</>
+
         );
     }
 }

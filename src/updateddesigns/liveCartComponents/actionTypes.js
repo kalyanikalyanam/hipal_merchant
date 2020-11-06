@@ -1,0 +1,5 @@
+export const ADDLIVE = 'ADDLIVE'
+export const REMLIVE = 'REMLIVE'
+export const SENDTOORDER = 'SENDTOORDER'
+export const OPENMODEL = 'OPENMODEL'
+export const CLOSEMODEL = 'CLOSEMODEL'

@@ -30,9 +30,9 @@ class SingleItempage extends React.Component {
            portions_details: [
             {
                 name: "",
-               
+
                 price: "",
-               
+
             }
         ],
         created_on: new Date().toLocaleString(),
@@ -119,7 +119,7 @@ class SingleItempage extends React.Component {
         }
     });
 }
-    
+
 
 
 
@@ -129,7 +129,7 @@ class SingleItempage extends React.Component {
         var businessId = sessionStorage.getItem("businessId");
         if (sessionId) {
           //console.log(sessionId);
-    
+
           firebase
             .database()
             .ref("merchant_users/" + sessionId)
@@ -138,13 +138,13 @@ class SingleItempage extends React.Component {
               //console.log(Users);
               sessionStorage.setItem("username", Users.user_name);
               sessionStorage.setItem("email", Users.email_id);
-    
+
               this.setState({
                 userRole: Users.Role,
                 loading: false,
               });
             });
-    
+
             firebase
             .database().ref('merchaant_business_details/' + businessId).on('value', snapshot => {
          var business = snapshot.val();
@@ -152,21 +152,21 @@ class SingleItempage extends React.Component {
          sessionStorage.setItem("BusinessId", business.businessId);
          sessionStorage.setItem("BusinessName", business.business_name);
          sessionStorage.setItem("BusinessLogo", business.business_logo);
-       
+
         this.setState({
-        
-            
-            
+
+
+
           });
-    
-          
-         
-         
+
+
+
+
         });
         }
 
         this.itemList();
-           
+
        }
 
        itemList() {
@@ -188,52 +188,52 @@ class SingleItempage extends React.Component {
                 item_halal:items.item_halal,
                 item_image:items.item_image,
                 item_points:items.item_points,
-    
+
                 station_name:items.station_name,
                 item_restaurant_id:items.item_restaurant_id,
                 item_type:items.item_type,
                 item_hash_tags:items.item_hash_tags,
                 item_price:items.item_price,
                 item_tax:items.item_tax,
-    
+
                category:items.category,
                sub_category:items.sub_category,
-    
-    
+
+
                 sessionId:items.sessionId,
                 status: items.status,
                 username:items.username,
-    
-    
-    
+
+
+
                 portions:items.portions,
                 portions_details:items.portions_details,
-    
-    
-    
+
+
+
                 advance:items.advance,
                 carbs:items.carbs,
                 protien:items.protien,
                 fat:items.fat,
                 item_video:items.item_video,
                 item_multiple_image:items.downloadURLs,
-    
-    
+
+
                 extra:items.extra,
                 healthytag:items.healthytag,
                 bestsellertag:items.bestsellertag,
-    
-    
+
+
                 recommend:items.recommend,
                 // recommenditem:items. recommenditem,
                 recommendations:items.recommendations,
-    
-    
+
+
                 created_on:items.created_on,
 
-               
 
-            
+
+
             });
 
         });
@@ -241,15 +241,15 @@ class SingleItempage extends React.Component {
     }
 
     handleSubmit = (event) => {
-        
+
         event.preventDefault();
         var cartItems = JSON.parse(localStorage.getItem('cartItems'))||[];
         const {itemId} = this.props.match.params;
-        
 
-           
+
+
         var newItem =true;
-       
+
         if (cartItems == null || cartItems == "") {
 
             newItem = true;
@@ -258,12 +258,12 @@ class SingleItempage extends React.Component {
 
             for (var i = 0; i < cartItems.length; i++) {
                 if (cartItems[i]['itemId'] == itemId &&  newItem == true) {
-                  
+
                     alert("The Item is already added to cart.");
                     newItem = false;
                     console.log(newItem);
-                  
-                } 
+
+                }
 
             }
         }
@@ -290,9 +290,9 @@ class SingleItempage extends React.Component {
                sub_category:this.state.sub_category,
 
 
-            
+
                 status: this.state.status,
-              
+
 
 
 
@@ -321,13 +321,13 @@ class SingleItempage extends React.Component {
 
                 quantity: this.state.quantity,
                 item_discount:this.state.item_discount,
-                
+
                 item_status: this.state.item_status,
                 item_instructions: this.state.item_instructions,
 
                 created_on:this.state.created_on,
 
-                
+
             }
 
             cartItems.push(data);
@@ -339,17 +339,17 @@ class SingleItempage extends React.Component {
             .history
             .goBack();
 
-    
-    
+
+
 
     };
-        
 
 
-    
 
 
-   
+
+
+
       onChange = (event) => {
 
         this.setState({
@@ -359,226 +359,137 @@ class SingleItempage extends React.Component {
     render() {
         const {itemId} = this.props.match.params;
         return (
-         
-<>
+            <>
+                    <form onsubmit={this.handlesubmit}>
+                        <div classname="modal-content">
+
+
+                            <div classname="modal-header">
+                                <h5 classname="modal-title" id="smallmodallabel">edit item deatils
+                                </h5>
+                            </div>
+
+
+                            <div classname="modal-body product_edit">
+
+
+                                <div classname="col-12 w-100-row">
+                                    <h1>{this.state.item_name} </h1>
+                                </div>
 
 
 
 
-<div className="modal-dialog modal-sm hipal_pop" role="document">
-<Form onSubmit={this.handleSubmit}>
-<div className="modal-content">
+                                <div classname="col-12 w-100-row">
+                                    <div classname="row form-group">
+                                        <div classname="col col-md-4">
+                                            <label classname=" form-control-label">quantity</label>
+                                        </div>
+                                        <div classname="col-12 col-md-6">
+                                            <select
+                                                name="quantity"
+                                                onchange={this.onchange}
+                                                value={this.state.quantity}
+                                                id="select" classname="form-control edit_product">
+                                                <option value="0">select</option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                                <option value="6">6</option>
+                                                <option value="7">7</option>
+                                                <option value="8">8</option>
+                                                <option value="9">9</option>
+                                                <option value="10">10</option>
+                                                <option value="11">11</option>
+                                                <option value="12">12</option>
+                                            </select>
+                                        </div>
+
+                                        {this.validator.message("quantity", this.state.quantity, "required")}
+                                    </div>
+                                </div>
+
+                                <div classname="col-12 w-100-row">
+                                    <div classname="row form-group">
+                                        <div classname="col col-md-4">
+                                            <label classname=" form-control-label">add item discount</label>
+                                        </div>
+                                        <div classname="col-12 col-md-6">
+                                            <select
+                                                name="item_discount"
+                                                onchange={this.onchange}
+                                                value={this.state.item_discount}
+                                                id="select" classname="form-control edit_product">
+                                                <option value="0">select</option>
+                                                <option value="10">10%</option>
+                                                <option value="15">15%</option>
+                                                <option value="20">20%</option>
+                                            </select>
+                                        </div>
+                                        {this.validator.message("discount", this.state.item_discount, "required")}
+                                    </div>
+                                </div>
+                                <div classname="col-12 w-100-row">
+                                    <div classname="row form-group">
+                                        <div classname="col col-md-4">
+                                            <label classname=" form-control-label">status</label>
+                                        </div>
+                                        <div classname="col-12 col-md-6">
+                                            <select
+                                                name="item_status"
+                                                onchange={this.onchange}
+                                                value={this.state.item_status}
+                                                id="select" classname="form-control edit_product">
+                                                <option value="0">select</option>
+                                                <option value="active">active</option>
+                                                <option value="inactive">inactive</option>
+                                            </select>
+                                        </div>
+                                        {this.validator.message("status", this.state.item_status, "required")}
+                                    </div>
+                                </div>
 
 
-<div className="modal-header">
-<h5 className="modal-title" id="smallmodalLabel">EDIT Item DEATILS 
-</h5>
-</div>
+                                <div classname="col-12 w-100-row">
+                                    <div classname="row form-group">
+                                        <div classname="col col-md-4">
+                                            <label classname=" form-control-label">instructions</label>
+                                        </div>
+                                        <div classname="col-12 col-md-6">
+                                            <textarea
+                                                name="item_instructions"
+                                                onchange={this.onchange}
+                                                value={this.state.item_instructions}
+                                                id="textarea-input" rows="3" placeholder="enter text here" classname="form-control edit_product"></textarea>
 
 
-<div className="modal-body product_edit">
+                                        </div>
 
-
-<div className="col-12 w-100-row">
-<h1>{this.state.item_name} </h1>
-</div>
-
-
-
-
-<div className="col-12 w-100-row">
-<div className="row form-group">
-<div className="col col-md-4">
-<label className=" form-control-label">Quantity</label>
-</div>
-<div className="col-12 col-md-6">
-<select 
-  name="quantity"
-  onChange={this.onChange}
-  value={this.state.quantity}
-id="select" className="form-control edit_product">
-<option value="0">select</option>
-<option value="1">1</option>
-<option value="2">2</option>
-<option value="3">3</option>
-<option value="4">4</option>
-<option value="5">5</option>
-<option value="6">6</option>
-<option value="7">7</option>
-<option value="8">8</option>
-<option value="9">9</option>
-<option value="10">10</option>
-<option value="11">11</option>
-<option value="12">12</option>
-</select>
-</div>
-
-{this.validator.message("Quantity", this.state.quantity, "required")}
-</div>
-</div>
-
-<div className="col-12 w-100-row">
-<div className="row form-group">
-<div className="col col-md-4">
-<label className=" form-control-label">Add Item Discount</label>
-</div>
-<div className="col-12 col-md-6">
-<select 
- name="item_discount"
- onChange={this.onChange}
- value={this.state.item_discount}
-id="select" className="form-control edit_product">
-    <option value="0">select</option>
-<option value="10">10%</option>
-<option value="15">15%</option>
-<option value="20">20%</option>
-</select>
-</div>
-{this.validator.message("Discount", this.state.item_discount, "required")}
-</div>
-</div>
-
-
-{/* <div className="col-12 w-100-row">
-<div className="row form-group">
-<div className="col col-md-4">
-<label className=" form-control-label">Username</label>
-</div>
-<div className="col-12 col-md-6">
-<input type="text" id="text-input" name="text-input" placeholder="" className="form-control edit_product"/>
-</div>
-</div>
-</div>
-
-
-<div className="col-12 w-100-row">
-<div className="row form-group">
-<div className="col col-md-4">
-<label className="form-control-label">Password</label>
-</div>
-<div className="col-12 col-md-6">
-<input type="password" id="text-input" name="text-input" placeholder="******" className="form-control edit_product"/>
-
-<p className="error">Username / Password is incorrect</p>
-
-<p><span className="btn con-btn-pop">Confirm</span><span className="offfer_applied_pop">Discount Applied</span></p>
-
-</div>
-</div>
-</div> */}
-
-
-{/* <div className="col-12 w-100-row">
-<div className="row form-group">
-<div className="col col-md-4">
-<label className="form-control-label">Portion</label>
-</div>
-{this.state.portions=="Yes"?
-
-<>
-{this
-                                                                .state
-                                                                .portions_details&&this
-                                                                .state
-                                                                .portions_details
-                                                                // .slice(0, this.state.desired_Machines)
-                                                                .map((portions_details, idx) => (
-<div className="col-12 col-md-6"  key={idx}>
-
-
-    
-
-<label className="container_check">{portions_details.name}
-  <input type="checkbox" checked="checked"/>
-  <span className="checkmark"></span>
-</label>
-
-
-<label className="container_check">Half
-  <input type="checkbox"/>
-  <span className="checkmark"></span>
-</label>
-
-
-<label className="container_check">Full
-  <input type="checkbox"/>
-  <span className="checkmark"></span>
-</label>
-
-</div>
-  ))}
-</>
-:
-''
-}
-
-
-</div></div> */}
+                                        {this .validator.message("item instructions", this.state.item_instructions, "required|whitespace|min:2|max:70")}
+                                    </div>
+                                </div>
 
 
 
 
-
-<div className="col-12 w-100-row">
-<div className="row form-group">
-<div className="col col-md-4">
-<label className=" form-control-label">Status</label>
-</div>
-<div className="col-12 col-md-6">
-<select 
- name="item_status"
- onChange={this.onChange}
- value={this.state.item_status}
-id="select" className="form-control edit_product">
-    <option value="0">select</option>
-<option value="Active">Active</option>
-<option value="Inactive">Inactive</option>
-</select>
-</div>
-{this.validator.message("Status", this.state.item_status, "required")}
-</div>
-</div>
-
-
-<div className="col-12 w-100-row">
-<div className="row form-group">
-<div className="col col-md-4">
-<label className=" form-control-label">Instructions</label>
-</div>
-<div className="col-12 col-md-6">
-<textarea
- name="item_instructions"
- onChange={this.onChange}
- value={this.state.item_instructions}
-id="textarea-input" rows="3" placeholder="Enter text here" className="form-control edit_product"></textarea>
-
-
-</div>
-
-{this .validator.message("Item Instructions", this.state.item_instructions, "required|whitespace|min:2|max:70")}
-</div>
-</div>
+                            </div>
 
 
 
-
-</div>
-
-
-
-<div className="modal-footer">
-<button type="button" className="btn close_btn" data-dismiss="modal">Close </button>
-<button type="submit" className="btn save_btn">Save</button>
-</div>
+                            <div classname="modal-footer">
+                                <button type="button" classname="btn close_btn" data-dismiss="modal">close </button>
+                                <button type="submit" classname="btn save_btn">save</button>
+                            </div>
 
 
-</div>
-</Form>
-</div>
+                        </div>
+                    </form>
 
-           
-            </>  
-                                                                                               
+
+            </>
+
         );
     }
 }
