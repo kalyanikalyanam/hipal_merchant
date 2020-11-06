@@ -15,25 +15,43 @@ class Bill extends React.Component {
     componentDidMount() {
       this.setState({ loading: true });
       var sessionId = sessionStorage.getItem("RoleId");
-      if(sessionId){
-         
-    console.log(sessionId);
-      
-          firebase
-              .database().ref('merchant_users/' + sessionId).on('value', snapshot => {
-           var Users = snapshot.val();
-           console.log(Users);
-           sessionStorage.setItem("username", Users.user_name);
-           sessionStorage.setItem("email", Users.email_id);
-         
-          this.setState({
-            userRole:Users.Role,loading: false
-              
-              
+      var businessId = sessionStorage.getItem("businessId");
+      if (sessionId) {
+        //console.log(sessionId);
+  
+        firebase
+          .database()
+          .ref("merchant_users/" + sessionId)
+          .on("value", (snapshot) => {
+            var Users = snapshot.val();
+            //console.log(Users);
+            sessionStorage.setItem("username", Users.user_name);
+            sessionStorage.setItem("email", Users.email_id);
+  
+            this.setState({
+              userRole: Users.Role,
+              loading: false,
             });
-           
-           
           });
+  
+          firebase
+          .database().ref('merchaant_business_details/' + businessId).on('value', snapshot => {
+       var business = snapshot.val();
+       console.log(business);
+       sessionStorage.setItem("BusinessId", business.businessId);
+       sessionStorage.setItem("BusinessName", business.business_name);
+       sessionStorage.setItem("BusinessLogo", business.business_logo);
+     
+      this.setState({
+      
+          
+          
+        });
+  
+        
+       
+       
+      });
       }
 
   
@@ -57,40 +75,40 @@ class Bill extends React.Component {
     <div class="container-fluid">
     
     
-    <div class="row">
-    <div class="col-md-12 p-0">
-    <div class="search_profile">
-    <div class="row">
-    <div class="col-md-6">
-    <div class="company_name_box">
-    <div class="company_iocn"></div>
-    <div class="company_details">
-    <p class="name">The Coffee Cup Sanikpuri </p>
-    <p class="open">OPEN <i class="fa fa-circle" aria-hidden="true"></i></p>
-    </div>
-    </div>
-    </div>
-    <div class="col-md-3">
-    <div class="search_top">
-    <a href="#" class="search_icon"><i class="fas fa-search"></i></a>       
-    <input class="search_input" type="text" name="" placeholder="Search..."/>
-    </div>
-    </div>
-    <div class="col-md-3 ">
-    <div class="profile_user">
-    <span class="usericon">
-    <img src="/images/icon/profile.jpg"/>
-    </span>
-    <span class="profile_data">
-    <p class="name">{sessionStorage.getItem("username")}</p>
-    <p>{sessionStorage.getItem("email")}</p>
-    </span>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
+    <div className="row">
+<div className="col-md-12 p-0">
+<div className="search_profile">
+<div className="row">
+<div className="col-md-6">
+<div className="company_name_box">
+<div className="company_iocn"></div>
+<div className="company_details">
+<p className="name">The Coffee Cup Sanikpuri </p>
+<p className="open">OPEN <i className="fa fa-circle" aria-hidden="true"></i></p>
+</div>
+</div>
+</div>
+<div className="col-md-3">
+<div className="search_top">
+<a href="#" className="search_icon"><i className="fas fa-search"></i></a>       
+<input className="search_input" type="text" name="" placeholder="Search..."/>
+</div>
+</div>
+<div className="col-md-3 ">
+<div className="profile_user">
+<span className="usericon">
+<img src="/images/icon/profile.jpg"/>
+</span>
+<span className="profile_data">
+<p className="name">{sessionStorage.getItem("username")}</p>
+<p>{sessionStorage.getItem("email")}</p>
+</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
     
     
     

@@ -5,6 +5,8 @@ import Header from '../component/header';
 import {Form} from 'reactstrap';
 import {Link} from "react-router-dom";
 import SimpleReactValidator from "simple-react-validator";
+import { Modal } from "react-responsive-modal";
+import SettingsAddStation from './settings_add_station';
 class SettingsStation extends React.Component {
     constructor(props) {
         super(props);
@@ -19,6 +21,7 @@ class SettingsStation extends React.Component {
     employer_sevice_message: "",
     validError:false,
     mobile_message: '',
+    open: false,
          
 };
 
@@ -125,7 +128,10 @@ componentDidMount() {
     
   }
   stationList() {
-    var sessionId = sessionStorage.getItem("RoleId");   
+   
+    var sessionId = sessionStorage.getItem("RoleId");
+    var username = sessionStorage.getItem("username");
+    var businessId = sessionStorage.getItem("businessId");
     this.setState({loading: true});
     var ref = firebase
     .database()
@@ -150,6 +156,8 @@ componentDidMount() {
                     printer_details: childSnapShot
                     .val()
                     .printer_details,
+                    sessionId: childSnapShot.val().sessionId,
+                    businessId: childSnapShot.val().businessId,
                     printer_name: childSnapShot.val().printer_name,
                     
                   
@@ -161,13 +169,24 @@ componentDidMount() {
             data.push(GSTData);
         });
 
-        this.setState({stationList: data, countPage: data.length, loading: false});
+        let sortedKeys = data.filter((res) => {
+            return res.businessId === businessId;
+          });
+
+        this.setState({stationList: sortedKeys, countPage: data.length, loading: false});
         console.log(this.state.stationList);
 
     });
 }
+onOpenModal = () => {
 
+    this.setState({open: true});
+};
+onCloseModal = () => {
+    this.setState({open: false});
+};
     render() {
+        const {open } = this.state;
              
         return (
      
@@ -216,12 +235,12 @@ componentDidMount() {
 </div>
 </div> */}
 <div className="col-md-4">
-<Link to="/SettingsAddStation">
-<div className="add_station">
+{/* <Link to="/SettingsAddStation"> */}
+<div className="add_station"  onClick={this.onOpenModal}>
     
 <img src="images/icon/plus_add.png"/><br></br>
 Add station</div>
-</Link>
+{/* </Link> */}
 
 </div>
 
@@ -234,7 +253,14 @@ Add station</div>
 
 
 </div>
+{open
+                    ?  <Modal open={open} onClose={this.onCloseModal}>
+                          
+                                    <SettingsAddStation onClose={this.onCloseModal}/>
 
+                        </Modal>
+                    : ''}
+                       
 
 </>
 

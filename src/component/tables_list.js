@@ -124,25 +124,43 @@ class TablesList extends React.Component {
     componentDidMount() {
         this.setState({ loading: true });
         var sessionId = sessionStorage.getItem("RoleId");
-        if(sessionId){
-           
-      console.log(sessionId);
-        
-            firebase
-                .database().ref('merchant_users/' + sessionId).on('value', snapshot => {
-             var Users = snapshot.val();
-             console.log(Users);
-             sessionStorage.setItem("username", Users.user_name);
-             sessionStorage.setItem("email", Users.email_id);
-           
-            this.setState({
-              userRole:Users.Role,loading: false
-                
-                
+        var businessId = sessionStorage.getItem("businessId");
+        if (sessionId) {
+          //console.log(sessionId);
+    
+          firebase
+            .database()
+            .ref("merchant_users/" + sessionId)
+            .on("value", (snapshot) => {
+              var Users = snapshot.val();
+              //console.log(Users);
+              sessionStorage.setItem("username", Users.user_name);
+              sessionStorage.setItem("email", Users.email_id);
+    
+              this.setState({
+                userRole: Users.Role,
+                loading: false,
               });
-             
-             
             });
+    
+            firebase
+            .database().ref('merchaant_business_details/' + businessId).on('value', snapshot => {
+         var business = snapshot.val();
+         console.log(business);
+         sessionStorage.setItem("BusinessId", business.businessId);
+         sessionStorage.setItem("BusinessName", business.business_name);
+         sessionStorage.setItem("BusinessLogo", business.business_logo);
+       
+        this.setState({
+        
+            
+            
+          });
+    
+          
+         
+         
+        });
         }
 
         this.floorsList();
@@ -152,11 +170,12 @@ class TablesList extends React.Component {
        }
 
        floorsList=()=>{
-
+        var sessionId = sessionStorage.getItem("RoleId");
+        var businessId = sessionStorage.getItem("businessId");
         this.setState({loading: true});
         var ref = firebase
             .database()
-            .ref("floors/");
+            .ref("floors/").orderByChild("sessionId").equalTo(sessionId);
 
         ref.on('value', snapshot => {
             const data = [];
@@ -168,7 +187,8 @@ class TablesList extends React.Component {
                     floor_capacity: childSnapShot.val().floor_capacity,
                     floor_name: childSnapShot.val().floor_name,
                     floor_notes: childSnapShot.val().floor_notes,
-                       
+                    sessionId: childSnapShot.val().sessionId,
+                    businessId: childSnapShot.val().businessId,
                         
 
 
@@ -177,7 +197,11 @@ class TablesList extends React.Component {
                 data.push(GSTData);
             });
 
-            this.setState({floorsList: data, countPage: data.length, loading: false});
+            let sortedKeys = data.filter((res) => {
+                return res.businessId === businessId;
+              });
+
+            this.setState({floorsList: sortedKeys, countPage: data.length, loading: false});
             console.log(this.state.floorsList);
     
         });
@@ -186,12 +210,13 @@ class TablesList extends React.Component {
     }
 
     tableList=()=>{
-
+        var sessionId = sessionStorage.getItem("RoleId");
+        var businessId = sessionStorage.getItem("businessId");
 
         this.setState({loading: true});
         var ref = firebase
             .database()
-            .ref("tables_with_floors/");
+            .ref("tables_with_floors/").orderByChild("sessionId").equalTo(sessionId);
 
         ref.on('value', snapshot => {
             const data = [];
@@ -209,15 +234,19 @@ class TablesList extends React.Component {
 
                   table_qrcode:  childSnapShot.val().table_qrcode,
                   status:childSnapShot.val().status,
-                        
+                  sessionId: childSnapShot.val().sessionId,
+                  businessId: childSnapShot.val().businessId,
 
 
                 };
 
                 data.push(GSTData);
             });
+            let sortedKeys = data.filter((res) => {
+                return res.businessId === businessId;
+              });
 
-            this.setState({tableList: data, countPage: data.length, loading: false});
+            this.setState({tableList: sortedKeys, countPage: data.length, loading: false});
             console.log(this.state.tableList);
     
         });
@@ -294,7 +323,7 @@ class TablesList extends React.Component {
           
             var sessionId = sessionStorage.getItem("RoleId");
             var username = sessionStorage.getItem("username");
-
+            var businessId = sessionStorage.getItem("businessId");
             let dbCon = firebase
                 .database()
                 .ref('/tables_with_floors');
@@ -325,7 +354,7 @@ class TablesList extends React.Component {
                 
                 sessionId:sessionId,
                 username:username,
-
+                businessId:businessId,
                
            
         
@@ -446,31 +475,39 @@ class TablesList extends React.Component {
     <div className="container-fluid">
     
     <div className="row">
-    <div className="col-md-12 p-0">
-    <div className="search_profile">
-    <div className="row">
-    <div className="col-md-8">
-    <div className="search_top">
-    <a href="#" className="search_icon"><i className="fas fa-search"></i></a>       
-    <input className="search_input" type="text" name=""  id="myInput"  placeholder="Search..."/>
-    </div>
-    </div>
-    
-    <div className="col-md-4 ">
-    <div className="profile_user">
-    <span className="usericon">
-    <img src="images/icon/profile.jpg"/>
-    </span>
-    <span className="profile_data">
-    <p className="name"> {sessionStorage.getItem("username")}</p>
-    <p>{sessionStorage.getItem("email")}</p>
-    </span>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
+<div className="col-md-12 p-0">
+<div className="search_profile">
+<div className="row">
+<div className="col-md-6">
+<div className="company_name_box">
+<div className="company_iocn"></div>
+<div className="company_details">
+<p className="name">{sessionStorage.getItem("BusinessName")} </p>
+<p className="open">OPEN <i className="fa fa-circle" aria-hidden="true"></i></p>
+</div>
+</div>
+</div>
+<div className="col-md-3">
+<div className="search_top">
+<a href="#" className="search_icon"><i className="fas fa-search"></i></a>       
+<input className="search_input" type="text" name="" placeholder="Search..."/>
+</div>
+</div>
+<div className="col-md-3 ">
+<div className="profile_user">
+<span className="usericon">
+<img src="/images/icon/profile.jpg"/>
+</span>
+<span className="profile_data">
+<p className="name">{sessionStorage.getItem("username")}</p>
+<p>{sessionStorage.getItem("email")}</p>
+</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
     
     
     

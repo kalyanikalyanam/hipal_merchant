@@ -106,25 +106,43 @@ class EditEmployeeRole extends React.Component {
     componentDidMount() {
         this.setState({ loading: true });
         var sessionId = sessionStorage.getItem("RoleId");
-        if(sessionId){
-           
-      console.log(sessionId);
-        
-            firebase
-                .database().ref('merchant_users/' + sessionId).on('value', snapshot => {
-             var Users = snapshot.val();
-             console.log(Users);
-             sessionStorage.setItem("username", Users.user_name);
-             sessionStorage.setItem("email", Users.email_id);
-           
-            this.setState({
-              userRole:Users.Role,loading: false
-                
-                
+        var businessId = sessionStorage.getItem("businessId");
+        if (sessionId) {
+          //console.log(sessionId);
+    
+          firebase
+            .database()
+            .ref("merchant_users/" + sessionId)
+            .on("value", (snapshot) => {
+              var Users = snapshot.val();
+              //console.log(Users);
+              sessionStorage.setItem("username", Users.user_name);
+              sessionStorage.setItem("email", Users.email_id);
+    
+              this.setState({
+                userRole: Users.Role,
+                loading: false,
               });
-             
-             
             });
+    
+            firebase
+            .database().ref('merchaant_business_details/' + businessId).on('value', snapshot => {
+         var business = snapshot.val();
+         console.log(business);
+         sessionStorage.setItem("BusinessId", business.businessId);
+         sessionStorage.setItem("BusinessName", business.business_name);
+         sessionStorage.setItem("BusinessLogo", business.business_logo);
+       
+        this.setState({
+        
+            
+            
+          });
+    
+          
+         
+         
+        });
         }
 
         this.employeeRoleList();
@@ -190,10 +208,15 @@ class EditEmployeeRole extends React.Component {
     }
     employeePositionsList=()=>{
 
+
+        var sessionId = sessionStorage.getItem("RoleId");
+        var username = sessionStorage.getItem("username");
+        var businessId = sessionStorage.getItem("businessId");
+
         this.setState({loading: true});
         var ref = firebase
             .database()
-            .ref("merchaant_employees_positions/");
+            .ref("merchaant_employees_positions/").orderByChild("sessionId").equalTo("sessionId");
 
         ref.on('value', snapshot => {
             const data = [];
@@ -208,7 +231,8 @@ class EditEmployeeRole extends React.Component {
                         employee_position_document: childSnapShot.val().iteemployee_position_documentm_image,
                        
 
-
+                        sessionId: childSnapShot.val().sessionId,
+                        businessId: childSnapShot.val().businessId, 
                         
 
 
@@ -217,7 +241,11 @@ class EditEmployeeRole extends React.Component {
                 data.push(GSTData);
             });
 
-            this.setState({employeePositionsList: data, countPage: data.length, loading: false});
+            let sortedKeys = data.filter((res) => {
+                return res.businessId === businessId;
+              }); 
+
+            this.setState({employeePositionsList: sortedKeys, countPage: data.length, loading: false});
             console.log(this.state.employeePositionsList);
     
         });
@@ -226,11 +254,13 @@ class EditEmployeeRole extends React.Component {
     }
 
     employeeList=()=>{
-
+        var sessionId = sessionStorage.getItem("RoleId");
+      
+        var businessId = sessionStorage.getItem("businessId");
         this.setState({loading: true});
         var ref = firebase
             .database()
-            .ref("merchaant_employees/");
+            .ref("merchaant_employees/").orderByChild("sessionId").equalTo("sessionId");
 
         ref.on('value', snapshot => {
             const data = [];
@@ -285,7 +315,11 @@ class EditEmployeeRole extends React.Component {
                 data.push(GSTData);
             });
 
-            this.setState({employeeList: data, countPage: data.length, loading: false});
+
+   let sortedKeys = data.filter((res) => {
+                return res.businessId === businessId;
+              }); 
+            this.setState({employeeList: sortedKeys, countPage: data.length, loading: false});
             console.log(this.state.employeeList);
     
         });
@@ -305,6 +339,7 @@ class EditEmployeeRole extends React.Component {
             const {employeeRoleId}=this.props.match.params;
             var sessionId = sessionStorage.getItem("RoleId");
             var username = sessionStorage.getItem("username");
+            var businessId = sessionStorage.getItem("businessId");
 
             let dbCon = firebase.database().ref(`/merchaant_employee_userroles/${employeeRoleId}`);
                 var key=(Math.round((new Date().getTime() / 1000))); 
@@ -351,7 +386,7 @@ class EditEmployeeRole extends React.Component {
                 
                 sessionId:sessionId,
                 username:username,
-               
+                businessId:businessId,
            
         
              });

@@ -109,6 +109,9 @@ class Dashboard extends React.Component {
     componentDidMount() {
         this.setState({ loading: true });
         var sessionId = sessionStorage.getItem("RoleId");
+        var businessId = sessionStorage.getItem("businessId");
+
+      
         if(sessionId){
            
       console.log(sessionId);
@@ -125,9 +128,29 @@ class Dashboard extends React.Component {
                 
                 
               });
+
+              
              
              
             });
+
+            firebase
+            .database().ref('merchaant_business_details/' + businessId).on('value', snapshot => {
+         var business = snapshot.val();
+         console.log(business);
+         sessionStorage.setItem("BusinessName", business.business_name);
+         sessionStorage.setItem("BusinessLogo", business.business_logo);
+       
+        this.setState({
+        
+            
+            
+          });
+
+          
+         
+         
+        });
         }
 
         this.customersList();
@@ -334,7 +357,7 @@ window.location.href="/AllCustomers";
            
 <div className="container-fluid">
 
-<div className="row">
+{/* <div className="row">
 <div className="col-md-12 p-0">
 <div className="search_profile">
 <div className="row">
@@ -352,6 +375,42 @@ window.location.href="/AllCustomers";
 </span>
 <span className="profile_data">
 <p className="name">{sessionStorage.getItem("username")}</p>
+<p>{sessionStorage.getItem("email")}</p>
+</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div> */}
+
+
+<div class="row">
+<div class="col-md-12 p-0">
+<div class="search_profile">
+<div class="row">
+<div class="col-md-6">
+<div class="company_name_box">
+<div class="company_iocn"></div>
+<div class="company_details">
+<p class="name">{sessionStorage.getItem("BusinessName")} </p>
+<p class="open">OPEN <i class="fa fa-circle" aria-hidden="true"></i></p>
+</div>
+</div>
+</div>
+<div class="col-md-3">
+<div class="search_top">
+<a href="#" class="search_icon"><i class="fas fa-search"></i></a>       
+<input class="search_input" type="text" name="" placeholder="Search..."/>
+</div>
+</div>
+<div class="col-md-3 ">
+<div class="profile_user">
+<span class="usericon">
+<img src="/images/icon/profile.jpg"/>
+</span>
+<span class="profile_data">
+<p class="name">{sessionStorage.getItem("username")}</p>
 <p>{sessionStorage.getItem("email")}</p>
 </span>
 </div>

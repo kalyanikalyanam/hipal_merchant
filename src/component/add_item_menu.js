@@ -97,7 +97,7 @@ class AddItemMenu extends React.Component {
 //     printer_name:'',
 // }
 //     ]
-
+currentCategory: [{}],
       
 };
 
@@ -185,6 +185,7 @@ class AddItemMenu extends React.Component {
     componentDidMount() {
         this.setState({ loading: true });
         var sessionId = sessionStorage.getItem("RoleId");
+        var businessId = sessionStorage.getItem("businessId");
         if(sessionId){
            
       console.log(sessionId);
@@ -204,11 +205,29 @@ class AddItemMenu extends React.Component {
              
              
             });
+            firebase
+            .database().ref('merchaant_business_details/' + businessId).on('value', snapshot => {
+         var business = snapshot.val();
+         console.log(business);
+         sessionStorage.setItem("BusinessId", business.businessId);
+         sessionStorage.setItem("BusinessName", business.business_name);
+         sessionStorage.setItem("BusinessLogo", business.business_logo);
+       
+        this.setState({
+        
+            
+            
+          });
+
+          
+         
+         
+        });
         }
            
            
         this.itemTypeList();
-        this.restautantList();
+      
       
         this.stationList();
         this.itemMenuList();
@@ -218,11 +237,12 @@ class AddItemMenu extends React.Component {
 
 
       itemMenuList=()=>{
-
+        var sessionId = sessionStorage.getItem("RoleId");
+        var businessId = sessionStorage.getItem("businessId");
         this.setState({loading: true});
         var ref = firebase
             .database()
-            .ref("merchant_menu_items/");
+            .ref("merchant_menu_items/").orderByChild("sessionId").equalTo(sessionId);
 
         ref.on('value', snapshot => {
             const data = [];
@@ -242,17 +262,18 @@ class AddItemMenu extends React.Component {
             item_points:childSnapShot.val().item_points,
 
             station_name:childSnapShot.val().station_name,
-            item_restaurant_id:childSnapShot.val().item_restaurant_id,
+           
             item_type:childSnapShot.val().item_type,
             item_hash_tags:childSnapShot.val().item_hash_tags,
             item_price:childSnapShot.val().item_price,
             item_tax:childSnapShot.val().item_tax,
 
-           category:childSnapShot.val().category,
-           sub_category:childSnapShot.val().sub_category,
+          
 
 
             sessionId: childSnapShot.val().sessionId,
+            businessId: childSnapShot.val().businessId,
+            
             status: childSnapShot.val().status,
             username:childSnapShot.val().username,
 
@@ -282,14 +303,20 @@ class AddItemMenu extends React.Component {
 
 
             created_on:childSnapShot.val().created_on,
-
+            sessionId: childSnapShot .val().sessionId,
+            businessId: childSnapShot.val().businessId,
+            categoryId:this.state.categoryId,
 
                 };
 
                 data.push(GSTData);
             });
 
-            this.setState({itemMenuList: data, countPage: data.length, loading: false});
+            let sortedKeys = data.filter((res) => {
+                return res.businessId === businessId;
+              });
+
+            this.setState({itemMenuList: sortedKeys, countPage: data.length, loading: false});
             console.log(this.state.itemMenuList);
     
         });
@@ -300,10 +327,12 @@ class AddItemMenu extends React.Component {
     
 
     itemTypeList() {
+        var sessionId = sessionStorage.getItem("RoleId");
+        var businessId = sessionStorage.getItem("businessId");
         this.setState({loading: true});
         var ref = firebase
             .database()
-            .ref("ItemType/");
+            .ref("ItemType/").orderByChild("sessionId").equalTo(sessionId);
 
         ref.on('value', snapshot => {
             const data = [];
@@ -320,6 +349,12 @@ class AddItemMenu extends React.Component {
                         created_on: childSnapShot
                         .val()
                         .created_on,
+                        businessId: childSnapShot
+                        .val()
+                        .businessId,
+                        sessionId: childSnapShot
+                        .val()
+                        .sessionId,
 
 
                 };
@@ -327,7 +362,11 @@ class AddItemMenu extends React.Component {
                 data.push(GSTData);
             });
 
-            this.setState({itemTypeList: data, countPage: data.length, loading: false});
+            let sortedKeys = data.filter((res) => {
+                return res.businessId === businessId;
+              });
+
+            this.setState({itemTypeList: sortedKeys, countPage: data.length, loading: false});
             console.log(this.state.itemTypeList);
     
         });
@@ -335,98 +374,230 @@ class AddItemMenu extends React.Component {
 
 
 
-    restautantList() {
-        this.setState({loading: true});
-        var ref = firebase
-            .database()
-            .ref("restaurant_details/");
-
-        ref.on('value', snapshot => {
-            const data = [];
-            snapshot.forEach(childSnapShot => {
-
-                const GSTData = {
-                    restaurantId: childSnapShot
-                        .key
-                        .toString(),
-                        restaurant_name: childSnapShot
-                        .val()
-                        .restaurant_name,
-                        restaurant_address: childSnapShot
-                        .val()
-                        .restaurant_address,
-                        restaurant_phoneno: childSnapShot
-                        .val()
-                        .restaurant_phoneno,
-                        restaurant_id: childSnapShot
-                        .val()
-                        .restaurant_id,
-                        restaurant_owner: childSnapShot
-                        .val()
-                        .restaurant_owner,
-                        is_this_a_branch_of_another_restaurant: childSnapShot
-                        .val()
-                        .is_this_a_branch_of_another_restaurant,
-                        created_on: childSnapShot
-                        .val()
-                        .created_on,
-
-
-                };
-
-                data.push(GSTData);
-            });
-
-            this.setState({restautantList: data, countPage: data.length, loading: false});
-            console.log(this.state.restautantList);
-    
-        });
-    }
-
+  
 
    
-    itemCategoryList() {
-        this.setState({loading: true});
-        var ref = firebase
-            .database()
-            .ref("dummy/");
-            // .orderByChild('parent_category_select').equalTo('No');
-
-        ref.on('value', snapshot => {
-            const data = [];
-            snapshot.forEach(childSnapShot => {
-
-                const GSTData = {
-                    categoryId: childSnapShot
-                        .key
-                        .toString(),
-                       
-                     
-                        name:childSnapShot.val().name,
-                        isParent:childSnapShot.val().isParent,
-                        photo:childSnapShot.val().photo,
-                        color:childSnapShot.val().color,
-                        created_on: childSnapShot.val().created_on,
-                        parentId:childSnapShot.val().parentId,
-                        sessionId:childSnapShot.val().sessionId,
-                        username:childSnapShot.val().username,
-
-
-                };
-
-                data.push(GSTData);
-            });
-
-            this.setState({CategoryList: data, countPage: data.length, loading: false});
-            console.log(this.state.CategoryList);
+    // itemCategoryList() {
+    //     this.setState({ loading: true });
+    //     var ref = firebase
+    //       .database()
+    //       .ref("dummy/")
+    //       .orderByChild("sessionId")
+    //       .equalTo(sessionStorage.getItem("RoleId"));
     
+    //     ref.on("value", (snapshot) => {
+    //       const data = [];
+    //       snapshot.forEach((childSnapShot) => {
+    //         const GSTData = {
+    //           categoryId: childSnapShot.key.toString(),
+    //           name: childSnapShot.val().name,
+    //           isParent: childSnapShot.val().isParent,
+    //           photo: childSnapShot.val().photo,
+    //           color: childSnapShot.val().color,
+    //           created_on: childSnapShot.val().created_on,
+    //           parentId: childSnapShot.val().parentId,
+    //           sessionId: childSnapShot.val().sessionId,
+    //           username: childSnapShot.val().username,
+              
+    //         };
+    
+    //         data.push(GSTData);
+    //       });
+    //       let sortedKeys = data.filter((res) => {
+    //         return res.parentId === "";
+    //       });
+    
+    //       this.setState({
+    //         CategoryList: sortedKeys,
+    //         countPage: data.length,
+    //         loading: false,
+    //       });
+    
+    //       this.setState({
+    //         currentCategory: [
+    //           {
+    //             id: "",
+    //             name: "categories",
+    //           },
+    //         ],
+    //       });
+    //     });
+    //   }
+    //   explore = (e, name) => {
+    //     e.preventDefault();
+    //     let { id } = e.target;
+    
+    //     let exp = firebase
+    //       .database()
+    //       .ref("/dummy")
+    //       .orderByChild("sessionId")
+    //       .equalTo(sessionStorage.getItem("RoleId"));
+    //     console.log("id", id, "name", name);
+    //     exp.on("value", async (snapshot) => {
+    //       const data = [];
+    //       snapshot.forEach((childSnapShot) => {
+    //         const GSTData = {
+    //           categoryId: childSnapShot.key.toString(),
+    
+    //           name: childSnapShot.val().name,
+    //           isParent: childSnapShot.val().isParent,
+    //           photo: childSnapShot.val().photo,
+    //           color: childSnapShot.val().color,
+    //           created_on: childSnapShot.val().created_on,
+    //           parentId: childSnapShot.val().parentId,
+    //           sessionId: childSnapShot.val().sessionId,
+    //           username: childSnapShot.val().username,
+    //         };
+    //         data.push(GSTData);
+    //       });
+    //       let sortedKeys = data.filter((res) => {
+    //         return res.parentId === id;
+    //       });
+    //       this.setState({
+    //         CategoryList: sortedKeys,
+    //         countPage: data.length,
+    //         loading: false,
+    //       });
+    //       let arr = this.state.currentCategory;
+    //       for (let i = 0; i < this.state.currentCategory.length; i++) {
+    //         console.log(arr);
+    //         console.log(arr[i]);
+    //         if (arr[i].id === id) {
+    //           arr = arr.slice(0, i);
+    //           break;
+    //         }
+    //       }
+    //       console.log(arr);
+    
+    //       arr.push({
+    //         id: id,
+    //         name: name,
+    //       });
+    //       await this.setState({ currentCategory: arr });
+    //       console.log(this.state.currentCategory);
+    //     });
+    //   };
+    
+
+
+    itemCategoryList() {
+
+        var sessionId = sessionStorage.getItem("RoleId");
+        var businessId = sessionStorage.getItem("businessId");
+        this.setState({ loading: true });
+        var ref = firebase
+          .database()
+          .ref("dummy/")
+          .orderByChild("businessId")
+          .equalTo(businessId);
+    
+        ref.on("value", (snapshot) => {
+          const data = [];
+          snapshot.forEach((childSnapShot) => {
+            const GSTData = {
+              categoryId: childSnapShot.key.toString(),
+              name: childSnapShot.val().name,
+              isParent: childSnapShot.val().isParent,
+              photo: childSnapShot.val().photo,
+              color: childSnapShot.val().color,
+              created_on: childSnapShot.val().created_on,
+              parentId: childSnapShot.val().parentId,
+              sessionId: childSnapShot.val().sessionId,
+              username: childSnapShot.val().username,
+              businessId: childSnapShot
+              .val()
+              .businessId,
+            
+            };
+    
+            data.push(GSTData);
+          });
+          let sortedKeys = data.filter((res) => {
+            return res.parentId === "";
+          });
+    
+          this.setState({
+            CategoryList: sortedKeys,
+            countPage: data.length,
+            loading: false,
+          });
+    
+          this.setState({
+            currentCategory: [
+              {
+                id: "",
+                name: "categories",
+              },
+            ],
+          });
         });
-    }
+      }
+      explore = (e, name) => {
+        var sessionId = sessionStorage.getItem("RoleId");
+        var businessId = sessionStorage.getItem("businessId");
+        e.preventDefault();
+        let { id } = e.target;
+    
+        let exp = firebase
+          .database()
+          .ref("/dummy")
+          .orderByChild("businessId")
+          .equalTo(businessId);
+        console.log("id", id, "name", name);
+        exp.on("value", async (snapshot) => {
+          const data = [];
+          snapshot.forEach((childSnapShot) => {
+            const GSTData = {
+              categoryId: childSnapShot.key.toString(),
+    
+              name: childSnapShot.val().name,
+              isParent: childSnapShot.val().isParent,
+              photo: childSnapShot.val().photo,
+              color: childSnapShot.val().color,
+              created_on: childSnapShot.val().created_on,
+              parentId: childSnapShot.val().parentId,
+              sessionId: childSnapShot.val().sessionId,
+              username: childSnapShot.val().username,
+            };
+            data.push(GSTData);
+          });
+          let sortedKeys = data.filter((res) => {
+            return res.parentId === id;
+          });
+          this.setState({
+            CategoryList: sortedKeys,
+            countPage: data.length,
+            loading: false,
+          });
+          let arr = this.state.currentCategory;
+          for (let i = 0; i < this.state.currentCategory.length; i++) {
+            console.log(arr);
+            console.log(arr[i]);
+            if (arr[i].id === id) {
+              arr = arr.slice(0, i);
+              break;
+            }
+          }
+          console.log(arr);
+    
+          arr.push({
+            id: id,
+            name: name,
+          });
+          await this.setState({ currentCategory: arr });
+          console.log(this.state.currentCategory);
+        });
+      };
+
+
     stationList() {
+        var sessionId = sessionStorage.getItem("RoleId");
+        var businessId = sessionStorage.getItem("businessId");
+
         this.setState({loading: true});
         var ref = firebase
             .database()
-            .ref("station/");
+            .ref("settings_station/").orderByChild("sessionId").equalTo(sessionId);
 
         ref.on('value', snapshot => {
             const data = [];
@@ -439,25 +610,52 @@ class AddItemMenu extends React.Component {
                         station_name: childSnapShot
                         .val()
                         .station_name,
-                        // printer_details: childSnapShot
-                        // .val()
-                        // .printer_details,
+                        businessId: childSnapShot
+                        .val()
+                        .businessId,
+                        sessionId: childSnapShot
+                        .val()
+                        .sessionId,
                         
-                      
-                     
 
-
+                        
                 };
 
                 data.push(GSTData);
             });
-
-            this.setState({stationList: data, countPage: data.length, loading: false});
+            let sortedKeys = data.filter((res) => {
+                return res.businessId === businessId;
+              });
+            this.setState({stationList: sortedKeys, countPage: data.length, loading: false});
             console.log(this.state.stationList);
     
         });
     }
-
+    selectcategory =async (id,name) =>{
+        console.log(id);
+        // let arr = this.state.currentCategory;
+        // let k =1;
+        //   for (let i = 0; i < this.state.currentCategory.length; i++) {
+        //     console.log(arr);
+        //     console.log(arr[i]);
+        //     if (arr[i].id === id) {
+        //       arr = arr.slice(0, i);
+        //       break;
+        //     }
+        //   }
+         this.setState({parentName:name})
+        //   console.log(arr);
+    
+        //   arr.push({
+        //     id: id,
+        //     name: name,
+        //   });
+        //   await this.setState({ currentCategory: arr });
+        //   console.log(this.state.currentCategory);
+        await this.setState({
+            parentId:id,
+        })
+      }
     onOpenModal = () => {
 
         this.setState({open: true});
@@ -686,89 +884,6 @@ handleRemoveItem(index) {
     };
 
 
-
-
-
-    // handleprinterRemoveShareholder = idx => () => {
-    //     this.setState({
-    //         printer_details: this
-    //             .state
-    //             .printer_details
-    //             .filter((s, sidx) => idx !== sidx)
-    //     });
-    // };
-
-    // handleprinterShareholderNameChange = (idx) => evt => {
-    //     const printer_details = this
-    //         .state
-    //         .printer_details
-    //         .map((printer_details, sidx) => {
-    //             if (idx !== sidx) 
-    //                 return printer_details;
-    //             return {
-    //                 ...printer_details,
-    //                 [evt.target.name]: evt.target.value
-    //             };
-    //         });
-
-    //     this.setState({printer_details: printer_details});
-    // };
-
-   
-    // handleprinterAddShareholder = () => {
-    //     this.setState({
-    //         printer_details: this
-    //             .state
-    //             .printer_details
-    //             .concat([
-    //                 {
-    //                     printer_name: ""
-    //                 }
-    //             ])
-    //     });
-    // };
-
-
-
-
-
-
-
-    setCategoryName = (e) => {
-        console.log(e.target.value);
-
-        let selectedCategoryName = e.target.value;
-
-        var ref = firebase
-            .database()
-            .ref("sub_categories")
-            .orderByChild("category")
-            .equalTo(selectedCategoryName);
-
-        ref.on('value', snapshot => {
-
-            const data = [];
-
-            snapshot.forEach(childSnapShot => {
-
-                const GSTList = {
-                    subCategoryId: childSnapShot
-                        .key
-                        .toString(),
-                    sub_category: childSnapShot
-                        .val()
-                        .sub_category
-                };
-
-                data.push(GSTList);
-            });
-
-            this.setState({subcategoryList: data, category: selectedCategoryName, loading: false});
-            console.log(this.state.subcategoryList);
-        });
-
-    };
-
   
     handleSubmit = (event) => {
         event.preventDefault();
@@ -776,7 +891,7 @@ handleRemoveItem(index) {
           
             var sessionId = sessionStorage.getItem("RoleId");
             var username = sessionStorage.getItem("username");
-
+            var businessId = sessionStorage.getItem("businessId");
             let dbCon = firebase
                 .database()
                 .ref('/merchant_menu_items');
@@ -792,15 +907,16 @@ handleRemoveItem(index) {
                 item_image:this.state.item_image,
                 item_points:this.state.item_points,
 
+
                 station_name:this.state.station_name,
-                item_restaurant_id:this.state.item_restaurant_id,
+                // item_restaurant_id:this.state.item_restaurant_id,
                 item_type:this.state.item_type,
                 item_hash_tags:this.state.item_hash_tags,
                 item_price:this.state.item_price,
                 item_tax:this.state.item_tax,
 
-            //    category:this.state.category,
-            //    sub_category:this.state.sub_category,
+           
+                categoryId:this.state.parentId,
 
 
                 sessionId: sessionId,
@@ -835,13 +951,9 @@ handleRemoveItem(index) {
                 created_on:this.state.created_on,
                 bestrecommendation:'UnSelect',
                 
-                // carbs:'',
-                // protien:'',
-                // fat:'',
-                // item_video:'',
-                // item_multiple_image:'',
+              
            
-        
+                businessId:businessId,
 
 
 
@@ -896,47 +1008,7 @@ handleRemoveItem(index) {
        
     };
 
-    // stationSubmit = (event) => {
-    //     event.preventDefault();
-    //     if (this.validator.allValid()) {
-          
-    //         var sessionId = sessionStorage.getItem("RoleId");
-    //         var username = sessionStorage.getItem("username");
-
-    //         let dbCon = firebase
-    //             .database()
-    //             .ref('/station');
-               
-              
-    //         dbCon.push({
-              
-
-
-    //             sessionId: sessionId,
-    //             status: this.state.status,
-    //             username:username,
-
-
-
-    //             station_name:this.state.station_name,
-    //             printer_details:this.state.printer_details,
-
-
-
-               
-
-    //         });
-    //         window.location.href="/AddItemMenu";
-          
-    //     } else {
-    //         this
-    //             .validator
-    //             .showMessages();
-    //         this.forceUpdate();
-    //     }
-
-    // };
-
+   
 
     render() {
         const {open,open1 } = this.state;
@@ -989,32 +1061,42 @@ handleRemoveItem(index) {
                     
     <div className="container-fluid">
     
-    <div className="row">
-    <div className="col-md-12 p-0">
-    <div className="search_profile">
-    <div className="row">
-    <div className="col-md-8">
-    <div className="search_top">
-    <a href="#" className="search_icon"><i className="fas fa-search"></i></a>       
-    <input className="search_input" type="text" name="" placeholder="Search..."/>
-    </div>
-    </div>
-    
-    <div className="col-md-4 ">
-    <div className="profile_user">
-    <span className="usericon">
-    <img src="/images/icon/profile.jpg"/>
-    </span>
-    <span className="profile_data">
-    <p className="name">{sessionStorage.getItem("username")}</p>
-    <p>{sessionStorage.getItem("email")}</p>
-    </span>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
+   
+
+<div className="row">
+<div className="col-md-12 p-0">
+<div className="search_profile">
+<div className="row">
+<div className="col-md-6">
+<div className="company_name_box">
+<div className="company_iocn"></div>
+<div className="company_details">
+<p className="name">{sessionStorage.getItem("BusinessName")} </p>
+<p className="open">OPEN <i className="fa fa-circle" aria-hidden="true"></i></p>
+</div>
+</div>
+</div>
+<div className="col-md-3">
+<div className="search_top">
+<a href="#" className="search_icon"><i className="fas fa-search"></i></a>       
+<input className="search_input" type="text" name="" placeholder="Search..."/>
+</div>
+</div>
+<div className="col-md-3 ">
+<div className="profile_user">
+<span className="usericon">
+<img src="/images/icon/profile.jpg"/>
+</span>
+<span className="profile_data">
+<p className="name">{sessionStorage.getItem("username")}</p>
+<p>{sessionStorage.getItem("email")}</p>
+</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
     
     
     
@@ -1254,13 +1336,6 @@ handleRemoveItem(index) {
     </div>
 
 
-  {/* <select name="item_hash_tags" onChange={this.onChange} value={this.state.item_hash_tags} className="form-control">
-        <option value="select">select</option>
-        <option value="Spicy">Spicy</option>
-        <option value="Soupy">Soupy</option>
-        <option value="Cheesy">Cheesy</option>
-        </select> */}
-
 
 
     </div>
@@ -1271,18 +1346,7 @@ handleRemoveItem(index) {
 
     <div className="col-md-6">
     
-    {/* <div className="row form-group">
-    <div className="col col-md-4">
-    <label className=" form-control-label">Kitchen Section</label>
-    </div>
-    <div className="col-12 col-md-8">
-    <input type="text" 
-    name="station_name"
-     onChange={this.onChange}
-     value={this.state.station_name} placeholder="K1-1" className="form-control"/>
-    </div>
-    {this .validator.message("Item Kitchen Section", this.state.station_name, "required|whitespace|min:2|max:70")}
-    </div> */}
+
 <div className="row form-group">
 <div className="col col-md-4">
 <label className=" form-control-label">Station Name</label>
@@ -1324,32 +1388,18 @@ Add Station</div>
     
     <div className="row form-group">
     <div className="col col-md-4">
-    <label className=" form-control-label">Restaurant ID</label>
+    <label className=" form-control-label">Business ID</label>
     </div>
     <div className="col-12 col-md-8">
 
 
-    <select
-                                                       className="form-control"
-                                                        name="item_restaurant_id"
-                                                        onChange={this.onChange}>
-                                                        <option>Select Restaurant  ID</option>
-                                                        {this.state.restautantList && this
-                                                            .state
-                                                            .restautantList
-                                                            .map((data, index) => {
-
-                                                                return (
-                                                                    <option value={data.restaurant_id} key={index}>{data.restaurant_id}({data.restaurant_name})</option>
-                                                                )
-
-                                                            })}
-
-                                                    </select>
+    <input 
+   
+     value={ sessionStorage.getItem("businessId")} className="form-control"/>
 
  
     </div>
-    {this.validator.message("Restaurant Id", this.state.item_restaurant_id, "required")}
+   
     </div>
     
 
@@ -1457,82 +1507,53 @@ onKeyDown={this.handleInputKeyDown} />
     {this.validator.message("Tax", this.state.item_tax, "required")}
     </div>
 
-    <div class="row form-group">
-<div class="col col-md-4">
-<label class=" form-control-label">Add to Catagory</label>
+    <div className="row form-group">
+<div className="col col-md-4">
+<label className=" form-control-label">Add to Catagory</label>
 </div>
-<div class="col-12 col-md-8 menu_cate_links">
-<span> <a href="#">Menu</a>/<a href="#">MainCourse</a></span>
+<div className="col-12 col-md-8 menu_cate_links">
+<span> 
+    {/* <a href="#">Menu</a>/<a href="#">MainCourse</a> */}
+
+    <div
+                  className='breadcrumbs'
+                  style={{ fontSize: "12px", display: "flex" }}
+                >
+                  {this.state.currentCategory.map((i, index) => (
+                    <p
+                      style={{ marginLeft: "3px" }}
+                      id={i.id}
+                      
+                    >
+                      {" "}
+                      &gt; {i.name}{" "}
+                    </p>
+                  ))}
+                  <p>
+                  <p
+                      style={{ marginLeft: "3px" }}
+                                      
+                    >
+                      {" "}
+                      &gt; {this.state.parentName}{" "}
+                    </p>
+                  </p>
+                </div>
+    
+    </span>
 </div>
 </div>
 
-<div class="row form-group">
-<div class="col col-md-12">
-{/* <button type="button" class="btn btn-secondary mb-1" data-toggle="modal" data-target="#choose_category">
+<div className="row form-group">
+<div className="col col-md-12">
+{/* <button type="button" className="btn btn-secondary mb-1" data-toggle="modal" data-target="#choose_category">
 Choose Category
 </button> */}
-<span class="pull-right addmore_btn" data-toggle="modal" data-target="#choose_category">Add more categories</span>
+<span className="pull-right addmore_btn" data-toggle="modal" data-target="#choose_category">Choose Catagory</span>
 </div>
 </div>
     
-    {/* <div className="row form-group">
-    <div className="col col-md-4">
-    <label className=" form-control-label">Choose 
-    Category</label>
-    </div>
-    <div className="col-12 col-md-8">
-    <select
-                                                        className="form-control pro-edt-select form-control-primary"
-                                                        name="category"
-                                                        onChange={this.setCategoryName}>
-                                                        <option>Select Category</option>
-                                                        {this.state.categoryList && this
-                                                            .state
-                                                            .categoryList
-                                                            .map((data, index) => {
-
-                                                                return (
-                                                                    <option value={data.category} key={index}>{data.category}</option>
-                                                                )
-
-                                                            })}
-
-                                                    </select>
-                                                    {this.validator.message("category", this.state.category, "required")}
     
-  
-    
-    </div>
-    </div> */}
-    {/* <div className="row form-group">
-    <div className="col col-md-4">
-    <label className=" form-control-label">Choose Sub
-    Category</label>
-    </div>
-    <div className="col-12 col-md-8">
-    <select
-                                                        className="form-control pro-edt-select form-control-primary"
-                                                        name="sub_category"
-                                                        onChange={this.onChange}>
-                                                        <option>Select Sub Category</option>
-                                                        {this.state.subcategoryList && this
-                                                            .state
-                                                            .subcategoryList
-                                                            .map((data, index) => {
-
-                                                                return (
-                                                                    <option value={data.sub_category} key={index}>{data.sub_category}</option>
-                                                                )
-
-                                                            })}
-
-                                                    </select>
-                                                    
-                                                    {this.validator.message("Sub Category", this.state.sub_category, "required")}
-    
-   
-    </div>
-    </div> */}
     
   
     
@@ -2167,190 +2188,148 @@ id="select" className="form-control edit_portion">
     </div>
 
 
-{/* 
-    <div className="modal fade" id="add_station" tabindex="-1" role="dialog" aria-labelledby="smallmodalLabel" aria-hidden="true">
-<div className="modal-dialog modal-sm hipal_pop" role="document">
-<div className="modal-content">
+    <div
+            className='modal fade'
+            id='choose_category'
+            tabindex='-1'
+            role='dialog'
+            aria-labelledby='smallmodalLabel'
+            aria-hidden='true'
+          >
+            <div className='modal-dialog modal-sm hipal_pop' role='document'>
+              <div className='modal-content'>
+                <div className='modal-header'>
+                  <h5 className='modal-title' id='smallmodalLabel'>
+                    Choose Parent Category
+                  </h5>
+                </div>
+                {/* <div
+                  className='breadcrumbs'
+                  style={{ fontSize: "12px", display: "flex" }}
+                >
+                  {this.state.currentCategory.map((i, index) => (
+                    <p
+                      style={{ marginLeft: "3px" }}
+                      id={i.id}
+                      onClick={(e) => {
+                        this.explore(e, i.name);
+                      }}
+                    >
+                      {" "}
+                      &gt; {i.name}{" "}
+                    </p>
+                  ))}
+                </div> */}
 
+                <div className='modal-body product_edit'>
+                
 
-<div className="modal-header">
-<h5 className="modal-title" id="smallmodalLabel">Add Station
-</h5></div>
-<Form onSubmit={this.stationSubmit}>
+<div className="col-12 w-100-row">
+<div className="row">
+<div className="col col-md-5 font-18">
+Search by name
+</div>
+<div className="col col-md-7 bill_id_settle">
+<div className="form-group">
+<span className="pull-left"><input type="text" id="text-input" name="text-input" placeholder="T1" className="form-control edit_product"/></span>
+<span className="btn pull-right add_btn_pop_orange bg_green addmode_pad">Go</span>
+</div>
+</div>
+</div>
+</div>
 
-<div className="modal-body product_edit">
 
 
 <div className="col-12 w-100-row">
-<div className="row form-group">
-<div className="col col-md-4">
-<label className=" form-control-label">Station name</label>
-</div>
-<div className="col-12 col-md-6">
-<input type="text" id="text-input" 
-name="station_name" onChange={this.onChange} value={this.state.station_name}
-placeholder="BAR" className="form-control edit_product"/>
-</div>
-{this.validator.message("Station Name", this.state.station_name, "required")}
-</div>
-</div>
 
+<div className="row">
 
-
-
-
-<div className="col-12 w-100-row">
-{this
-                                                                .state
-                                                                .printer_details
-                                                                // .slice(0, this.state.desired_Machines)
-                                                                .map((printer_details, idx) => (
-                                                                 
-
-<div className="row form-group" key={idx}>
-<div className="col col-md-4">
-<label className=" form-control-label">Select Printer {idx+1} :</label>
-</div>
-<div className="col-12 col-md-6">
-
-<select 
-  name="printer_name"
-  value={printer_details.printer_name}
-  onChange={this.handleprinterShareholderNameChange(idx)}
-id="select" className="form-control edit_product">
-<option value="0">Select Printer :</option>
-<option value="0">1st Floor</option>
-<option value="0">2nd Floor</option>
-<option value="0">3rd Floor</option>
-</select>
-
-
+<div className="col col-md-12 font-15">
+Menu :   <Link to="">  <div
+                  className='breadcrumbs'
+                  style={{ fontSize: "15px", display: "flex" }}
+                >
+                  {this.state.currentCategory.map((i, index) => (
+                  <p
+                      style={{ marginLeft: "3px" }}
+                      id={i.id}
+                      onClick={(e) => {
+                        this.explore(e, i.name);
+                      }}
+                    >
+                      {" "}
+                      &gt; {i.name}{" "}
+                    </p>
+                   
+                  ))}
+                </div>
+                </Link>
 </div>
 
-
-
-
-{idx != 0
-    ?
-<button
-type="button" onClick={this.handleprinterRemoveShareholder(idx)}
-className="btn btn-danger m-r-10">Remove
-</button>
-    : ''}
-
-
-<button
-type="button" onClick={this.handleprinterAddShareholder}
-className="btn create_add_more_btn m-r-10">Add More 
-</button>
-
-</div>
-))}
-</div>
-
-
-
-
-
-
-
-
-</div>
-
-
-
-<div className="modal-footer">
-<button type="submit" className="btn save_btn">Save</button>
-</div>
-
-</Form>
-</div>
-</div>
+{/* <div className="col col-md-6 text-center">
+<img src="images/icon/back_arrow_left_o.svg"/>
 </div> */}
 
-
-
-
-<div class="modal fade" id="choose_category" tabindex="-1" role="dialog" aria-labelledby="smallmodalLabel" aria-hidden="true">
-<div class="modal-dialog modal-sm hipal_pop" role="document">
-<div class="modal-content">
-
-
-<div class="modal-header">
-<h5 class="modal-title" id="smallmodalLabel">Choose  Category
-</h5></div>
-
-
-<div class="modal-body product_edit">
-
-
-
-<div class="col-12 w-100-row">
-
-<div class="row">
-
-<div class="col col-md-6 font-15">
-Menu : <Link to="#">Maincourse</Link> / 
-<Link to="#">Parent</Link>
-</div>
-
-<div class="col col-md-6 text-center">
-<img src="images/icon/back_arrow_left_o.svg"/>
-</div>
-
 </div>
 </div>
 
+                  <div className='col-12 w-100-row'>
+                    <div className='row'>
+                      <div className='row'>
+                        {this.state.CategoryList &&
+                          this.state.CategoryList.map((category, index) => {
+                            return (
+                              <div
+                              id={category.categoryId}
+                              onClick={
+                                    this.selectcategory.bind(this, category.categoryId,category.name)
+                                }
+                                
+                         
+                                className='col-md-4 mb-15 text-center'
+                                key={index}
+                              >
+                                <div
+                                  className='cate_img_box  shadow_box'
+                                  style={{ background: category.color }}
+                                >
+                                  <img
+                                    className='img_empty2'
+                                    src={category.photo}
+                                  ></img>
 
+                                  <p> {category.name}</p>
+                                </div>
 
+                                {category.isParent === true ? (
+                                  <button
+                                    className='btn m-t-10 btn_explore'
+                                    // data-toggle='modal'
+                                    // data-target='#add_parent_category'
+                                    id={category.categoryId}
+                                    onClick={(e) => {
+                                      this.explore(e, category.name);
+                                    }}
+                                  >
+                                    Explore
+                                  </button>
+                                ) : null}
+                              </div>
+                            );
+                          })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-
-<div class="col-12 w-100-row">
-<div class="row">
-
-
-<div class="row">
-{this.state.CategoryList && this.state.CategoryList.map((category,index) => {
-return (
-<div class="col-md-4 mb-15 text-center" key={index}>
-<div class="cate_img_box  shadow_box" style={{background:category.color}}>
-     
-
-<img class="img_empty2" src={category.photo}></img>
-
-<p> {category.name}</p>                  
-</div>
-
-{category.isParent===true?
-<button class="btn m-t-10 btn_explore" data-toggle="modal" data-target="#add_parent_category1" id={category.categoryId} onClick={this.explore}>Explore</button>:null
-
-}
-</div>
-)})}
-
-
-</div>
-
-
-
-</div>
-</div>
-
-
-
-
-</div>
-
-
-
-<div class="modal-footer">
-<button type="button" class="btn save_btn">Add here</button>
-</div>
-
-
-</div>
-</div>
-</div>
+                <div className='modal-footer'>
+                  <button type='button' className='btn save_btn' data-dismiss="modal">
+                    Add here
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
 
     </>
 

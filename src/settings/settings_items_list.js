@@ -50,10 +50,12 @@ class SettingsItemsList extends React.Component{
       }
       UploadCauroselList(){
    
-        var sessionId = sessionStorage.getItem("RoleId");   
+        var sessionId = sessionStorage.getItem("RoleId"); 
+        var businessId = sessionStorage.getItem("businessId");  
+
         this.setState({loading: true});
-      var ref=firebase.database().ref('merchant_menu_items').orderByChild("sessionId")
-      .equalTo(sessionId);
+      var ref=firebase.database().ref('merchant_menu_items').orderByChild("businessId")
+      .equalTo(businessId);
     ref.once("value",snapshot =>{
      const data =[];
       console.log(snapshot.val());
@@ -64,6 +66,8 @@ class SettingsItemsList extends React.Component{
           item_name:element.val().item_name,
           bestrecommendation:element.val().bestrecommendation,
           item_image:element.val().item_image,
+          businessId:element.val().businessId,
+          sessionId:element.val().sessionId,
           
         }
         data.unshift(usersData);
@@ -106,7 +110,15 @@ this.componentDidMount();
     
     
   
-  
+      onclose = ()=>{
+        
+        this.props.onClose();
+           window.location.href="/Settings";
+            //  this
+            //     .props
+            //     .history
+            //     .push("/Settings");
+      }
 
 
   
@@ -179,7 +191,7 @@ this.componentDidMount();
         
         <div class="modal-footer">
             <Link to='/Settings'>
-<button type="button" class="btn save_btn">Add Items</button>
+<button type="button" class="btn save_btn" onClick={this.onclose}>Add Items</button>
 </Link>
 </div>
         

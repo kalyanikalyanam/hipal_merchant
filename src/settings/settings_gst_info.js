@@ -141,7 +141,7 @@ class SettingsGstInfo extends React.Component {
             });
         }
 
-        this.customersList();
+      
         this.info();
            
        }
@@ -149,12 +149,13 @@ class SettingsGstInfo extends React.Component {
         this.setState({ loading: false });
         var user=null;
         var sessionId = sessionStorage.getItem("RoleId");
+        var businessId = sessionStorage.getItem("businessId");
     if(sessionId){
        
       
     
         firebase
-            .database().ref('settings_gst_info/' + sessionId).on('value', snapshot => {
+            .database().ref('settings_gst_info/' + businessId).on('value', snapshot => {
                 
          var info = snapshot.val();
          if(snapshot.numChildren()>0){
@@ -163,6 +164,9 @@ class SettingsGstInfo extends React.Component {
             
             gst_number:info.gst_number,
             gst_registration_form:info.gst_registration_form,
+            businessId:info.businessId,
+            sessionId:info.sessionId,
+            
             
 
             
@@ -177,40 +181,7 @@ class SettingsGstInfo extends React.Component {
     }
       }
 
-       customersList=()=>{
-
-        this.setState({loading: true});
-        var ref = firebase
-            .database()
-            .ref("customers/");
-
-        ref.on('value', snapshot => {
-            const data = [];
-            snapshot.forEach(childSnapShot => {
-
-                const GSTData = {
-                    customerId: childSnapShot.key .toString(),
-                       
-                    customer_name: childSnapShot.val().customer_name,
-                    customer_email: childSnapShot.val().customer_email,
-                    customer_phonenumber: childSnapShot.val().customer_phonenumber,
-                    customer_notes: childSnapShot.val().customer_notes,
-                      
-
-                       
-
- };
-
-                data.push(GSTData);
-            });
-
-            this.setState({customersList: data, countPage: data.length, loading: false});
-            console.log(this.state.customersList);
-    
-        });
-
-
-    }
+     
 
 
     handleUploadStart = () => this.setState({isUploading: true, uploadProgress: 0});
@@ -243,9 +214,10 @@ class SettingsGstInfo extends React.Component {
           
             var sessionId = sessionStorage.getItem("RoleId");
             var username = sessionStorage.getItem("username");
+            var businessId = sessionStorage.getItem("businessId");
             var ref = firebase
             .database()
-            .ref(`settings_gst_info/${sessionId}`);
+            .ref(`settings_gst_info/${businessId}`);
            
             ref.update({
            
@@ -260,7 +232,7 @@ class SettingsGstInfo extends React.Component {
               
                 
 
-                
+                businessId:businessId,
                 sessionId:sessionId,
                 username:username,
 

@@ -129,10 +129,12 @@ componentDidMount() {
   }
 
   printeridList() {
+    var sessionId = sessionStorage.getItem("RoleId");
+    var businessId = sessionStorage.getItem("businessId");
     this.setState({loading: true});
     var ref = firebase
         .database()
-        .ref("PrinterId/");
+        .ref("PrinterId/").orderByChild("sessionId").equalTo(sessionId);
 
     ref.on('value', snapshot => {
         const data = [];
@@ -145,6 +147,12 @@ componentDidMount() {
                     printer_id: childSnapShot
                     .val()
                     .printer_id,
+                    sessionId: childSnapShot
+                    .val()
+                    .sessionId,
+                    businessId: childSnapShot
+                    .val()
+                    .businessId,
                    
                     
                   
@@ -156,7 +164,10 @@ componentDidMount() {
             data.push(GSTData);
         });
 
-        this.setState({printeridList: data, countPage: data.length, loading: false});
+        let sortedKeys = data.filter((res) => {
+            return res.businessId === businessId;
+          });
+        this.setState({printeridList: sortedKeys, countPage: data.length, loading: false});
         console.log(this.state.printeridList);
 
     });
@@ -213,6 +224,7 @@ onChange = (event) => {
           
             var sessionId = sessionStorage.getItem("RoleId");
             var username = sessionStorage.getItem("username");
+            var businessId = sessionStorage.getItem("businessId");
 
             let dbCon = firebase
                 .database()
@@ -222,12 +234,10 @@ onChange = (event) => {
             dbCon.push({
               
 
-
                 sessionId: sessionId,
                
                 username:username,
-
-
+                businessId:businessId,
 
                 station_name:this.state.station_name,
                 // printer_name:this.state.printer_name,
@@ -238,8 +248,9 @@ onChange = (event) => {
                
 
             });
-            window.location.href="/Settings";
+            // window.location.href="/Settings";
           
+            this.props.onClose();
         } else {
             this
                 .validator

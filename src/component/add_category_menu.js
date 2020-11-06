@@ -434,40 +434,48 @@ this.setState({
         return (
             <>
                <Form onSubmit={this.handleSubmit}>
-           <div class="page-wrapper">
+           <div className="page-wrapper">
    
 
   <Sidebar/>
-   <div class="page-container">
+   <div className="page-container">
 
       <Header/>
-       <div class="main-content">
-           <div class="section__content">
+       <div className="main-content">
+           <div className="section__content">
            
            
            
    
            
-<div class="container-fluid">
+<div className="container-fluid">
 
-<div class="row">
-<div class="col-md-12 p-0">
-<div class="search_profile">
-<div class="row">
-<div class="col-md-8">
-<div class="search_top">
-<a href="#" class="search_icon"><i class="fas fa-search"></i></a>       
-<input class="search_input" type="text" name="" placeholder="Search..."/>
+<div className="row">
+<div className="col-md-12 p-0">
+<div className="search_profile">
+<div className="row">
+<div className="col-md-6">
+<div className="company_name_box">
+<div className="company_iocn"></div>
+<div className="company_details">
+<p className="name">{sessionStorage.getItem("BusinessName")} </p>
+<p className="open">OPEN <i className="fa fa-circle" aria-hidden="true"></i></p>
 </div>
 </div>
-
-<div class="col-md-4 ">
-<div class="profile_user">
-<span class="usericon">
-<img src="images/icon/profile.jpg"/>
+</div>
+<div className="col-md-3">
+<div className="search_top">
+<a href="#" className="search_icon"><i className="fas fa-search"></i></a>       
+<input className="search_input" type="text" name="" placeholder="Search..."/>
+</div>
+</div>
+<div className="col-md-3 ">
+<div className="profile_user">
+<span className="usericon">
+<img src="/images/icon/profile.jpg"/>
 </span>
-<span class="profile_data">
-<p class="name">{sessionStorage.getItem("username")}</p>
+<span className="profile_data">
+<p className="name">{sessionStorage.getItem("username")}</p>
 <p>{sessionStorage.getItem("email")}</p>
 </span>
 </div>
@@ -479,24 +487,24 @@ this.setState({
 
 
 
-<div class="row mt-30">
-<div class="col-md-12 p-0">
+<div className="row mt-30">
+<div className="col-md-12 p-0">
 <Link to="/AddItemMenu">
-<span class="btn add_categoty_menu">Items</span>
+<span className="btn add_categoty_menu">Items</span>
 </Link>
 <Link to="/AddCategoryMenu">
-<span class="btn add_categoty_menu"><span className="active"></span>Category</span>
+<span className="btn add_categoty_menu"><span className="active"></span>Category</span>
 </Link>
-<span class="btn add_categoty_menu">coupon</span>
+<span className="btn add_categoty_menu">coupon</span>
 </div>
 </div>
 
 
-<div class="row mt-30">
-<div class="col-md-12 p-0">
-<div class="orders_menu">
+<div className="row mt-30">
+<div className="col-md-12 p-0">
+<div className="orders_menu">
 <ul>
-<li><a href="#" class="activemenu">Add category</a></li>
+<li><a href="#" className="activemenu">Add category</a></li>
 <li><a href="#">View category</a></li>
 </ul>
 </div>
@@ -506,21 +514,21 @@ this.setState({
 
 
 
-<div class="row mt-30">
-<div class="col-md-6 p-0">
+<div className="row mt-30">
+<div className="col-md-6 p-0">
 
-<div class="category_form">
+<div className="category_form">
 
-<div class="row form-group">
-<div class="col col-md-4">
-<label class=" form-control-label">Category name</label>
+<div className="row form-group">
+<div className="col col-md-4">
+<label className=" form-control-label">Category name</label>
 </div>
-<div class="col-12 col-md-8">
+<div className="col-12 col-md-8">
 <input type="text"
   name="category_name"
   onChange={this.CategoryChange}
   value={this.state.category_name}
-placeholder="Main course" class="form-control"/>
+placeholder="Main course" className="form-control"/>
 </div>
 {this .validator.message("Category Name", this.state.category_name, "required|whitespace|min:2|max:70")}
 <div className="text-danger">
@@ -529,11 +537,11 @@ placeholder="Main course" class="form-control"/>
                                                         </div>
 </div>
 
-<div class="row form-group">
-<div class="col col-md-4">
-<label class="form-control-label">Parent category</label>
+<div className="row form-group">
+<div className="col col-md-4">
+<label className="form-control-label">Parent category</label>
 </div>
-<div class="col-12 col-md-8">
+<div className="col-12 col-md-8">
 <select name="parent_category_select" id="select" 
      value={this.state.parent_category_select}
      onChange={this.onChange}
@@ -547,13 +555,13 @@ placeholder="Main course" class="form-control"/>
 </div>
 {this.state.parent_category_select=="Yes"
 ?
-<div class="row form-group">
-<div class="col col-md-4">
-<label class=" form-control-label">Select parent 
+<div className="row form-group">
+<div className="col col-md-4">
+<label className=" form-control-label">Select parent 
 category</label>
 </div>
-<div class="col-12 col-md-8">
-<button type="button" class="btn btn-secondary mb-1" data-toggle="modal" data-target="#add_parent_category">
+<div className="col-12 col-md-8">
+<button type="button" className="btn btn-secondary mb-1" data-toggle="modal" data-target="#add_parent_category">
 Choose
 </button>
 </div>
@@ -572,25 +580,25 @@ Choose
 
 
 
-<div class="row mt-30">
-<div class="col-md-12 p-0">
-<div class="category_upload_image">
+<div className="row mt-30">
+<div className="col-md-12 p-0">
+<div className="category_upload_image">
 <h1>Upload Image</h1>
-<div class="upload_img_block">
+<div className="upload_img_block">
 
 
-<div class="row">
-<div class="col-md-3">
-{/* <div class="upload_img">
-<div class="form-group">
-<div class="img_show" style={{height:"200px"}}><img id='img-upload'/></div>
-  <div class="input-group">
-       <span class="input-group-btn">
-           <span class="btn btn-default btn-file">
+<div className="row">
+<div className="col-md-3">
+{/* <div className="upload_img">
+<div className="form-group">
+<div className="img_show" style={{height:"200px"}}><img id='img-upload'/></div>
+  <div className="input-group">
+       <span className="input-group-btn">
+           <span className="btn btn-default btn-file">
                Upload An Image <input type="file" id="imgInp"/>
            </span>
        </span>
-       <input type="text" class="form-control" readonly/>
+       <input type="text" className="form-control" readonly/>
    </div>
    
 </div>
@@ -615,14 +623,14 @@ Choose
 {this
                                                                 .validator
                                                                 .message("category photo", this.state.category_photo, "required")}
-<div class="col-md-1 or"><span>AND</span></div>
-<div class="col-md-8">
+<div className="col-md-1 or"><span>AND</span></div>
+<div className="col-md-8">
 
-<div class="colored_block">
-<div class="row">
+<div className="colored_block">
+<div className="row">
 
-<div class="col-md-3">
-<div class="color-box" style={{ background: this.state.color }}>
+<div className="col-md-3">
+<div className="color-box" style={{ background: this.state.color }}>
 <label className="color-selector">
      
         {/* <span>{this.state.color}</span> */}
@@ -669,16 +677,16 @@ Choose
 
 
 
-<div class="row mt-30">
+<div className="row mt-30">
 
-<div class="col-md-12 p-0">
-<div class="category_upload_image">
+<div className="col-md-12 p-0">
+<div className="category_upload_image">
 <h1>Items</h1>
 
-<div class="upload_img_block addproducts">
+<div className="upload_img_block addproducts">
 <h2>0 Items 
 
-    <span class="additems btn"><button type="button" data-toggle="modal" data-target="#add_items">Add Items </button></span>
+    <span className="additems btn"><button type="button" data-toggle="modal" data-target="#add_items">Add Items </button></span>
    
     </h2>
 
@@ -690,11 +698,11 @@ Choose
 
 
 
-{/* <div class="row form-group">
-<div class="col col-md-4">
-<label class="form-control-label"> Choose Items</label>
+{/* <div className="row form-group">
+<div className="col col-md-4">
+<label className="form-control-label"> Choose Items</label>
 </div>
-<div class="col-12 col-md-8">
+<div className="col-12 col-md-8">
 <select
                                                         className="form-control edit_product"
                                                         name="items"
@@ -722,352 +730,352 @@ Choose
 
 
 
-{/* <div class="row">
+{/* <div className="row">
 
-<div class="col-md-4 product_box">
+<div className="col-md-4 product_box">
 
-<div class="product_box_item">
+<div className="product_box_item">
 
-<div class="product_item_row m-b-20">
-<div class="left">
-<div class="img_box">
-<span class="star_yellow"><img src="images/icon/star_rate_ye.svg"/></span>
+<div className="product_item_row m-b-20">
+<div className="left">
+<div className="img_box">
+<span className="star_yellow"><img src="images/icon/star_rate_ye.svg"/></span>
 <img src="images/category_img.png"/>
 </div>
 
 </div>
-<div class="right">
-<p><span class="item_recipe"><span class="dot veg"></span></span>
-<span class="btn best_seller">BESTSELLER</span></p>
-<p class="item_name">Caesar Salad</p>
-<p class="price">₹ 220.00</p>
+<div className="right">
+<p><span className="item_recipe"><span className="dot veg"></span></span>
+<span className="btn best_seller">BESTSELLER</span></p>
+<p className="item_name">Caesar Salad</p>
+<p className="price">₹ 220.00</p>
 </div>
 
 </div>
 
-<div class="product_item_row">
-<div class="left">
-<span class="btn remove_btn pull-left">Remove</span>
+<div className="product_item_row">
+<div className="left">
+<span className="btn remove_btn pull-left">Remove</span>
 </div>
-<div class="right">
-<span class="btn edit_btn">Edit</span>
-
-</div>
-
-
+<div className="right">
+<span className="btn edit_btn">Edit</span>
 
 </div>
 
 
+
+</div>
+
+
 </div>
 </div>
 
-<div class="col-md-4 product_box">
+<div className="col-md-4 product_box">
 
-<div class="product_box_item">
+<div className="product_box_item">
 
-<div class="product_item_row m-b-20">
-<div class="left">
-<div class="img_box">
-<span class="star_yellow"><img src="images/icon/star_rate_ye.svg"/></span>
+<div className="product_item_row m-b-20">
+<div className="left">
+<div className="img_box">
+<span className="star_yellow"><img src="images/icon/star_rate_ye.svg"/></span>
 <img src="images/category_img.png"/>
 </div>
 
 </div>
-<div class="right">
-<p><span class="item_recipe"><span class="dot veg"></span></span>
-<span class="btn best_seller">BESTSELLER</span></p>
-<p class="item_name">Caesar Salad</p>
-<p class="price">₹ 220.00</p>
+<div className="right">
+<p><span className="item_recipe"><span className="dot veg"></span></span>
+<span className="btn best_seller">BESTSELLER</span></p>
+<p className="item_name">Caesar Salad</p>
+<p className="price">₹ 220.00</p>
 </div>
 
 </div>
 
-<div class="product_item_row">
-<div class="left">
-<span class="btn remove_btn pull-left">Remove</span>
+<div className="product_item_row">
+<div className="left">
+<span className="btn remove_btn pull-left">Remove</span>
 </div>
-<div class="right">
-<span class="btn edit_btn">Edit</span>
-
-</div>
-
-
+<div className="right">
+<span className="btn edit_btn">Edit</span>
 
 </div>
 
 
+
+</div>
+
+
 </div>
 </div>
 
 
 
-<div class="col-md-4 product_box">
+<div className="col-md-4 product_box">
 
-<div class="product_box_item">
+<div className="product_box_item">
 
-<div class="product_item_row m-b-20">
-<div class="left">
-<div class="img_box">
-<span class="star_yellow"><img src="images/icon/star_rate_ye.svg"/></span>
+<div className="product_item_row m-b-20">
+<div className="left">
+<div className="img_box">
+<span className="star_yellow"><img src="images/icon/star_rate_ye.svg"/></span>
 <img src="images/category_img.png"/>
 </div>
 
 </div>
-<div class="right">
-<p><span class="item_recipe"><span class="dot veg"></span></span>
-<span class="btn best_seller">BESTSELLER</span></p>
-<p class="item_name">Caesar Salad</p>
-<p class="price">₹ 220.00</p>
+<div className="right">
+<p><span className="item_recipe"><span className="dot veg"></span></span>
+<span className="btn best_seller">BESTSELLER</span></p>
+<p className="item_name">Caesar Salad</p>
+<p className="price">₹ 220.00</p>
 </div>
 
 </div>
 
-<div class="product_item_row">
-<div class="left">
-<span class="btn remove_btn pull-left">Remove</span>
+<div className="product_item_row">
+<div className="left">
+<span className="btn remove_btn pull-left">Remove</span>
 </div>
-<div class="right">
-<span class="btn edit_btn">Edit</span>
-
-</div>
-
-
+<div className="right">
+<span className="btn edit_btn">Edit</span>
 
 </div>
 
 
+
+</div>
+
+
 </div>
 </div>
 
 
 
-<div class="col-md-4 product_box">
+<div className="col-md-4 product_box">
 
-<div class="product_box_item">
+<div className="product_box_item">
 
-<div class="product_item_row m-b-20">
-<div class="left">
-<div class="img_box">
-<span class="star_yellow"><img src="images/icon/star_rate_ye.svg"/></span>
+<div className="product_item_row m-b-20">
+<div className="left">
+<div className="img_box">
+<span className="star_yellow"><img src="images/icon/star_rate_ye.svg"/></span>
 <img src="images/category_img.png"/>
 </div>
 
 </div>
-<div class="right">
-<p><span class="item_recipe"><span class="dot veg"></span></span>
-<span class="btn best_seller">BESTSELLER</span></p>
-<p class="item_name">Caesar Salad</p>
-<p class="price">₹ 220.00</p>
+<div className="right">
+<p><span className="item_recipe"><span className="dot veg"></span></span>
+<span className="btn best_seller">BESTSELLER</span></p>
+<p className="item_name">Caesar Salad</p>
+<p className="price">₹ 220.00</p>
 </div>
 
 </div>
 
-<div class="product_item_row">
-<div class="left">
-<span class="btn remove_btn pull-left">Remove</span>
+<div className="product_item_row">
+<div className="left">
+<span className="btn remove_btn pull-left">Remove</span>
 </div>
-<div class="right">
-<span class="btn edit_btn">Edit</span>
-
-</div>
-
-
+<div className="right">
+<span className="btn edit_btn">Edit</span>
 
 </div>
 
 
+
+</div>
+
+
 </div>
 </div>
 
 
 
-<div class="col-md-4 product_box">
+<div className="col-md-4 product_box">
 
-<div class="product_box_item">
+<div className="product_box_item">
 
-<div class="product_item_row m-b-20">
-<div class="left">
-<div class="img_box">
-<span class="star_yellow"><img src="images/icon/star_rate_ye.svg"/></span>
+<div className="product_item_row m-b-20">
+<div className="left">
+<div className="img_box">
+<span className="star_yellow"><img src="images/icon/star_rate_ye.svg"/></span>
 <img src="images/category_img.png"/>
 </div>
 
 </div>
-<div class="right">
-<p><span class="item_recipe"><span class="dot veg"></span></span>
-<span class="btn best_seller">BESTSELLER</span></p>
-<p class="item_name">Caesar Salad</p>
-<p class="price">₹ 220.00</p>
+<div className="right">
+<p><span className="item_recipe"><span className="dot veg"></span></span>
+<span className="btn best_seller">BESTSELLER</span></p>
+<p className="item_name">Caesar Salad</p>
+<p className="price">₹ 220.00</p>
 </div>
 
 </div>
 
-<div class="product_item_row">
-<div class="left">
-<span class="btn remove_btn pull-left">Remove</span>
+<div className="product_item_row">
+<div className="left">
+<span className="btn remove_btn pull-left">Remove</span>
 </div>
-<div class="right">
-<span class="btn edit_btn">Edit</span>
-
-</div>
-
-
+<div className="right">
+<span className="btn edit_btn">Edit</span>
 
 </div>
 
 
+
+</div>
+
+
 </div>
 </div>
 
 
 
-<div class="col-md-4 product_box">
+<div className="col-md-4 product_box">
 
-<div class="product_box_item">
+<div className="product_box_item">
 
-<div class="product_item_row m-b-20">
-<div class="left">
-<div class="img_box">
-<span class="star_yellow"><img src="images/icon/star_rate_ye.svg"/></span>
+<div className="product_item_row m-b-20">
+<div className="left">
+<div className="img_box">
+<span className="star_yellow"><img src="images/icon/star_rate_ye.svg"/></span>
 <img src="images/category_img.png"/>
 </div>
 
 </div>
-<div class="right">
-<p><span class="item_recipe"><span class="dot veg"></span></span>
-<span class="btn best_seller">BESTSELLER</span></p>
-<p class="item_name">Caesar Salad</p>
-<p class="price">₹ 220.00</p>
+<div className="right">
+<p><span className="item_recipe"><span className="dot veg"></span></span>
+<span className="btn best_seller">BESTSELLER</span></p>
+<p className="item_name">Caesar Salad</p>
+<p className="price">₹ 220.00</p>
 </div>
 
 </div>
 
-<div class="product_item_row">
-<div class="left">
-<span class="btn remove_btn pull-left">Remove</span>
+<div className="product_item_row">
+<div className="left">
+<span className="btn remove_btn pull-left">Remove</span>
 </div>
-<div class="right">
-<span class="btn edit_btn">Edit</span>
-
-</div>
-
-
+<div className="right">
+<span className="btn edit_btn">Edit</span>
 
 </div>
 
 
+
+</div>
+
+
 </div>
 </div>
 
 
 
-<div class="col-md-4 product_box">
+<div className="col-md-4 product_box">
 
-<div class="product_box_item">
+<div className="product_box_item">
 
-<div class="product_item_row m-b-20">
-<div class="left">
-<div class="img_box">
-<span class="star_yellow"><img src="images/icon/star_rate_ye.svg"/></span>
+<div className="product_item_row m-b-20">
+<div className="left">
+<div className="img_box">
+<span className="star_yellow"><img src="images/icon/star_rate_ye.svg"/></span>
 <img src="images/category_img.png"/>
 </div>
 
 </div>
-<div class="right">
-<p><span class="item_recipe"><span class="dot veg"></span></span>
-<span class="btn best_seller">BESTSELLER</span></p>
-<p class="item_name">Caesar Salad</p>
-<p class="price">₹ 220.00</p>
+<div className="right">
+<p><span className="item_recipe"><span className="dot veg"></span></span>
+<span className="btn best_seller">BESTSELLER</span></p>
+<p className="item_name">Caesar Salad</p>
+<p className="price">₹ 220.00</p>
 </div>
 
 </div>
 
-<div class="product_item_row">
-<div class="left">
-<span class="btn remove_btn pull-left">Remove</span>
+<div className="product_item_row">
+<div className="left">
+<span className="btn remove_btn pull-left">Remove</span>
 </div>
-<div class="right">
-<span class="btn edit_btn">Edit</span>
-
-</div>
-
-
+<div className="right">
+<span className="btn edit_btn">Edit</span>
 
 </div>
 
 
+
+</div>
+
+
 </div>
 </div>
 
 
 
-<div class="col-md-4 product_box">
+<div className="col-md-4 product_box">
 
-<div class="product_box_item">
+<div className="product_box_item">
 
-<div class="product_item_row m-b-20">
-<div class="left">
-<div class="img_box">
-<span class="star_yellow"><img src="images/icon/star_rate_ye.svg"/></span>
+<div className="product_item_row m-b-20">
+<div className="left">
+<div className="img_box">
+<span className="star_yellow"><img src="images/icon/star_rate_ye.svg"/></span>
 <img src="images/category_img.png"/>
 </div>
 
 </div>
-<div class="right">
-<p><span class="item_recipe"><span class="dot veg"></span></span>
-<span class="btn best_seller">BESTSELLER</span></p>
-<p class="item_name">Caesar Salad</p>
-<p class="price">₹ 220.00</p>
+<div className="right">
+<p><span className="item_recipe"><span className="dot veg"></span></span>
+<span className="btn best_seller">BESTSELLER</span></p>
+<p className="item_name">Caesar Salad</p>
+<p className="price">₹ 220.00</p>
 </div>
 
 </div>
 
-<div class="product_item_row">
-<div class="left">
-<span class="btn remove_btn pull-left">Remove</span>
+<div className="product_item_row">
+<div className="left">
+<span className="btn remove_btn pull-left">Remove</span>
 </div>
-<div class="right">
-<span class="btn edit_btn">Edit</span>
-
-</div>
-
-
+<div className="right">
+<span className="btn edit_btn">Edit</span>
 
 </div>
 
 
+
+</div>
+
+
 </div>
 </div>
 
 
-<div class="col-md-4 product_box">
+<div className="col-md-4 product_box">
 
-<div class="product_box_item">
+<div className="product_box_item">
 
-<div class="product_item_row m-b-20">
-<div class="left">
-<div class="img_box">
-<span class="star_yellow"><img src="images/icon/star_rate_ye.svg"/></span>
+<div className="product_item_row m-b-20">
+<div className="left">
+<div className="img_box">
+<span className="star_yellow"><img src="images/icon/star_rate_ye.svg"/></span>
 <img src="images/category_img.png"/>
 </div>
 
 </div>
-<div class="right">
-<p><span class="item_recipe"><span class="dot veg"></span></span>
-<span class="btn best_seller">BESTSELLER</span></p>
-<p class="item_name">Caesar Salad</p>
-<p class="price">₹ 220.00</p>
+<div className="right">
+<p><span className="item_recipe"><span className="dot veg"></span></span>
+<span className="btn best_seller">BESTSELLER</span></p>
+<p className="item_name">Caesar Salad</p>
+<p className="price">₹ 220.00</p>
 </div>
 
 </div>
 
-<div class="product_item_row">
-<div class="left">
-<span class="btn remove_btn pull-left">Remove</span>
+<div className="product_item_row">
+<div className="left">
+<span className="btn remove_btn pull-left">Remove</span>
 </div>
-<div class="right">
-<span class="btn edit_btn">Edit</span>
+<div className="right">
+<span className="btn edit_btn">Edit</span>
 
 </div>
 
@@ -1086,8 +1094,8 @@ Choose
 
 
 {/* <div cl="row">
-<div class="pagi_nation w-100">
-<a href="#" class="activepage">1</a>
+<div className="pagi_nation w-100">
+<a href="#" className="activepage">1</a>
 <a href="#">2</a>
 <a href="#">3</a>
 </div>
@@ -1114,31 +1122,31 @@ Choose
 
 
 
-    <div class="modal fade" id="add_parent_category" tabindex="-1" role="dialog" aria-labelledby="smallmodalLabel" aria-hidden="true">
-<div class="modal-dialog modal-sm hipal_pop" role="document">
-<div class="modal-content">
+    <div className="modal fade" id="add_parent_category" tabindex="-1" role="dialog" aria-labelledby="smallmodalLabel" aria-hidden="true">
+<div className="modal-dialog modal-sm hipal_pop" role="document">
+<div className="modal-content">
 
 
-<div class="modal-header">
-<h5 class="modal-title" id="smallmodalLabel">Choose Parent Category
+<div className="modal-header">
+<h5 className="modal-title" id="smallmodalLabel">Choose Parent Category
 </h5></div>
 
 
-<div class="modal-body product_edit">
+<div className="modal-body product_edit">
 
 
 
 
 
-{/* <div class="col-12 w-100-row">
-<div class="row">
-<div class="col col-md-5 font-18">
+{/* <div className="col-12 w-100-row">
+<div className="row">
+<div className="col col-md-5 font-18">
 Search by name
 </div>
-<div class="col col-md-7 bill_id_settle">
-<div class="form-group">
-<span class="pull-left"><input type="text" id="text-input" name="text-input" placeholder="T1" class="form-control edit_product"/></span>
-<span class="btn pull-right add_btn_pop_orange bg_green addmode_pad">Go</span>
+<div className="col col-md-7 bill_id_settle">
+<div className="form-group">
+<span className="pull-left"><input type="text" id="text-input" name="text-input" placeholder="T1" className="form-control edit_product"/></span>
+<span className="btn pull-right add_btn_pop_orange bg_green addmode_pad">Go</span>
 </div>
 </div>
 </div>
@@ -1146,16 +1154,16 @@ Search by name
  */}
 
 
-<div class="col-12 w-100-row">
+<div className="col-12 w-100-row">
 
-<div class="row">
+<div className="row">
 
-<div class="col col-md-6 font-15">
+<div className="col col-md-6 font-15">
 Menu : <Link to="#">Maincourse</Link> / 
 <Link to="#">Parent</Link>
 </div>
 
-<div class="col col-md-6 text-center">
+<div className="col col-md-6 text-center">
 <img src="images/icon/back_arrow_left_o.svg"/>
 </div>
 
@@ -1166,18 +1174,18 @@ Menu : <Link to="#">Maincourse</Link> /
 
 
 
-<div class="col-12 w-100-row">
-<div class="row">
+<div className="col-12 w-100-row">
+<div className="row">
 
 
-<div class="row">
+<div className="row">
 {this.state.CategoryList && this.state.CategoryList.map((category,index) => {
 return (
-<div class="col-md-4 mb-15 text-center" key={index}>
-<div class="cate_img_box  shadow_box" style={{background:category.color}}>
+<div className="col-md-4 mb-15 text-center" key={index}>
+<div className="cate_img_box  shadow_box" style={{background:category.color}}>
      
 
-<img class="img_empty2" src={category.parent_category_photo}></img>
+<img className="img_empty2" src={category.parent_category_photo}></img>
 
 <p> {category.parent_category}</p>                  
 </div>
@@ -1185,47 +1193,47 @@ return (
 {category.sub_category_name=="No"?
 ''
 :
-<button class="btn m-t-10 btn_explore">Explore</button>
+<button className="btn m-t-10 btn_explore">Explore</button>
 //  onClick={this.explore()}
 }
 </div>
 )})}
 
-{/* <div class="col-md-4 mb-15 text-center">
-<div class="cate_img_box  shadow_box" style={{background:"#fff"}}>
-<div class="img_empty2"></div>
+{/* <div className="col-md-4 mb-15 text-center">
+<div className="cate_img_box  shadow_box" style={{background:"#fff"}}>
+<div className="img_empty2"></div>
 <p> CATEGORY 2</p>
 </div>
 </div>
 
-<div class="col-md-4 mb-15 text-center">
-<div class="cate_img_box  shadow_box" style={{background:"#fff"}}>
-<div class="img_empty2"></div>
+<div className="col-md-4 mb-15 text-center">
+<div className="cate_img_box  shadow_box" style={{background:"#fff"}}>
+<div className="img_empty2"></div>
 <p> CATEGORY 3</p>
 </div>
 </div>
 
-<div class="col-md-4 mb-15 text-center">
-<div class="cate_img_box  shadow_box" style={{background:"#fff"}}>
-<div class="img_empty2"></div>
+<div className="col-md-4 mb-15 text-center">
+<div className="cate_img_box  shadow_box" style={{background:"#fff"}}>
+<div className="img_empty2"></div>
 <p> CATEGORY 4</p>
 </div>
 </div>
 
-<div class="col-md-4 mb-15 text-center">
-<div class="cate_img_box shadow_box" style={{background:"#fff"}}>
-<div class="img_empty2"></div>
+<div className="col-md-4 mb-15 text-center">
+<div className="cate_img_box shadow_box" style={{background:"#fff"}}>
+<div className="img_empty2"></div>
 <p> CATEGORY 5</p>
 </div>
 </div>
 
-<div class="col-md-4 mb-15 text-center">
-<div class="cate_img_box active_explore shadow_box" style={{background:"#fff"}}>
-<div class="img_empty2"></div>
+<div className="col-md-4 mb-15 text-center">
+<div className="cate_img_box active_explore shadow_box" style={{background:"#fff"}}>
+<div className="img_empty2"></div>
 <p> CATEGORY 6</p>
 </div>
 
-<button class="btn m-t-10 btn_explore">Explore</button>
+<button className="btn m-t-10 btn_explore">Explore</button>
 
 </div> */}
 
@@ -1246,8 +1254,8 @@ return (
 
 
 
-<div class="modal-footer">
-<button type="button" class="btn save_btn">Add here</button>
+<div className="modal-footer">
+<button type="button" className="btn save_btn">Add here</button>
 </div>
 
 
@@ -1256,32 +1264,32 @@ return (
 </div>
 
 
-<div class="modal fade" id="add_items" tabindex="-1" role="dialog" aria-labelledby="smallmodalLabel" aria-hidden="true">
-<div class="modal-dialog modal-sm hipal_pop additempop" role="document">
-<div class="modal-content">
+<div className="modal fade" id="add_items" tabindex="-1" role="dialog" aria-labelledby="smallmodalLabel" aria-hidden="true">
+<div className="modal-dialog modal-sm hipal_pop additempop" role="document">
+<div className="modal-content">
 
 
-<div class="modal-header">
-<h5 class="modal-title" id="smallmodalLabel">Add Item in Category(name)
-</h5><span class="black_font">12 Iteams added</span></div>
+<div className="modal-header">
+<h5 className="modal-title" id="smallmodalLabel">Add Item in Category(name)
+</h5><span className="black_font">12 Iteams added</span></div>
 
 
-<div class="modal-body product_edit">
+<div className="modal-body product_edit">
 
 
 
 
 
-<div class="col-12 bdr_bottom_gray pb-15 mb-15">
-<div class="row">
-<div class="col col-md-5 font-18">
+<div className="col-12 bdr_bottom_gray pb-15 mb-15">
+<div className="row">
+<div className="col col-md-5 font-18">
 Search by name / ID
 </div>
-<div class="col col-md-7 bill_id_settle pl-0">
-<div class="form-group">
-<span class="pull-left"><input type="text" id="text-input" name="text-input" placeholder="T1" class="form-control edit_product"/></span>
-<span class="btn pull-left add_btn_pop_orange bg_green addmode_pad ml-5">Go</span>
-<span class="btn pull-right pad-back">Back</span>
+<div className="col col-md-7 bill_id_settle pl-0">
+<div className="form-group">
+<span className="pull-left"><input type="text" id="text-input" name="text-input" placeholder="T1" className="form-control edit_product"/></span>
+<span className="btn pull-left add_btn_pop_orange bg_green addmode_pad ml-5">Go</span>
+<span className="btn pull-right pad-back">Back</span>
 </div>
 </div>
 </div>
@@ -1293,32 +1301,32 @@ Search by name / ID
 
 
 
-<div class="col-12 w-100-row">
+<div className="col-12 w-100-row">
 
 
-<div class="row add-Items_scroll">
+<div className="row add-Items_scroll">
 
-{/* <div class="col-md-6 product_box">
-<div class="product_box_item selected_box">
-<div class="product_item_row m-b-20">
-<div class="left">
-<div class="img_box">
-<span class="star_yellow"><img src="images/icon/star_rate_ye.svg"/></span>
+{/* <div className="col-md-6 product_box">
+<div className="product_box_item selected_box">
+<div className="product_item_row m-b-20">
+<div className="left">
+<div className="img_box">
+<span className="star_yellow"><img src="images/icon/star_rate_ye.svg"/></span>
 <img src="images/category_img.png"/>
 </div>
 </div>
-<div class="right">
-<p><span class="item_recipe"><span class="dot veg"></span></span>
-<span class="btn best_seller">BESTSELLER</span></p>
-<p class="item_name">Caesar Salad</p>
-<p class="price">₹ 220.00</p>
+<div className="right">
+<p><span className="item_recipe"><span className="dot veg"></span></span>
+<span className="btn best_seller">BESTSELLER</span></p>
+<p className="item_name">Caesar Salad</p>
+<p className="price">₹ 220.00</p>
 </div>
 
 </div>
 
-<div class="product_item_row">
-<div class="left">
-<span class="btn remove_btn pull-left">Remove</span>
+<div className="product_item_row">
+<div className="left">
+<span className="btn remove_btn pull-left">Remove</span>
 </div>
 </div>
 
@@ -1328,50 +1336,50 @@ Search by name / ID
 
 {this.state.itemMenuList && this.state.itemMenuList.map((item,index) => {
 return (
-<div class="col-md-6 product_box" key={index}>
-<div class="product_box_item">
-<div class="product_item_row m-b-20">
-<div class="left">
-<div class="img_box">
+<div className="col-md-6 product_box" key={index}>
+<div className="product_box_item">
+<div className="product_item_row m-b-20">
+<div className="left">
+<div className="img_box">
     {item.advance=="Yes"?
-<span class="star_yellow"><img src="images/icon/star_rate_ye.svg"/></span>
+<span className="star_yellow"><img src="images/icon/star_rate_ye.svg"/></span>
 :''
 }
 <img src={item.item_image}/>
 </div>
 </div>
-<div class="right">
-<p><span class="item_recipe">
+<div className="right">
+<p><span className="item_recipe">
 {item.item_type=="Veg"?
-    <span class="dot veg"></span>
+    <span className="dot veg"></span>
     :
-    <span class="dot non-veg"></span>
+    <span className="dot non-veg"></span>
 }
 
     </span>
     {item.extra=="Yes"?
     <>
 {item.bestsellertag=="Yes"?
-<span class="btn best_seller">BESTSELLER</span>
+<span className="btn best_seller">BESTSELLER</span>
 :''
 }
 {item.healthytag=="Yes"?
-<span class="btn best_seller">HEALTHY</span>
+<span className="btn best_seller">HEALTHY</span>
 :''
 }
 </>
 :''
 }
 </p>
-<p class="item_name">{item.item_name}</p>
-<p class="price">₹ {item.item_price}.00</p>
+<p className="item_name">{item.item_name}</p>
+<p className="price">₹ {item.item_price}.00</p>
 </div>
 
 </div>
 
-<div class="product_item_row">
-<div class="left">
-<span class="btn remove_btn pull-left bg_green">Add</span>
+<div className="product_item_row">
+<div className="left">
+<span className="btn remove_btn pull-left bg_green">Add</span>
 </div>
 
 </div>
@@ -1401,8 +1409,8 @@ return (
 
 
 
-<div class="modal-footer">
-<button type="button" class="btn save_btn">Add Items</button>
+<div className="modal-footer">
+<button type="button" className="btn save_btn">Add Items</button>
 </div>
 
 

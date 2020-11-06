@@ -5,6 +5,8 @@ import Header from '../component/header';
 import {Form} from 'reactstrap';
 import {Link} from "react-router-dom";
 import SimpleReactValidator from "simple-react-validator";
+import { Modal } from "react-responsive-modal";
+import SettingsItemsList from './settings_items_list';
 class SettingsBestRecommendations extends React.Component {
     constructor(props) {
         super(props);
@@ -123,9 +125,10 @@ componentDidMount() {
 UploadCauroselList(){
 
   var sessionId = sessionStorage.getItem("RoleId");   
+  var businessId = sessionStorage.getItem("businessId");
   this.setState({loading: true});
-var ref=firebase.database().ref('merchant_menu_items').orderByChild("sessionId")
-.equalTo(sessionId);
+var ref=firebase.database().ref('merchant_menu_items').orderByChild("businessId")
+.equalTo(businessId);
 ref.once("value",snapshot =>{
 const data =[];
 console.log(snapshot.val());
@@ -136,6 +139,8 @@ snapshot.forEach(element => {
     item_name:element.val().item_name,
     bestrecommendation:element.val().bestrecommendation,
     item_image:element.val().item_image,
+    businessId:element.val().businessId,
+    sessionId:element.val().sessionId,
     
   }
   data.unshift(usersData);
@@ -151,9 +156,15 @@ this.setState({UploadCauroselList:sortedKeys, countPage: data.length,loading: fa
 
 })
 }
+onOpenModal = () => {
 
+    this.setState({open: true});
+};
+onCloseModal = () => {
+    this.setState({open: false});
+};
     render() {
-             
+        const {open } = this.state;    
         return (
      
 <>
@@ -201,10 +212,21 @@ this.setState({UploadCauroselList:sortedKeys, countPage: data.length,loading: fa
 
 
 
-<div className="col-md-12 text-right m-t-10"><span><Link to="/SettingsItemsList"><button className="save_small_button">Select</button></Link></span></div>
+<div className="col-md-12 text-right m-t-10"><span>
+    {/* <Link to="/SettingsItemsList"> */}
+        <button className="save_small_button"  onClick={this.onOpenModal}>Select</button>
+    {/* </Link> */}
+    </span></div>
 
 </div>
+{open
+                    ?  <Modal open={open} onClose={this.onCloseModal}>
+                          
+                                    <SettingsItemsList onClose={this.onCloseModal}/>
 
+                        </Modal>
+                    : ''}
+                       
 
 </>
 

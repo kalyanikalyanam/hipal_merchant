@@ -10,6 +10,8 @@ class BusinessList extends React.Component {
 
          
         };
+
+        this.businessId = this.businessId.bind(this);
     }
     componentDidMount() {
         this.setState({ loading: true });
@@ -40,7 +42,17 @@ class BusinessList extends React.Component {
            
        }
     
-     
+       businessId = (id) =>{
+        console.log(id);
+       
+        //  this.setState({businessId:
+        //    id})
+
+           sessionStorage.setItem("businessId", id);
+           console.log(id);
+      
+      }
+    
     
        businessDetailsList=()=>{
     
@@ -115,6 +127,7 @@ class BusinessList extends React.Component {
     
             this.setState({businessDetailsList: data, countPage: data.length, loading: false});
             console.log(this.state.businessDetailsList);
+
     
         });
     
@@ -227,8 +240,11 @@ return (
 <p className="cafe_address">12, Sainikpuri, Kapra, Secunderabad, Telangana 500094</p>
 <p className="cafe_timings">Timings : {business.business_timezone_from} am to {business.business_timezone_to} pm</p>
 
-<Link to={`/Dashboard/${business.businessId}`}>
-<button className="btn visit_button m-t-30">Visit</button>
+<Link to="/Dashboard">
+{/* <Link to={`/Dashboard/${business.businessId}`} > */}
+<button className="btn visit_button m-t-30"  onClick={
+                                    this.businessId.bind(this, business.businessId)
+                                } >Visit</button>
 </Link>
 </span>
 
@@ -281,7 +297,7 @@ return (
 
 
 <span className="right_box">
-<Link to={`/EditBusiness/${business.businessId}`}>
+<Link to={`/EditBusiness/${business.businessId}`} on>
         <img src="/images/icon/edit_icon_blue.svg" className="edit_delete"/>
 </Link>
 <div className="img_box">

@@ -151,27 +151,44 @@ class EditEmployee extends React.Component {
     componentDidMount() {
         this.setState({ loading: true });
         var sessionId = sessionStorage.getItem("RoleId");
-        if(sessionId){
-           
-      console.log(sessionId);
-        
-            firebase
-                .database().ref('merchant_users/' + sessionId).on('value', snapshot => {
-             var Users = snapshot.val();
-             console.log(Users);
-             sessionStorage.setItem("username", Users.user_name);
-             sessionStorage.setItem("email", Users.email_id);
-           
-            this.setState({
-              userRole:Users.Role,loading: false
-                
-                
+        var businessId = sessionStorage.getItem("businessId");
+        if (sessionId) {
+          //console.log(sessionId);
+    
+          firebase
+            .database()
+            .ref("merchant_users/" + sessionId)
+            .on("value", (snapshot) => {
+              var Users = snapshot.val();
+              //console.log(Users);
+              sessionStorage.setItem("username", Users.user_name);
+              sessionStorage.setItem("email", Users.email_id);
+    
+              this.setState({
+                userRole: Users.Role,
+                loading: false,
               });
-             
-             
             });
+    
+            firebase
+            .database().ref('merchaant_business_details/' + businessId).on('value', snapshot => {
+         var business = snapshot.val();
+         console.log(business);
+         sessionStorage.setItem("BusinessId", business.businessId);
+         sessionStorage.setItem("BusinessName", business.business_name);
+         sessionStorage.setItem("BusinessLogo", business.business_logo);
+       
+        this.setState({
+        
+            
+            
+          });
+    
+          
+         
+         
+        });
         }
-
         this.employeeRoleList();
         this.employeePositionsList();
         this.employeeList();
@@ -233,11 +250,12 @@ class EditEmployee extends React.Component {
 
     }
     employeePositionsList=()=>{
-
+        var sessionId = sessionStorage.getItem("RoleId");
+        var businessId = sessionStorage.getItem("businessId");
         this.setState({loading: true});
         var ref = firebase
             .database()
-            .ref("merchaant_employees_positions/");
+            .ref("merchaant_employees_positions/").orderByChild("sessionId").equalTo(sessionId);
 
         ref.on('value', snapshot => {
             const data = [];
@@ -250,7 +268,8 @@ class EditEmployee extends React.Component {
                         employee_details: childSnapShot.val().employee_details,
                         employee_task_list: childSnapShot.val().employee_task_list,
                         employee_position_document: childSnapShot.val().iteemployee_position_documentm_image,
-                       
+                        sessionId: childSnapShot.val().sessionId,
+                        businessId: childSnapShot.val().businessId,
 
 
                         
@@ -261,7 +280,10 @@ class EditEmployee extends React.Component {
                 data.push(GSTData);
             });
 
-            this.setState({employeePositionsList: data, countPage: data.length, loading: false});
+            let sortedKeys = data.filter((res) => {
+                return res.businessId === businessId;
+              });
+            this.setState({employeePositionsList: sortedKeys, countPage: data.length, loading: false});
             console.log(this.state.employeePositionsList);
     
         });
@@ -269,41 +291,41 @@ class EditEmployee extends React.Component {
 
     }
 
-    employeeRoleList=()=>{
-        this.setState({loading: true});
-        var ref = firebase
-            .database()
-            .ref("merchaant_employee_userroles/");
+    // employeeRoleList=()=>{
+    //     this.setState({loading: true});
+    //     var ref = firebase
+    //         .database()
+    //         .ref("merchaant_employee_userroles/");
 
-        ref.on('value', snapshot => {
-            const data = [];
-            snapshot.forEach(childSnapShot => {
+    //     ref.on('value', snapshot => {
+    //         const data = [];
+    //         snapshot.forEach(childSnapShot => {
 
-                const GSTData = {
-                    employeeuserroleId: childSnapShot.key .toString(),
+    //             const GSTData = {
+    //                 employeeuserroleId: childSnapShot.key .toString(),
 
 
 
 
                   
-            created_on:childSnapShot.val().created_on,
+    //         created_on:childSnapShot.val().created_on,
 
 
 
-            employee_name:childSnapShot.val().employee_name,
+    //         employee_name:childSnapShot.val().employee_name,
           
-            employee_position:childSnapShot.val().employee_position,
+    //         employee_position:childSnapShot.val().employee_position,
           
-            employee_mobile_number:childSnapShot.val().employee_mobile_number,
-            // UserPermissions:childSnapShot.val().UserPermissions,
+    //         employee_mobile_number:childSnapShot.val().employee_mobile_number,
+    //         // UserPermissions:childSnapShot.val().UserPermissions,
 
 
-            see_all_orders:childSnapShot.val().see_all_orders,
-            generate_billing:childSnapShot.val().generate_billing,
-            can_add_item_discounts:childSnapShot.val().can_add_item_discounts,
-            access_settings_page:childSnapShot.val().access_settings_page,
-            only_delivery_assigned_values:childSnapShot.val().only_delivery_assigned_values,
-            permission_type_4:childSnapShot.val().permission_type_4,
+    //         see_all_orders:childSnapShot.val().see_all_orders,
+    //         generate_billing:childSnapShot.val().generate_billing,
+    //         can_add_item_discounts:childSnapShot.val().can_add_item_discounts,
+    //         access_settings_page:childSnapShot.val().access_settings_page,
+    //         only_delivery_assigned_values:childSnapShot.val().only_delivery_assigned_values,
+    //         permission_type_4:childSnapShot.val().permission_type_4,
 
                        
                       
@@ -313,19 +335,19 @@ class EditEmployee extends React.Component {
                         
 
 
-                };
+    //             };
 
-                data.push(GSTData);
-            });
+    //             data.push(GSTData);
+    //         });
 
-            this.setState({employee_userroleList: data, countPage: data.length, loading: false});
-            console.log(this.state.employee_userroleList);
+    //         this.setState({employee_userroleList: data, countPage: data.length, loading: false});
+    //         console.log(this.state.employee_userroleList);
     
-        });
+    //     });
 
 
 
-    }
+    // }
   
    
   
@@ -372,6 +394,7 @@ class EditEmployee extends React.Component {
             const {employeeId}=this.props.match.params;
             var sessionId = sessionStorage.getItem("RoleId");
             var username = sessionStorage.getItem("username");
+            var businessId = sessionStorage.getItem("businessId");
 
             let dbCon = firebase.database().ref(`/merchaant_employees/${employeeId}`);
                 var key=(Math.round((new Date().getTime() / 1000))); 
@@ -413,7 +436,7 @@ class EditEmployee extends React.Component {
             
             sessionId:sessionId,
             username:username,
-               
+            businessId:businessId,   
            
         
              });

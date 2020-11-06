@@ -117,25 +117,43 @@ class EditTable extends React.Component {
     componentDidMount() {
         this.setState({ loading: true });
         var sessionId = sessionStorage.getItem("RoleId");
-        if(sessionId){
-           
-      console.log(sessionId);
-        
-            firebase
-                .database().ref('merchant_users/' + sessionId).on('value', snapshot => {
-             var Users = snapshot.val();
-             console.log(Users);
-             sessionStorage.setItem("username", Users.user_name);
-             sessionStorage.setItem("email", Users.email_id);
-           
-            this.setState({
-              userRole:Users.Role,loading: false
-                
-                
+        var businessId = sessionStorage.getItem("businessId");
+        if (sessionId) {
+          //console.log(sessionId);
+    
+          firebase
+            .database()
+            .ref("merchant_users/" + sessionId)
+            .on("value", (snapshot) => {
+              var Users = snapshot.val();
+              //console.log(Users);
+              sessionStorage.setItem("username", Users.user_name);
+              sessionStorage.setItem("email", Users.email_id);
+    
+              this.setState({
+                userRole: Users.Role,
+                loading: false,
               });
-             
-             
             });
+    
+            firebase
+            .database().ref('merchaant_business_details/' + businessId).on('value', snapshot => {
+         var business = snapshot.val();
+         console.log(business);
+         sessionStorage.setItem("BusinessId", business.businessId);
+         sessionStorage.setItem("BusinessName", business.business_name);
+         sessionStorage.setItem("BusinessLogo", business.business_logo);
+       
+        this.setState({
+        
+            
+            
+          });
+    
+          
+         
+         
+        });
         }
 
         this.floorsList();
@@ -144,12 +162,16 @@ class EditTable extends React.Component {
            
        }
 
-       floorsList=()=>{
+   
 
+
+    floorsList=()=>{
+        var sessionId = sessionStorage.getItem("RoleId");
+        var businessId = sessionStorage.getItem("businessId");
         this.setState({loading: true});
         var ref = firebase
             .database()
-            .ref("floors/");
+            .ref("floors/").orderByChild("sessionId").equalTo(sessionId);
 
         ref.on('value', snapshot => {
             const data = [];
@@ -161,7 +183,8 @@ class EditTable extends React.Component {
                     floor_capacity: childSnapShot.val().floor_capacity,
                     floor_name: childSnapShot.val().floor_name,
                     floor_notes: childSnapShot.val().floor_notes,
-                       
+                    sessionId: childSnapShot.val().sessionId,
+                    businessId: childSnapShot.val().businessId,
                         
 
 
@@ -170,13 +193,18 @@ class EditTable extends React.Component {
                 data.push(GSTData);
             });
 
-            this.setState({floorsList: data, countPage: data.length, loading: false});
+            let sortedKeys = data.filter((res) => {
+                return res.businessId === businessId;
+              });
+
+            this.setState({floorsList: sortedKeys, countPage: data.length, loading: false});
             console.log(this.state.floorsList);
     
         });
 
 
     }
+
 
     tableList=()=>{
 
@@ -255,6 +283,7 @@ class EditTable extends React.Component {
         if (this.validator.allValid()) {
             const {tableId}=this.props.match.params;
             var sessionId = sessionStorage.getItem("RoleId");
+            var businessId = sessionStorage.getItem("businessId");
             var username = sessionStorage.getItem("username");
 
             let dbCon = firebase.database().ref(`/tables_with_floors/${tableId}`);
@@ -285,7 +314,7 @@ class EditTable extends React.Component {
                 
                 sessionId:sessionId,
                 username:username,
-
+                businessId:businessId,
                
            
         

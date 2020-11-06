@@ -224,25 +224,25 @@ onChange = (event) => {
 <>
 
 
-{/* <div class="modal fade" id="upload_carousel" tabindex="-1" role="dialog" aria-labelledby="smallmodalLabel" aria-hidden="true"> */}
-<div class="modal-dialog modal-sm hipal_pop" role="document">
-<div class="modal-content">
+{/* <div className="modal fade" id="upload_carousel" tabindex="-1" role="dialog" aria-labelledby="smallmodalLabel" aria-hidden="true"> */}
+<div className="modal-dialog modal-sm hipal_pop" role="document">
+<div className="modal-content">
 
 
-<div class="modal-header">
-<h5 class="modal-title" id="smallmodalLabel">Add Media
+<div className="modal-header">
+<h5 className="modal-title" id="smallmodalLabel">Add Media
 </h5></div>
 
 <Form onSubmit={this.handleSubmit}>
-<div class="modal-body upload_carosel">
+<div className="modal-body upload_carosel">
 
 
 
 
 
-<div class="col-12 w-100-row line_bdr_bottom">
-<div class="row">
-<div class="col col-md-5 font-18">
+<div className="col-12 w-100-row line_bdr_bottom">
+<div className="row">
+<div className="col col-md-5 font-18">
 {this.state.media_image && <img src={this.state.media_image} />}
                                                  <FileUploader
                                                 accept="image/*"
@@ -258,12 +258,12 @@ onChange = (event) => {
 </div>
 {this .validator.message("Image", this.state.media_image, "required")}
 
-<div class="col col-md-6 bill_id_settle">
-<div class="form-group">
+<div className="col col-md-6 bill_id_settle">
+<div className="form-group">
 
 
 
-{/* <span class="pull-left m-b-20"><input type="text" id="text-input" name="text-input" placeholder="Link" class="form-control edit_product"/></span> */}
+{/* <span className="pull-left m-b-20"><input type="text" id="text-input" name="text-input" placeholder="Link" className="form-control edit_product"/></span> */}
 
 
 
@@ -273,10 +273,10 @@ onChange = (event) => {
 </div>
 </div>
 
-<div class="col-12 w-100-row line_bdr_bottom">
-<div class="row">
+<div className="col-12 w-100-row line_bdr_bottom">
+<div className="row">
 
-<div class="col col-md-5 font-18">
+<div className="col col-md-5 font-18">
 {this.state.media_video && <video controls   width="80%" height="80%" src={this.state.media_video}/>}
                                                  <FileUploader
                                                 accept="video/*"
@@ -291,12 +291,12 @@ onChange = (event) => {
                                                 onProgress={this.handleProgress}/>
 </div>
 {this .validator.message("Video", this.state.media_video, "required")}
-<div class="col col-md-6 bill_id_settle">
-<div class="form-group">
+<div className="col col-md-6 bill_id_settle">
+<div className="form-group">
 
 
 
-{/* <span class="pull-left m-b-20"><input type="text" id="text-input" name="text-input" placeholder="Link" class="form-control edit_product"/></span> */}
+{/* <span className="pull-left m-b-20"><input type="text" id="text-input" name="text-input" placeholder="Link" className="form-control edit_product"/></span> */}
 
 
 
@@ -306,47 +306,47 @@ onChange = (event) => {
 </div>
 </div>
 
-<div class="col-12 w-100-row line_bdr_bottom">
-<div class="row">
+<div className="col-12 w-100-row line_bdr_bottom">
+<div className="row">
 
-<div class="col col-md-5 font-18">
+<div className="col col-md-5 font-18">
 <input type="text" id="text-input" name="video_link"
 onChange={this.onChange}
 value={this.state.video_link}
-placeholder="Video Link" class="form-control edit_product"/>
+placeholder="Video Link" className="form-control edit_product"/>
 </div>
 {this .validator.message("Link", this.state.video_link, "required|url")}
-<div class="col col-md-6 bill_id_settle">
-<div class="form-group">
+<div className="col col-md-6 bill_id_settle">
+<div className="form-group">
 
 
 
-{/* <span class="pull-left m-b-20"><input type="text" id="text-input" name="text-input" placeholder="Link" class="form-control edit_product"/></span> */}
-
-
-
-
-</div>
-</div>
-</div>
-</div>
-
-
-
-
-
-
-
+{/* <span className="pull-left m-b-20"><input type="text" id="text-input" name="text-input" placeholder="Link" className="form-control edit_product"/></span> */}
 
 
 
 
 </div>
+</div>
+</div>
+</div>
 
 
 
-<div class="modal-footer">
-<button type="button" class="btn save_btn" type="submit">Add Media</button>
+
+
+
+
+
+
+
+
+</div>
+
+
+
+<div className="modal-footer">
+<button type="button" className="btn save_btn" type="submit">Add Media</button>
 </div>
 
 </Form>

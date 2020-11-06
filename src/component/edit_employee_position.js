@@ -121,27 +121,44 @@ class EditEmployeePosition extends React.Component {
     componentDidMount() {
         this.setState({ loading: true });
         var sessionId = sessionStorage.getItem("RoleId");
-        if(sessionId){
-           
-      console.log(sessionId);
-        
-            firebase
-                .database().ref('merchant_users/' + sessionId).on('value', snapshot => {
-             var Users = snapshot.val();
-             console.log(Users);
-             sessionStorage.setItem("username", Users.user_name);
-             sessionStorage.setItem("email", Users.email_id);
-           
-            this.setState({
-              userRole:Users.Role,loading: false
-                
-                
+        var businessId = sessionStorage.getItem("businessId");
+        if (sessionId) {
+          //console.log(sessionId);
+    
+          firebase
+            .database()
+            .ref("merchant_users/" + sessionId)
+            .on("value", (snapshot) => {
+              var Users = snapshot.val();
+              //console.log(Users);
+              sessionStorage.setItem("username", Users.user_name);
+              sessionStorage.setItem("email", Users.email_id);
+    
+              this.setState({
+                userRole: Users.Role,
+                loading: false,
               });
-             
-             
             });
+    
+            firebase
+            .database().ref('merchaant_business_details/' + businessId).on('value', snapshot => {
+         var business = snapshot.val();
+         console.log(business);
+         sessionStorage.setItem("BusinessId", business.businessId);
+         sessionStorage.setItem("BusinessName", business.business_name);
+         sessionStorage.setItem("BusinessLogo", business.business_logo);
+       
+        this.setState({
+        
+            
+            
+          });
+    
+          
+         
+         
+        });
         }
-
         this.employeePositionList();
         
            
@@ -150,7 +167,7 @@ class EditEmployeePosition extends React.Component {
       
 
     employeePositionList=()=>{
-
+       
         const {employeePositionId} = this.props.match.params;
         this.setState({loading: true});
         var ref = firebase
@@ -172,6 +189,8 @@ class EditEmployeePosition extends React.Component {
                     employee_task_list: employeePosition.employee_task_list,
                     employee_position_document: employeePosition.employee_position_document,
 
+                   
+                  
                   
                    });
         });
@@ -214,6 +233,7 @@ class EditEmployeePosition extends React.Component {
             const {employeePositionId}=this.props.match.params;
             var sessionId = sessionStorage.getItem("RoleId");
             var username = sessionStorage.getItem("username");
+            var businessId = sessionStorage.getItem("businessId");
 
             let dbCon = firebase.database().ref(`/merchaant_employees_positions/${employeePositionId}`);
                 var key=(Math.round((new Date().getTime() / 1000))); 
@@ -228,9 +248,9 @@ class EditEmployeePosition extends React.Component {
 
             employee_position_document:this.state.employee_position_document,
 
-                sessionId:sessionId,
-                username:username,
-               
+            sessionId:sessionId,
+            username:username,
+            businessId:businessId,
            
         
              });
@@ -262,7 +282,37 @@ class EditEmployeePosition extends React.Component {
         });
     };
   
+    employeePositionChange  = (e) => {
+        this.setState({
+            employee_position: e.target.value
+        });
+        if(this.state.validError!=true){
+           
+            
+            var ref = firebase
+            .database()
+            .ref('merchaant_employees_positions/').orderByChild("employee_position").equalTo(e.target.value);
+            ref.on('value', snapshot => {
+                var  user_exist = snapshot.numChildren();
+                console.log(user_exist);
+           
+            if(user_exist>0 && this.state.validError!=true){
+               
+               
+                this.setState({mobile_message: "Position Name already exist",validError:false});
 
+            }
+          
+            else
+            {
+                this.setState({mobile_message: "",validError:true});
+               
+            }
+           
+        })
+    }
+       
+    };
 
     render() {
 

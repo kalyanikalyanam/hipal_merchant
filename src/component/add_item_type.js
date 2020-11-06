@@ -105,7 +105,7 @@ onChange = (event) => {
           
             var sessionId = sessionStorage.getItem("RoleId");
             var username = sessionStorage.getItem("username");
-
+            var businessId = sessionStorage.getItem("businessId");
             let dbCon = firebase
                 .database()
                 .ref('/ItemType');
@@ -116,7 +116,7 @@ onChange = (event) => {
                 item_type: this.state.item_type,                   
                 created_on:this.state.created_on,
                 sessionId:sessionId,
-
+                businessId:businessId,
             });
             // window.location.href="/AddItemMenu";
             this.props.onClose();
