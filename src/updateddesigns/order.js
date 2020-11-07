@@ -172,212 +172,189 @@ deleteItem = (val) => {
     render() {
       var orderId=(Math.round((new Date().getTime() / 10000)));
       var CartId=(Math.round((new Date().getTime() / 1000)));
-      // var Discount = "";
       let totalPrice = 0;
         return (
-            <div className="page-wrapper">
-   
-
-           <Sidebar/>
+          <div className="page-wrapper">
+            <Sidebar />
             <div className="page-container">
-       
-              <Header/>
-                <div className="main-content">
-                    <div className="section__content">
-                    
-                    
-                    
-            
-                    
-    <div className="container-fluid">
-    
-    
-    <div className="row">
-<div className="col-md-12 p-0">
-<div className="search_profile">
-<div className="row">
-<div className="col-md-6">
-<div className="company_name_box">
-<div className="company_iocn"></div>
-<div className="company_details">
-<p className="name">The Coffee Cup Sanikpuri </p>
-<p className="open">OPEN <i className="fa fa-circle" aria-hidden="true"></i></p>
-</div>
-</div>
-</div>
-<div className="col-md-3">
-<div className="search_top">
-<a href="#" className="search_icon"><i className="fas fa-search"></i></a>       
-<input className="search_input" type="text" name="" placeholder="Search..."/>
-</div>
-</div>
-<div className="col-md-3 ">
-<div className="profile_user">
-<span className="usericon">
-<img src="/images/icon/profile.jpg"/>
-</span>
-<span className="profile_data">
-<p className="name">{sessionStorage.getItem("username")}</p>
-<p>{sessionStorage.getItem("email")}</p>
-</span>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-    
-    
-    
-    
-    <div className="row mt-30">
-    
-    <div className="col-lg-7 cart_box_width_1">
-    
-    <div className="row">
-    
-    <div className="col-md-7">
-    <div className="staff_box row">
-    <div className="col-md-3">
-    <div className="kot_box">
-    <div className="cookhead">Cooking</div>
-    <div className="table_small">
-    <div className="people_row">
-    <span className="top fill"></span>
-    <span className="top fill"></span>
-    </div>
-    <div className="table_no">07A</div>
-    <div className="people_row">
-    <span className="bottom nonfille"></span>
-    <span className="bottom fill"></span>
-    </div>
-    
-    </div>
-    <div className="time"><span>2:02</span></div>
-    </div>
-    
-    
-    </div>
-    <div className="col-md-5">
-    
-    <div className="names_options"><a href="#">
-    <img src="/images/icon/icon_users.png"/>
-     Customers Names</a></div>
-    <div className="names_options m-t-20"><a href="#">
-    <img src="/images/icon/icon_settings.svg"/>
-     Advanced Options</a></div>
-    
-    </div>
-    <div className="col-md-4">
-    <div className="chooseemp_dropdown">
-    
-    
-    <select className="form-control">
-    <option>Choose Employee</option>
-    <option>Employee 1</option>
-    <option>Employee 2</option>
-    <option>Employee 3</option>
-    <option>Employee 4</option>
-    </select>
-    
-    
-    
-    
-    </div>
-    
-    </div>
-    
-    </div></div>
-    
-    <div className="col-md-5 p-r-0">
-    <div className="user_love_box">
-    <div className="visit_row">
-    <span>116<br></br><span className="sub">Visits</span></span>
-    <span>Loves<br></br><span className="sub">Chicken Past</span></span>
-    <span>LvL<br></br><span className="sub">D</span></span>
-    </div>
-    
-    <div className="loves_row">
-    <span><img src="/images/icon/love_icon.png"/></span>
-    <span>Chicken White Past..</span>
-    <span>
-    <img src="/images/icon/icon_1.png" className="one"/>
-    <img src="/images/icon/icon_2.png" className="two"/>
-    <img src="/images/icon/icon_3.png" className="three"/>
-    </span>
-    <span>9.9</span>
-    </div>
-    
-    <div className="loves_row">
-    <span><img src="/images/icon/love_icon.png"/></span>
-    <span>Chicken White Past..</span>
-    <span>
-    <img src="/images/icon/icon_1.png" className="one"/>
-    <img src="/images/icon/icon_2.png" className="two"/>
-    <img src="/images/icon/icon_3.png" className="three"/>
-    </span>
-    <span>9.9</span>
-    </div>
-    
-    <div className="knowmore_loves">
-    Know more
-    </div>
-    
-    
-    
-    </div>
-    </div>
-    
-    </div>
-    
-    
-    <div className="row m-t-20">
-    <div className="col-md-12 menu_category_block">
-    
-    <div className="category_menu_search">
-    <span className="cate_menu">
-    <a href="#" className="current">Menu</a> / 
-    <a href="#">Category 2</a> 
-    
-    </span>
-    <span className="cate_search">
-    <input type="text" id="myInput1" placeholder="Search"/>
-    <a href="#" className="search_icon"><i className="fas fa-search"></i></a>
-    </span>
-    </div>
-    
-    
-    <div className="cate_images_blk">
-    
-    <div className="row"  id="myDIV1">
-    {this.state.itemList&&this.state.itemList.map((item, index) => {
+              <Header />
+              <div className="main-content">
+                <div className="section__content">
+                  <div className="container-fluid">
+                    <div className="row">
+                      <div className="col-md-12 p-0">
+                        <div className="search_profile">
+                          <div className="row">
+                            <div className="col-md-6">
+                              <div className="company_name_box">
+                                <div className="company_iocn"></div>
+                                <div className="company_details">
+                                  <p className="name">The Coffee Cup Sanikpuri </p>
+                                  <p className="open">OPEN <i className="fa fa-circle" aria-hidden="true"></i></p>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="col-md-3">
+                              <div className="search_top">
+                                <a href="#" className="search_icon"><i className="fas fa-search"></i></a>
+                                <input className="search_input" type="text" name="" placeholder="Search..." />
+                              </div>
+                            </div>
+                            <div className="col-md-3 ">
+                              <div className="profile_user">
+                                <span className="usericon">
+                                  <img src="/images/icon/profile.jpg" />
+                                </span>
+                                <span className="profile_data">
+                                  <p className="name">{sessionStorage.getItem("username")}</p>
+                                  <p>{sessionStorage.getItem("email")}</p>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="row mt-30">
+                      <div className="col-lg-7 cart_box_width_1">
+                        <div className="row">
+                          <div className="col-md-7">
+                            <div className="staff_box row">
+                              <div className="col-md-3">
+                                <div className="kot_box">
+                                  <div className="cookhead">Cooking</div>
+                                  <div className="table_small">
+                                    <div className="people_row">
+                                      <span className="top fill"></span>
+                                      <span className="top fill"></span>
+                                    </div>
+                                    <div className="table_no">07A</div>
+                                    <div className="people_row">
+                                      <span className="bottom nonfille"></span>
+                                      <span className="bottom fill"></span>
+                                    </div>
+                                  </div>
+                                  <div className="time"><span>2:02</span></div>
+                                </div>
+                              </div>
+                              <div className="col-md-5">
+                                <div className="names_options"><a href="#">
+                                  <img src="/images/icon/icon_users.png" />Customers Names</a></div>
+                                <div className="names_options m-t-20"><a href="#">
+                                  <img src="/images/icon/icon_settings.svg" />Advanced Options</a></div>
 
-return (
-<div className="col-md-4 mb-15" key={index}>
-<Link to={`/SingleItempage/${item.itemId}`}>
-<div className="cate_img_box item">
-<div className="item_name">
-<span>{item.item_name}</span>
-<span className="item_diff ">
-    {item.item_type=="Veg"?
-    <span className="veg"></span>
-    :
-    <span className="nonveg"></span>
-}
-{item.item_type=="Egg"?
-<span className="egg"></span>
-:''
-  }
-</span>
-</div>
-<div className="price">₹ {item.item_price}</div>
-</div>
-</Link>
-</div>
+                              </div>
+                              <div className="col-md-4">
+                                <div className="chooseemp_dropdown">
 
-)})}
-    
-    {/* <div className="col-md-4 mb-15">
+
+                                  <select className="form-control">
+                                    <option>Choose Employee</option>
+                                    <option>Employee 1</option>
+                                    <option>Employee 2</option>
+                                    <option>Employee 3</option>
+                                    <option>Employee 4</option>
+                                  </select>
+
+
+
+
+                                </div>
+
+                              </div>
+
+                            </div></div>
+
+                          <div className="col-md-5 p-r-0">
+                            <div className="user_love_box">
+                              <div className="visit_row">
+                                <span>116<br></br><span className="sub">Visits</span></span>
+                                <span>Loves<br></br><span className="sub">Chicken Past</span></span>
+                                <span>LvL<br></br><span className="sub">D</span></span>
+                              </div>
+
+                              <div className="loves_row">
+                                <span><img src="/images/icon/love_icon.png" /></span>
+                                <span>Chicken White Past..</span>
+                                <span>
+                                  <img src="/images/icon/icon_1.png" className="one" />
+                                  <img src="/images/icon/icon_2.png" className="two" />
+                                  <img src="/images/icon/icon_3.png" className="three" />
+                                </span>
+                                <span>9.9</span>
+                              </div>
+
+                              <div className="loves_row">
+                                <span><img src="/images/icon/love_icon.png" /></span>
+                                <span>Chicken White Past..</span>
+                                <span>
+                                  <img src="/images/icon/icon_1.png" className="one" />
+                                  <img src="/images/icon/icon_2.png" className="two" />
+                                  <img src="/images/icon/icon_3.png" className="three" />
+                                </span>
+                                <span>9.9</span>
+                              </div>
+
+                              <div className="knowmore_loves">
+                                Know more
+    </div>
+
+
+
+                            </div>
+                          </div>
+
+                        </div>
+
+
+                        <div className="row m-t-20">
+                          <div className="col-md-12 menu_category_block">
+
+                            <div className="category_menu_search">
+                              <span className="cate_menu">
+                                <a href="#" className="current">Menu</a> /
+    <a href="#">Category 2</a>
+
+                              </span>
+                              <span className="cate_search">
+                                <input type="text" id="myInput1" placeholder="Search" />
+                                <a href="#" className="search_icon"><i className="fas fa-search"></i></a>
+                              </span>
+                            </div>
+
+
+                            <div className="cate_images_blk">
+
+                              <div className="row" id="myDIV1">
+                                {this.state.itemList && this.state.itemList.map((item, index) => {
+
+                                  return (
+                                    <div className="col-md-4 mb-15" key={index}>
+                                      <Link to={`/SingleItempage/${item.itemId}`}>
+                                        <div className="cate_img_box item">
+                                          <div className="item_name">
+                                            <span>{item.item_name}</span>
+                                            <span className="item_diff ">
+                                              {item.item_type == "Veg" ?
+                                                <span className="veg"></span>
+                                                :
+                                                <span className="nonveg"></span>
+                                              }
+                                              {item.item_type == "Egg" ?
+                                                <span className="egg"></span>
+                                                : ''
+                                              }
+                                            </span>
+                                          </div>
+                                          <div className="price">₹ {item.item_price}</div>
+                                        </div>
+                                      </Link>
+                                    </div>
+
+                                  )
+                                })}
+
+                                {/* <div className="col-md-4 mb-15">
     <div className="cate_img_box" style={{background:"#74b9ff"}}>
     <img src="/images/category_img.png"/>
     <p> CATEGORY 1</p>
@@ -454,96 +431,97 @@ return (
     <div className="price">₹ 299</div>
     </div>
     </div> */}
-    
-    
-    </div>
-    
-    
-    </div>
-    
-    </div>
-    
-    
-    </div>
-            
-    
-                    
-    
-    </div>
-    
-    
-    <div className="col-lg-5 righ_pangap cart_box_width_2">
-    
-    <div className="btns_livecart col-md-12">
-    <span className="width"><span className="activedot"></span><a href="/LiveCart"  className="btn">Live Cart</a></span> 
-    <span className="width"><a href="/Order"  className="btn active_item"> Order</a></span>
-    <span className="width"><a href="/Bill"  className="btn">Bill</a></span>
-    </div>
-    {this.state.cartList&&this.state.cartList.length >0
-            ? (
-    <div className="order_id_cart_box col-md-12 m-t-20">
-    <p className="order_id_cart">Order ID:  <span>{orderId}</span></p>
-    
-    
-    
-    
-    <div className="cart_scroll_box">
-    
-    
-    
-    <div className="cart2_box col-md-12 m-t-20">
-    <span className="ribbon_cart">2/5</span>
-    <div className="cart2_row">
-    <div className="cart_head">
-    <span>Cart 1 ID : {CartId}</span>
-    </div>
-    <div className="kot_box">
-    <span className="btn kot">KOT</span>
-    </div>
-    </div>
-    
-    
-    <div className="cart_scroll no_height">
-    
-    {this.state.cartList && this
-                                                    .state
-                                                    .cartList
-                                                    .map((item, index) => {
-                                                        var price = ((item.quantity) * (item.item_price));
-                                                      totalPrice += (price);
-                                                      return (
-    
-    <div className="cart2_row" key={index}>
-    <div className="box_1 new_size">
-    <p>{index+1}.  {item.item_name}</p>
-    
-    <div className="w-100-row m-b-10">
-    <Link to={`/SingleItempage/${item.itemId}`}> 
-    <div className="edit" data-toggle="modal" data-target="#edit_product">Edit</div>
-    </Link>
-    <div className="kot">KOT</div>  
-    </div> 
-     
-    <p className="offer_applied">10% Off Applied</p>   
-    </div>
-    
-    <div className="box_2">
-    <span>x{item.quantity}</span>
-    </div>
-    
-    
-    <div className="box_3">
-    <span> {parseFloat((item.quantity) * (item.item_price)).toFixed(2)}</span>
-    <span>00:03 min <br></br>last update</span>
-    </div>
-    
-    
-    
-    
-    </div>
-                                                      )})}
-    
-    {/* <div className="cart2_row">
+
+
+                              </div>
+
+
+                            </div>
+
+                          </div>
+
+
+                        </div>
+
+
+
+
+                      </div>
+
+
+                      <div className="col-lg-5 righ_pangap cart_box_width_2">
+
+                        <div className="btns_livecart col-md-12">
+                          <span className="width"><span className="activedot"></span><a href="/LiveCart" className="btn">Live Cart</a></span>
+                          <span className="width"><a href="/Order" className="btn active_item"> Order</a></span>
+                          <span className="width"><a href="/Bill" className="btn">Bill</a></span>
+                        </div>
+                        {this.state.cartList && this.state.cartList.length > 0
+                          ? (
+                            <div className="order_id_cart_box col-md-12 m-t-20">
+                              <p className="order_id_cart">Order ID:  <span>{orderId}</span></p>
+
+
+
+
+                              <div className="cart_scroll_box">
+
+
+
+                                <div className="cart2_box col-md-12 m-t-20">
+                                  <span className="ribbon_cart">2/5</span>
+                                  <div className="cart2_row">
+                                    <div className="cart_head">
+                                      <span>Cart 1 ID : {CartId}</span>
+                                    </div>
+                                    <div className="kot_box">
+                                      <span className="btn kot">KOT</span>
+                                    </div>
+                                  </div>
+
+
+                                  <div className="cart_scroll no_height">
+
+                                    {this.state.cartList && this
+                                      .state
+                                      .cartList
+                                      .map((item, index) => {
+                                        var price = ((item.quantity) * (item.item_price));
+                                        totalPrice += (price);
+                                        return (
+
+                                          <div className="cart2_row" key={index}>
+                                            <div className="box_1 new_size">
+                                              <p>{index + 1}.  {item.item_name}</p>
+
+                                              <div className="w-100-row m-b-10">
+                                                <Link to={`/SingleItempage/${item.itemId}`}>
+                                                  <div className="edit" data-toggle="modal" data-target="#edit_product">Edit</div>
+                                                </Link>
+                                                <div className="kot">KOT</div>
+                                              </div>
+
+                                              <p className="offer_applied">10% Off Applied</p>
+                                            </div>
+
+                                            <div className="box_2">
+                                              <span>x{item.quantity}</span>
+                                            </div>
+
+
+                                            <div className="box_3">
+                                              <span> {parseFloat((item.quantity) * (item.item_price)).toFixed(2)}</span>
+                                              <span>00:03 min <br></br>last update</span>
+                                            </div>
+
+
+
+
+                                          </div>
+                                        )
+                                      })}
+
+                                    {/* <div className="cart2_row">
     
     <div className="box_1 new_size">
     <p>1.  Veg Cesar Salad</p>
@@ -587,14 +565,14 @@ return (
     
     </div>
      */}
-    
-    
-    </div>
-    
-    <p className="cart_instu_head">Instruction for the cart</p>
-    </div>
-    
-    {/* <div className="cart2_box col-md-12 m-t-20">
+
+
+                                  </div>
+
+                                  <p className="cart_instu_head">Instruction for the cart</p>
+                                </div>
+
+                                {/* <div className="cart2_box col-md-12 m-t-20">
     <span className="ribbon_cart">2/5</span>
     <div className="cart2_row">
     <div className="cart_head">
@@ -686,94 +664,94 @@ return (
     
     <p className="cart_instu_head">Instruction for the cart</p>
     </div> */}
-    
-    
-    
-    </div>
-    
-    
-    
-    
-    
-    
-    
-    <div className="cart1_box col-md-12">
-    
-    <div className="expand_menu_cart"><span><img src="/images/icon/downarrow_cartexapand.png"/></span></div>
-    
-    <div className="cart_scroll">
-    
-    
-    
-    <div className="cart_total_row">
-    <p><span className="left discount">10% Applied</span> <span className="right discount">₹ 00</span></p>
-    
-    <p><span className="left">Extra Charges</span> <span className="right">0</span></p>
-    <p><span className="left tax">Tax & Charges</span> <span className="right">₹  00</span></p>
-    <p><span className="left discount">Discount (free delivery)</span> <span className="right discount">₹ 00</span></p>
-    
-    <p className="m-t-15"><span className="left grandtotal_font">Grand Total</span> <span className="right grand_font"> ₹ {totalPrice}.00</span></p>
-    
-    </div>
-    
-    </div>
-    
-    
-    
-    
-    
-    </div>
-    <div className="w-100-row kotsettle_btn">
-    
-    <span className="btn add_ord kot">
-    <a href="#">
-    KOT</a></span>
-    
-    <span className="btn view_ord"><a href="#"  data-toggle="modal" data-target="#add_edit_position">Settle</a> </span>
-    </div>
-    
-    </div>
-    
-    
-    )
-: 
-''
-// <h5 className="text_center">Your Cart (0) (in case cart is empty)</h5>
-}
-    
-    
-    
-    </div>
-    
-    
-    </div>
-    
-    
-    
-    
-    
-    </div>
-    
-    
-    
-    
-    
-    
-    
-    </div>
-                   
-    
-    
-    
-    
-    
-    
-    
-                   </div>
-                
-                
+
+
+
+                              </div>
+
+
+
+
+
+
+
+                              <div className="cart1_box col-md-12">
+
+                                <div className="expand_menu_cart"><span><img src="/images/icon/downarrow_cartexapand.png" /></span></div>
+
+                                <div className="cart_scroll">
+
+
+
+                                  <div className="cart_total_row">
+                                    <p><span className="left discount">10% Applied</span> <span className="right discount">₹ 00</span></p>
+
+                                    <p><span className="left">Extra Charges</span> <span className="right">0</span></p>
+                                    <p><span className="left tax">Tax & Charges</span> <span className="right">₹  00</span></p>
+                                    <p><span className="left discount">Discount (free delivery)</span> <span className="right discount">₹ 00</span></p>
+
+                                    <p className="m-t-15"><span className="left grandtotal_font">Grand Total</span> <span className="right grand_font"> ₹ {totalPrice}.00</span></p>
+
+                                  </div>
+
+                                </div>
+
+
+
+
+
+                              </div>
+                              <div className="w-100-row kotsettle_btn">
+
+                                <span className="btn add_ord kot">
+                                  <a href="#">
+                                    KOT</a></span>
+
+                                <span className="btn view_ord"><a href="#" data-toggle="modal" data-target="#add_edit_position">Settle</a> </span>
+                              </div>
+
+                            </div>
+
+
+                          )
+                          :
+                          ''
+                          // <h5 className="text_center">Your Cart (0) (in case cart is empty)</h5>
+                        }
+
+
+
+                      </div>
+
+
+                    </div>
+
+
+
+
+
+                  </div>
+
+
+
+
+
+
+
                 </div>
-                </div>
+
+
+
+
+
+
+
+
+              </div>
+
+
+            </div>
+          </div>
         );
     }
 }

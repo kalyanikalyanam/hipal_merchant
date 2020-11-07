@@ -9,27 +9,23 @@ import Info from './info'
 import Menu from './menu'
 import LeftSidebar from './leftSidebar';
 import ModalForm from './ModalForm'
-import {dispatchContext, liveCartContext, modalContext, orderContext} from './contexts'
+import {dispatchContext, liveCartContext, modalContext, orderContext, billContext, billPageContext} from './contexts'
 import reducer from './reducer'
+import BottomComp from './BottomComp'
 
 Modal.setAppElement(document.getElementById('root'));
-const customStyles = {
-  content : {
-        top: '50%',
-        left: '50%',
-        right: 'auto',
-        bottom: 'auto',
-        marginRight: '-50%',
-        transform: 'translate(-50%, -50%)'
-  }
-};
+
 
 const initState = {
     liveCart: [],
     order: [],
     bill: [],
     show: false,
-    modalItem: {}
+    modalItem: {},
+    cardId: {},
+    orderId: {},
+    billPage: false
+
 }
 
 const LiveCartPage = (props) => {
@@ -69,6 +65,8 @@ const LiveCartPage = (props) => {
         <dispatchContext.Provider value={dispatch}>
             <liveCartContext.Provider value={reducerState.liveCart}>
                 <orderContext.Provider value={reducerState.order}>
+                    <billContext.Provider value={reducerState.bill} >
+                    
                     <div className="page-wrapper">
                         <Sidebar />
                         <div className="page-container">
@@ -110,23 +108,26 @@ const LiveCartPage = (props) => {
                                         </div>
                                     </div>
                                     <div className="row mt-30">
-                                        <div className="col-lg-7 cart_box_width_1">
-                                            <div className="row">
-                                                <Table tableId={props.match.params.params} />
-                                                <Info />
+                                            <div className="col-lg-7 cart_box_width_1">
+                                                <div className="row">
+                                                    <Table tableId={props.match.params.params} />
+                                                    <Info />
+                                                </div>
+                                                <billPageContext.Provider value={reducerState.billPage} >
+                                                    <BottomComp />
+                                                </billPageContext.Provider >
                                             </div>
-                                            <Menu businessId={sessionStorage.getItem("businessId")} />
-                                        </div>
                                         <LeftSidebar />
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    </billContext.Provider>
                 </orderContext.Provider>
             </liveCartContext.Provider>
             <modalContext.Provider value={reducerState.modalItem}>
-                <Modal isOpen={reducerState.show} style={customStyles}>
+                <Modal isOpen={reducerState.show} >
                     <ModalForm item={reducerState.modalItem} />
                 </Modal>
             </modalContext.Provider>

@@ -130,6 +130,7 @@ class Routing extends React.Component {
                  <Route exact strict path="/" component={Login1}/>
                  <Route path="/EmployeeLogin" component={EmployeeLogin}/>
                 <Route path="/test/:params" component={LiveCartPage} />
+                 <PrivateRoute path="/LiveCart/:params" component={LiveCartPage} />
 
 
                  <PrivateRoute path="/BusinessList" component={BusinessList}/>
@@ -221,7 +222,6 @@ class Routing extends React.Component {
                  <PrivateRoute path="/Table" component={Table}/>
                  <PrivateRoute path="/Order" component={Order}/>
                
-                 <PrivateRoute path="/LiveCart/:tableId" component={LiveCart} />
                  <PrivateRoute path="/Bill" component={Bill}/>
                  <PrivateRoute path="/CategorySettings" component={CategorySettings}/>
                  <PrivateRoute path="/Settele" component={Settele}/>

@@ -15,6 +15,8 @@ const ModalForm = () => {
     }
     const onSubmit = (data) => {
         item.quantity = data.quantity
+        item.discount = item.item_price * data.item_discount / 100
+        console.log(item)
         dispatch({
             type: actions.ADDLIVE,
             item: item 
