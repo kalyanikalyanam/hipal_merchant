@@ -175,7 +175,6 @@ class Routing extends React.Component {
         <PrivateRoute path="/AllMessages" component={AllMessages} />
         <PrivateRoute path="/Order" component={Order} />
         <PrivateRoute path="/LiveCart/:tableId" component={LiveCart} />
-        <PrivateRoute path="/LiveCart" component={LiveCart} />
         <PrivateRoute path="/Bill" component={Bill} />
         <PrivateRoute path="/CategorySettings" component={CategorySettings} />
         <PrivateRoute path="/Settele" component={Settele} />

@@ -133,7 +133,7 @@ const LiveCartPage = (props) => {
                                             <div className="row mt-30">
                                                 <div className="col-lg-7 cart_box_width_1">
                                                     <div className="row">
-                                                        <Table tableId={props.match.params.params} />
+                                                        <Table tableId={props.match.params.tableId} />
                                                         <Info />
                                                     </div>
 
