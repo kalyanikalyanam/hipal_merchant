@@ -63,7 +63,7 @@ import AllMessages from "./component/all_messages";
 import CategoryList from "./component/category_list";
 
 import Order from "./updateddesigns/order";
-import LiveCart from "./updateddesigns/livecart";
+import LiveCart from "./updateddesigns/liveCartComponents/index";
 import Bill from "./updateddesigns/bill";
 import CategorySettings from "./updateddesigns/category_settings";
 import Settele from "./updateddesigns/settele";
