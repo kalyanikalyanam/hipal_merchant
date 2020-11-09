@@ -2,7 +2,7 @@
 import "firebase/auth";
 import "firebase/database";
 import "firebase/storage";
-import firebase from 'firebase';
+import firebase, { firestore } from 'firebase';
 
 const config = {
   apiKey: "AIzaSyBrlOTkWk_tCvhMBTSP0TfKbmvKuuETF_s",
@@ -16,12 +16,12 @@ const config = {
 };
 
 firebase.initializeApp(config);
-firebase.firestore();
 
 // export const googleProvider = new firebase.auth.GoogleAuthProvider();
 // export const facebookProvider = new firebase.auth.FacebookAuthProvider();
 // export const twitterProvider = new firebase.auth.TwitterAuthProvider();
 
+export const db = firebase.firestore()
 export const ref = firebase.database().ref();
 export const firebaseAuth = firebase.auth();
 export default firebase;

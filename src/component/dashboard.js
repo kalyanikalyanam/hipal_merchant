@@ -318,7 +318,7 @@ class Dashboard extends React.Component {
 <div className="row">
 <div className="col-md-8">
 <div className="search_top">
-<a href="#" className="search_icon"><i className="fas fa-search"></i></a>       
+<a href="#" className="search_icon"><i className="fas fa-search"></i></a>
 <input className="search_input" type="text" name="" placeholder="Search..."/>
 </div>
 </div>

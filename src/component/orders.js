@@ -54,7 +54,7 @@ class Orders extends React.Component {
                 <div className="menu-sidebar__content js-scrollbar1">
                     <nav className="navbar-sidebar">
                         <ul className="list-unstyled navbar__list">
-                            
+
     <li><a href="#" className="home"> Home</a></li>
     <li><a href="#" className="oders active">Orders</a></li>
     <li><a href="#" className="customers">Customers</a></li>
@@ -63,16 +63,16 @@ class Orders extends React.Component {
     <li><a href="#"  className="messages">Messages</a></li>
     <li><a href="#"  className="bills">Bills</a></li>
     <li><a href="#" className="settings">Settings</a></li>
-    
-                            
-                            
-                            
-                            
-                            
-                   
-                            
-                        
-                            
+
+
+
+
+
+
+
+
+
+
                         </ul>
                     </nav>
                 </div>
@@ -92,8 +92,8 @@ class Orders extends React.Component {
                         <img src="images/icon/logo.svg" alt="Hipal Admin" />
                     </a>
                 </div>
-                
-                
+
+
                 Welcome Back Varun
                 </header> */}
           {/* <!-- HEADER DESKTOP--> */}

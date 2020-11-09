@@ -333,13 +333,13 @@ class Table extends React.Component {
     <div className="avaliabe_row-tablename">
     <span className="kot">KOT PENDING</span>
     <span className="tablename">T1</span>
-    
+
     </div>
     <div className="avaliabe_row-head">
     <span className="avalibility">Vacant</span>
     <span className="time">2:02</span>
     </div>
-    
+
     <div className="avaliabe_row vacant"></div>
     </div>
     <div className="persons_row">
@@ -348,7 +348,7 @@ class Table extends React.Component {
     </div>
     </div>
     </div>
-    
+
     <div className="table_2 mb-20">
     <div className="head_table">Order Palced <span></span></div>
     <div className="table-design two_people">
@@ -360,13 +360,13 @@ class Table extends React.Component {
     <div className="avaliabe_row-tablename">
     <span className="kot">COOKING</span>
     <span className="tablename">T2</span>
-    
+
     </div>
     <div className="avaliabe_row-head">
     <span className="avalibility">Occupied</span>
     <span className="time">2:02</span>
     </div>
-    
+
     <div className="avaliabe_row ocupied"></div>
     </div>
     <div className="persons_row">
@@ -375,7 +375,7 @@ class Table extends React.Component {
     </div>
     </div>
     </div>
-    
+
     <div className="table_2 mb-20">
     <div className="head_table"></div>
     <div className="table-design two_people">
@@ -387,12 +387,12 @@ class Table extends React.Component {
     <div className="avaliabe_row-tablename">
     <span className="kot">TO DELIVER</span>
     <span className="tablename">T3</span>
-    
+
     </div>
     <div className="avaliabe_row-head">
     <span className="avalibility">Vacant</span>
     </div>
-    
+
     <div className="avaliabe_row vacant"></div>
     </div>
     <div className="persons_row">
@@ -401,7 +401,7 @@ class Table extends React.Component {
     </div>
     </div>
     </div>
-    
+
     <div className="table_2 mb-20">
     <div className="head_table"></div>
     <div className="table-design two_people">
@@ -412,13 +412,13 @@ class Table extends React.Component {
     <div className="persons_data_table">
     <div className="avaliabe_row-tablename">
     <span className="tablename">T4</span>
-    
+
     </div>
     <div className="avaliabe_row-head">
     <span className="avalibility">Merged With T-5</span>
-    
+
     </div>
-    
+
     <div className="avaliabe_row merge"></div>
     </div>
     <div className="persons_row">
@@ -427,9 +427,9 @@ class Table extends React.Component {
     </div>
     </div>
     </div>
-    
+
     <div className="table_2 mb-20">
-    
+
     <div className="head_table"></div>
     <div className="table-design two_people">
     <div className="persons_row">
@@ -439,13 +439,13 @@ class Table extends React.Component {
     <div className="persons_data_table">
     <div className="avaliabe_row-tablename">
     <span className="tablename">T5</span>
-    
+
     </div>
     <div className="avaliabe_row-head">
     <span className="avalibility">Vacant</span>
-    
+
     </div>
-    
+
     <div className="avaliabe_row merge"></div>
     </div>
     <div className="persons_row">
@@ -454,9 +454,9 @@ class Table extends React.Component {
     </div>
     </div>
     </div>
-    
-    
-    
+
+
+
     <div className="table_2 mb-20">
     <div className="head_table"></div>
     <div className="table-design two_people">
@@ -466,9 +466,9 @@ class Table extends React.Component {
     </div>
     <div className="persons_data_table">
     <div className="avaliabe_row-tablename">
-    
+
     <span className="tablename">T6</span>
-    
+
     </div>
     <div className="avaliabe_row-head">Reserved <br></br> <span className="span_font">12 Sept 1:00 pm</span></div>
     <div className="avaliabe_row reserved"></div>
@@ -479,6 +479,7 @@ class Table extends React.Component {
     </div>
     </div>
     </div>
+<<<<<<< HEAD
      */}
                   {this.state.tableList &&
                     this.state.tableList.map((table, index) => {
@@ -522,10 +523,17 @@ class Table extends React.Component {
                     })}
 
                   {/* <div className="table_1 mb-20">
+=======
+    */}
+                  {this.state.loading && <div>Loading</div>}
+                  {this.state.tableList && tables}
+
+                  {/* <div className="table_1 mb-20">
+>>>>>>> a87e2281eddb2c21674d75933583acda0219faf6
     <div className="head_table"></div>
     <div className="table-design one_people">
     <div className="persons_row">
-    
+
     <span className="person ocupied"></span>
     </div>
     <div className="persons_data_table">
@@ -538,24 +546,24 @@ class Table extends React.Component {
     <div className="avaliabe_row ocupied"></div>
     </div>
     <div className="persons_row">
-    
+
     <span className="person down ocupied"></span>
     </div>
     </div>
     </div>
-    
+
     <div className="table_1 mb-20">
     <div className="head_table"></div>
     <div className="table-design one_people">
     <div className="persons_row">
-    
+
     <span className="person vacant"></span>
     </div>
     <div className="persons_data_table">
     <div className="avaliabe_row-tablename">
     <span className="tablename">T9</span>
-    
-    
+
+
     </div>
     <div className="avaliabe_row-head">
     <span className="avalibility">Reserved</span>
@@ -563,7 +571,7 @@ class Table extends React.Component {
     <div className="avaliabe_row vacant"></div>
     </div>
     <div className="persons_row">
-    
+
     <span className="person down vacant"></span>
     </div>
     </div>

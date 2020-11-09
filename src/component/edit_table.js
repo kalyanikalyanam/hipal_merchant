@@ -450,7 +450,7 @@ class EditTable extends React.Component {
             </span>
             <input type="text" className="form-control" readonly=""/>
         </div>
-        
+
     </div></div> */}
                     </div>
                     {this.validator.message(

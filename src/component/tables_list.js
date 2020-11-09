@@ -436,8 +436,8 @@ class TablesList extends React.Component {
                         <img src="images/icon/logo.svg" alt="Hipal Admin" />
                     </a>
                 </div>
-                
-                
+
+
                 Welcome Back Varun
                 </header> */}
             {/* <!-- HEADER DESKTOP--> */}
@@ -748,7 +748,7 @@ class TablesList extends React.Component {
             </span>
             <input type="text" className="form-control" readonly=""/>
         </div>
-        
+
     </div></div> */}
                       </div>
                       {this.validator.message(
@@ -863,7 +863,7 @@ class TablesList extends React.Component {
 <label className=" form-control-label">Table Name</label>
 </div>
 <div className="col-12 col-md-6">
-<input type="text" id="text-input" 
+<input type="text" id="text-input"
  name="table_name"
  value={this.state.table_name}
  onChange={this.tablenameChange}
@@ -880,7 +880,7 @@ placeholder="T1" className="form-control edit_product"/>
 <label className=" form-control-label">Capacity</label>
 </div>
 <div className="col-12 col-md-6">
-<select 
+<select
  name="table_capacity"
  value={this.state.table_capacity}
  onChange={this.onChange}
@@ -963,7 +963,7 @@ id="select" className="form-control edit_product">
 <label className=" form-control-label">Notes</label>
 </div>
 <div className="col-12 col-md-6">
-<textarea 
+<textarea
 name="table_notes"
 value={this.state.table_notes}
 onChange={this.onChange}
