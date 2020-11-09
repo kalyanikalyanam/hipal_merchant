@@ -63,7 +63,7 @@ import AllMessages from "./component/all_messages";
 import CategoryList from "./component/category_list";
 
 import Order from "./updateddesigns/order";
-import LiveCart from "./updateddesigns/livecart";
+import LiveCart from "./updateddesigns/liveCartComponents/index";
 import Bill from "./updateddesigns/bill";
 import CategorySettings from "./updateddesigns/category_settings";
 import Settele from "./updateddesigns/settele";
@@ -174,7 +174,7 @@ class Routing extends React.Component {
         <PrivateRoute path="/Settings" component={Settings} />
         <PrivateRoute path="/AllMessages" component={AllMessages} />
         <PrivateRoute path="/Order" component={Order} />
-        {/* <PrivateRoute path="/LiveCart/:tableId" component={LiveCart} /> */}
+        <PrivateRoute path="/LiveCart/:tableId" component={LiveCart} />
         <PrivateRoute path="/LiveCart" component={LiveCart} />
         <PrivateRoute path="/Bill" component={Bill} />
         <PrivateRoute path="/CategorySettings" component={CategorySettings} />
