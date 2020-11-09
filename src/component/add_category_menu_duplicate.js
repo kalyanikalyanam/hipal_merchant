@@ -407,7 +407,8 @@ class AddCategoryMenuDuplicate extends React.Component {
         sessionId: sessionId,
         username: username,
         businessId: businessId,
-        itemId: this.state.itemId,
+        itemId: "",
+        // itemId: this.state.itemId,
       });
 
       if (this.state.parentId !== "")

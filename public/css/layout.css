@@ -20926,6 +20926,7 @@ width:80%;
     color: #fff;
     text-align: center;
     font-size: 9px;
+    z-index: auto;
 }
 
 .btns_livecart span.width .activedot.red {
@@ -21283,7 +21284,7 @@ font-weight:600;
     font-size: 12px;
     left: 0px;
     top: -16px;
-    z-index: 100000000;
+    z-index: auto;
 }
 
 .livecart_box{

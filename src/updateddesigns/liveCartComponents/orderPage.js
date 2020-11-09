@@ -12,7 +12,9 @@ const Orders = () => {
     const handleKOT = () => {
         dispatch({
             type: actions.SENDTOBILL,
-            orderId: orderId.current
+            orderId: orderId.current,
+            orderDiscount: totalDiscount.current,
+            orderPrice: totalPrice.current
         })
     }
     const handleCancel = () => {
@@ -31,9 +33,7 @@ const Orders = () => {
                     totalDiscount.current += cart.cartDiscount
                     totalPrice.current += cart.cartPrice
                     return(
-                        <div>
-                            <OrderItem cart={cart} key={index} index={index} />
-                        </div>
+                            <OrderItem cart={cart} key={index} cartNo={index + 1} index={index} />
                     )
                 })}
             </div> 
@@ -45,7 +45,7 @@ const Orders = () => {
                             <p><span className="left">Extra Charges</span> <span className="right">0</span></p>
                             <p><span className="left tax">Tax & Charges</span> <span className="right">₹ 00</span></p>
                             <p><span className="left discount">Discount (free delivery)</span> <span className="right discount">₹ {totalDiscount.current}</span></p>
-                            <p className="m-t-15"><span className="left grandtotal_font">Grand Total</span> <span className="right grand_font"> ₹{totalPrice.current}.00</span></p>
+                            <p className="m-t-15"><span className="left grandtotal_font">Grand Total</span> <span className="right grand_font"> ₹{totalPrice.current-totalDiscount.current }.00</span></p>
                         </div>
                     </div>
                 </div>

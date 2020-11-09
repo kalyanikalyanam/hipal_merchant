@@ -479,7 +479,6 @@ class Table extends React.Component {
     </div>
     </div>
     </div>
-<<<<<<< HEAD
      */}
                   {this.state.tableList &&
                     this.state.tableList.map((table, index) => {
@@ -523,13 +522,6 @@ class Table extends React.Component {
                     })}
 
                   {/* <div className="table_1 mb-20">
-=======
-    */}
-                  {this.state.loading && <div>Loading</div>}
-                  {this.state.tableList && tables}
-
-                  {/* <div className="table_1 mb-20">
->>>>>>> a87e2281eddb2c21674d75933583acda0219faf6
     <div className="head_table"></div>
     <div className="table-design one_people">
     <div className="persons_row">
