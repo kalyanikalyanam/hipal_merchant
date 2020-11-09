@@ -6,16 +6,20 @@ import * as actions from "./actionTypes";
 const Table = ({ tableId }) => {
   const [state, setState] = useState({});
   const dispatch = useContext(dispatchContext);
-  const getData = async () => {
-    const ref = firebase.database().ref("tables_with_floors/" + tableId);
-    ref.on("value", (snapshot) => {
-      const tableData = snapshot.val();
-      setState(tableData);
-      dispatch({
-        type: actions.ADDTABLEDATA,
-        table: tableData,
+  const getData = () => {
+    firebase
+      .firestore()
+      .collection("tables")
+      .doc(tableId)
+      .get()
+      .then((snapshot) => {
+        const tableData = snapshot.data();
+        setState(tableData);
+        dispatch({
+          type: actions.ADDTABLEDATA,
+          table: tableData,
+        });
       });
-    });
   };
   useEffect(() => {
     getData();
