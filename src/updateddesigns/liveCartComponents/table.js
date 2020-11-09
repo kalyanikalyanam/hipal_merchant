@@ -1,21 +1,27 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import firebase from '../../config'
+import {dispatchContext} from './contexts'
+import * as actions from './actionTypes'
 
 
 const Table = ({tableId}) => {
     const [state, setState] = useState({})
+    const dispatch = useContext(dispatchContext)
     const getData = async () => {
         const ref = firebase.database().ref('tables_with_floors/' + tableId)
-        ref.on('value', snapshot => {
+        ref.on('value',snapshot => {
             const tableData = snapshot.val()
-            console.log(tableData)
             setState(tableData)
-            console.log(state)
+            dispatch({
+                type: actions.ADDTABLEDATA,
+                table: tableData
+            })
         })
     }
     useEffect(() => {
         getData()
     },[])
+    
     return (
         <div className="col-md-7">
             <div className="staff_box row">

@@ -1,11 +1,11 @@
 import React from 'react'
 
 
-const OrderItem = ({cart, index}) => {
+const OrderItem = ({cart, index, cartNo}) => {
     return(
         <div className="cart2_box col-md-12 m-t-20">
             <span className="ribbon_cart">
-                {cart ? cart.length : 0}/5
+                {cartNo ? cartNo : 0}/5
             </span>
             <div className="cart2_row">
                 <div className="cart_head">

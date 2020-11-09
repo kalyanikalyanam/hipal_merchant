@@ -1,4 +1,4 @@
-import React, { useRef,useContext } from 'react'
+import React, { useRef,useContext }from 'react'
 import LiveCartItem from './LiveCartItem'
 import {liveCartContext, dispatchContext} from './contexts'
 import * as actions from './actionTypes'
@@ -43,7 +43,6 @@ const LiveCartPage = () => {
                     {cartList && cartList.map((item, index) => {
                         const price = parseInt((item.quantity) * (item.item_price))
                         totalPrice.current += (price)
-                        console.log(item.quantity)
                         totalDiscount.current += (item.discount * item.quantity)
                         return(<LiveCartItem item={item} index={index} key={index}/>)
                     })}
@@ -54,9 +53,10 @@ const LiveCartPage = () => {
                 <div className="expand_menu_cart"><span><img src="/images/icon/downarrow_cartexapand.png" /></span></div>
                 <div className="cart_scroll">
                     <div className="cart_total_row">
-                        <p><span className="left discount">10% Applied</span> <span className="right discount">₹ 00</span></p>
+                        <p><span className="left">Total Price</span> <span className="right discount">₹{totalPrice.current}.00</span></p>
+                        <p><span className="left discount">10% Applied</span> <span className="right discount">₹{totalPrice.current *0.1} 00</span></p>
                         <p><span className="left">Extra Charges</span> <span className="right">0</span></p>
-                        <p><span className="left tax">Tax & Charges</span> <span className="right">₹  00</span></p>
+                        <p><span className="left tax">Tax & Charges</span> <span className="right">₹ 00.00</span></p>
                         <p><span className="left discount">Discount (free delivery)</span> <span className="right discount">₹{totalDiscount.current}.00</span></p>
                         <p className="m-t-15"><span className="left grandtotal_font">Grand Total</span> <span className="right grand_font"> ₹{totalPrice.current - totalDiscount.current}.00</span></p>
                     </div>

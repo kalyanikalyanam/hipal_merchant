@@ -16,7 +16,7 @@ const ModalForm = () => {
     const onSubmit = (data) => {
         item.quantity = data.quantity
         item.discount = item.item_price * data.item_discount / 100
-        console.log(item)
+        item.status = data.item_status
         dispatch({
             type: actions.ADDLIVE,
             item: item 
@@ -46,7 +46,6 @@ const ModalForm = () => {
                                         id="select" className="form-control edit_product"
                                         ref={register}
                                     >
-                                        <option value="0">select</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
                                         <option value="3">3</option>
@@ -75,7 +74,7 @@ const ModalForm = () => {
                                         className="form-control edit_product"
                                         ref={register}
                                     >
-                                        <option value="0">select</option>
+                                        <option value="0">0%</option>
                                         <option value="10">10%</option>
                                         <option value="15">15%</option>
                                         <option value="20">20%</option>
@@ -94,9 +93,8 @@ const ModalForm = () => {
                                         className="form-control edit_product"
                                         ref={register}
                                     >
-                                        <option value="0">select</option>
-                                        <option value="active">active</option>
                                         <option value="inactive">inactive</option>
+                                        <option value="active">active</option>
                                     </select>
                                 </div>
                             </div>

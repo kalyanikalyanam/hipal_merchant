@@ -14,3 +14,6 @@ export const CLOSEMODEL = 'CLOSEMODEL'
 
 export const BILLPAGESHOW = 'BILLPAGE'
 export const BILLPAGEHIDE = 'BILLPAGEHIDE'
+export const SETBILLID = 'SETBILLID'
+
+export const ADDTABLEDATA = 'ADDTABLEDATA'

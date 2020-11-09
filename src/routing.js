@@ -128,8 +128,8 @@ class Routing extends React.Component {
                  {/* <Route exact strict path="/" component={Login}/> */}
 
                  <Route exact strict path="/" component={Login1}/>
+                 <Route exact strict path="/Register" component={Register}/>
                  <Route path="/EmployeeLogin" component={EmployeeLogin}/>
-                <Route path="/test/:params" component={LiveCartPage} />
                  <PrivateRoute path="/LiveCart/:params" component={LiveCartPage} />
 
 
