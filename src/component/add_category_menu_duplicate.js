@@ -14,7 +14,7 @@ class AddCategoryMenuDuplicate extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-        parentName:"",
+      parentName: "",
       currentCategory: [{}],
       item_category: "",
       item_sub_category: "",
@@ -34,14 +34,14 @@ class AddCategoryMenuDuplicate extends React.Component {
       status: "select",
       parentId: "",
       itemId: [],
-    //   IsParent:true,
+      //   IsParent:true,
     };
 
     // this.explore=this.explore.bind(this);
-    
+
     this.selectcategory = this.selectcategory.bind(this);
     this.selectItem = this.selectItem.bind(this);
-    
+
     this.onChange = this.onChange.bind(this);
     this.validator = new SimpleReactValidator({
       className: "text-danger",
@@ -144,17 +144,19 @@ class AddCategoryMenuDuplicate extends React.Component {
 
   componentDidMount() {
     this.setState({ loading: true });
+
     var sessionId = sessionStorage.getItem("RoleId");
-    var businessId = sessionStorage.getItem("businessId");
     if (sessionId) {
-      //console.log(sessionId);
+      console.log(sessionId);
 
       firebase
-        .database()
-        .ref("merchant_users/" + sessionId)
-        .on("value", (snapshot) => {
-          var Users = snapshot.val();
-          //console.log(Users);
+        .firestore()
+        .collection("/merchant_users")
+        .doc(sessionId)
+        .get()
+        .then((snapshot) => {
+          var Users = snapshot.data();
+          console.log(Users);
           sessionStorage.setItem("username", Users.user_name);
           sessionStorage.setItem("email", Users.email_id);
 
@@ -163,333 +165,207 @@ class AddCategoryMenuDuplicate extends React.Component {
             loading: false,
           });
         });
-
-        firebase
-        .database().ref('merchaant_business_details/' + businessId).on('value', snapshot => {
-     var business = snapshot.val();
-     console.log(business);
-     sessionStorage.setItem("BusinessId", business.businessId);
-     sessionStorage.setItem("BusinessName", business.business_name);
-     sessionStorage.setItem("BusinessLogo", business.business_logo);
-   
-    this.setState({
-    
-        
-        
-      });
-
-      
-     
-     
-    });
+      var businessId = sessionStorage.getItem("businessId");
+      firebase
+        .firestore()
+        .collection("/businessdetails")
+        .doc(businessId)
+        .get()
+        .then((snapshot) => {
+          var business = snapshot.data();
+          console.log(business);
+          sessionStorage.setItem("BusinessName", business.business_name);
+          sessionStorage.setItem("BusinessLogo", business.business_logo);
+        });
     }
 
     this.itemCategoryList();
     this.itemMenuList();
   }
 
-  // itemCategoryList() {
-  //   var sessionId = sessionStorage.getItem("RoleId");
-  //   var businessId = sessionStorage.getItem("businessId");
-  //   this.setState({ loading: true });
-  //   var ref = firebase
-  //     .database()
-  //     .ref("dummy/")
-  //     .orderByChild("sessionId")
-  //     .equalTo(sessionStorage.getItem("RoleId"));
-
-  //   ref.on("value", (snapshot) => {
-  //     const data = [];
-  //     snapshot.forEach((childSnapShot) => {
-  //       const GSTData = {
-  //         categoryId: childSnapShot.key.toString(),
-  //         name: childSnapShot.val().name,
-  //         isParent: childSnapShot.val().isParent,
-  //         photo: childSnapShot.val().photo,
-  //         color: childSnapShot.val().color,
-  //         created_on: childSnapShot.val().created_on,
-  //         parentId: childSnapShot.val().parentId,
-  //         sessionId: childSnapShot.val().sessionId,
-  //         username: childSnapShot.val().username,
-  //       };
-
-  //       data.push(GSTData);
-  //     });
-  //     let businessid = data.filter((res) => {
-  //       return res.businessId === businessId;
-  //     });
-
-  //     let sortedKeys = businessid.filter((res) => {
-  //       return res.parentId === "";
-  //     });
-
-  //     this.setState({
-  //       CategoryList: sortedKeys,
-  //       countPage: data.length,
-  //       loading: false,
-  //     });
-
-  //     this.setState({
-  //       currentCategory: [
-  //         {
-  //           id: "",
-  //           name: "categories",
-  //         },
-  //       ],
-  //     });
-  //   });
-  // }
-  // explore = (e, name) => {
-  //   var sessionId = sessionStorage.getItem("RoleId");
-  //   var businessId = sessionStorage.getItem("businessId");
-  //   e.preventDefault();
-  //   let { id } = e.target;
-
-  //   let exp = firebase
-  //     .database()
-  //     .ref("/dummy")
-  //     .orderByChild("sessionId")
-  //     .equalTo(sessionStorage.getItem("RoleId"));
-  //   console.log("id", id, "name", name);
-  //   exp.on("value", async (snapshot) => {
-  //     const data = [];
-  //     snapshot.forEach((childSnapShot) => {
-  //       const GSTData = {
-  //         categoryId: childSnapShot.key.toString(),
-
-  //         name: childSnapShot.val().name,
-  //         isParent: childSnapShot.val().isParent,
-  //         photo: childSnapShot.val().photo,
-  //         color: childSnapShot.val().color,
-  //         created_on: childSnapShot.val().created_on,
-  //         parentId: childSnapShot.val().parentId,
-  //         sessionId: childSnapShot.val().sessionId,
-  //         username: childSnapShot.val().username,
-  //       };
-  //       data.push(GSTData);
-  //     });
-  //     let businessid = data.filter((res) => {
-  //       return res.businessId === businessId;
-  //     });
-
-  //     let sortedKeys = businessid.filter((res) => {
-  //       return res.parentId === "";
-  //     });
-  //     this.setState({
-  //       CategoryList: sortedKeys,
-  //       countPage: data.length,
-  //       loading: false,
-  //     });
-  //     let arr = this.state.currentCategory;
-  //     for (let i = 0; i < this.state.currentCategory.length; i++) {
-  //       console.log(arr);
-  //       console.log(arr[i]);
-  //       if (arr[i].id === id) {
-  //         arr = arr.slice(0, i);
-  //         break;
-  //       }
-  //     }
-  //     console.log(arr);
-
-  //     arr.push({
-  //       id: id,
-  //       name: name,
-  //     });
-  //     await this.setState({ currentCategory: arr });
-  //     console.log(this.state.currentCategory);
-  //   });
-  // };
-
-
-  itemCategoryList() {
-
+  itemCategoryList = () => {
     var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
     this.setState({ loading: true });
-    var ref = firebase
-      .database()
-      .ref("dummy/")
-      .orderByChild("businessId")
-      .equalTo(businessId);
+    firebase
+      .firestore()
+      .collection("categories")
+      .where("sessionId", "==", sessionId)
+      .where("businessId", "==", businessId)
+      .where("parentId", "==", "")
+      .get()
+      .then((querySnapshot) => {
+        var data = [];
+        querySnapshot.forEach((childSnapShot) => {
+          const GSTData = {
+            categoryId: childSnapShot.id,
+            name: childSnapShot.data().name,
+            isParent: childSnapShot.data().isParent,
+            photo: childSnapShot.data().photo,
+            color: childSnapShot.data().color,
+            created_on: childSnapShot.data().created_on,
+            parentId: childSnapShot.data().parentId,
+            sessionId: childSnapShot.data().sessionId,
+            username: childSnapShot.data().username,
+          };
 
-    ref.on("value", (snapshot) => {
-      const data = [];
-      snapshot.forEach((childSnapShot) => {
-        const GSTData = {
-          categoryId: childSnapShot.key.toString(),
-          name: childSnapShot.val().name,
-          isParent: childSnapShot.val().isParent,
-          photo: childSnapShot.val().photo,
-          color: childSnapShot.val().color,
-          created_on: childSnapShot.val().created_on,
-          parentId: childSnapShot.val().parentId,
-          sessionId: childSnapShot.val().sessionId,
-          username: childSnapShot.val().username,
-          
-        };
+          data.push(GSTData);
+        });
+        this.setState({
+          CategoryList: data,
+          countPage: data.length,
+          loading: false,
+        });
+        // console.log(CategoryList);
+        this.setState({
+          currentCategory: [
+            {
+              id: "",
+              name: "categories",
+            },
+          ],
+        });
+      })
+      .catch((err) => {
+        // console.log(err);
+      });
+  };
 
-        data.push(GSTData);
-      });
-      let sortedKeys = data.filter((res) => {
-        return res.parentId === "";
-      });
-
-      this.setState({
-        CategoryList: sortedKeys,
-        countPage: data.length,
-        loading: false,
-      });
-
-      this.setState({
-        currentCategory: [
-          {
-            id: "",
-            name: "categories",
-          },
-        ],
-      });
-    });
-  }
-  explore = (e, name) => {
+  explore = async (e, name) => {
     var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
     e.preventDefault();
     let { id } = e.target;
+    firebase
+      .firestore()
+      .collection("categories")
+      .where("sessionId", "==", sessionId)
+      .where("businessId", "==", businessId)
+      .where("parentId", "==", id)
+      .get()
+      .then((querySnapshot) => {
+        var data = [];
+        querySnapshot.forEach((childSnapShot) => {
+          const GSTData = {
+            categoryId: childSnapShot.id,
 
-    let exp = firebase
-      .database()
-      .ref("/dummy")
-      .orderByChild("businessId")
-      .equalTo(businessId);
-    console.log("id", id, "name", name);
-    exp.on("value", async (snapshot) => {
-      const data = [];
-      snapshot.forEach((childSnapShot) => {
-        const GSTData = {
-          categoryId: childSnapShot.key.toString(),
+            name: childSnapShot.data().name,
+            isParent: childSnapShot.data().isParent,
+            photo: childSnapShot.data().photo,
+            color: childSnapShot.data().color,
+            created_on: childSnapShot.data().created_on,
+            parentId: childSnapShot.data().parentId,
+            sessionId: childSnapShot.data().sessionId,
+            username: childSnapShot.data().username,
+          };
 
-          name: childSnapShot.val().name,
-          isParent: childSnapShot.val().isParent,
-          photo: childSnapShot.val().photo,
-          color: childSnapShot.val().color,
-          created_on: childSnapShot.val().created_on,
-          parentId: childSnapShot.val().parentId,
-          sessionId: childSnapShot.val().sessionId,
-          username: childSnapShot.val().username,
-        };
-        data.push(GSTData);
-      });
-      let sortedKeys = data.filter((res) => {
-        return res.parentId === id;
-      });
-      this.setState({
-        CategoryList: sortedKeys,
-        countPage: data.length,
-        loading: false,
-      });
-      let arr = this.state.currentCategory;
-      for (let i = 0; i < this.state.currentCategory.length; i++) {
-        console.log(arr);
-        console.log(arr[i]);
-        if (arr[i].id === id) {
-          arr = arr.slice(0, i);
-          break;
-        }
-      }
-      console.log(arr);
-
-      arr.push({
-        id: id,
-        name: name,
-      });
-      await this.setState({ currentCategory: arr });
-      console.log(this.state.currentCategory);
-    });
-  };
-
-
-  itemMenuList=()=>{
-    var sessionId = sessionStorage.getItem("RoleId");
-    var businessId = sessionStorage.getItem("businessId");
-    this.setState({loading: true});
-    var ref = firebase
-        .database()
-        .ref("merchant_menu_items/").orderByChild("sessionId").equalTo(sessionId);
-
-    ref.on('value', snapshot => {
-        const data = [];
-        snapshot.forEach(childSnapShot => {
-
-            const GSTData = {
-        itemmenuid: childSnapShot.key.toString(),
-        item_unique_id:childSnapShot.val().item_unique_id,
-        item_id:childSnapShot.val().item_id,
-        item_name:childSnapShot.val().item_name,
-        item_description:childSnapShot.val().item_description,
-        item_halal:childSnapShot.val().item_halal,
-        item_image:childSnapShot.val().item_image,
-        item_points:childSnapShot.val().item_points,
-
-        station_name:childSnapShot.val().station_name,
-       
-        item_type:childSnapShot.val().item_type,
-        item_hash_tags:childSnapShot.val().item_hash_tags,
-        item_price:childSnapShot.val().item_price,
-        item_tax:childSnapShot.val().item_tax,
-
-      
-
-
-        sessionId: childSnapShot.val().sessionId,
-        status: childSnapShot.val().status,
-        username:childSnapShot.val().username,
-
-
-
-        portions:childSnapShot.val().portions,
-        portions_details:childSnapShot.val().portions_details,
-
-
-
-        advance:childSnapShot.val().advance,
-        carbs:childSnapShot.val().carbs,
-        protien:childSnapShot.val().protien,
-        fat:childSnapShot.val().fat,
-        item_video:childSnapShot.val().item_video,
-        item_multiple_image:childSnapShot.val().downloadURLs,
-
-
-        extra:childSnapShot.val().extra,
-        healthytag:childSnapShot.val().healthytag,
-        bestsellertag:childSnapShot.val().bestsellertag,
-
-
-        recommend:childSnapShot.val().recommend,
-       
-        recommendations:childSnapShot.val().recommendations,
-
-
-        created_on:childSnapShot.val().created_on,
-        sessionId: childSnapShot .val().sessionId,
-        businessId: childSnapShot.val().businessId,
-        categoryId:this.state.categoryId,
-
-            };
-
-            data.push(GSTData);
+          data.push(GSTData);
         });
 
-        let sortedKeys = data.filter((res) => {
-            return res.businessId === businessId;
-          });
+        this.setState({
+          CategoryList: data,
+          countPage: data.length,
+          loading: false,
+        });
+        let arr = this.state.currentCategory;
+        for (let i = 0; i < this.state.currentCategory.length; i++) {
+          // console.log(arr);
+          // console.log(arr[i]);
+          if (arr[i].id === id) {
+            arr = arr.slice(0, i);
+            break;
+          }
+        }
+        // console.log(arr);
 
-        this.setState({itemMenuList: sortedKeys, countPage: data.length, loading: false});
-        console.log(this.state.itemMenuList);
+        arr.push({
+          id: id,
+          name: name,
+        });
+        this.setState({ currentCategory: arr });
+        // console.log(this.state.currentCategory);
+      })
+      .catch((err) => {
+        // console.log(err);
+      });
+  };
 
-    });
+  itemMenuList = async () => {
+    var sessionId = sessionStorage.getItem("RoleId");
+    var businessId = sessionStorage.getItem("businessId");
 
+    this.setState({ loading: true });
+    firebase
+      .firestore()
+      .collection("menuitems")
+      .where("sessionId", "==", sessionId)
+      .where("businessId", "==", businessId)
+      .get()
+      .then((querySnapshot) => {
+        var data = [];
+        querySnapshot.forEach((childSnapShot) => {
+          const GSTData = {
+            idSelected: false,
+            itemmenuid: childSnapShot.id,
+            item_unique_id: childSnapShot.data().item_unique_id,
 
-}
+            item_id: childSnapShot.data().item_id,
+            item_name: childSnapShot.data().item_name,
+            item_description: childSnapShot.data().item_description,
+            item_halal: childSnapShot.data().item_halal,
+            item_image: childSnapShot.data().item_image,
+            item_points: childSnapShot.data().item_points,
+
+            station_name: childSnapShot.data().station_name,
+
+            item_type: childSnapShot.data().item_type,
+            item_hash_tags: childSnapShot.data().item_hash_tags,
+            item_price: childSnapShot.data().item_price,
+            item_tax: childSnapShot.data().item_tax,
+
+            sessionId: childSnapShot.data().sessionId,
+            businessId: childSnapShot.data().businessId,
+
+            status: childSnapShot.data().status,
+            username: childSnapShot.data().username,
+
+            portions: childSnapShot.data().portions,
+            portions_details: childSnapShot.data().portions_details,
+
+            advance: childSnapShot.data().advance,
+            carbs: childSnapShot.data().carbs,
+            protien: childSnapShot.data().protien,
+            fat: childSnapShot.data().fat,
+            item_video: childSnapShot.data().item_video,
+            item_multiple_image: childSnapShot.data().downloadURLs,
+
+            extra: childSnapShot.data().extra,
+            healthytag: childSnapShot.data().healthytag,
+            bestsellertag: childSnapShot.data().bestsellertag,
+
+            recommend: childSnapShot.data().recommend,
+
+            recommendations: childSnapShot.data().recommendations,
+
+            created_on: childSnapShot.data().created_on,
+            sessionId: childSnapShot.data().sessionId,
+            businessId: childSnapShot.data().businessId,
+            categoryId: this.state.categoryId,
+          };
+
+          data.push(GSTData);
+        });
+        this.setState({
+          itemMenuList: data,
+          countPage: data.length,
+          loading: false,
+        });
+        //// console.log(itemTypeList);
+      })
+      .catch((err) => {
+        // console.log(err);
+      });
+  };
 
   handleUploadStart = () =>
     this.setState({ isUploading: true, uploadProgress: 0 });
@@ -521,9 +397,8 @@ class AddCategoryMenuDuplicate extends React.Component {
       var sessionId = sessionStorage.getItem("RoleId");
       var username = sessionStorage.getItem("username");
       var businessId = sessionStorage.getItem("businessId");
-      let dbCon = firebase.database().ref("/dummy");
 
-      await dbCon.push({
+      var dbcon = await firebase.firestore().collection("categories").add({
         name: this.state.name,
         isParent: false,
         photo: this.state.photo,
@@ -531,22 +406,18 @@ class AddCategoryMenuDuplicate extends React.Component {
         parentId: this.state.parentId,
         sessionId: sessionId,
         username: username,
-        businessId: businessId
-        // itemId:this.state.itemId,
+        businessId: businessId,
+        itemId: this.state.itemId,
       });
 
-      if(this.state.parentId !== "")
-      await firebase
-        .database()
-        .ref("/dummy/" +this.state.parentId )
-        .update({ isParent: true });
+      if (this.state.parentId !== "")
+        await firebase
+          .firestore()
+          .collection("/categories")
+          .doc(this.state.parentId)
+          .update({ isParent: true });
 
-      // this
-      //     .props
-      //     .history
-      //     .push("/AddCategoryMenuDuplicate");
-
-      window.location.href = "/AddCategoryMenuDuplicate";
+      window.location.href = "/CategoryList";
     } else {
       this.validator.showMessages();
       this.forceUpdate();
@@ -565,7 +436,6 @@ class AddCategoryMenuDuplicate extends React.Component {
         .equalTo(e.target.value);
       ref.on("value", (snapshot) => {
         var user_exist = snapshot.numChildren();
-       
 
         if (user_exist > 0 && this.state.validError != true) {
           this.setState({
@@ -579,48 +449,129 @@ class AddCategoryMenuDuplicate extends React.Component {
     }
   };
 
-  
-  selectcategory =async (id,name) =>{
-    console.log(id);
+  selectcategory = async (id, name) => {
+    // console.log(id);
     // let arr = this.state.currentCategory;
     // let k =1;
     //   for (let i = 0; i < this.state.currentCategory.length; i++) {
-    //     console.log(arr);
-    //     console.log(arr[i]);
+    //    // console.log(arr);
+    //    // console.log(arr[i]);
     //     if (arr[i].id === id) {
     //       arr = arr.slice(0, i);
     //       break;
     //     }
     //   }
-     this.setState({parentName:name})
-    //   console.log(arr);
+    this.setState({ parentName: name });
+    //  // console.log(arr);
 
     //   arr.push({
     //     id: id,
     //     name: name,
     //   });
     //   await this.setState({ currentCategory: arr });
-    //   console.log(this.state.currentCategory);
+    //  // console.log(this.state.currentCategory);
     await this.setState({
-        parentId:id,
-    })
-  }
+      parentId: id,
+    });
+  };
+  selectItem = async (id, item_name) => {
+    console.log("selected id", id);
+    var sessionId = sessionStorage.getItem("RoleId");
+    var businessId = sessionStorage.getItem("businessId");
+    let menu = this.state.itemMenuList;
+    for (let i = 0; i < this.state.itemMenuList.length; i++) {
+      if (this.state.itemMenuList[i].itemmenuid === id) {
+        menu[i].isSelected = !menu[i].isSelected;
+        break;
+      }
+    }
+    let filteredArr = this.state.itemMenuList.filter(
+      (d) => d.itemmenuid === id
+    );
+    filteredArr = filteredArr[0];
+    let arr = this.state.itemId;
+    let k = 0;
+    for (let i = 0; i < this.state.itemId.length; i++) {
+      if (this.state.itemId[i].itemmenuid === id) {
+        console.log("before", arr);
+        arr.splice(i, 1);
+        console.log("after", arr);
+        k = 1;
+        break;
+      }
+    }
+    if (k == 0) {
+      arr.push(filteredArr);
+    }
+    console.log(arr);
+    await this.setState({ itemMenuList: menu });
+    await this.setState({ itemId: arr });
 
-  selectItem = (id) =>{
+    //// console.log(id);
+    // let temparr = this.state.itemId;
+    // let index = temparr.indexOf(id);
+    // if (index > -1) {
+    //   temparr.splice(index, 1);
+    // } else {
+    //   temparr.push(id);
+    // }
+    // await this.setState({ itemId: temparr });
+    // this.setState({ loading: true });
+    // var itemid = this.state.itemId;
+    //// console.log(itemid, id);
+    // let arr = this.state.itemid;
+    // for (let i = 0; i < this.state.itemid && this.state.itemid.length; i++) {
+    //  // console.log(arr);
+    //  // console.log(arr[i]);
+    //   if (arr[i].id === id) {
+    //     arr = arr.slice(0, i);
+    //     break;
+    //   }
+    // }
+    //  // console.log(itemid);
+    //   itemid.push({
+    //     id: id,
+    //     item_name: item_name,
+    //   });
 
-    // var color = document.getElementById("color");
-    // color.classList.remove("bg_green");
-    console.log(id);
-  
+    //   this.setState({
+    //     itemId: itemid,
+    //   });
+  };
 
-     let data =   firebase
-       .database()
-       .ref("/merchant_menu_items/" +id )
-       .update({ categoryId: true });
-      
-  return data;
-       
-  }
+  // selectItem = (id) => {
+  //  // console.log(id);
+  //   let temparr = this.state.itemId;
+  //   let index = temparr.indexOf(id);
+  //   if (index > -1) {
+  //     temparr.splice(index, 1);
+  //   } else {
+  //     temparr.push(id);
+  //   }
+  //   this.setState({ itemId: temparr });
+  //   var itemid = this.state.itemId;
+  //  // console.log(itemid, id);
+  // };
+
+  temp = async () => {
+    // let res = await firebase
+    //   .firestore()
+    //   .collection("cities")
+    //   .where("name", "==", "Tokyo")
+    //   .where("country", "array-contains-any", ["Mumbai", "chennai"])
+    //   .get();
+
+    // if (res.docs.length > 0) {
+    //   for (const doc of res.docs) {
+    //     // console.log(doc.id, "=>", doc.data());
+    //   }
+    // } else {
+    //   // console.log("no data present");
+    // }
+    for (let i = 0; i < this.state.itemMenuList.length; i++) {
+      console.log(this.state.itemMenuList[i].itemmenuid);
+    }
+  };
 
   handleChange = (e) => {
     this.setState({
@@ -637,134 +588,187 @@ class AddCategoryMenuDuplicate extends React.Component {
   };
   onSelectChange = (event) => {
     this.setState({
-      [event.target.name]:!this.state.IsParent,
+      [event.target.name]: !this.state.IsParent,
     });
   };
+  categoryNameChange = async (e) => {
+    var sessionId = sessionStorage.getItem("RoleId");
+    var businessId = sessionStorage.getItem("businessId");
 
+    this.setState({ loading: true });
+    this.setState({
+      name: e.target.value,
+    });
+    if (this.state.validError != true) {
+      firebase
+        .firestore()
+        .collection("categories")
+        .where("sessionId", "==", sessionId)
+        .where("businessId", "==", businessId)
+        .where("name", "==", e.target.value)
+
+        .get()
+        .then((snapshot) => {
+          var user_exist = snapshot.size;
+
+          console.log(user_exist);
+
+          if (user_exist > 0 && this.state.validError != true) {
+            this.setState({
+              mobile_message: " Name already exist",
+              validError: false,
+            });
+          } else {
+            this.setState({ mobile_message: "", validError: true });
+          }
+        });
+    }
+  };
   render() {
     return (
       <>
         <Form onSubmit={this.handleSubmit}>
-          <div className='page-wrapper'>
+          <div className="page-wrapper">
             <Sidebar />
-            <div className='page-container'>
+            <div className="page-container">
               <Header />
-              <div className='main-content'>
-                <div className='section__content'>
-                  <div className='container-fluid'>
-                 
-
-<div className="row">
-<div className="col-md-12 p-0">
-<div className="search_profile">
-<div className="row">
-<div className="col-md-6">
-<div className="company_name_box">
-<div className="company_iocn"></div>
-<div className="company_details">
-<p className="name">{sessionStorage.getItem("BusinessName")} </p>
-<p className="open">OPEN <i className="fa fa-circle" aria-hidden="true"></i></p>
-</div>
-</div>
-</div>
-<div className="col-md-3">
-<div className="search_top">
-<a href="#" className="search_icon"><i className="fas fa-search"></i></a>       
-<input className="search_input" type="text" name="" placeholder="Search..."/>
-</div>
-</div>
-<div className="col-md-3 ">
-<div className="profile_user">
-<span className="usericon">
-<img src="/images/icon/profile.jpg"/>
-</span>
-<span className="profile_data">
-<p className="name">{sessionStorage.getItem("username")}</p>
-<p>{sessionStorage.getItem("email")}</p>
-</span>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-
-                    <div className='row mt-30'>
-                      <div className='col-md-12 p-0'>
-                        <Link to='/AddItemMenu'>
-                          <span className='btn add_categoty_menu'>Items</span>
-                        </Link>
-                        <Link to='/AddCategoryMenu'>
-                          <span className='btn add_categoty_menu'>
-                            <span className='active'></span>Category
-                          </span>
-                        </Link>
-                        <span className='btn add_categoty_menu'>coupon</span>
+              <div className="main-content">
+                <div className="section__content">
+                  <div className="container-fluid">
+                    {/* <button type="button" onClick={this.temp}>
+                      temp
+                    </button> */}
+                    <div className="row">
+                      <div className="col-md-12 p-0">
+                        <div className="search_profile">
+                          <div className="row">
+                            <div className="col-md-6">
+                              <div className="company_name_box">
+                                <div className="company_iocn"></div>
+                                <div className="company_details">
+                                  <p className="name">
+                                    {sessionStorage.getItem("BusinessName")}{" "}
+                                  </p>
+                                  <p className="open">
+                                    OPEN{" "}
+                                    <i
+                                      className="fa fa-circle"
+                                      aria-hidden="true"
+                                    ></i>
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="col-md-3">
+                              <div className="search_top">
+                                <a href="#" className="search_icon">
+                                  <i className="fas fa-search"></i>
+                                </a>
+                                <input
+                                  className="search_input"
+                                  type="text"
+                                  name=""
+                                  placeholder="Search..."
+                                />
+                              </div>
+                            </div>
+                            <div className="col-md-3 ">
+                              <div className="profile_user">
+                                <span className="usericon">
+                                  <img src="/images/icon/profile.jpg" />
+                                </span>
+                                <span className="profile_data">
+                                  <p className="name">
+                                    {sessionStorage.getItem("username")}
+                                  </p>
+                                  <p>{sessionStorage.getItem("email")}</p>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
 
-                    <div className='row mt-30'>
-                      <div className='col-md-12 p-0'>
-                        <div className='orders_menu'>
+                    <div className="row mt-30">
+                      <div className="col-md-12 p-0">
+                        <Link to="/AddItemMenu">
+                          <span className="btn add_categoty_menu">Items</span>
+                        </Link>
+                        <Link to="/AddCategoryMenu">
+                          <span className="btn add_categoty_menu">
+                            <span className="active"></span>Category
+                          </span>
+                        </Link>
+                        <span className="btn add_categoty_menu">coupon</span>
+                      </div>
+                    </div>
+
+                    <div className="row mt-30">
+                      <div className="col-md-12 p-0">
+                        <div className="orders_menu">
                           <ul>
                             <li>
-                              <a href='#' className='activemenu'>
+                              <a href="#" className="activemenu">
                                 Add category
                               </a>
                             </li>
                             <li>
-                              <a href='#'>View category</a>
+                              <Link to="/CategoryList">View category</Link>
                             </li>
                           </ul>
                         </div>
                       </div>
                     </div>
 
-                    <div className='row mt-30'>
-                      <div className='col-md-6 p-0'>
-                        <div className='category_form'>
-                          <div className='row form-group'>
-                            <div className='col col-md-4'>
-                              <label className=' form-control-label'> name</label>
+                    <div className="row mt-30">
+                      <div className="col-md-6 p-0">
+                        <div className="category_form">
+                          <div className="row form-group">
+                            <div className="col col-md-4">
+                              <label className=" form-control-label">
+                                {" "}
+                                name
+                              </label>
                             </div>
-                            <div className='col-12 col-md-8'>
+                            <div className="col-12 col-md-8">
                               <input
-                                type='text'
-                                name='name'
-                                onChange={this.CategoryChange}
+                                type="text"
+                                name="name"
+                                onChange={this.categoryNameChange}
                                 value={this.state.name}
-                                placeholder='Main course'
-                                className='form-control'
+                                placeholder="Main course"
+                                className="form-control"
                               />
+                              <div className="text-danger">
+                                {" "}
+                                {this.state.mobile_message}
+                              </div>
                             </div>
                             {this.validator.message(
                               "Category Name",
                               this.state.name,
                               "required|whitespace|min:2|max:70"
                             )}
-                            <div className='text-danger'>
-                              {" "}
-                              {this.state.name_message}
-                            </div>
                           </div>
 
-                          <div className='row form-group'>
-                            <div className='col col-md-4'>
-                              <label className='form-control-label'>
+                          <div className="row form-group">
+                            <div className="col col-md-4">
+                              <label className="form-control-label">
                                 Add as child
                               </label>
                             </div>
-                            <div className='col-12 col-md-8'>
+                            <div className="col-12 col-md-8">
                               <select
-                                name='IsParent'
-                                id='select'
+                                name="IsParent"
+                                id="select"
                                 value={this.state.IsParent}
                                 onChange={this.onSelectChange}
-                                className='form-control'
+                                className="form-control"
                               >
-                                <option value='select'>select</option>
-                                <option value='true'>True</option>
-                                <option value='false'>False</option>
+                                <option value="select">select</option>
+                                <option value="true">True</option>
+                                <option value="false">False</option>
                               </select>
                             </div>
                             {this.validator.message(
@@ -774,46 +778,39 @@ class AddCategoryMenuDuplicate extends React.Component {
                             )}
                           </div>
                           {this.state.IsParent === true ? (
-                            <div className='row form-group'>
-                              <div className='col col-md-4'>
-                                <label className=' form-control-label'>
+                            <div className="row form-group">
+                              <div className="col col-md-4">
+                                <label className=" form-control-label">
                                   Select parent category
                                 </label>
                               </div>
-                              <div className='col-12 col-md-8'>
+                              <div className="col-12 col-md-8">
                                 <button
-                                  type='button'
-                                  className='btn btn-secondary mb-1'
-                                  data-toggle='modal'
-                                  data-target='#add_parent_category'
+                                  type="button"
+                                  className="btn btn-secondary mb-1"
+                                  data-toggle="modal"
+                                  data-target="#add_parent_category"
                                 >
                                   Choose
                                 </button>
                               </div>
                               <div
-                  className='breadcrumbs menu_cate_links'
-                  style={{ fontSize: "15px", display: "flex" }}
-                >
-                  {this.state.currentCategory.map((i, index) => (
-                    <p
-                      style={{ marginLeft: "3px" }}
-                      id={i.id}
-                      
-                    >
-                      {" "}
-                      &gt; {i.name}{" "}
-                    </p>
-                  ))}
-                  <p>
-                  <p
-                      style={{ marginLeft: "3px" }}
-                                      
-                    >
-                      {" "}
-                      &gt; {this.state.parentName}{" "}
-                    </p>
-                  </p>
-                </div>
+                                className="breadcrumbs menu_cate_links"
+                                style={{ fontSize: "15px", display: "flex" }}
+                              >
+                                {this.state.currentCategory.map((i, index) => (
+                                  <p style={{ marginLeft: "3px" }} id={i.id}>
+                                    {" "}
+                                    &gt; {i.name}{" "}
+                                  </p>
+                                ))}
+                                <p>
+                                  <p style={{ marginLeft: "3px" }}>
+                                    {" "}
+                                    &gt; {this.state.parentName}{" "}
+                                  </p>
+                                </p>
+                              </div>
                             </div>
                           ) : (
                             ""
@@ -822,19 +819,19 @@ class AddCategoryMenuDuplicate extends React.Component {
                       </div>
                     </div>
 
-                    <div className='row mt-30'>
-                      <div className='col-md-12 p-0'>
-                        <div className='category_upload_image'>
+                    <div className="row mt-30">
+                      <div className="col-md-12 p-0">
+                        <div className="category_upload_image">
                           <h1>Upload Image</h1>
-                          <div className='upload_img_block'>
-                            <div className='row'>
-                              <div className='col-md-3'>
+                          <div className="upload_img_block">
+                            <div className="row">
+                              <div className="col-md-3">
                                 {this.state.photo && (
                                   <img src={this.state.photo} />
                                 )}
                                 <FileUploader
-                                  accept='image/*'
-                                  name='photo'
+                                  accept="image/*"
+                                  name="photo"
                                   randomizeFilename
                                   storageRef={firebase.storage().ref("images")}
                                   onUploadStart={
@@ -850,24 +847,24 @@ class AddCategoryMenuDuplicate extends React.Component {
                                 this.state.photo,
                                 "required"
                               )}
-                              <div className='col-md-1 or'>
+                              <div className="col-md-1 or">
                                 <span>AND</span>
                               </div>
-                              <div className='col-md-8'>
-                                <div className='colored_block'>
-                                  <div className='row'>
-                                    <div className='col-md-3'>
+                              <div className="col-md-8">
+                                <div className="colored_block">
+                                  <div className="row">
+                                    <div className="col-md-3">
                                       <div
-                                        className='color-box'
+                                        className="color-box"
                                         style={{ background: this.state.color }}
                                       >
-                                        <label className='color-selector'>
+                                        <label className="color-selector">
                                           {/* <span>{this.state.color}</span> */}
                                           <input
-                                            type='color'
+                                            type="color"
                                             value={this.state.color}
                                             onChange={this.handleChange}
-                                            className='hidden'
+                                            className="hidden"
                                           />
                                         </label>
                                       </div>
@@ -886,41 +883,94 @@ class AddCategoryMenuDuplicate extends React.Component {
                       </div>
                     </div>
 
-                    <div className='row mt-30'>
-                      <div className='col-md-12 p-0'>
-                        <div className='category_upload_image'>
+                    <div className="row mt-30">
+                      <div className="col-md-12 p-0">
+                        <div className="category_upload_image">
                           <h1>Items</h1>
 
-                          <div className='upload_img_block addproducts'>
+                          <div className="upload_img_block addproducts">
                             <h2>
-                              0 Items
-                              <span className='additems btn'>
+                              {this.state.itemId && this.state.itemId.length}{" "}
+                              Items
+                              <span className="additems btn">
                                 <button
-                                  type='button'
-                                  data-toggle='modal'
-                                  data-target='#add_items'
+                                  type="button"
+                                  data-toggle="modal"
+                                  data-target="#add_items"
                                 >
                                   Add Items{" "}
                                 </button>
                               </span>
                             </h2>
+
+                            <div className="row">
+                              {this.state.itemId &&
+                                this.state.itemId.map((item, index) => {
+                                  return (
+                                    <div
+                                      className="col-md-4 product_box"
+                                      key={index}
+                                    >
+                                      <div className="product_box_item">
+                                        <div className="product_item_row m-b-20">
+                                          <div className="left">
+                                            <div className="img_box">
+                                              <span className="star_yellow">
+                                                <img src="images/icon/star_rate_ye.svg" />
+                                              </span>
+                                              <img src="images/category_img.png" />
+                                            </div>
+                                          </div>
+                                          <div className="right">
+                                            <p>
+                                              <span className="item_recipe">
+                                                <span className="dot veg"></span>
+                                              </span>
+                                              <span className="btn best_seller">
+                                                BESTSELLER
+                                              </span>
+                                            </p>
+                                            <p className="item_name">
+                                              {item.item_name}
+                                            </p>
+                                            <p className="price">₹ 220.00</p>
+                                          </div>
+                                        </div>
+
+                                        {/* <div className="product_item_row">
+                                          <div className="left">
+                                            <span className="btn remove_btn pull-left">
+                                              Remove
+                                            </span>
+                                          </div>
+                                          <div className="right">
+                                            <span className="btn edit_btn">
+                                              Edit
+                                            </span>
+                                          </div>
+                                        </div> */}
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
 
-<div className="row mb-30 mt-30">
-<div className="w-100-row m-t-20 text-center">
-
-<span className="btn cancel_btn2">
-<Link to="/AddCategoryMenuDuplicate">
-Cancel</Link></span>
-<button type='submit'>
-<span className="btn create_btn" type='submit' >Create Catagory </span>
-</button>
-</div>
-</div>
-
+                    <div className="row mb-30 mt-30">
+                      <div className="w-100-row m-t-20 text-center">
+                        <span className="btn cancel_btn2">
+                          <Link to="/AddCategoryMenuDuplicate">Cancel</Link>
+                        </span>
+                        <button type="submit">
+                          <span className="btn create_btn" type="submit">
+                            Create Catagory{" "}
+                          </span>
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -928,17 +978,17 @@ Cancel</Link></span>
           </div>
 
           <div
-            className='modal fade'
-            id='add_parent_category'
-            tabindex='-1'
-            role='dialog'
-            aria-labelledby='smallmodalLabel'
-            aria-hidden='true'
+            className="modal fade"
+            id="add_parent_category"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="smallmodalLabel"
+            aria-hidden="true"
           >
-            <div className='modal-dialog modal-sm hipal_pop' role='document'>
-              <div className='modal-content'>
-                <div className='modal-header'>
-                  <h5 className='modal-title' id='smallmodalLabel'>
+            <div className="modal-dialog modal-sm hipal_pop" role="document">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title" id="smallmodalLabel">
                     Choose Parent Category
                   </h5>
                 </div>
@@ -960,89 +1010,93 @@ Cancel</Link></span>
                   ))}
                 </div> */}
 
-                <div className='modal-body product_edit'>
-                
+                <div className="modal-body product_edit">
+                  <div className="col-12 w-100-row">
+                    <div className="row">
+                      <div className="col col-md-5 font-18">Search by name</div>
+                      <div className="col col-md-7 bill_id_settle">
+                        <div className="form-group">
+                          <span className="pull-left">
+                            <input
+                              type="text"
+                              id="text-input"
+                              name="text-input"
+                              placeholder="T1"
+                              className="form-control edit_product"
+                            />
+                          </span>
+                          <span className="btn pull-right add_btn_pop_orange bg_green addmode_pad">
+                            Go
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
-<div className="col-12 w-100-row">
-<div className="row">
-<div className="col col-md-5 font-18">
-Search by name
-</div>
-<div className="col col-md-7 bill_id_settle">
-<div className="form-group">
-<span className="pull-left"><input type="text" id="text-input" name="text-input" placeholder="T1" className="form-control edit_product"/></span>
-<span className="btn pull-right add_btn_pop_orange bg_green addmode_pad">Go</span>
-</div>
-</div>
-</div>
-</div>
+                  <div className="col-12 w-100-row">
+                    <div className="row">
+                      <div className="col col-md-12 font-15">
+                        Menu :{" "}
+                        <Link to="">
+                          {" "}
+                          <div
+                            className="breadcrumbs"
+                            style={{ fontSize: "15px", display: "flex" }}
+                          >
+                            {this.state.currentCategory.map((i, index) => (
+                              <p
+                                style={{ marginLeft: "3px" }}
+                                id={i.id}
+                                onClick={(e) => {
+                                  this.explore(e, i.name);
+                                }}
+                              >
+                                {" "}
+                                &gt; {i.name}{" "}
+                              </p>
+                            ))}
+                          </div>
+                        </Link>
+                      </div>
 
-
-
-<div className="col-12 w-100-row">
-
-<div className="row">
-
-<div className="col col-md-12 font-15">
-Menu :   <Link to="">  <div
-                  className='breadcrumbs'
-                  style={{ fontSize: "15px", display: "flex" }}
-                >
-                  {this.state.currentCategory.map((i, index) => (
-                  <p
-                      style={{ marginLeft: "3px" }}
-                      id={i.id}
-                      onClick={(e) => {
-                        this.explore(e, i.name);
-                      }}
-                    >
-                      {" "}
-                      &gt; {i.name}{" "}
-                    </p>
-                   
-                  ))}
-                </div>
-                </Link>
-</div>
-
-{/* <div className="col col-md-6 text-center">
+                      {/* <div className="col col-md-6 text-center">
 <img src="images/icon/back_arrow_left_o.svg"/>
 </div> */}
+                    </div>
+                  </div>
 
-</div>
-</div>
-
-                  <div className='col-12 w-100-row'>
-                    <div className='row'>
-                      <div className='row'>
+                  <div className="col-12 w-100-row">
+                    <div className="row">
+                      <div className="row">
                         {this.state.CategoryList &&
                           this.state.CategoryList.map((category, index) => {
                             return (
                               <div
-                              id={category.categoryId}
-                              onClick={
-                                    this.selectcategory.bind(this, category.categoryId,category.name)
-                                }
-                                
-                         
-                                className='col-md-4 mb-15 text-center'
+                                id={category.categoryId}
+                                onClick={this.selectcategory.bind(
+                                  this,
+                                  category.categoryId,
+                                  category.name
+                                )}
+                                className="col-md-4 mb-15 text-center"
                                 key={index}
                               >
-                                <div
-                                  className='cate_img_box  shadow_box'
-                                  style={{ background: category.color }}
-                                >
-                                  <img
-                                    className='img_empty2'
-                                    src={category.photo}
-                                  ></img>
+                                <button data-dismiss="modal">
+                                  <div
+                                    className="cate_img_box  shadow_box"
+                                    style={{ background: category.color }}
+                                  >
+                                    <img
+                                      className="img_empty2"
+                                      src={category.photo}
+                                    ></img>
 
-                                  <p> {category.name}</p>
-                                </div>
-
+                                    <p> {category.name}</p>
+                                  </div>
+                                </button>
                                 {category.isParent === true ? (
                                   <button
-                                    className='btn m-t-10 btn_explore'
+                                    className="btn m-t-10 btn_explore"
                                     // data-toggle='modal'
                                     // data-target='#add_parent_category'
                                     id={category.categoryId}
@@ -1061,8 +1115,12 @@ Menu :   <Link to="">  <div
                   </div>
                 </div>
 
-                <div className='modal-footer'>
-                  <button type='button' className='btn save_btn' data-dismiss="modal">
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn save_btn"
+                    data-dismiss="modal"
+                  >
                     Add here
                   </button>
                 </div>
@@ -1070,67 +1128,65 @@ Menu :   <Link to="">  <div
             </div>
           </div>
 
-          
-
           <div
-            className='modal fade'
-            id='add_items'
-            tabindex='-1'
-            role='dialog'
-            aria-labelledby='smallmodalLabel'
-            aria-hidden='true'
+            className="modal fade"
+            id="add_items"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="smallmodalLabel"
+            aria-hidden="true"
           >
             <div
-              className='modal-dialog modal-sm hipal_pop additempop'
-              role='document'
+              className="modal-dialog modal-sm hipal_pop additempop"
+              role="document"
             >
-              <div className='modal-content'>
-                <div className='modal-header'>
-                  <h5 className='modal-title' id='smallmodalLabel'>
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title" id="smallmodalLabel">
                     Add Item in Category(name)
                   </h5>
-                  <span className='black_font'>12 Iteams added</span>
+                  {/* <span className="black_font">12 Iteams added</span> */}
                 </div>
 
-                <div className='modal-body product_edit'>
-                  <div className='col-12 bdr_bottom_gray pb-15 mb-15'>
-                    <div className='row'>
-                      <div className='col col-md-5 font-18'>
+                <div className="modal-body product_edit">
+                  <div className="col-12 bdr_bottom_gray pb-15 mb-15">
+                    <div className="row">
+                      <div className="col col-md-5 font-18">
                         Search by name / ID
                       </div>
-                      <div className='col col-md-7 bill_id_settle pl-0'>
-                        <div className='form-group'>
-                          <span className='pull-left'>
+                      <div className="col col-md-7 bill_id_settle pl-0">
+                        <div className="form-group">
+                          <span className="pull-left">
                             <input
-                              type='text'
-                              id='text-input'
-                              name='text-input'
-                              placeholder='T1'
-                              className='form-control edit_product'
+                              type="text"
+                              id="text-input"
+                              name="text-input"
+                              placeholder="T1"
+                              className="form-control edit_product"
                             />
                           </span>
-                          <span className='btn pull-left add_btn_pop_orange bg_green addmode_pad ml-5'>
+                          <span className="btn pull-left add_btn_pop_orange bg_green addmode_pad ml-5">
                             Go
                           </span>
-                          <span className='btn pull-right pad-back'>Back</span>
+                          <span className="btn pull-right pad-back">Back</span>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className='col-12 w-100-row'>
-                    <div className='row add-Items_scroll'>
+                  <div className="col-12 w-100-row">
+                    <div className="row add-Items_scroll">
                       {this.state.itemMenuList &&
                         this.state.itemMenuList.map((item, index) => {
                           return (
-                            <div className='col-md-6 product_box' key={index}>
-                              <div className='product_box_item'>
-                                <div className='product_item_row m-b-20'>
-                                  <div className='left'>
-                                    <div className='img_box'>
+                            <div className="col-md-6 product_box" key={index}>
+                              <div className="product_box_item">
+                                <div className="product_item_row m-b-20">
+                                  <div className="left">
+                                    <div className="img_box">
                                       {item.advance == "Yes" ? (
-                                        <span className='star_yellow'>
-                                          <img src='images/icon/star_rate_ye.svg' />
+                                        <span className="star_yellow">
+                                          <img src="images/icon/star_rate_ye.svg" />
                                         </span>
                                       ) : (
                                         ""
@@ -1138,26 +1194,26 @@ Menu :   <Link to="">  <div
                                       <img src={item.item_image} />
                                     </div>
                                   </div>
-                                  <div className='right'>
+                                  <div className="right">
                                     <p>
-                                      <span className='item_recipe'>
+                                      <span className="item_recipe">
                                         {item.item_type == "Veg" ? (
-                                          <span className='dot veg'></span>
+                                          <span className="dot veg"></span>
                                         ) : (
-                                          <span className='dot non-veg'></span>
+                                          <span className="dot non-veg"></span>
                                         )}
                                       </span>
                                       {item.extra == "Yes" ? (
                                         <>
                                           {item.bestsellertag == "Yes" ? (
-                                            <span className='btn best_seller'>
+                                            <span className="btn best_seller">
                                               BESTSELLER
                                             </span>
                                           ) : (
                                             ""
                                           )}
                                           {item.healthytag == "Yes" ? (
-                                            <span className='btn best_seller'>
+                                            <span className="btn best_seller">
                                               HEALTHY
                                             </span>
                                           ) : (
@@ -1168,61 +1224,60 @@ Menu :   <Link to="">  <div
                                         ""
                                       )}
                                     </p>
-                                    <p className='item_name'>{item.item_name}</p>
-                                    <p className='price'>₹ {item.item_price}.00</p>
+                                    <p className="item_name">
+                                      {item.item_name}
+                                    </p>
+                                    <p className="price">
+                                      ₹ {item.item_price}.00
+                                    </p>
                                   </div>
                                 </div>
 
-                                <div className='product_item_row'>
-                                  <div className='left'>
-                                    <span className='btn remove_btn pull-left bg_green' id="color" onClick={
-                                    this.selectItem.bind(this, item.itemmenuid)
-                                } >
-                                      Add
+                                <div className="product_item_row">
+                                  <div className="left">
+                                    <span
+                                      className={
+                                        item.isSelected === true
+                                          ? "btn remove_btn pull-left "
+                                          : "btn remove_btn pull-left bg_green"
+                                      }
+                                      id="color"
+                                      onClick={this.selectItem.bind(
+                                        this,
+                                        item.itemmenuid,
+                                        item.item_name
+                                        // item.item_price,
+                                        // item.item_type,
+                                        // item.item_image
+                                      )}
+                                    >
+                                      {item.isSelected === true
+                                        ? "Remove"
+                                        : "Add"}
                                     </span>
 
-                                    {/* <span className="btn remove_btn pull-left">Remove</span> */}
+                                    {/* <span
+                                      className="btn remove_btn pull-left"
+                                      id="color"
+                                    >
+                                      Remove
+                                    </span> */}
                                   </div>
                                 </div>
                               </div>
                             </div>
                           );
                         })}
-
-{/* <div className="col-md-6 product_box">
-<div className="product_box_item selected_box">
-<div className="product_item_row m-b-20">
-<div className="left">
-<div className="img_box">
-<span className="star_yellow"><img src="images/icon/star_rate_ye.svg"/></span>
-<img src="images/category_img.png"/>
-</div>
-</div>
-<div className="right">
-<p><span className="item_recipe"><span className="dot veg"></span></span>
-<span className="btn best_seller">BESTSELLER</span></p>
-<p className="item_name">Caesar Salad</p>
-<p className="price">₹ 220.00</p>
-</div>
-
-</div>
-
-<div className="product_item_row">
-<div className="left">
-<span className="btn remove_btn pull-left">Remove</span>
-</div>
-</div>
-
-
-</div>
-</div> */}
-
                     </div>
                   </div>
                 </div>
 
-                <div className='modal-footer'>
-                  <button type='button' className='btn save_btn'>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn save_btn"
+                    data-dismiss="modal"
+                  >
                     Add Items
                   </button>
                 </div>
