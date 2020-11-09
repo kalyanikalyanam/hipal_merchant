@@ -52,6 +52,18 @@ class Bill extends React.Component {
        
        
       });
+        var tableId = sessionStorage.getItem("tableId");
+        var table = firebase
+          .firestore()
+          .collection("tables")
+          .doc(tableId)
+          .get()
+          .then((snapshot) => {
+            var table = snapshot.data();
+            console.log(table);
+            sessionStorage.setItem("TableName", table.table_name);
+            sessionStorage.setItem("TableStatus", table.status);
+          });
       }
 
   
@@ -129,7 +141,7 @@ class Bill extends React.Component {
     <span class="top fill"></span>
     <span class="top fill"></span>
     </div>
-    <div class="table_no">07A</div>
+    <div class="table_no">   {sessionStorage.getItem("TableName")}</div>
     <div class="people_row">
     <span class="bottom nonfille"></span>
     <span class="bottom fill"></span>
