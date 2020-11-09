@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import {useForm} from 'react-hook-form'
 import {dispatchContext, modalContext} from './contexts'
 import * as actions from './actionTypes'
-
+import LoginForm from './login'
 
 const ModalForm = () => {
     const {register, handleSubmit, errors} = useForm()
@@ -22,7 +22,6 @@ const ModalForm = () => {
             item: item 
         })
     }
-
     return (
         <div className="modal-dialog modal-sm hipal_pop" role="document">
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -97,6 +96,11 @@ const ModalForm = () => {
                                         <option value="active">active</option>
                                     </select>
                                 </div>
+                            </div>
+                        </div>
+                        <div className="col-12 w-100-row">
+                            <div className="row form-group">
+                                <LoginForm />
                             </div>
                         </div>
 
