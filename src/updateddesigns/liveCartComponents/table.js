@@ -6,6 +6,16 @@ import * as actions from "./actionTypes";
 const Table = ({ tableId }) => {
   const [state, setState] = useState({});
   const dispatch = useContext(dispatchContext);
+  const handleAdvancedOption = () => {
+    dispatch({
+      type: actions.ADVACEDOPTIONSSHOW
+    })
+  }
+  const handleAddCutomer = () => {
+    dispatch({
+      type: actions.ADDCUSTOMERSHOW
+    })
+  }
   const getData = () => {
     firebase
       .firestore()
@@ -23,6 +33,7 @@ const Table = ({ tableId }) => {
   };
   useEffect(() => {
     getData();
+    
   }, []);
 
   return (
@@ -48,13 +59,13 @@ const Table = ({ tableId }) => {
           </div>
         </div>
         <div className="col-md-5">
-          <div className="names_options">
+          <div className="names_options" onClick={handleAddCutomer}>
             <a href="#" className="active_btn">
               <img src="/images/icon/icon_users_w.png" />
               Customers Names
             </a>
           </div>
-          <div className="names_options m-t-20">
+          <div className="names_options m-t-20" onClick={handleAdvancedOption}>
             <a href="#">
               <img src="/images/icon/icon_settings.svg" />
               Advanced Options

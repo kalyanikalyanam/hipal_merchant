@@ -25,7 +25,7 @@ const LiveCartItem = ({item, index}) => {
                 <span>x{item.quantity}</span>
             </div>
             <div className="box_3">
-                <span> {parseFloat((item.quantity) * (item.item_price)).toFixed(2)}</span>
+                <span> {parseFloat((item.quantity) * (item.price)).toFixed(2)}</span>
                 <span>00:03 min <br></br>last update</span>
             </div>
             <div className="box_4">

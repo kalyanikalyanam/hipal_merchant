@@ -17,7 +17,6 @@ const BillPage = () => {
     }, [])
     const handlePrice = (price) => {
         grandTotal.current += price
-        console.log(price)
     }
     const noItem = (
         <tr>
@@ -78,6 +77,10 @@ const BillPage = () => {
                                     <tbody>
                                     <tr>
                                         <td style={{ textAlign: 'left', padding: '5px 10px'}}><b>Grand Total</b></td>
+                                        <td style={{ textAlign: 'right', padding: '5px 10px' }}><b>₹ {grandTotal.current}</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ textAlign: 'left', padding: '5px 10px'}}><b>Payable</b></td>
                                         <td style={{ textAlign: 'right', padding: '5px 10px' }}><b>₹ {grandTotal.current}</b></td>
                                     </tr>
                                     </tbody>

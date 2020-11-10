@@ -1,33 +1,61 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import {useForm} from 'react-hook-form'
-import {dispatchContext, modalContext} from './contexts'
+import {dispatchContext} from './contexts'
 import * as actions from './actionTypes'
 import LoginForm from './login'
 
-const ModalForm = () => {
-    const {register, handleSubmit, errors} = useForm()
+const ModalForm = (props) => {
+    const {register, handleSubmit, errors, reset} = useForm()
+    const [item, setItem] = useState(props.item) 
+    const {authenticated, setAuthenticated} = useState(false)
     const dispatch = useContext(dispatchContext)
-    const item= useContext(modalContext)
     const onClose = () => {
         dispatch({
             type: actions.CLOSEMODEL
         })
     }
     const onSubmit = (data) => {
-        item.quantity = data.quantity
-        item.discount = item.item_price * data.item_discount / 100
-        item.status = data.item_status
+        const items = JSON.parse(JSON.stringify(item))
+        if(data.portion){
+            items.price= parseInt(data.portion)
+        } else {
+            items.price = items.item_price
+        }
+        items.quantity = data.quantity
+        items.discount = items.price * data.item_discount / 100
+        items.status = data.item_status
+        items.item_instructions = data.instructions
+        console.log(items)
         dispatch({
             type: actions.ADDLIVE,
-            item: item 
+            item: items 
         })
     }
+    const portions = item && item.portions === 'Yes' ?             
+        <div className="col-12 w-100-row">
+            <div className="row form-group">
+                <div className="col col-md-4">
+                    <label className=" form-control-label">Portion</label>
+                </div>
+                <div className="col-12 col-md-6">{item.portions_details.map((portion, index) => {
+                    return (
+                        <label className="container_check" key={index}>
+                            {portion.name}
+                            <input type="radio" name="portion" ref={register} value={portion.price}/>
+                            <span className='checkmark'></span>
+                        </label>
+                    )
+                })}
+                </div>
+            </div>
+        </div>
+    : null
     return (
         <div className="modal-dialog modal-sm hipal_pop" role="document">
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="modal-content">
                     <div className="modal-header">
-                        <h5 className="modal-title" id="smallmodallabel">edit item deatils
+                        <h5 className="modal-title" id="smallmodallabel">edit item details
                                 </h5>
                     </div>
                     <div className="modal-body product_edit">
@@ -98,12 +126,8 @@ const ModalForm = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-12 w-100-row">
-                            <div className="row form-group">
                                 <LoginForm />
-                            </div>
-                        </div>
-
+                                {item && item.portions === 'Yes' ? portions : null}
 
                         <div className="col-12 w-100-row">
                             <div className="row form-group">
@@ -113,7 +137,7 @@ const ModalForm = () => {
                                 <div className="col-12 col-md-6">
                                     <textarea
                                         name="item_instructions"
-                                        id="textarea-input" rows="3" placeholder="enter text here" className="form-control edit_product"
+                                        rows="3" placeholder="enter text here" className="form-control edit_product"
                                         ref={register}
                                     ></textarea>
                                 </div>
@@ -122,7 +146,7 @@ const ModalForm = () => {
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn close_btn" onClick={onClose}>close </button>
-                        <button type="submit" className="btn save_btn">save</button>
+                        <button type="submit" className="btn save_btn" disabled={authenticated} authenticate={setAuthenticated}>save</button>
                     </div>
                 </div>
             </form>

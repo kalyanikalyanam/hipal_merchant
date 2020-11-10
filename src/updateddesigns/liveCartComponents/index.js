@@ -15,10 +15,15 @@ import {
     orderContext, 
     billContext, 
     billPageContext,
-    tableContext
+    tableContext,
 } from './contexts'
 import reducer from './reducer'
 import BottomComp from './BottomComp'
+import AddCustomerModal from './addCustomerModal';
+import AdvancedOptionsModal from './advancedOptionsModal';
+import CustomerMoveModal from './customerMoveModal'
+import CustomerMergeModal from './customerMergeModal'
+import CustomerSwapModal from './customerSwapModal'
 
 Modal.setAppElement(document.getElementById('root'));
 
@@ -29,7 +34,8 @@ const customStyles = {
         right: 'auto',
         bottom: 'auto',
         marginRight: '-50%',
-        transform: 'translate(-50%, -50%)'
+        transform: 'translate(-50%, -50%)',
+        minWidht: '30%'
   }
 };
 const initState = {
@@ -44,7 +50,12 @@ const initState = {
         billId: null,
         show: false
     },
-    table: {}
+    table: {},
+    addCustomerShow: false,
+    advancedOptionsShow: false,
+    customerMergeModal: false,
+    customerSwapModal: false,
+    customerMoveModal: false
 }
 
 const LiveCartPage = (props) => {
@@ -62,8 +73,7 @@ const LiveCartPage = (props) => {
             sessionStorage.setitem("email", users.email_id);
             setState({
                 ...state,
-                userrole: users.role,
-                loading: false,
+                userrole: users.role
             });
 
             const businessRef = await firebase.database().ref('merchant_bussiness_details/' + businessid).on()
@@ -75,11 +85,18 @@ const LiveCartPage = (props) => {
             console.log(sessionStorage.getItem('businessLogo'))
         }
     }
+    
 
     useEffect(() => {
         setLoading(true)
+        setState({
+            tableList: []
+        })
         getUserdata()
         setLoading(false)
+        dispatch({
+            type: 'RESET'
+        })
     }, [])
     return(
         <dispatchContext.Provider value={dispatch}>
@@ -133,7 +150,7 @@ const LiveCartPage = (props) => {
                                             <div className="row mt-30">
                                                 <div className="col-lg-7 cart_box_width_1">
                                                     <div className="row">
-                                                        <Table tableId={props.match.params.tableId} />
+                                                            <Table tableId={props.match.params.tableId} />
                                                         <Info />
                                                     </div>
 
@@ -145,16 +162,31 @@ const LiveCartPage = (props) => {
                                     </div>
                                 </div>
                             </div>
-            </tableContext.Provider>
-            </billPageContext.Provider >
-            </billContext.Provider>
-            </orderContext.Provider>
-            </liveCartContext.Provider>
             <modalContext.Provider value={reducerState.modalItem}>
                 <Modal isOpen={reducerState.show} style={customStyles}>
                     <ModalForm item={reducerState.modalItem} />
                 </Modal>
             </modalContext.Provider>
+            <Modal isOpen={reducerState.addCustomerShow} style={customStyles}>
+                <AddCustomerModal tableData={reducerState.table} />
+            </Modal>
+            <Modal isOpen={reducerState.avancedOptionsShow} style={customStyles}>
+                <AdvancedOptionsModal/>
+            </Modal>
+            <Modal isOpen={reducerState.customerMergeModal} style={customStyles}>
+                <CustomerMergeModal tableData={reducerState.table} />
+            </Modal>
+            <Modal isOpen={reducerState.customerSwapModal} style={customStyles}>
+                <CustomerSwapModal tableData={reducerState.table}/>
+            </Modal>
+            <Modal isOpen={reducerState.customerMoveModal} style={customStyles}>
+                <CustomerMoveModal tableData={reducerState.table} tables={state.tableList}/>
+            </Modal>
+            </tableContext.Provider>
+            </billPageContext.Provider >
+            </billContext.Provider>
+            </orderContext.Provider>
+            </liveCartContext.Provider>
         </dispatchContext.Provider>
     )
 }

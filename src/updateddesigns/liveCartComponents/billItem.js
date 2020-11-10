@@ -1,18 +1,21 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 
 const BillItem = ({order, handlePrice}) => {
     const [gst] = useState(8.75)
     const [cGst] = useState(8.75)
+    const total = useRef(0)
     const getTotal = () => {
         const {orderPrice, orderDiscount} = order
         const temp = orderPrice - orderDiscount
         let price = temp 
         price += price * gst /100
         price += temp* cGst / 100
-        console.log(price)
-        handlePrice(price)
-        return price
+        total.current = price.toFixed(2)
+        handlePrice(total.current)
     }
+    useEffect(() => {
+        getTotal()
+    } , [])
     const style = {
         borderBottom:'1px dashed rgb(0, 0, 0, 0.5)',
     }
@@ -24,7 +27,7 @@ const BillItem = ({order, handlePrice}) => {
             <tr key={`${cartIndex}-${itemIndex}`}>
                 <td style={{ textAlign: 'left', padding: '3px 10px' }}>{item.item_name}</td>
                 <td style={{ textAlign: 'center', padding: '3px 10px' }}>{item.quantity}</td>
-                <td style={{ textAlign: 'right', padding: '3px 10px' }}>{item.quantity* item.item_price}</td>
+                <td style={{ textAlign: 'right', padding: '3px 10px' }}>{item.quantity* item.price}</td>
             </tr>
         )}) 
     )}) : null 
@@ -94,7 +97,7 @@ const BillItem = ({order, handlePrice}) => {
                                 <tbody>
                                     <tr> 
                                         <td style={{ textAlign: 'left', padding: '5px 10px' }}><b>Total</b></td>
-                                        <td style={{ textAlign: 'right', padding: '5px 10px' }}><b>₹ {getTotal()}</b></td>
+                                        <td style={{ textAlign: 'right', padding: '5px 10px' }}><b>₹ {total.current}</b></td>
                                     </tr>
                                 </tbody>
                             </table>
