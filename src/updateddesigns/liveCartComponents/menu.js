@@ -10,7 +10,7 @@ const Menu = () => {
     setState({ loading: false });
     var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
-    var ref = await firebase
+    await firebase
       .firestore()
       .collection("menuitems")
       .where("sessionId", "==", sessionId)

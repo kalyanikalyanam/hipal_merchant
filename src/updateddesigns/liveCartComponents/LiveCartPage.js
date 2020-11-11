@@ -41,7 +41,7 @@ const LiveCartPage = () => {
                     </div>
                     <div className="cart_scroll no_height">
                     {cartList && cartList.map((item, index) => {
-                        const price = parseInt((item.quantity) * (item.item_price))
+                        const price = parseInt((item.quantity) * (item.price))
                         totalPrice.current += (price)
                         totalDiscount.current += (item.discount * item.quantity)
                         return(<LiveCartItem item={item} index={index} key={index}/>)
@@ -54,7 +54,7 @@ const LiveCartPage = () => {
                 <div className="cart_scroll">
                     <div className="cart_total_row">
                         <p><span className="left">Total Price</span> <span className="right discount">₹{totalPrice.current}.00</span></p>
-                        <p><span className="left discount">10% Applied</span> <span className="right discount">₹{totalPrice.current *0.1} 00</span></p>
+                        <p><span className="left discount">10% Applied</span> <span className="right discount">₹{parseFloat(totalPrice.current *0.1).toFixed(2)}</span></p>
                         <p><span className="left">Extra Charges</span> <span className="right">0</span></p>
                         <p><span className="left tax">Tax & Charges</span> <span className="right">₹ 00.00</span></p>
                         <p><span className="left discount">Discount (free delivery)</span> <span className="right discount">₹{totalDiscount.current}.00</span></p>
