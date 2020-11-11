@@ -59,13 +59,13 @@ class Sidebar extends React.Component {
                   Customers
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link to="/AddItemMenu" className="resturent">
                   Menu
                 </Link>
-              </li>
+              </li> */}
               <li>
-                <Link to="#" className="resturent">
+                <Link to="/AddItemMenu" className="resturent">
                   My Restaurant
                 </Link>
               </li>

@@ -10,8 +10,7 @@ import CategoryList from "./category_list";
 import firebase from "firebase";
 import { thisExpression } from "@babel/types";
 import { array } from "yargs";
-import LoaderPage from "./Loader";
-class AddCategoryMenuDuplicate extends React.Component {
+class EditCategoryMenu extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -35,8 +34,6 @@ class AddCategoryMenuDuplicate extends React.Component {
       status: "select",
       parentId: "",
       itemId: [],
-      loading: false,
-      isLoading: null,
       //   IsParent:true,
     };
 
@@ -186,40 +183,81 @@ class AddCategoryMenuDuplicate extends React.Component {
     this.itemMenuList();
   }
 
-  itemCategoryList = () => {
-    var sessionId = sessionStorage.getItem("RoleId");
-    var businessId = sessionStorage.getItem("businessId");
-    this.setState({ loading: true });
-    firebase
-      .firestore()
-      .collection("categories")
-      .where("sessionId", "==", sessionId)
-      .where("businessId", "==", businessId)
-      .where("parentId", "==", "")
-      .get()
-      .then((querySnapshot) => {
-        var data = [];
-        querySnapshot.forEach((childSnapShot) => {
-          const GSTData = {
-            categoryId: childSnapShot.id,
-            name: childSnapShot.data().name,
-            isParent: childSnapShot.data().isParent,
-            photo: childSnapShot.data().photo,
-            color: childSnapShot.data().color,
-            created_on: childSnapShot.data().created_on,
-            parentId: childSnapShot.data().parentId,
-            sessionId: childSnapShot.data().sessionId,
-            username: childSnapShot.data().username,
-          };
+  //   itemCategoryList = () => {
+  //     var sessionId = sessionStorage.getItem("RoleId");
+  //     var businessId = sessionStorage.getItem("businessId");
+  //     this.setState({ loading: true });
+  //     firebase
+  //       .firestore()
+  //       .collection("categories")
+  //       .where("sessionId", "==", sessionId)
+  //       .where("businessId", "==", businessId)
+  //       .where("parentId", "==", "")
+  //       .get()
+  //       .then((querySnapshot) => {
+  //         var data = [];
+  //         querySnapshot.forEach((childSnapShot) => {
+  //           const GSTData = {
+  //             categoryId: childSnapShot.id,
+  //             name: childSnapShot.data().name,
+  //             isParent: childSnapShot.data().isParent,
+  //             photo: childSnapShot.data().photo,
+  //             color: childSnapShot.data().color,
+  //             created_on: childSnapShot.data().created_on,
+  //             parentId: childSnapShot.data().parentId,
+  //             sessionId: childSnapShot.data().sessionId,
+  //             username: childSnapShot.data().username,
+  //           };
 
-          data.push(GSTData);
-        });
+  //           data.push(GSTData);
+  //         });
+  //         this.setState({
+  //           CategoryList: data,
+  //           countPage: data.length,
+  //           loading: false,
+  //         });
+  //         // console.log(CategoryList);
+  //         this.setState({
+  //           currentCategory: [
+  //             {
+  //               id: "",
+  //               name: "categories",
+  //             },
+  //           ],
+  //         });
+  //       })
+  //       .catch((err) => {
+  //         // console.log(err);
+  //       });
+  //   };
+
+  itemCategoryList = async () => {
+    const { categoryId } = this.props.match.params;
+    this.setState({ loading: true });
+    var ref = await firebase
+      .firestore()
+      .collection("/categories")
+      .doc(categoryId)
+      .get()
+
+      .then((snapshot) => {
+        var Category = snapshot.data();
+
+        // console.log(categories)
+        console.log("isParent", Category.isParent);
         this.setState({
-          CategoryList: data,
-          countPage: data.length,
-          loading: false,
+          name: Category.name,
+          isParent: Category.isParent,
+          photo: Category.photo,
+          color: Category.color,
+          created_on: Category.created_on,
+          parentId: Category.parentId,
+          sessionId: Category.sessionId,
+          username: Category.username,
+          itemId: Category.itemId,
         });
-        // console.log(CategoryList);
+
+        console.log(CategoryList);
         this.setState({
           currentCategory: [
             {
@@ -228,9 +266,19 @@ class AddCategoryMenuDuplicate extends React.Component {
             },
           ],
         });
-      })
-      .catch((err) => {
-        // console.log(err);
+
+        this.itemMenuList();
+
+        console.log(Category.itemId);
+        console.log(this.state.itemMenuList);
+        let ids = Category.itemId;
+        let menu = this.state.itemMenuList;
+        for (let i = 0; i < ids.length; i++) {
+          if (ids[i] === this.state.itemMenuList[i].itemmenuid) {
+            menu[i].isSelected = !menu[i].isSelected;
+            break;
+          }
+        }
       });
   };
 
@@ -363,7 +411,6 @@ class AddCategoryMenuDuplicate extends React.Component {
           countPage: data.length,
           loading: false,
         });
-        //// console.log(itemTypeList);
       })
       .catch((err) => {
         // console.log(err);
@@ -374,12 +421,7 @@ class AddCategoryMenuDuplicate extends React.Component {
     this.setState({ isUploading: true, uploadProgress: 0 });
 
   handleFrontImageUploadStart = () =>
-    this.setState({
-      isUploading: true,
-
-      uploadProgress: 0,
-      avatarURL: "",
-    });
+    this.setState({ isUploading: true, uploadProgress: 0, avatarURL: "" });
   handleProgress = (progress) => this.setState({ uploadProgress: progress });
 
   handleUploadError = (error) => {
@@ -391,41 +433,43 @@ class AddCategoryMenuDuplicate extends React.Component {
   };
 
   handleItemPhotoSuccess = (filename) => {
-    this.setState({ isLoading: true });
     firebase
       .storage()
       .ref("images")
       .child(filename)
       .getDownloadURL()
       .then((url) => this.setState({ photo: url }));
-    this.setState({ isLoading: false });
   };
 
   handleSubmit = async (event) => {
-    this.setState({ loading: true });
     event.preventDefault();
     if (this.validator.allValid()) {
       var sessionId = sessionStorage.getItem("RoleId");
       var username = sessionStorage.getItem("username");
       var businessId = sessionStorage.getItem("businessId");
+      const { categoryId } = this.props.match.params;
+      var businessId = sessionStorage.getItem("businessId");
       let itemArray = [];
       for (let i = 0; i < this.state.itemId.length; i++) {
         itemArray.push(this.state.itemId[i].itemmenuid);
       }
-      let data = {
-        name: this.state.name,
-        isParent: false,
-        photo: this.state.photo,
-        color: this.state.color,
-        parentId: this.state.parentId,
-        sessionId: sessionId,
-        username: username,
-        businessId: businessId,
-        // itemId: "",
-        itemId: itemArray,
-      };
-      console.log(data);
-      var dbcon = await firebase.firestore().collection("categories").add(data);
+      var dbcon = await firebase
+        .firestore()
+        .collection("categories")
+        .doc(categoryId)
+
+        .update({
+          name: this.state.name,
+          isParent: this.state.isParent,
+          photo: this.state.photo,
+          color: this.state.color,
+          parentId: this.state.parentId,
+          sessionId: sessionId,
+          username: username,
+          businessId: businessId,
+
+          itemId: itemArray,
+        });
 
       if (this.state.parentId !== "")
         await firebase
@@ -466,6 +510,27 @@ class AddCategoryMenuDuplicate extends React.Component {
       parentId: id,
     });
   };
+
+  temp = async () => {
+    // let res = await firebase
+    //   .firestore()
+    //   .collection("cities")
+    //   .where("name", "==", "Tokyo")
+    //   .where("country", "array-contains-any", ["Mumbai", "chennai"])
+    //   .get();
+
+    // if (res.docs.length > 0) {
+    //   for (const doc of res.docs) {
+    //     // console.log(doc.id, "=>", doc.data());
+    //   }
+    // } else {
+    //   // console.log("no data present");
+    // }
+    for (let i = 0; i < this.state.itemMenuList.length; i++) {
+      console.log(this.state.itemMenuList[i].itemmenuid);
+    }
+  };
+
   selectItem = async (id) => {
     console.log("selected id", id);
     var sessionId = sessionStorage.getItem("RoleId");
@@ -501,26 +566,6 @@ class AddCategoryMenuDuplicate extends React.Component {
     await this.setState({ itemId: arr });
   };
 
-  temp = async () => {
-    // let res = await firebase
-    //   .firestore()
-    //   .collection("cities")
-    //   .where("name", "==", "Tokyo")
-    //   .where("country", "array-contains-any", ["Mumbai", "chennai"])
-    //   .get();
-
-    // if (res.docs.length > 0) {
-    //   for (const doc of res.docs) {
-    //     // console.log(doc.id, "=>", doc.data());
-    //   }
-    // } else {
-    //   // console.log("no data present");
-    // }
-    for (let i = 0; i < this.state.itemMenuList.length; i++) {
-      console.log(this.state.itemMenuList[i].itemmenuid);
-    }
-  };
-
   handleChange = (e) => {
     this.setState({
       oldColor: this.state.color,
@@ -536,7 +581,7 @@ class AddCategoryMenuDuplicate extends React.Component {
   };
   onSelectChange = (event) => {
     this.setState({
-      [event.target.name]: !this.state.IsParent,
+      [event.target.name]: !this.state.isParent,
     });
   };
   categoryNameChange = async (e) => {
@@ -573,7 +618,6 @@ class AddCategoryMenuDuplicate extends React.Component {
     }
   };
   render() {
-    const { isLoading } = this.state;
     return (
       <>
         <Form onSubmit={this.handleSubmit}>
@@ -644,7 +688,7 @@ class AddCategoryMenuDuplicate extends React.Component {
                         <Link to="/AddItemMenu">
                           <span className="btn add_categoty_menu">Items</span>
                         </Link>
-                        <Link to="/AddCategoryMenu">
+                        <Link to="/AddCategoryMenuDuplicate">
                           <span className="btn add_categoty_menu">
                             <span className="active"></span>Category
                           </span>
@@ -658,9 +702,9 @@ class AddCategoryMenuDuplicate extends React.Component {
                         <div className="orders_menu">
                           <ul>
                             <li>
-                              <a href="#" className="activemenu">
+                              <Link to="/AddCategoryMenuDuplicate">
                                 Add category
-                              </a>
+                              </Link>
                             </li>
                             <li>
                               <Link to="/CategoryList">View category</Link>
@@ -708,25 +752,52 @@ class AddCategoryMenuDuplicate extends React.Component {
                               </label>
                             </div>
                             <div className="col-12 col-md-8">
+                              {console.log(
+                                this.state.isParent,
+                                this.state.parentId
+                              )}
                               <select
-                                name="IsParent"
+                                name="isParent"
                                 id="select"
-                                value={this.state.IsParent}
+                                value={this.state.isParent}
                                 onChange={this.onSelectChange}
                                 className="form-control"
                               >
-                                <option value="select">select</option>
-                                <option value="true">True</option>
-                                <option value="false">False</option>
+                                {/* <option
+                                  value={this.state.isParent.toString()}
+                                  //   selected={this.state.isParent}
+                                >
+                                  {this.state.isParent}
+                                </option> */}
+                                <option
+                                  value="true"
+                                  //   selected={
+                                  //     this.state.isParent.toString() === "true"
+                                  //       ? true
+                                  //       : null
+                                  //   }
+                                >
+                                  True
+                                </option>
+                                <option
+                                  value="false"
+                                  //   selected={
+                                  //     this.state.isParent.toString() === "false"
+                                  //       ? false
+                                  //       : null
+                                  //   }
+                                >
+                                  False
+                                </option>
                               </select>
                             </div>
                             {this.validator.message(
                               "IsParent  ",
-                              this.state.IsParent,
+                              this.state.isParent,
                               "required"
                             )}
                           </div>
-                          {this.state.IsParent === true ? (
+                          {this.state.isParent === true ? (
                             <div className="row form-group">
                               <div className="col col-md-4">
                                 <label className=" form-control-label">
@@ -775,20 +846,12 @@ class AddCategoryMenuDuplicate extends React.Component {
                           <div className="upload_img_block">
                             <div className="row">
                               <div className="col-md-4">
-                                {this.state.isLoading ? (
-                                  <div className="divLoader">
-                                    <LoaderPage />
-                                  </div>
-                                ) : (
-                                  <>
-                                    {this.state.photo && (
-                                      <img
-                                        src={this.state.photo}
-                                        width="50%"
-                                        height="50%"
-                                      />
-                                    )}
-                                  </>
+                                {this.state.photo && (
+                                  <img
+                                    src={this.state.photo}
+                                    width="50%"
+                                    height="50%"
+                                  />
                                 )}
                                 <FileUploader
                                   accept="image/*"
@@ -885,8 +948,22 @@ class AddCategoryMenuDuplicate extends React.Component {
                                               )}
                                               <img src={item.item_image} />
                                             </div>
+                                            {/* <div className="img_box">
+                                              <span className="star_yellow">
+                                                <img src="/images/icon/star_rate_ye.svg" />
+                                              </span>
+                                              <img src="/images/category_img.png" />
+                                            </div> */}
                                           </div>
                                           <div className="right">
+                                            {/* <p>
+                                              <span className="item_recipe">
+                                                <span className="dot veg"></span>
+                                              </span>
+                                              <span className="btn best_seller">
+                                                BESTSELLER
+                                              </span>
+                                            </p> */}
                                             <p>
                                               <span className="item_recipe">
                                                 {item.item_type == "Veg" ? (
@@ -955,7 +1032,7 @@ class AddCategoryMenuDuplicate extends React.Component {
                         </span>
                         <button type="submit">
                           <span className="btn create_btn" type="submit">
-                            Create Catagory{" "}
+                            Save{" "}
                           </span>
                         </button>
                       </div>
@@ -1175,7 +1252,7 @@ class AddCategoryMenuDuplicate extends React.Component {
                                     <div className="img_box">
                                       {item.advance == "Yes" ? (
                                         <span className="star_yellow">
-                                          <img src="images/icon/star_rate_ye.svg" />
+                                          <img src="/images/icon/star_rate_ye.svg" />
                                         </span>
                                       ) : (
                                         ""
@@ -1235,6 +1312,9 @@ class AddCategoryMenuDuplicate extends React.Component {
                                         this,
                                         item.itemmenuid,
                                         item.item_name
+                                        // item.item_price,
+                                        // item.item_type,
+                                        // item.item_image
                                       )}
                                     >
                                       {item.isSelected === true
@@ -1276,4 +1356,4 @@ class AddCategoryMenuDuplicate extends React.Component {
   }
 }
 
-export default AddCategoryMenuDuplicate;
+export default EditCategoryMenu;
