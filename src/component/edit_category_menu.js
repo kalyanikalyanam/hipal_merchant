@@ -142,7 +142,7 @@ class EditCategoryMenu extends React.Component {
     });
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.setState({ loading: true });
 
     var sessionId = sessionStorage.getItem("RoleId");
@@ -179,7 +179,7 @@ class EditCategoryMenu extends React.Component {
         });
     }
 
-    this.itemCategoryList();
+    await this.itemCategoryList();
     this.itemMenuList();
   }
 
@@ -189,7 +189,7 @@ class EditCategoryMenu extends React.Component {
   //     this.setState({ loading: true });
   //     firebase
   //       .firestore()
-  //       .collection("categories")
+  //       .collection("categories2")
   //       .where("sessionId", "==", sessionId)
   //       .where("businessId", "==", businessId)
   //       .where("parentId", "==", "")
@@ -221,7 +221,7 @@ class EditCategoryMenu extends React.Component {
   //           currentCategory: [
   //             {
   //               id: "",
-  //               name: "categories",
+  //               name: "categories2",
   //             },
   //           ],
   //         });
@@ -234,16 +234,15 @@ class EditCategoryMenu extends React.Component {
   itemCategoryList = async () => {
     const { categoryId } = this.props.match.params;
     this.setState({ loading: true });
-    var ref = await firebase
+    let ref = await firebase
       .firestore()
-      .collection("/categories")
+      .collection("categories2")
       .doc(categoryId)
       .get()
-
       .then((snapshot) => {
         var Category = snapshot.data();
 
-        // console.log(categories)
+        // console.log(categories2)
         console.log("isParent", Category.isParent);
         this.setState({
           name: Category.name,
@@ -254,7 +253,7 @@ class EditCategoryMenu extends React.Component {
           parentId: Category.parentId,
           sessionId: Category.sessionId,
           username: Category.username,
-          itemId: Category.itemId,
+          // itemId: Category.itemId,
         });
 
         console.log(CategoryList);
@@ -262,24 +261,89 @@ class EditCategoryMenu extends React.Component {
           currentCategory: [
             {
               id: "",
-              name: "categories",
+              name: "categories2",
             },
           ],
         });
-
-        this.itemMenuList();
-
-        console.log(Category.itemId);
-        console.log(this.state.itemMenuList);
-        let ids = Category.itemId;
-        let menu = this.state.itemMenuList;
-        for (let i = 0; i < ids.length; i++) {
-          if (ids[i] === this.state.itemMenuList[i].itemmenuid) {
-            menu[i].isSelected = !menu[i].isSelected;
-            break;
-          }
-        }
       });
+
+    var sessionId = sessionStorage.getItem("RoleId");
+    var businessId = sessionStorage.getItem("businessId");
+    let rrr = await firebase
+      .firestore()
+      .collection("menuitems2")
+      .where("sessionId", "==", sessionId)
+      .where("businessId", "==", businessId)
+      // .where("categoryId", "==", "bSZnzQSrsw8eeWwkeHc4")
+      .where("categoryId", "array-contains-any", [categoryId])
+      .get()
+      .then((querySnapshot) => {
+        var data = [];
+        querySnapshot.forEach((childSnapShot) => {
+          const GSTData = {
+            idSelected: true,
+            itemmenuid: childSnapShot.id,
+            item_unique_id: childSnapShot.data().item_unique_id,
+
+            item_id: childSnapShot.data().item_id,
+            item_name: childSnapShot.data().item_name,
+            item_description: childSnapShot.data().item_description,
+            item_halal: childSnapShot.data().item_halal,
+            item_image: childSnapShot.data().item_image,
+            item_points: childSnapShot.data().item_points,
+
+            station_name: childSnapShot.data().station_name,
+
+            item_type: childSnapShot.data().item_type,
+            item_hash_tags: childSnapShot.data().item_hash_tags,
+            item_price: childSnapShot.data().item_price,
+            item_tax: childSnapShot.data().item_tax,
+
+            sessionId: childSnapShot.data().sessionId,
+            businessId: childSnapShot.data().businessId,
+
+            status: childSnapShot.data().status,
+            username: childSnapShot.data().username,
+
+            portions: childSnapShot.data().portions,
+            portions_details: childSnapShot.data().portions_details,
+
+            advance: childSnapShot.data().advance,
+            carbs: childSnapShot.data().carbs,
+            protien: childSnapShot.data().protien,
+            fat: childSnapShot.data().fat,
+            item_video: childSnapShot.data().item_video,
+            item_multiple_image: childSnapShot.data().downloadURLs,
+
+            extra: childSnapShot.data().extra,
+            healthytag: childSnapShot.data().healthytag,
+            bestsellertag: childSnapShot.data().bestsellertag,
+
+            recommend: childSnapShot.data().recommend,
+
+            recommendations: childSnapShot.data().recommendations,
+
+            created_on: childSnapShot.data().created_on,
+            sessionId: childSnapShot.data().sessionId,
+            businessId: childSnapShot.data().businessId,
+            categoryId: childSnapShot.data().categoryId,
+          };
+
+          data.push(GSTData);
+        });
+        this.setState({
+          itemId: data,
+          countPage: data.length,
+          loading: false,
+        });
+      });
+    // let data2 = await firebase
+    //   .firestore()
+    //   .collection("menuitems2")
+    //   .where("sessionId", "==", sessionId)
+    //   .where("businessId", "==", businessId).get().then(snapshot=>{
+
+    //   });
   };
 
   explore = async (e, name) => {
@@ -289,7 +353,7 @@ class EditCategoryMenu extends React.Component {
     let { id } = e.target;
     firebase
       .firestore()
-      .collection("categories")
+      .collection("categories2")
       .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .where("parentId", "==", id)
@@ -348,7 +412,7 @@ class EditCategoryMenu extends React.Component {
     this.setState({ loading: true });
     firebase
       .firestore()
-      .collection("menuitems")
+      .collection("menuitems2")
       .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .get()
@@ -401,7 +465,7 @@ class EditCategoryMenu extends React.Component {
             created_on: childSnapShot.data().created_on,
             sessionId: childSnapShot.data().sessionId,
             businessId: childSnapShot.data().businessId,
-            categoryId: this.state.categoryId,
+            categoryId: childSnapShot.data().categoryId,
           };
 
           data.push(GSTData);
@@ -411,6 +475,22 @@ class EditCategoryMenu extends React.Component {
           countPage: data.length,
           loading: false,
         });
+
+        console.log("itemid", this.state.itemId);
+        console.log("item menu", this.state.itemMenuList);
+        let id = this.state.itemId;
+        let menu = this.state.itemMenuList;
+        for (let i = 0; i < id.length; i++) {
+          for (let j = 0; j < menu.length; j++) {
+            if (id[i].itemmenuid === this.state.itemMenuList[j].itemmenuid) {
+              menu[j].isSelected = !menu[j].isSelected;
+              console.log("hererere");
+              break;
+            }
+          }
+        }
+
+        this.setState({ itemMenuList: menu });
       })
       .catch((err) => {
         // console.log(err);
@@ -453,9 +533,10 @@ class EditCategoryMenu extends React.Component {
       for (let i = 0; i < this.state.itemId.length; i++) {
         itemArray.push(this.state.itemId[i].itemmenuid);
       }
+
       var dbcon = await firebase
         .firestore()
-        .collection("categories")
+        .collection("categories2")
         .doc(categoryId)
 
         .update({
@@ -470,11 +551,39 @@ class EditCategoryMenu extends React.Component {
 
           itemId: itemArray,
         });
+      console.log(this.state.itemId);
+      let items = this.state.itemId;
+      for (let i = 0; i < items.length; i++) {
+        let result = await firebase
+          .firestore()
+          .collection("menuitems2")
+          .where("sessionId", "==", sessionId)
+          .where("businessId", "==", businessId)
+          .get()
+          .then((snap) => {
+            snap.forEach((doc) => {
+              doc.ref.update({
+                categoryId: firebase.firestore.FieldValue.arrayRemove(
+                  categoryId
+                ),
+              });
+            });
+          });
+      }
 
+      for (let i = 0; i < items.length; i++) {
+        let result = await firebase
+          .firestore()
+          .collection("menuitems2")
+          .doc(itemArray[i])
+          .update({
+            categoryId: firebase.firestore.FieldValue.arrayUnion(categoryId),
+          });
+      }
       if (this.state.parentId !== "")
         await firebase
           .firestore()
-          .collection("/categories")
+          .collection("/categories2")
           .doc(this.state.parentId)
           .update({ isParent: true });
 
@@ -595,7 +704,7 @@ class EditCategoryMenu extends React.Component {
     if (this.state.validError != true) {
       firebase
         .firestore()
-        .collection("categories")
+        .collection("categories2")
         .where("sessionId", "==", sessionId)
         .where("businessId", "==", businessId)
         .where("name", "==", e.target.value)
@@ -630,7 +739,16 @@ class EditCategoryMenu extends React.Component {
                   <div className="container-fluid">
                     {/* <button type="button" onClick={this.temp}>
                       temp
+
                     </button> */}
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        console.log(this.state.itemId);
+                      }}
+                    >
+                      <strong>test</strong>
+                    </button>
                     <div className="row">
                       <div className="col-md-12 p-0">
                         <div className="search_profile">

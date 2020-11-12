@@ -688,7 +688,7 @@ class TablesList extends React.Component {
                         <label className=" form-control-label">Capacity</label>
                       </div>
                       <div className="col-12 col-md-6">
-                        <select
+                        {/* <select
                           name="table_capacity"
                           //  value={this.state.table_capacity}
                           onChange={this.onChange}
@@ -708,7 +708,16 @@ class TablesList extends React.Component {
                           <option value="8 Members">8 Members</option>
                           <option value="9 Members">9 Members</option>
                           <option value="10 Members">10 Members</option>
-                        </select>
+                        </select> */}
+                        <input
+                          type="number"
+                          id="text-input"
+                          name="table_capacity"
+                          value={this.state.table_capacity}
+                          onChange={this.onChange}
+                          placeholder=""
+                          className="form-control edit_product"
+                        />
                       </div>
                       {this.validator.message(
                         "Table Capacity",

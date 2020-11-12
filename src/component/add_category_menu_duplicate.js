@@ -192,7 +192,7 @@ class AddCategoryMenuDuplicate extends React.Component {
     this.setState({ loading: true });
     firebase
       .firestore()
-      .collection("categories")
+      .collection("categories2")
       .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .where("parentId", "==", "")
@@ -224,7 +224,7 @@ class AddCategoryMenuDuplicate extends React.Component {
           currentCategory: [
             {
               id: "",
-              name: "categories",
+              name: "categories2",
             },
           ],
         });
@@ -241,7 +241,7 @@ class AddCategoryMenuDuplicate extends React.Component {
     let { id } = e.target;
     firebase
       .firestore()
-      .collection("categories")
+      .collection("categories2")
       .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .where("parentId", "==", id)
@@ -300,7 +300,7 @@ class AddCategoryMenuDuplicate extends React.Component {
     this.setState({ loading: true });
     firebase
       .firestore()
-      .collection("menuitems")
+      .collection("menuitems2")
       .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .get()
@@ -425,12 +425,23 @@ class AddCategoryMenuDuplicate extends React.Component {
         itemId: itemArray,
       };
       console.log(data);
-      var dbcon = await firebase.firestore().collection("categories").add(data);
-
+      var dbcon = await firebase
+        .firestore()
+        .collection("categories2")
+        .add(data);
+      for (let i = 0; i < itemArray.length; i++) {
+        let result = await firebase
+          .firestore()
+          .collection("menuitems2")
+          .doc(itemArray[i])
+          .update({
+            categoryId: firebase.firestore.FieldValue.arrayUnion(dbcon.id),
+          });
+      }
       if (this.state.parentId !== "")
         await firebase
           .firestore()
-          .collection("/categories")
+          .collection("categories2")
           .doc(this.state.parentId)
           .update({ isParent: true });
 
@@ -550,7 +561,7 @@ class AddCategoryMenuDuplicate extends React.Component {
     if (this.state.validError != true) {
       firebase
         .firestore()
-        .collection("categories")
+        .collection("categories2")
         .where("sessionId", "==", sessionId)
         .where("businessId", "==", businessId)
         .where("name", "==", e.target.value)

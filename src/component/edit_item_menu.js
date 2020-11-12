@@ -12,10 +12,11 @@ import { Modal } from "react-responsive-modal";
 import AddItemType from "./add_item_type";
 import AddStation from "./add_station";
 import Select from "react-select";
-class AddItemMenu extends React.Component {
+class EditItemMenu extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      categoryId: [{}],
       open: false,
       open1: false,
       created_on: new Date().toLocaleString(),
@@ -237,80 +238,140 @@ class AddItemMenu extends React.Component {
   }
 
   itemMenuList = async () => {
-    var sessionId = sessionStorage.getItem("RoleId");
-    var businessId = sessionStorage.getItem("businessId");
-
+    const { itemmenuid } = this.props.match.params;
     this.setState({ loading: true });
-    await firebase
+    let ref = await firebase
       .firestore()
       .collection("menuitems2")
-      .where("sessionId", "==", sessionId)
-      .where("businessId", "==", businessId)
+      .doc(itemmenuid)
       .get()
-      .then((querySnapshot) => {
-        var data = [];
-        querySnapshot.forEach((childSnapShot) => {
-          const GSTData = {
-            itemmenuid: childSnapShot.id,
-            item_unique_id: childSnapShot.data().item_unique_id,
+      .then((snapshot) => {
+        var items = snapshot.data();
 
-            item_id: childSnapShot.data().item_id,
-            item_name: childSnapShot.data().item_name,
-            item_description: childSnapShot.data().item_description,
-            item_halal: childSnapShot.data().item_halal,
-            item_image: childSnapShot.data().item_image,
-            item_points: childSnapShot.data().item_points,
-
-            station_name: childSnapShot.data().station_name,
-
-            item_type: childSnapShot.data().item_type,
-            item_hash_tags: childSnapShot.data().item_hash_tags,
-            item_price: childSnapShot.data().item_price,
-            item_tax: childSnapShot.data().item_tax,
-
-            sessionId: childSnapShot.data().sessionId,
-            businessId: childSnapShot.data().businessId,
-
-            status: childSnapShot.data().status,
-            username: childSnapShot.data().username,
-
-            portions: childSnapShot.data().portions,
-            portions_details: childSnapShot.data().portions_details,
-
-            advance: childSnapShot.data().advance,
-            carbs: childSnapShot.data().carbs,
-            protien: childSnapShot.data().protien,
-            fat: childSnapShot.data().fat,
-            item_video: childSnapShot.data().item_video,
-            item_multiple_image: childSnapShot.data().downloadURLs,
-
-            extra: childSnapShot.data().extra,
-            healthytag: childSnapShot.data().healthytag,
-            bestsellertag: childSnapShot.data().bestsellertag,
-
-            recommend: childSnapShot.data().recommend,
-
-            recommendations: childSnapShot.data().recommendations,
-
-            created_on: childSnapShot.data().created_on,
-            sessionId: childSnapShot.data().sessionId,
-            businessId: childSnapShot.data().businessId,
-            categoryId: childSnapShot.data().categoryId,
-          };
-
-          data.push(GSTData);
-        });
         this.setState({
-          itemMenuList: data,
-          countPage: data.length,
-          loading: false,
+          item_unique_id: items.item_unique_id,
+
+          item_id: items.item_id,
+          item_name: items.item_name,
+          item_description: items.item_description,
+          item_halal: items.item_halal,
+          item_image: items.item_image,
+          item_points: items.item_points,
+
+          station_name: items.station_name,
+
+          item_type: items.item_type,
+          item_hash_tags: items.item_hash_tags,
+          item_price: items.item_price,
+          item_tax: items.item_tax,
+
+          sessionId: items.sessionId,
+          businessId: items.businessId,
+
+          status: items.status,
+          username: items.username,
+
+          portions: items.portions,
+          portions_details: items.portions_details,
+
+          advance: items.advance,
+          carbs: items.carbs,
+          protien: items.protien,
+          fat: items.fat,
+          item_video: items.item_video,
+          item_multiple_image: items.downloadURLs,
+
+          extra: items.extra,
+          healthytag: items.healthytag,
+          bestsellertag: items.bestsellertag,
+
+          recommend: items.recommend,
+
+          recommendations: items.recommendations,
+
+          created_on: items.created_on,
+          sessionId: items.sessionId,
+          businessId: items.businessId,
+          // categoryId: items.categoryId,
         });
-        // console.log(itemTypeList);
-      })
-      .catch((err) => {
-        console.log(err);
       });
   };
+
+  // itemMenuList = async () => {
+  //   var sessionId = sessionStorage.getItem("RoleId");
+  //   var businessId = sessionStorage.getItem("businessId");
+
+  //   this.setState({ loading: true });
+  //   await firebase
+  //     .firestore()
+  //     .collection("menuitems2")
+  //     .where("sessionId", "==", sessionId)
+  //     .where("businessId", "==", businessId)
+  //     .get()
+  //     .then((querySnapshot) => {
+  //       var data = [];
+  //       querySnapshot.forEach((childSnapShot) => {
+  //         const GSTData = {
+  //           itemmenuid: childSnapShot.id,
+  //           item_unique_id: childSnapShot.data().item_unique_id,
+
+  //           item_id: childSnapShot.data().item_id,
+  //           item_name: childSnapShot.data().item_name,
+  //           item_description: childSnapShot.data().item_description,
+  //           item_halal: childSnapShot.data().item_halal,
+  //           item_image: childSnapShot.data().item_image,
+  //           item_points: childSnapShot.data().item_points,
+
+  //           station_name: childSnapShot.data().station_name,
+
+  //           item_type: childSnapShot.data().item_type,
+  //           item_hash_tags: childSnapShot.data().item_hash_tags,
+  //           item_price: childSnapShot.data().item_price,
+  //           item_tax: childSnapShot.data().item_tax,
+
+  //           sessionId: childSnapShot.data().sessionId,
+  //           businessId: childSnapShot.data().businessId,
+
+  //           status: childSnapShot.data().status,
+  //           username: childSnapShot.data().username,
+
+  //           portions: childSnapShot.data().portions,
+  //           portions_details: childSnapShot.data().portions_details,
+
+  //           advance: childSnapShot.data().advance,
+  //           carbs: childSnapShot.data().carbs,
+  //           protien: childSnapShot.data().protien,
+  //           fat: childSnapShot.data().fat,
+  //           item_video: childSnapShot.data().item_video,
+  //           item_multiple_image: childSnapShot.data().downloadURLs,
+
+  //           extra: childSnapShot.data().extra,
+  //           healthytag: childSnapShot.data().healthytag,
+  //           bestsellertag: childSnapShot.data().bestsellertag,
+
+  //           recommend: childSnapShot.data().recommend,
+
+  //           recommendations: childSnapShot.data().recommendations,
+
+  //           created_on: childSnapShot.data().created_on,
+  //           sessionId: childSnapShot.data().sessionId,
+  //           businessId: childSnapShot.data().businessId,
+  //           categoryId: childSnapShot.data().categoryId,
+  //         };
+
+  //         data.push(GSTData);
+  //       });
+  //       this.setState({
+  //         itemMenuList: data,
+  //         countPage: data.length,
+  //         loading: false,
+  //       });
+  //       // console.log(itemTypeList);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
 
   itemTypeList = async () => {
     var sessionId = sessionStorage.getItem("RoleId");
@@ -703,76 +764,164 @@ class AddItemMenu extends React.Component {
     });
   };
 
+  // handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   if (this.validator.allValid()) {
+  //     var sessionId = sessionStorage.getItem("RoleId");
+  //     var username = sessionStorage.getItem("username");
+  //     var businessId = sessionStorage.getItem("businessId");
+  //     let dbCon = await firebase.firestore().collection("menuitems2");
+  //     var key = Math.round(new Date().getTime() / 1000);
+
+  //     dbCon.add({
+  //       item_unique_id: key,
+
+  //       item_id: this.state.item_id,
+  //       item_name: this.state.item_name,
+  //       item_description: this.state.item_description,
+  //       item_halal: this.state.item_halal,
+  //       item_image: this.state.item_image,
+  //       item_points: this.state.item_points,
+
+  //       station_name: this.state.selectedOption1,
+  //       // station_name: this.state.station_name,
+  //       // item_restaurant_id:this.state.item_restaurant_id,
+  //       item_type: this.state.item_type,
+  //       item_hash_tags: this.state.item_hash_tags,
+  //       item_price: this.state.item_price,
+  //       item_tax: this.state.item_tax,
+
+  //       sessionId: sessionId,
+  //       status: this.state.status,
+  //       username: username,
+
+  //       portions: this.state.portions,
+  //       portions_details: this.state.portions_details,
+
+  //       advance: this.state.advance,
+  //       carbs: this.state.carbs,
+  //       protien: this.state.protien,
+  //       fat: this.state.fat,
+  //       item_video: this.state.item_video,
+  //       item_multiple_image: this.state.downloadURLs,
+
+  //       extra: this.state.extra,
+  //       healthytag: this.state.healthytag,
+  //       bestsellertag: this.state.bestsellertag,
+
+  //       recommend: this.state.recommend,
+  //       // recommenditem:this.state. recommenditem,
+  //       recommendations: this.state.recommendations,
+
+  //       created_on: this.state.created_on,
+  //       bestrecommendation: "UnSelect",
+
+  //       businessId: businessId,
+
+  //       categoryId: this.state.parentId,
+  //       // categoryId: this.state.CategoryList,
+  //     });
+  //     // window.location.href="/ViewItemMenu";
+  //     this.props.history.push("/ViewItemMenu");
+  //   } else {
+  //     this.validator.showMessages();
+  //     this.forceUpdate();
+  //   }
+  // };
+
   handleSubmit = async (event) => {
     event.preventDefault();
     if (this.validator.allValid()) {
       var sessionId = sessionStorage.getItem("RoleId");
       var username = sessionStorage.getItem("username");
       var businessId = sessionStorage.getItem("businessId");
-      let dbCon = await firebase.firestore().collection("menuitems2");
-      var key = Math.round(new Date().getTime() / 1000);
+      const { itemmenuid } = this.props.match.params;
+      var businessId = sessionStorage.getItem("businessId");
+      // let itemArray = [];
+      // for (let i = 0; i < this.state.itemId.length; i++) {
+      //   itemArray.push(this.state.itemId[i].itemmenuid);
+      // }
 
-      dbCon.add({
-        item_unique_id: key,
+      var dbcon = await firebase
+        .firestore()
+        .collection("menuitems2")
+        .doc(itemmenuid)
 
-        item_id: this.state.item_id,
-        item_name: this.state.item_name,
-        item_description: this.state.item_description,
-        item_halal: this.state.item_halal,
-        item_image: this.state.item_image,
-        item_points: this.state.item_points,
+        .update({
+          item_id: this.state.item_id,
+          item_name: this.state.item_name,
+          item_description: this.state.item_description,
+          item_halal: this.state.item_halal,
+          item_image: this.state.item_image,
+          item_points: this.state.item_points,
 
-        station_name: this.state.selectedOption1,
-        // station_name: this.state.station_name,
-        // item_restaurant_id:this.state.item_restaurant_id,
-        item_type: this.state.item_type,
-        item_hash_tags: this.state.item_hash_tags,
-        item_price: this.state.item_price,
-        item_tax: this.state.item_tax,
+          station_name: this.state.selectedOption1,
+          // station_name: this.state.station_name,
+          // item_restaurant_id:this.state.item_restaurant_id,
+          item_type: this.state.item_type,
+          item_hash_tags: this.state.item_hash_tags,
+          item_price: this.state.item_price,
+          item_tax: this.state.item_tax,
 
-        sessionId: sessionId,
-        status: this.state.status,
-        username: username,
+          sessionId: sessionId,
+          status: this.state.status,
+          username: username,
 
-        portions: this.state.portions,
-        portions_details: this.state.portions_details,
+          portions: this.state.portions,
+          portions_details: this.state.portions_details,
 
-        advance: this.state.advance,
-        carbs: this.state.carbs,
-        protien: this.state.protien,
-        fat: this.state.fat,
-        item_video: this.state.item_video,
-        item_multiple_image: this.state.downloadURLs,
+          advance: this.state.advance,
+          carbs: this.state.carbs,
+          protien: this.state.protien,
+          fat: this.state.fat,
+          item_video: this.state.item_video,
+          item_multiple_image: this.state.downloadURLs,
 
-        extra: this.state.extra,
-        healthytag: this.state.healthytag,
-        bestsellertag: this.state.bestsellertag,
+          extra: this.state.extra,
+          healthytag: this.state.healthytag,
+          bestsellertag: this.state.bestsellertag,
 
-        recommend: this.state.recommend,
-        // recommenditem:this.state. recommenditem,
-        recommendations: this.state.recommendations,
+          recommend: this.state.recommend,
+          // recommenditem:this.state. recommenditem,
+          recommendations: this.state.recommendations,
 
-        created_on: this.state.created_on,
-        bestrecommendation: "UnSelect",
+          created_on: this.state.created_on,
+          bestrecommendation: "UnSelect",
 
-        businessId: businessId,
+          businessId: businessId,
 
-        categoryId: this.state.parentId,
-        // categoryId: this.state.CategoryList,
-      });
+          categoryId: this.state.parentId,
+          // categoryId: this.state.CategoryList,
+        });
+      console.log(this.state.categoryId);
+      // let categoryId = this.state.categoryId;
+      for (let i = 0; i < this.state.categoryId.length; i++) {
+        let result = await firebase
+          .firestore()
+          .collection("categories2")
+          .where("sessionId", "==", sessionId)
+          .where("businessId", "==", businessId)
+          .get()
+          .then((snap) => {
+            snap.forEach((doc) => {
+              doc.ref.update({
+                itemId: firebase.firestore.FieldValue.arrayRemove(itemmenuid),
+              });
+            });
+          });
+      }
 
-      for (let i = 0; i < this.state.parentId.length; i++) {
+      for (let i = 0; i < this.state.categoryId.length; i++) {
         let result = await firebase
           .firestore()
           .collection("categories2")
           .doc(this.state.parentId[i])
           .update({
-            itemId: firebase.firestore.FieldValue.arrayUnion(dbCon.id),
+            itemId: firebase.firestore.FieldValue.arrayUnion(itemmenuid),
           });
       }
 
-      // window.location.href="/ViewItemMenu";
-      this.props.history.push("/ViewItemMenu");
+      window.location.href = "/ViewItemMenu";
     } else {
       this.validator.showMessages();
       this.forceUpdate();
@@ -2179,4 +2328,4 @@ Choose Category
   }
 }
 
-export default AddItemMenu;
+export default EditItemMenu;
