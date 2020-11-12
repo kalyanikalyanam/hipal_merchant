@@ -258,7 +258,7 @@ class EditItemMenu extends React.Component {
           item_image: items.item_image,
           item_points: items.item_points,
 
-          station_name: items.station_name,
+          selectedOption1: items.station_name,
 
           item_type: items.item_type,
           item_hash_tags: items.item_hash_tags,
@@ -1403,6 +1403,10 @@ class EditItemMenu extends React.Component {
                                               <option
                                                 value={data.item_type}
                                                 key={index}
+                                                selected={
+                                                  data.item_type ==
+                                                  this.state.item_type
+                                                }
                                               >
                                                 {data.item_type}
                                               </option>
