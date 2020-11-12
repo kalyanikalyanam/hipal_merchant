@@ -4,7 +4,7 @@ import {billContext, dispatchContext, tableContext} from './contexts'
 import * as actions from './actionTypes'
 const BillPage = () => {
     const billIdRef= useRef() 
-    const grandTotal= useRef(0) 
+    const grandTotal= useRef(0.00) 
     const dispatch = useContext(dispatchContext)
     const table = useContext(tableContext)
     const bill = useContext(billContext)
@@ -12,10 +12,13 @@ const BillPage = () => {
         billIdRef.current = (Math.round((new Date().getTime() / 10000)))
         dispatch({
             type: actions.SETBILLID,
-            billId: billIdRef.current
+            billId: billIdRef.current,
+            totalBill: Math.round(grandTotal.current),
+            bill: bill
         })
     }, [])
     const handlePrice = (price) => {
+        console.log(price)
         grandTotal.current += price
     }
     const noItem = (
@@ -77,11 +80,11 @@ const BillPage = () => {
                                     <tbody>
                                     <tr>
                                         <td style={{ textAlign: 'left', padding: '5px 10px'}}><b>Grand Total</b></td>
-                                        <td style={{ textAlign: 'right', padding: '5px 10px' }}><b>₹ {grandTotal.current}</b></td>
+                                        <td style={{ textAlign: 'right', padding: '5px 10px' }}><b>₹ {parseFloat(grandTotal.current).toFixed(2)}</b></td>
                                     </tr>
                                     <tr>
                                         <td style={{ textAlign: 'left', padding: '5px 10px'}}><b>Payable</b></td>
-                                        <td style={{ textAlign: 'right', padding: '5px 10px' }}><b>₹ {grandTotal.current}</b></td>
+                                        <td style={{ textAlign: 'right', padding: '5px 10px' }}><b>₹ {Math.round(grandTotal.current)}</b></td>
                                     </tr>
                                     </tbody>
                                 </table>

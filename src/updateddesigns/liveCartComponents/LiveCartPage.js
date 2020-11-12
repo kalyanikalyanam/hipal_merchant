@@ -57,8 +57,8 @@ const LiveCartPage = () => {
                         <p><span className="left discount">10% Applied</span> <span className="right discount">₹{parseFloat(totalPrice.current *0.1).toFixed(2)}</span></p>
                         <p><span className="left">Extra Charges</span> <span className="right">0</span></p>
                         <p><span className="left tax">Tax & Charges</span> <span className="right">₹ 00.00</span></p>
-                        <p><span className="left discount">Discount (free delivery)</span> <span className="right discount">₹{totalDiscount.current}.00</span></p>
-                        <p className="m-t-15"><span className="left grandtotal_font">Grand Total</span> <span className="right grand_font"> ₹{totalPrice.current - totalDiscount.current}.00</span></p>
+                        <p><span className="left discount">Discount (free delivery)</span> <span className="right discount">₹{parseInt(totalDiscount.current).toFixed(2)}</span></p>
+                        <p className="m-t-15"><span className="left grandtotal_font">Grand Total</span> <span className="right grand_font"> ₹{parseFloat(totalPrice.current - totalDiscount.current).toFixed(2)}</span></p>
                     </div>
                 </div>
             </div>

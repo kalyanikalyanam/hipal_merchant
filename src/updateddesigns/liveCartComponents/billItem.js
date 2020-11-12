@@ -8,8 +8,8 @@ const BillItem = ({order, handlePrice}) => {
         const {orderPrice, orderDiscount} = order
         const temp = orderPrice - orderDiscount
         let price = temp 
-        price += price * gst /100
-        price += temp* cGst / 100
+        price += parseFloat(price * gst /100)
+        price += parseFloat(temp* cGst / 100)
         total.current = price.toFixed(2)
         handlePrice(total.current)
     }

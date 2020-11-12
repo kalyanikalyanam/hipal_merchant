@@ -9,6 +9,9 @@ const ModalForm = (props) => {
     const [item, setItem] = useState(props.item) 
     const {authenticated, setAuthenticated} = useState(false)
     const dispatch = useContext(dispatchContext)
+    const handleRadioChange = (e) => {
+
+    }
     const onClose = () => {
         dispatch({
             type: actions.CLOSEMODEL
@@ -19,7 +22,7 @@ const ModalForm = (props) => {
         if(data.portion){
             items.price= parseInt(data.portion)
         } else {
-            items.price = items.item_price
+            items.price = parseInt(items.item_price)
         }
         items.quantity = data.quantity
         items.discount = items.price * data.item_discount / 100
@@ -41,7 +44,12 @@ const ModalForm = (props) => {
                     return (
                         <label className="container_check" key={index}>
                             {portion.name}
-                            <input type="radio" name="portion" ref={register} value={portion.price}/>
+                            <input 
+                                type="radio" 
+                                name="portion" 
+                                ref={register} 
+                                value={portion.price} 
+                            />
                             <span className='checkmark'></span>
                         </label>
                     )

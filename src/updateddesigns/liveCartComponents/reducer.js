@@ -92,6 +92,8 @@ const handleBillPageHide = (aciton, state) => {
 const handleSetBillId = (action, state) => {
     const billPage = state.billPage
     billPage.billId = action.billId 
+    billPage.totalPrice = action.totalBill
+    billPage.bill = action.bill
     return updateObject(state, {billPage})
 }
 
