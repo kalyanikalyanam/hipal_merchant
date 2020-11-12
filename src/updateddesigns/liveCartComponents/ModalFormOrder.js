@@ -7,7 +7,8 @@ import LoginForm from './login'
 const ModalForm = (props) => {
     const {register, handleSubmit, errors, reset} = useForm()
     const [item, setItem] = useState(props.item) 
-    const {editMode}  = useContext(modalContext)
+    const [authenticated, setAuthenticated] = useState(false)
+    const {editMode, formOrder}  = useContext(modalContext)
     const dispatch = useContext(dispatchContext)
     useEffect(() => {
         reset({
@@ -16,6 +17,7 @@ const ModalForm = (props) => {
             portion: item.portion,
             discount: item.discount ? item.discount : 0
         })
+        if(!formOrder) setAuthenticated(true)
     }, [])
     const onClose = () => {
         dispatch({
@@ -136,6 +138,7 @@ const ModalForm = (props) => {
                                 </div>
                             </div>
                         </div>
+                                {!authenticated && <LoginForm auth={setAuthenticated} />}
                                 {item && item.portions === 'Yes' ? portions : null}
 
                         <div className="col-12 w-100-row">
@@ -155,7 +158,7 @@ const ModalForm = (props) => {
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn close_btn" onClick={onClose}>close </button>
-                        <button type="submit" className={`btn save_btn`}>save</button>
+                        <button type="submit" className={`btn save_btn ${authenticated ? "" : "disabled"}`} disabled={authenticated} authenticate={setAuthenticated}>save</button>
                     </div>
                 </div>
             </form>

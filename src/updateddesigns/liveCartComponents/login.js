@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {useForm} from 'react-hook-form'
 import ReactLoading from 'react-loading'
 import firebase from '../../config'
 
 
-const LoginForm = () => {
+const LoginForm = ({auth}) => {
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(false)
     const [login, setLogin] = useState(false)
@@ -25,6 +25,9 @@ const LoginForm = () => {
        setLoading(false)
        reset()
    }
+   useEffect(() => {
+       auth(login)
+   }, [login])
    const loadingSign = loading ? <ReactLoading type= 'spin' color="#fff" style={null} /> : null
    const beforeLogin = <span width='100%' onClick={handleSubmit(onSubmit)}>{loadingSign} {loading ? 'Checking' : 'Check'}</span>
 
