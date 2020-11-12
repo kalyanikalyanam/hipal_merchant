@@ -21,7 +21,11 @@
     "react-hook-form": "^6.10.1",
     "react-icheck": "^0.3.8",
     "react-iframe": "^1.8.0",
+<<<<<<< HEAD
+    "react-loader-spinner": "^3.1.14",
+=======
     "react-loading": "^2.0.3",
+>>>>>>> a4733debb6edd23d72c3a21658cb2fab120fb2cf
     "react-modal": "^3.11.2",
     "react-responsive-modal": "^5.2.1",
     "react-router-dom": "^5.2.0",

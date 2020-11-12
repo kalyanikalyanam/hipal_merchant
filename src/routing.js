@@ -82,6 +82,9 @@ import SettingsEditImageMedia from "./settings/settings_edit_media_page";
 
 import Table from "./updateddesigns/tables_view_for_updated_order";
 
+import EditCategoryMenu from "./component/edit_category_menu";
+import ViewCategoryMenu from "./component/view_category_menu";
+
 export const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
@@ -205,6 +208,14 @@ class Routing extends React.Component {
           component={SettingsEditImageMedia}
         />
         <PrivateRoute path="/Table" component={Table} />
+        <PrivateRoute
+          path="/EditCategoryMenu/:categoryId"
+          component={EditCategoryMenu}
+        />
+        <PrivateRoute
+          path="/ViewCategoryMenu/:categoryId"
+          component={ViewCategoryMenu}
+        />
       </Router>
     );
   }

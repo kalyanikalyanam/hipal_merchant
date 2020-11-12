@@ -431,12 +431,23 @@ class CategoryList extends React.Component {
                                   <td>{category.itemId.length}</td>
                                   <td>{category.color}</td>
                                   <td>ADD</td>
-                                  <td>click</td>
                                   <td>
-                                    <img
-                                      src="images/icon/edit_icon_blue.svg"
-                                      className="edit_delete"
-                                    />{" "}
+                                    {" "}
+                                    <Link
+                                      to={`/ViewCategoryMenu/${category.categoryId}`}
+                                    >
+                                      click
+                                    </Link>
+                                  </td>
+                                  <td>
+                                    <Link
+                                      to={`/EditCategoryMenu/${category.categoryId}`}
+                                    >
+                                      <img
+                                        src="images/icon/edit_icon_blue.svg"
+                                        className="edit_delete"
+                                      />{" "}
+                                    </Link>
                                     <img
                                       src="images/icon/delete_cross.svg"
                                       onClick={this.deleteItem.bind(
