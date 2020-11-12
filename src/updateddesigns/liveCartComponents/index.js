@@ -55,7 +55,9 @@ const initState = {
     advancedOptionsShow: false,
     customerMergeModal: false,
     customerSwapModal: false,
-    customerMoveModal: false
+    customerMoveModal: false,
+    editMode: false,
+    formOrder: false
 }
 
 const LiveCartPage = (props) => {
@@ -86,7 +88,6 @@ const LiveCartPage = (props) => {
         }
     }
     
-
     useEffect(() => {
         setLoading(true)
         setState({
@@ -162,7 +163,7 @@ const LiveCartPage = (props) => {
                                     </div>
                                 </div>
                             </div>
-            <modalContext.Provider value={reducerState.modalItem}>
+            <modalContext.Provider value={{editMode: reducerState.editMode, formOrder: reducerState.formOrder}}>
                 <Modal isOpen={reducerState.show} style={customStyles}>
                     <ModalForm item={reducerState.modalItem} />
                 </Modal>

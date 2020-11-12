@@ -1,3 +1,5 @@
+import { act } from 'react-dom/test-utils'
+import { CustomInput } from 'reactstrap'
 import * as actions from './actionTypes'
 import {addToarray, updateObject} from './reducerUtils'
 const initState = {
@@ -43,7 +45,12 @@ const reducer = (state, action) => {
         case actions.ADDCUSTOMERHIDE:
             return updateObject(state, {addCustomerShow: false})
         case actions.OPENMODEL:
-            return updateObject(state, {modalItem: action.item, show: true})
+            var editMode
+            if(action.editMode)
+            editMode = true
+            else
+            editMode = false
+            return updateObject(state, {modalItem: action.item, show: true, editMode, formOrder: action.formOrder})
         case actions.CLOSEMODEL:
             return updateObject(state, {modalItem: null, show: false})
         case 'mergeModal':
@@ -68,6 +75,8 @@ const reducer = (state, action) => {
 
         case actions.ADDTABLEDATA:
             return handleAddTableData(action, state)
+        case actions.KOTCART:
+            return handleKOTcart(action, state)
         default: 
             return state
     }
@@ -98,18 +107,49 @@ const handleSetBillId = (action, state) => {
 }
 
 const handleAddLiveCart = (action, state) => {
-    if (action.item && Object.keys(action.item).length === 0) return state
-    const liveCart = state.liveCart.concat(action.item)
-    console.log(state)
-    console.log(action.item)
-    return updateObject(state, { liveCart: liveCart, show: false, modelItem: null }) 
+    let liveCart = state.liveCart
+    if(!action.edit){
+        var flag = false 
+        for(var i = 0;i < liveCart.length; i++){
+            let item = liveCart[i]
+            if(item.item_id === action.item.item_id && item.price === action.item.price){
+                flag = true
+                item.quantity += action.item.quantity
+                item.instructions = action.item.instructions
+                item.discount = action.item.discount
+                item.item_status = action.item.status
+                item.id = action.id
+                item.kot = false
+                break
+            }
+        }
+        if(!flag){
+            const items = JSON.parse(JSON.stringify(action.item))
+            items.id = action.id 
+            items.kot = false
+            liveCart.push(items)
+        }
+    }
+    else {
+        for(var i = 0;i < liveCart.length; i++){
+            let item = liveCart[i]
+            if(action.item.id === item.id){
+                item.quantity = action.item.quantity
+                item.instructions = action.item.instructions
+                item.discount = action.item.discount
+                item.item_status = action.item.status
+                item.price = action.item.price
+                item.portion = action.item.portion
+            }
+        }
+    }
+        return updateObject(state, {liveCart, show: false, modalItem: null})
 }
 
 const deleteLiveCartItem = (aciton, state) => {
     const itemId = aciton.itemId
     const {liveCart} = state
-    console.log(liveCart)
-    let newLiveCart = liveCart.filter(item=> item.item_id !== itemId)
+    let newLiveCart = liveCart.filter(item=> item.id!== itemId)
     return updateObject(state, {liveCart: newLiveCart, show: false})
 }
 
@@ -137,4 +177,23 @@ const handleToBill = (action, state) => {
     const bill = addToarray(state.bill,currentOrders) 
     return  updateObject(state, {order: [], bill}) 
 }
+const handleKOTcart = (action, state) => {
+    const {cart} = action
+    console.log(cart)
+    let currentOrder = state.order
+    console.log(currentOrder)
+    for(var i = 0; i < currentOrder.length; i++){
+        let carts = currentOrder[i]
+        console.log(carts)
+        if(carts.cartId === cart.cardId){
+            console.log("here")
+            carts.forEach(item => {
+                item.kot = true
+            })
+        }
+    }
+    return updateObject(state, {order: currentOrder})
+
+}
+
 export default reducer

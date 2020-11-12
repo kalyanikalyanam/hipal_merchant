@@ -4,11 +4,28 @@ import * as actions from "./actionTypes";
 
 const MenuItem = ({ item }) => {
   const dispatch = useContext(dispatchContext);
-  const handleClick = (item) => {
+  const handleOptions = (item) => {
     dispatch({
       type: actions.OPENMODEL,
       item,
-    });
+      editMode: false,
+      id: Date.now().toString,
+      formOrder: false
+    })
+  }
+  const handleClick = (item) => {
+      let items = JSON.parse(JSON.stringify(item))
+      items.price = parseInt(items.item_price)
+      items.quantity = 1
+      items.discount = "0"
+      items.status = "active" 
+      items.item_instructions = " "
+      dispatch({
+        type: actions.ADDLIVE,
+        item: JSON.parse(JSON.stringify(items)),
+        edit: false,
+        id: Date.now().toString()
+      })
   };
   return (
     <div
@@ -30,6 +47,10 @@ const MenuItem = ({ item }) => {
             {item.item_type == "Egg" ? <span className="egg"></span> : ""}
           </span>
         </div>
+          {item.portions === "Yes" && <span onClick ={(e) => {
+            handleOptions(item)
+            e.stopPropagation()
+          }}> options</span>}
         <div className="price">₹ {item.item_price}</div>
       </div>
     </div>

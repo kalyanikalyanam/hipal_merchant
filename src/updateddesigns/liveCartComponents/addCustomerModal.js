@@ -1,3 +1,4 @@
+import {db} from '../../config'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import {useForm} from 'react-hook-form'
 import {dispatchContext} from './contexts'
@@ -5,6 +6,7 @@ import * as actions from './actionTypes'
 
 const AddCustomerModal = ({tableData}) => {
     const [occupency, setOccupancy] = useState(0)
+    const [customers, setCustomers] = useState([])
     const dispatch = useContext(dispatchContext)
     const fields = useRef()
     const {handleSubmit, register, reset} = useForm({
@@ -24,8 +26,26 @@ const AddCustomerModal = ({tableData}) => {
             return false;
         }
     }
-    useEffect(()=> {
+    const getCustomers = async () => {
+        const businessId = sessionStorage.getItem('businessId')
+        const snapshot = await db.collection('customers').where('businessId', '==', businessId).get()
+        let data = []
+        snapshot.forEach((childSnapshot) => {
+            const customer = {
+                created_on: childSnapshot.data().created_on,
+                email: childSnapshot.data().customer_email,
+                name: childSnapshot.data().customer_name,
+                notes: childSnapshot.data().customer_notes,
+                phone: childSnapshot.data().customer_phonenumber,
+                username: childSnapshot.data().username
+            }
+            data.push(customer)
+        })
+        setCustomers(data)
+    }
+    useEffect(() => {
         reset({occupency: 0})
+        getCustomers()
     }, [])
     useEffect(() => {
         fields.current = []

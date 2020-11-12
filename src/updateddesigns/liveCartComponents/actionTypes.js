@@ -21,3 +21,8 @@ export const BILLPAGEHIDE = 'BILLPAGEHIDE'
 export const SETBILLID = 'SETBILLID'
 
 export const ADDTABLEDATA = 'ADDTABLEDATA'
+
+
+export const KOTORDER = 'KOTORDER'
+export const KOTCART = 'KOTCART'
+export const KOTITEM='KOTITEM'
