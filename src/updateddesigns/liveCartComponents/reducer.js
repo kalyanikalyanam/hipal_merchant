@@ -23,63 +23,66 @@ const reducer = (state, action) => {
         case actions.ADDLIVE:
             return handleAddLiveCart(action, state)
         case actions.REMLIVE:
-            return deleteLiveCartItem(action, state) 
-        case actions.SENDTOORDER: 
+            return deleteLiveCartItem(action, state)
+        case actions.SENDTOORDER:
             return handleToOrder(action, state)
-        case actions.REMALLLIVE: 
-            return updateObject(state, {liveCart: []})
+        case actions.REMALLLIVE:
+            return updateObject(state, { liveCart: [] })
 
         case actions.REMALLORDER:
-            return updateObject(state, {order: []})
+            return updateObject(state, { order: [] })
         case action.REMORDER:
             return deleteOrder(state, action.orderId)
-        case actions.SENDTOBILL: 
+        case actions.SENDTOBILL:
             return handleToBill(action, state)
-        
+
         case actions.ADVACEDOPTIONSSHOW:
-            return updateObject(state, {avancedOptionsShow: true, addCustomerShow: false})
+            return updateObject(state, { avancedOptionsShow: true, addCustomerShow: false })
         case actions.ADVACEDOPTIONSHIDE:
-            return updateObject(state, {avancedOptionsShow: false})
-        case actions.ADDCUSTOMERSHOW:  
-            return updateObject(state, {addCustomerShow: true, avancedOptionsShow: false})
+            return updateObject(state, { avancedOptionsShow: false })
+        case actions.ADDCUSTOMERSHOW:
+            return updateObject(state, { addCustomerShow: true, avancedOptionsShow: false })
         case actions.ADDCUSTOMERHIDE:
-            return updateObject(state, {addCustomerShow: false})
+            return updateObject(state, { addCustomerShow: false })
         case actions.OPENMODEL:
             var editMode
-            if(action.editMode)
-            editMode = true
+            if (action.editMode)
+                editMode = true
             else
-            editMode = false
-            return updateObject(state, {modalItem: action.item, show: true, editMode, formOrder: action.formOrder})
+                editMode = false
+            return updateObject(state, { modalItem: action.item, show: true, editMode, formOrder: action.formOrder })
         case actions.CLOSEMODEL:
-            return updateObject(state, {modalItem: null, show: false})
+            return updateObject(state, { modalItem: null, show: false })
         case 'mergeModal':
-            return updateObject(state, {avancedOptionsShow: false, customerMergeModal: true})
+            return updateObject(state, { customerMergeModal: true })
         case 'mergeModalHide':
-            return updateObject(state, {avancedOptionsShow: false, customerMergeModal: false})
+            return updateObject(state, { customerMergeModal: false })
         case 'moveModal':
-            return updateObject(state, {avancedOptionsShow: false, customerMoveModal: true})
+            return updateObject(state, { customerMoveModal: true })
         case 'moveModalHide':
-            return updateObject(state, {avancedOptionsShow: false, customerMoveModal: false})
+            return updateObject(state, { customerMoveModal: false })
         case 'swapModal':
-            return updateObject(state, {avancedOptionsShow: false, customerSwapModal: true})
+            return updateObject(state, { customerSwapModal: true })
         case 'swapModalHide':
-            return updateObject(state, {avancedOptionsShow: false, customerSwapModal: false})
+            return updateObject(state, { customerSwapModal: false })
 
-        case actions.BILLPAGESHOW: 
-            return handleBillPageShow(action, state) 
-        case actions.BILLPAGEHIDE: 
-            return handleBillPageHide(action, state) 
+        case actions.BILLPAGESHOW:
+            return handleBillPageShow(action, state)
+        case actions.BILLPAGEHIDE:
+            return handleBillPageHide(action, state)
         case actions.SETBILLID:
             return handleSetBillId(action, state)
 
         case actions.ADDTABLEDATA:
             return handleAddTableData(action, state)
+
+        case actions.KOTORDER:
+            return handleKOTorder(action, state)
         case actions.KOTCART:
             return handleKOTcart(action, state)
         case actions.KOTITEM:
             return handleKOTitem(action, state)
-        default: 
+        default:
             return state
     }
 }
@@ -160,6 +163,7 @@ const deleteOrder = (orderId, state) => {
     let newOrder = order.filter(order => order.order_id !== orderId)
     return updateObject(state, {order: newOrder})
 }
+
 const handleToOrder = (action, state) => {
     if (state.liveCart.length === 0) return state
     const currentCart = state.liveCart
@@ -175,6 +179,7 @@ const handleToOrder = (action, state) => {
 
 const handleToBill = (action, state) => {
     if(!action.orderId || state.order.length === 0) return state
+    console.log("here")
     const currentOrders = state.order 
     currentOrders.orderId = action.orderId
     currentOrders.orderPrice = action.orderPrice
@@ -182,6 +187,7 @@ const handleToBill = (action, state) => {
     const bill = addToarray(state.bill,currentOrders) 
     return  updateObject(state, {order: [], bill}) 
 }
+
 const handleKOTcart = (action, state) => {
     const {cart} = action
     let currentOrder = state.order
@@ -221,13 +227,18 @@ const handleKOTitem = (action, state) => {
     }
     return updateObject(state, {order: currentOrder})
 }
-const handleBIll = (action, state) => {
+
+const handleKOTorder = (action, state) => {
     const order = state.order
+    console.log(order)
     let newOrder = []
     order.forEach(cart => {
         let newCart = cart
         newCart = cart.filter(item => item.kot)
         newOrder.push(order)
     })
+    let currentBill = state.bill
+    currentBill.push(newOrder)
+    return updateObject(state, {bill: currentBill, order: []})
 }
 export default reducer

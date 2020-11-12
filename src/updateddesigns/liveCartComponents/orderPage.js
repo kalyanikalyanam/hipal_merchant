@@ -17,9 +17,9 @@ const Orders = () => {
             orderPrice: totalPrice.current
         })
     }
-    const handleCancel = () => {
+    const handleBillThis= () => {
         dispatch({
-            type: actions.REMALLORDER
+            type: actions.KOTORDER
         })
     }
     totalDiscount.current = 0
@@ -54,8 +54,8 @@ const Orders = () => {
                     <a href="#" data-toggle="modal" data-target="#add_edit_position">KOT</a>
                 </span>
                 <span className="btn view_ord">
-                    <a href="#" onClick={handleCancel}>
-                        Cancel</a>
+                    <a href="#" onClick={handleBillThis}>
+                        BillThis</a>
                 </span>
             </div>
         </div>
