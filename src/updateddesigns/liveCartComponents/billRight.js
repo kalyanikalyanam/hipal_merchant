@@ -1,9 +1,58 @@
-import React, { useContext } from 'react'
-import {billPageContext} from './contexts'
+import {db} from '../../config'
+import React, { useContext, useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import {billPageContext, tableContext} from './contexts'
+import PaymentMethod from './paymentMethods'
+
 
 const BillRight = () => {
     const billPage = useContext(billPageContext)
-    return(
+    const [state, setState] = useState()
+    const [balance, setBalance] = useState(billPage.totalPrice)
+    const tableData = useContext(tableContext)
+    const {handleSubmit, register, errors } = useForm({
+        mode: "onChange"
+    })
+
+    useEffect(() => {
+        var temp = 0
+        for (var key in state) {
+            if (state.hasOwnProperty(key)) {
+                temp += parseInt(state[key])
+            }
+        }
+        setBalance(parseInt(billPage.totalPrice - temp, 10))
+    }, [state])
+
+    const onValue = (data) => { 
+        console.log(state)
+        setState({...state, ...data}) 
+    }
+
+    const handleSettle = async (data) => {
+        let bill = {
+            settle_by: data.settle_by,
+            billId: billPage.billId,
+            billAmount: billPage.totalPrice,
+            billTiming: Date.now(),
+            table:tableData.table_name,
+            businessId: tableData.businessId,
+            paymentMethod: state
+        }    
+        try{
+            const res = await db.collection('bills').add(bill)
+            console.log(res)
+        } catch(e){
+            console.log(e)
+        }
+    }
+    const paymentMethods = ['Cash', 'Card', 'Hipal Credits', 'Employee', 'Cheque', 'UPI', 'Pending', 'Tip']
+    const paymentMethod = paymentMethods.map((item, index) => {
+        return (
+            <PaymentMethod key={index} method={item} onChange={onValue} />
+        )
+    })
+    return (
         <div className="row m-t-20">
             <div className="category_upload_image w-100-row hipal_pop settle">
                 <div className="modal-header">
@@ -14,12 +63,15 @@ const BillRight = () => {
                                 <label className=" form-control-label">Settle by</label>
                             </div>
                             <div className="col-12 col-md-7">
-                                <select name="select" id="select" className="form-control settle">
+                                <select name="select" name="settle_by" ref={register({
+                                    required: 'This is required'
+                                })} className="form-control settle">
                                     <option value={0}>Varun</option>
                                     <option value={1}>Raju</option>
                                     <option value={2}>Krishna</option>
                                     <option value={3}>Rani</option>
                                 </select>
+                                {errors.settle_by && errors.settle_by.message}
                             </div>
                         </div>
                     </div>
@@ -29,8 +81,7 @@ const BillRight = () => {
                         <div className="col-12 w-100-row">
                             <div className="row">
                                 <div className="col col-md-5 bill_price">
-                                    Total: Rs 499.00
-                </div>
+                                    Total: Rs  {billPage.totalPrice} </div>
                                 <div className="col col-md-7 bill_id_settle">
                                     Bill ID :{billPage.billId} <span className="btn pull-right add_btn_pop_orange addmode_pad">Add mode</span>
                                 </div>
@@ -40,50 +91,7 @@ const BillRight = () => {
                             <div className="row">
                                 <div className="col-md-6">
                                     <div className="pay_box_block">
-                                        <div className="box_payment">
-                                            <p className="price"><input type="number" defaultValue={120} /></p>
-                                            <p className="img"><img src="/images/icon/cash_icon.png" /></p>
-                                            <p className="price_head">Cash</p>
-                                        </div>
-                                        <div className="box_payment">
-                                            <p className="price"><input type="number" defaultValue={120} /></p>
-                                            <p className="img"><img src="/images/icon/card_icon.png" /></p>
-                                            <p className="price_head">Card</p>
-                                        </div>
-                                        <div className="box_payment">
-                                            <p className="price"><input type="number" defaultValue={120} /></p>
-                                            <p className="img"><img src="/images/icon/hipla_credits.png" /></p>
-                                            <p className="price_head">Hipal
-                        Credits</p>
-                                        </div>
-                                        <div className="box_payment">
-                                            <p className="price"><input type="number" defaultValue={120} /></p>
-                                            <p className="img"><img src="/images/icon/employee_icon_pay.png" /></p>
-                                            <p className="price_head">Employee</p>
-                                        </div>
-                                        <div className="box_payment">
-                                            <p className="price"><input type="number" defaultValue={120} /></p>
-                                            <p className="img"><img src="/images/icon/cheqe_cion.png" /></p>
-                                            <p className="price_head">Cheque</p>
-                                        </div>
-                                        <div className="box_payment selected">
-                                            <span className="active">
-                                                <span className="dotsmall" />
-                                            </span>
-                                            <p className="price"><input type="number" defaultValue={120} /></p>
-                                            <p className="img"><img src="/images/icon/upi_W.png" /></p>
-                                            <p className="price_head">UPI</p>
-                                        </div>
-                                        <div className="box_payment">
-                                            <p className="price"><input type="number" defaultValue={120} /></p>
-                                            <p className="img"><img src="/images/icon/pending_icon.png" /></p>
-                                            <p className="price_head">Pending</p>
-                                        </div>
-                                        <div className="box_payment">
-                                            <p className="price"><input type="number" defaultValue={120} /></p>
-                                            <p className="img"><img src="/images/icon/tip_icon.png" /></p>
-                                            <p className="price_head">Tip</p>
-                                        </div>
+                                        {paymentMethod}
                                     </div>
                                 </div>
                                 <div className="col-md-6">
@@ -91,59 +99,14 @@ const BillRight = () => {
                                         <span className="add_amount">Add Amount</span>
                                         <span><input type="number" className="add_amount_field" defaultValue placeholder="Amount here" /></span>
                                     </div>
-                                    <div className="pay_mode_bg">
-                                        <p>Choose the mode of payment</p>
-                                        <div className="row form-group user_roles_check">
-                                            <label className="container_check"><img src="/images/icon/paytm.png" />
-                                                <input type="checkbox" />
-                                                <span className="checkmark" />
-                                            </label>
-                                        </div>
-                                        <div className="row form-group user_roles_check">
-                                            <label className="container_check"><img src="/images/icon/g-pay.png" />
-                                                <input type="checkbox" />
-                                                <span className="checkmark" />
-                                            </label>
-                                        </div>
-                                        <div className="row form-group user_roles_check">
-                                            <label className="container_check"><img src="/images/icon/pnonepay.png" />
-                                                <input type="checkbox" />
-                                                <span className="checkmark" />
-                                            </label>
-                                        </div>
-                                        <div className="row form-group user_roles_check">
-                                            <label className="container_check"> <img src="/images/icon/bhim.png" />
-                                                <input type="checkbox" />
-                                                <span className="checkmark" />
-                                            </label>
-                                        </div>
-                                        <div className="row form-group user_roles_check">
-                                            <label className="container_check"> <img src="/images/icon/amezonpay.png" />
-                                                <input type="checkbox" />
-                                                <span className="checkmark" />
-                                            </label>
-                                        </div>
-                                        <div className="row form-group user_roles_check">
-                                            <label className="container_check"> <img src="/images/icon/freecharge.png" />
-                                                <input type="checkbox" />
-                                                <span className="checkmark" />
-                                            </label>
-                                        </div>
-                                        <div className="row form-group user_roles_check">
-                                            <label className="container_check">Others
-                        <input type="checkbox" />
-                                                <span className="checkmark" />
-                                            </label>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className="col-12 w-100-row bill_price balance text-center">
-                            Balance (120)
+                            Balance ({balance ? balance : 0})
               <div className="modal-footer">
                                 <button type="button" className="btn close_btn width-150" data-dismiss="modal">Cancel</button>
-                                <button type="button" className="btn save_btn width-150">Settele</button>
+                                <button type="button" onClick={handleSubmit(handleSettle)} className="btn save_btn width-150">Settele</button>
                             </div>
                         </div>
                     </div>
