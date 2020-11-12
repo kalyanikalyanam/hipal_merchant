@@ -712,7 +712,7 @@ class AddItemMenu extends React.Component {
       let dbCon = await firebase.firestore().collection("menuitems2");
       var key = Math.round(new Date().getTime() / 1000);
 
-      dbCon.add({
+      let dbcon1 = await dbCon.add({
         item_unique_id: key,
 
         item_id: this.state.item_id,
@@ -767,7 +767,7 @@ class AddItemMenu extends React.Component {
           .collection("categories2")
           .doc(this.state.parentId[i])
           .update({
-            itemId: firebase.firestore.FieldValue.arrayUnion(dbCon.id),
+            itemId: firebase.firestore.FieldValue.arrayUnion(dbcon1.id),
           });
       }
 
