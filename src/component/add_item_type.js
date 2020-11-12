@@ -13,6 +13,8 @@ class AddItemType extends React.Component {
       created_on: new Date().toLocaleString(),
       mobile_message: "",
       validError: false,
+      color: "#1569a8",
+      active: false,
     };
     this.onChange = this.onChange.bind(this);
     this.validator = new SimpleReactValidator({
@@ -113,7 +115,13 @@ class AddItemType extends React.Component {
       },
     });
   }
-
+  handleChange = (e) => {
+    this.setState({
+      oldColor: this.state.color,
+      color: e.target.value,
+      active: !this.state.active,
+    });
+  };
   onChange = (event) => {
     this.setState({
       [event.target.name]: event.target.value,
@@ -131,6 +139,7 @@ class AddItemType extends React.Component {
       dbCon.add({
         item_type: this.state.item_type,
         created_on: this.state.created_on,
+        color: this.state.color,
         sessionId: sessionId,
         businessId: businessId,
       });
@@ -247,6 +256,36 @@ class AddItemType extends React.Component {
                                 {" "}
                                 {this.state.mobile_message}
                               </div>
+                            </div>
+                          </div>
+
+                          <div className="row form-group">
+                            <div className="col col-md-4">
+                              <label className=" form-control-label">
+                                {" "}
+                                select color
+                              </label>
+                            </div>
+                            <div className="col-12 col-md-6">
+                              <div
+                                className="color-box"
+                                style={{ background: this.state.color }}
+                              >
+                                <label className="color-selector">
+                                  {/* <span>{this.state.color}</span> */}
+                                  <input
+                                    type="color"
+                                    value={this.state.color}
+                                    onChange={this.handleChange}
+                                    className="hidden"
+                                  />
+                                </label>
+                              </div>
+                              {this.validator.message(
+                                "color",
+                                this.state.color,
+                                "required"
+                              )}
                             </div>
                           </div>
                         </div>

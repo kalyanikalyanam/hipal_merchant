@@ -24,6 +24,7 @@ import AddCategoryMenuDuplicate from "./component/add_category_menu_duplicate";
 import ViewCategory from "./component/view_category";
 
 import AddItemMenu from "./component/add_item_menu";
+import EditItemMenu from "./component/edit_item_menu";
 import ViewItemMenu from "./component/view_item_menu";
 import AddItemType from "./component/add_item_type";
 
@@ -215,6 +216,11 @@ class Routing extends React.Component {
         <PrivateRoute
           path="/ViewCategoryMenu/:categoryId"
           component={ViewCategoryMenu}
+        />
+
+        <PrivateRoute
+          path="/EditItemMenu/:itemmenuid"
+          component={EditItemMenu}
         />
       </Router>
     );

@@ -172,7 +172,7 @@ class CategoryList extends React.Component {
     this.setState({ loading: true });
     firebase
       .firestore()
-      .collection("categories")
+      .collection("categories2")
       .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
 
@@ -205,7 +205,7 @@ class CategoryList extends React.Component {
           currentCategory: [
             {
               id: "",
-              name: "categories",
+              name: "categories2",
             },
           ],
         });
@@ -301,7 +301,10 @@ class CategoryList extends React.Component {
     }).then((willDelete) => {
       if (willDelete) {
         console.log(id);
-        var playersRef = firebase.firestore().collection("/categories").doc(id);
+        var playersRef = firebase
+          .firestore()
+          .collection("/categories2")
+          .doc(id);
         playersRef.delete();
       } else {
       }
@@ -410,11 +413,11 @@ class CategoryList extends React.Component {
                           <tr>
                             <td>S.no</td>
                             <td>Category Name</td>
-                            <td>No.Of Parent Catagory</td>
-                            <td>No.Sub Catagory</td>
+                            {/* <td>No.Of Parent Catagory</td>
+                            <td>No.Sub Catagory</td> */}
                             <td>Number of Items Number</td>
                             <td>Color</td>
-                            <td>Add Item</td>
+                            {/* <td>Add Item</td> */}
                             <td>View Category</td>
                             <td>Actions</td>
                           </tr>
@@ -426,11 +429,11 @@ class CategoryList extends React.Component {
                                 <tr key={index}>
                                   <td>{index + 1}</td>
                                   <td>{category.name}</td>
-                                  <td>2</td>
-                                  <td>0</td>
+                                  {/* <td>2</td>
+                                  <td>0</td> */}
                                   <td>{category.itemId.length}</td>
                                   <td>{category.color}</td>
-                                  <td>ADD</td>
+                                  {/* <td>ADD</td> */}
                                   <td>
                                     {" "}
                                     <Link

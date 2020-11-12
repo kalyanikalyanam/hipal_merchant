@@ -136,7 +136,7 @@ class ViewCategoryMenu extends React.Component {
     });
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.setState({ loading: true });
 
     var sessionId = sessionStorage.getItem("RoleId");
@@ -173,22 +173,22 @@ class ViewCategoryMenu extends React.Component {
         });
     }
 
-    this.itemCategoryList();
+    await this.itemCategoryList();
+    this.itemMenuList();
   }
 
   itemCategoryList = async () => {
     const { categoryId } = this.props.match.params;
     this.setState({ loading: true });
-    var ref = await firebase
+    let ref = await firebase
       .firestore()
-      .collection("/categories")
+      .collection("categories2")
       .doc(categoryId)
       .get()
-
       .then((snapshot) => {
         var Category = snapshot.data();
 
-        // console.log(categories)
+        // console.log(categories2)
         console.log("isParent", Category.isParent);
         this.setState({
           name: Category.name,
@@ -199,8 +199,271 @@ class ViewCategoryMenu extends React.Component {
           parentId: Category.parentId,
           sessionId: Category.sessionId,
           username: Category.username,
-          itemId: Category.itemId,
+          // itemId: Category.itemId,
         });
+
+        console.log(CategoryList);
+        this.setState({
+          currentCategory: [
+            {
+              id: "",
+              name: "categories2",
+            },
+          ],
+        });
+      });
+    if (this.state.parentId == "") {
+    } else {
+      await firebase
+        .firestore()
+        .collection("categories2")
+        .doc(this.state.parentId)
+        .get()
+        .then((snapshot) => {
+          var Category = snapshot.data();
+
+          // console.log(categories2)
+          console.log("isParent", Category.isParent);
+          this.setState({
+            name1: Category.name,
+            isParent: Category.isParent,
+            photo: Category.photo,
+            color: Category.color,
+            created_on: Category.created_on,
+            parentId: Category.parentId,
+            sessionId: Category.sessionId,
+            username: Category.username,
+            // itemId: Category.itemId,
+          });
+        });
+    }
+    var sessionId = sessionStorage.getItem("RoleId");
+    var businessId = sessionStorage.getItem("businessId");
+    let rrr = await firebase
+      .firestore()
+      .collection("menuitems2")
+      .where("sessionId", "==", sessionId)
+      .where("businessId", "==", businessId)
+      // .where("categoryId", "==", "bSZnzQSrsw8eeWwkeHc4")
+      .where("categoryId", "array-contains-any", [categoryId])
+      .get()
+      .then((querySnapshot) => {
+        var data = [];
+        querySnapshot.forEach((childSnapShot) => {
+          const GSTData = {
+            idSelected: true,
+            itemmenuid: childSnapShot.id,
+            item_unique_id: childSnapShot.data().item_unique_id,
+
+            item_id: childSnapShot.data().item_id,
+            item_name: childSnapShot.data().item_name,
+            item_description: childSnapShot.data().item_description,
+            item_halal: childSnapShot.data().item_halal,
+            item_image: childSnapShot.data().item_image,
+            item_points: childSnapShot.data().item_points,
+
+            station_name: childSnapShot.data().station_name,
+
+            item_type: childSnapShot.data().item_type,
+            item_hash_tags: childSnapShot.data().item_hash_tags,
+            item_price: childSnapShot.data().item_price,
+            item_tax: childSnapShot.data().item_tax,
+
+            sessionId: childSnapShot.data().sessionId,
+            businessId: childSnapShot.data().businessId,
+
+            status: childSnapShot.data().status,
+            username: childSnapShot.data().username,
+
+            portions: childSnapShot.data().portions,
+            portions_details: childSnapShot.data().portions_details,
+
+            advance: childSnapShot.data().advance,
+            carbs: childSnapShot.data().carbs,
+            protien: childSnapShot.data().protien,
+            fat: childSnapShot.data().fat,
+            item_video: childSnapShot.data().item_video,
+            item_multiple_image: childSnapShot.data().downloadURLs,
+
+            extra: childSnapShot.data().extra,
+            healthytag: childSnapShot.data().healthytag,
+            bestsellertag: childSnapShot.data().bestsellertag,
+
+            recommend: childSnapShot.data().recommend,
+
+            recommendations: childSnapShot.data().recommendations,
+
+            created_on: childSnapShot.data().created_on,
+            sessionId: childSnapShot.data().sessionId,
+            businessId: childSnapShot.data().businessId,
+            categoryId: childSnapShot.data().categoryId,
+          };
+
+          data.push(GSTData);
+        });
+        this.setState({
+          itemId: data,
+          countPage: data.length,
+          loading: false,
+        });
+      });
+    // let data2 = await firebase
+    //   .firestore()
+    //   .collection("menuitems2")
+    //   .where("sessionId", "==", sessionId)
+    //   .where("businessId", "==", businessId).get().then(snapshot=>{
+
+    //   });
+  };
+
+  explore = async (e, name) => {
+    var sessionId = sessionStorage.getItem("RoleId");
+    var businessId = sessionStorage.getItem("businessId");
+    e.preventDefault();
+    let { id } = e.target;
+    firebase
+      .firestore()
+      .collection("categories2")
+      .where("sessionId", "==", sessionId)
+      .where("businessId", "==", businessId)
+      .where("parentId", "==", id)
+      .get()
+      .then((querySnapshot) => {
+        var data = [];
+        querySnapshot.forEach((childSnapShot) => {
+          const GSTData = {
+            categoryId: childSnapShot.id,
+
+            name: childSnapShot.data().name,
+            isParent: childSnapShot.data().isParent,
+            photo: childSnapShot.data().photo,
+            color: childSnapShot.data().color,
+            created_on: childSnapShot.data().created_on,
+            parentId: childSnapShot.data().parentId,
+            sessionId: childSnapShot.data().sessionId,
+            username: childSnapShot.data().username,
+          };
+
+          data.push(GSTData);
+        });
+
+        this.setState({
+          CategoryList: data,
+          countPage: data.length,
+          loading: false,
+        });
+        let arr = this.state.currentCategory;
+        for (let i = 0; i < this.state.currentCategory.length; i++) {
+          // console.log(arr);
+          // console.log(arr[i]);
+          if (arr[i].id === id) {
+            arr = arr.slice(0, i);
+            break;
+          }
+        }
+        // console.log(arr);
+
+        arr.push({
+          id: id,
+          name: name,
+        });
+        this.setState({ currentCategory: arr });
+        // console.log(this.state.currentCategory);
+      })
+      .catch((err) => {
+        // console.log(err);
+      });
+  };
+
+  itemMenuList = async () => {
+    var sessionId = sessionStorage.getItem("RoleId");
+    var businessId = sessionStorage.getItem("businessId");
+
+    this.setState({ loading: true });
+    firebase
+      .firestore()
+      .collection("menuitems2")
+      .where("sessionId", "==", sessionId)
+      .where("businessId", "==", businessId)
+      .get()
+      .then((querySnapshot) => {
+        var data = [];
+        querySnapshot.forEach((childSnapShot) => {
+          const GSTData = {
+            idSelected: false,
+            itemmenuid: childSnapShot.id,
+            item_unique_id: childSnapShot.data().item_unique_id,
+
+            item_id: childSnapShot.data().item_id,
+            item_name: childSnapShot.data().item_name,
+            item_description: childSnapShot.data().item_description,
+            item_halal: childSnapShot.data().item_halal,
+            item_image: childSnapShot.data().item_image,
+            item_points: childSnapShot.data().item_points,
+
+            station_name: childSnapShot.data().station_name,
+
+            item_type: childSnapShot.data().item_type,
+            item_hash_tags: childSnapShot.data().item_hash_tags,
+            item_price: childSnapShot.data().item_price,
+            item_tax: childSnapShot.data().item_tax,
+
+            sessionId: childSnapShot.data().sessionId,
+            businessId: childSnapShot.data().businessId,
+
+            status: childSnapShot.data().status,
+            username: childSnapShot.data().username,
+
+            portions: childSnapShot.data().portions,
+            portions_details: childSnapShot.data().portions_details,
+
+            advance: childSnapShot.data().advance,
+            carbs: childSnapShot.data().carbs,
+            protien: childSnapShot.data().protien,
+            fat: childSnapShot.data().fat,
+            item_video: childSnapShot.data().item_video,
+            item_multiple_image: childSnapShot.data().downloadURLs,
+
+            extra: childSnapShot.data().extra,
+            healthytag: childSnapShot.data().healthytag,
+            bestsellertag: childSnapShot.data().bestsellertag,
+
+            recommend: childSnapShot.data().recommend,
+
+            recommendations: childSnapShot.data().recommendations,
+
+            created_on: childSnapShot.data().created_on,
+            sessionId: childSnapShot.data().sessionId,
+            businessId: childSnapShot.data().businessId,
+            categoryId: childSnapShot.data().categoryId,
+          };
+
+          data.push(GSTData);
+        });
+        this.setState({
+          itemMenuList: data,
+          countPage: data.length,
+          loading: false,
+        });
+
+        console.log("itemid", this.state.itemId);
+        console.log("item menu", this.state.itemMenuList);
+        let id = this.state.itemId;
+        let menu = this.state.itemMenuList;
+        for (let i = 0; i < id.length; i++) {
+          for (let j = 0; j < menu.length; j++) {
+            if (id[i].itemmenuid === this.state.itemMenuList[j].itemmenuid) {
+              menu[j].isSelected = !menu[j].isSelected;
+              console.log("hererere");
+              break;
+            }
+          }
+        }
+
+        this.setState({ itemMenuList: menu });
+      })
+      .catch((err) => {
+        // console.log(err);
       });
   };
 
@@ -352,7 +615,9 @@ class ViewCategoryMenu extends React.Component {
                             </select>
                           </div>
                         </div> */}
-                        {this.state.isParent === false ? (
+                        {this.state.parentId == "" ? (
+                          ""
+                        ) : (
                           <div className="row form-group">
                             <div className="col col-md-4">
                               <label className=" form-control-label">
@@ -360,28 +625,9 @@ class ViewCategoryMenu extends React.Component {
                               </label>
                             </div>
                             <div className="col-12 col-md-8">
-                              {this.state.parentId.name}
+                              {this.state.name1}
                             </div>
-                            {/* <div
-                              className="breadcrumbs menu_cate_links"
-                              style={{ fontSize: "15px", display: "flex" }}
-                            >
-                              {this.state.currentCategory.map((i, index) => (
-                                <p style={{ marginLeft: "3px" }} id={i.id}>
-                                  {" "}
-                                  &gt; {i.name}{" "}
-                                </p>
-                              ))}
-                              <p>
-                                <p style={{ marginLeft: "3px" }}>
-                                  {" "}
-                                  &gt; {this.state.parentName}{" "}
-                                </p>
-                              </p>
-                            </div> */}
                           </div>
-                        ) : (
-                          ""
                         )}
                       </div>
                     </div>
@@ -441,15 +687,6 @@ class ViewCategoryMenu extends React.Component {
                           <h2>
                             {this.state.itemId && this.state.itemId.length}{" "}
                             Items
-                            {/* <span className="additems btn">
-                              <button
-                                type="button"
-                                data-toggle="modal"
-                                data-target="#add_items"
-                              >
-                                Add Items{" "}
-                              </button>
-                            </span> */}
                           </h2>
 
                           <div className="row">

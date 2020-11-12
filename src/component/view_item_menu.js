@@ -130,7 +130,7 @@ class ViewItemMenu extends React.Component {
     this.setState({ loading: true });
     await firebase
       .firestore()
-      .collection("menuitems")
+      .collection("menuitems2")
       .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .get()
@@ -182,7 +182,7 @@ class ViewItemMenu extends React.Component {
             created_on: childSnapShot.data().created_on,
             sessionId: childSnapShot.data().sessionId,
             businessId: childSnapShot.data().businessId,
-            categoryId: this.state.categoryId,
+            categoryId: childSnapShot.data().categoryId,
           };
 
           data.push(GSTData);
@@ -296,7 +296,7 @@ class ViewItemMenu extends React.Component {
                         </div>
                       </div>
 
-                      <div className="col-md-12 mt-30 p-0">
+                      {/* <div className="col-md-12 mt-30 p-0">
                         <div className="category_menu_search">
                           <span className="cate_menu">
                             <a href="view_table.html" className="current">
@@ -452,7 +452,7 @@ class ViewItemMenu extends React.Component {
                             </div>
                           </div>
                         </div>
-                      </div>
+                      </div> */}
                     </div>
 
                     <div className="col-lg-5">
@@ -485,9 +485,13 @@ class ViewItemMenu extends React.Component {
                                           <span className="btn best_seller">
                                             BESTSELLER
                                           </span>{" "}
-                                          <span className="btn pull-right outer_edit_btn fill">
-                                            Edit
-                                          </span>
+                                          <Link
+                                            to={`/EditItemMenu/${item.itemmenuid}`}
+                                          >
+                                            <span className="btn pull-right outer_edit_btn fill">
+                                              Edit
+                                            </span>
+                                          </Link>
                                         </p>
                                         <p className="item_name pl-0">
                                           {item.item_name}
@@ -495,10 +499,10 @@ class ViewItemMenu extends React.Component {
                                         <p className="price  pl-0">
                                           ₹ {item.item_price}.00
                                         </p>
-                                        <p className="small_font-1 mb-0">
+                                        {/* <p className="small_font-1 mb-0">
                                           Item-sub category 1, Item-sub category
                                           2
-                                        </p>
+                                        </p> */}
                                       </div>
                                     </div>
                                   </div>
