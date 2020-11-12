@@ -27,7 +27,7 @@ const Orders = () => {
     orderId.current=(Math.round((new Date().getTime() / 10000)));
     return (
     <div className="order_id_cart_box col-md-12 m-t-20">
-            <p className="order_id_cart">Order ID {orderId.current} </p>
+            <p className="order_id_cart">Order ID {orderList.id} </p>
             <div className="cart_scroll_box">
                 {orderList && orderList.map((cart, index) => {
                     totalDiscount.current += cart.cartDiscount

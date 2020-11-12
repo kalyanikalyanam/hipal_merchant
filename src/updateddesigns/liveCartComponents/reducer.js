@@ -77,6 +77,8 @@ const reducer = (state, action) => {
             return handleAddTableData(action, state)
         case actions.KOTCART:
             return handleKOTcart(action, state)
+        case actions.KOTITEM:
+            return handleKOTitem(action, state)
         default: 
             return state
     }
@@ -165,6 +167,9 @@ const handleToOrder = (action, state) => {
     currentCart.cartPrice = action.cartPrice
     currentCart.cartDiscount = action.cartDiscount
     const order = addToarray(state.order, currentCart)
+    if(order.length === 1) {
+        order.id = Date.now()
+    }
     return updateObject(state, { liveCart: [], order })
 }
 
@@ -179,18 +184,50 @@ const handleToBill = (action, state) => {
 }
 const handleKOTcart = (action, state) => {
     const {cart} = action
-    console.log(cart)
     let currentOrder = state.order
-    console.log(currentOrder)
+    let currentBill = state.bill
+    let updateCart
     for(var i = 0; i < currentOrder.length; i++){
         if(currentOrder[i].cartId === cart.cartId){
+            updateCart = currentOrder[i]
             currentOrder[i].forEach(item=> {
                 item.kot = true
             })
         }
     }
-    return updateObject(state, {order: currentOrder})
+    let flag = false
+    for(let i = 0; i < currentBill.length; i++){
+        if(state.order.id === currentBill[i].id){
+            flag = true
+            currentBill[i].push(updateCart)
+            break
+        }
+    }
+    return updateObject(state, {order: currentOrder, bill: currentBill})
 
 }
 
+const handleKOTitem = (action, state) => {
+    const {cart, item} = action
+    let currentOrder = state.order
+    for(var i = 0; i < currentOrder.length; i++){
+        if(currentOrder[i].cartId === cart.cartId){
+            for(var j = 0; j < currentOrder[i].length; j++){
+                if(currentOrder[i][j].id === item.id){
+                    currentOrder[i][j].kot = true
+                }
+            }
+        }
+    }
+    return updateObject(state, {order: currentOrder})
+}
+const handleBIll = (action, state) => {
+    const order = state.order
+    let newOrder = []
+    order.forEach(cart => {
+        let newCart = cart
+        newCart = cart.filter(item => item.kot)
+        newOrder.push(order)
+    })
+}
 export default reducer

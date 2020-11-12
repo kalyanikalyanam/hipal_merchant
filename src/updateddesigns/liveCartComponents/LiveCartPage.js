@@ -26,7 +26,6 @@ const LiveCartPage = () => {
             cartId: cartId.current,
             cartDiscount: totalDiscount.current,
             cartPrice: totalPrice.current,
-            id: Date.now().toString()
         })
     }
     totalPrice.current = 0
