@@ -183,11 +183,16 @@ const handleKOTcart = (action, state) => {
     let currentOrder = state.order
     console.log(currentOrder)
     for(var i = 0; i < currentOrder.length; i++){
+<<<<<<< HEAD
         let carts = currentOrder[i]
         console.log(carts)
         if(carts.cartId === cart.cardId){
             console.log("here")
             carts.forEach(item => {
+=======
+        if(currentOrder[i].cartId === cart.cartId){
+            currentOrder[i].forEach(item=> {
+>>>>>>> 3c989f595b4a847fd21f5257a7e26e7b5fc6d872
                 item.kot = true
             })
         }

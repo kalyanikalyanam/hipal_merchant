@@ -58,7 +58,11 @@ const LiveCartItem = ({item, index, onChange}) => {
             </div>
             <div className="box_4">
                 <span onClick={() => deleteitem(item.id)}
+<<<<<<< HEAD
                     id={item.itemid}><img src="/images/icon/cross_red.png" /></span>
+=======
+                    id={item.itemid}><img src="/images/icon/cross_red.png" alt="close"/></span>
+>>>>>>> 3c989f595b4a847fd21f5257a7e26e7b5fc6d872
             </div>
 
         </div>
