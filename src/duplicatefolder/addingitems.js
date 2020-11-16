@@ -938,7 +938,15 @@ class AddItemMenu extends React.Component {
                         <div className="row">
                           <div className="col-md-6">
                             <div className="company_name_box">
-                              <div className="company_iocn"></div>
+                              <div className="company_iocn">
+                                <img
+                                  src={sessionStorage.getItem("BusinessLogo")}
+                                  style={{
+                                    width: "100%",
+                                    height: "100%",
+                                  }}
+                                />
+                              </div>
                               <div className="company_details">
                                 <p className="name">
                                   {sessionStorage.getItem("BusinessName")}{" "}

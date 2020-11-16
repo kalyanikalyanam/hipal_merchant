@@ -5,17 +5,25 @@ import * as actions from "./actionTypes";
 
 const Table = ({ tableId }) => {
   const [state, setState] = useState({});
+  const [employees, setEmployees] = useState([]);
   const dispatch = useContext(dispatchContext);
   const handleAdvancedOption = () => {
     dispatch({
-      type: actions.ADVACEDOPTIONSSHOW
-    })
-  }
+      type: actions.ADVACEDOPTIONSSHOW,
+    });
+  };
   const handleAddCutomer = () => {
     dispatch({
-      type: actions.ADDCUSTOMERSHOW
-    })
-  }
+      type: actions.ADDCUSTOMERSHOW,
+    });
+  };
+  const onChange = (e) => {
+    const val = e.target.value;
+    dispatch({
+      type: actions.ADDEmployee,
+      value: val,
+    });
+  };
   const getData = () => {
     firebase
       .firestore()
@@ -24,16 +32,76 @@ const Table = ({ tableId }) => {
       .get()
       .then((snapshot) => {
         const tableData = snapshot.data();
-        setState(tableData);
+        let table = JSON.parse(JSON.stringify(tableData));
+        table.id = tableId;
+        setState(table);
         dispatch({
           type: actions.ADDTABLEDATA,
-          table: tableData,
+          table: table,
         });
+      });
+  };
+  const employeeList = async () => {
+    var sessionId = sessionStorage.getItem("RoleId");
+    var businessId = sessionStorage.getItem("businessId");
+
+    await firebase
+      .firestore()
+      .collection("merchant_users")
+      .where("sessionId", "==", sessionId)
+      .where("businessId", "==", businessId)
+      .where("role", "==", "Employee")
+
+      .get()
+      .then((querySnapshot) => {
+        var data = [];
+        querySnapshot.forEach((childSnapShot) => {
+          const GSTData = {
+            employeeId: childSnapShot.id,
+
+            employee_unique_id: childSnapShot.data().employee_unique_id,
+            created_on: childSnapShot.data().created_on,
+
+            employee_name: childSnapShot.data().employee_name,
+            user_name: childSnapShot.data().user_name,
+            password: childSnapShot.data().password,
+            employee_position: childSnapShot.data().employee_position,
+            employee_division: childSnapShot.data().employee_division,
+            employee_employement_type: childSnapShot.data()
+              .employee_employement_type,
+            email_id: childSnapShot.data().email_id,
+            contact_number: childSnapShot.data().contact_number,
+            photo: childSnapShot.data().photo,
+            employee_special_password: childSnapShot.data()
+              .employee_special_password,
+
+            employee_dateofbirth: childSnapShot.data().employee_dateofbirth,
+            employee_bloodgroup: childSnapShot.data().employee_bloodgroup,
+            employee_address: childSnapShot.data().employee_address,
+            employee_emergency_contact_number: childSnapShot.data()
+              .employee_emergency_contact_number,
+            employee_adharcard: childSnapShot.data().employee_adharcard,
+
+            employee_account_number: childSnapShot.data()
+              .employee_account_number,
+            employee_ifsc_code: childSnapShot.data().employee_ifsc_code,
+            employee_upi_id: childSnapShot.data().employee_upi_id,
+
+            sessionId: childSnapShot.data().sessionId,
+            businessId: childSnapShot.data().businessId,
+          };
+
+          data.push(GSTData);
+        });
+        setEmployees(data);
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
   useEffect(() => {
     getData();
-    
+    employeeList();
   }, []);
 
   return (
@@ -41,7 +109,7 @@ const Table = ({ tableId }) => {
       <div className="staff_box row">
         <div className="col-md-3">
           <div className="kot_box">
-            <div className="cookhead">Cooking</div>
+            <div className="cookhead">{state ? state.status : null}</div>
             <div className="table_small">
               <div className="people_row">
                 <span className="top fill"></span>
@@ -74,12 +142,20 @@ const Table = ({ tableId }) => {
         </div>
         <div className="col-md-4">
           <div className="chooseemp_dropdown">
-            <select className="form-control">
-              <option>Choose Employee</option>
-              <option>Employee 1</option>
+            <select className="form-control" onClick={onChange}>
+              {/* <option>Choose Employee</option> */}
+              {employees &&
+                employees.map((data, index) => {
+                  return (
+                    <option value={data.employee_name} key={index}>
+                      {data.employee_name}
+                    </option>
+                  );
+                })}
+              {/* <option>Employee 1</option>
               <option>Employee 2</option>
               <option>Employee 3</option>
-              <option>Employee 4</option>
+              <option>Employee 4</option> */}
             </select>
           </div>
         </div>

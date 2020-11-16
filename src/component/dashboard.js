@@ -1,5 +1,5 @@
 import React from "react";
-import firebase, {db} from "../config";
+import firebase, { db } from "../config";
 import Sidebar from "./sidebar";
 import Header from "./header";
 import SimpleReactValidator from "simple-react-validator";
@@ -130,8 +130,7 @@ class Dashboard extends React.Component {
     if (sessionId) {
       console.log(sessionId);
 
-      db
-        .collection("/merchant_users")
+      db.collection("/merchant_users")
         .doc(sessionId)
         .get()
         .then((snapshot) => {
@@ -146,8 +145,7 @@ class Dashboard extends React.Component {
           });
         });
       var businessId = sessionStorage.getItem("businessId");
-      db
-        .collection("/businessdetails")
+      db.collection("/businessdetails")
         .doc(businessId)
         .get()
         .then((snapshot) => {
@@ -155,7 +153,6 @@ class Dashboard extends React.Component {
           console.log(business);
           sessionStorage.setItem("BusinessName", business.business_name);
           sessionStorage.setItem("BusinessLogo", business.business_logo);
-          
         });
     }
 
@@ -344,7 +341,15 @@ class Dashboard extends React.Component {
                         <div class="row">
                           <div class="col-md-6">
                             <div class="company_name_box">
-                              <div class="company_iocn"></div>
+                              <div className="company_iocn">
+                                <img
+                                  src={sessionStorage.getItem("BusinessLogo")}
+                                  style={{
+                                    width: "100%",
+                                    height: "100%",
+                                  }}
+                                />
+                              </div>
                               <div class="company_details">
                                 <p class="name">
                                   {sessionStorage.getItem("BusinessName")}{" "}

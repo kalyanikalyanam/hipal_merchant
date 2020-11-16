@@ -1,21 +1,22 @@
 import React, { useContext, useEffect, useState } from "react";
 import firebase from "../../config";
 import MenuItem from "./menuItem";
-import CategoryItem from './categoryItem'
+import CategoryItem from "./categoryItem";
 import { liveCartContext } from "./contexts";
 
 const Menu = () => {
-  const [itemList, setItemsList] = useState([])
-  const [categoryList, setCategoryList] = useState([])
+  const [itemList, setItemsList] = useState([]);
+  const [categoryList, setCategoryList] = useState([]);
   const cartList = useContext(liveCartContext);
-  const [selected, setSelected] = useState(null)
+  const [selected, setSelected] = useState(null);
   const getItems = async () => {
     var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
     await firebase
       .firestore()
-      .collection("menuitems")
+      .collection("menuitems2")
       .where("sessionId", "==", sessionId)
+      .where("businessId", "==", businessId)
       .where("businessId", "==", businessId)
       .get()
       .then((snapshot) => {
@@ -54,13 +55,13 @@ const Menu = () => {
             healthytag: childSnapShot.data().healthytag,
             bestsellertag: childSnapShot.data().bestsellertag,
             recommend: childSnapShot.data().recommend,
-            // recommenditem:childSnapShot.data(). recommenditem,
+            categoryId: childSnapShot.data().categoryId,
             recommendations: childSnapShot.data().recommendations,
             created_on: childSnapShot.data().created_on,
           };
           data.push(Products);
         });
-        setItemsList(data)
+        setItemsList(data);
       });
   };
   const getCategories = () => {
@@ -68,7 +69,7 @@ const Menu = () => {
     var businessId = sessionStorage.getItem("businessId");
     firebase
       .firestore()
-      .collection("categories")
+      .collection("categories2")
       .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .get()
@@ -90,38 +91,40 @@ const Menu = () => {
 
           data.push(GSTData);
         });
-        setCategoryList(data)
+        setCategoryList(data);
       })
       .catch((err) => {
-        console.log(err)
+        console.log(err);
       });
-  }
+  };
   const handleCategoryClick = (category) => {
-    console.log(category)
-  }
+    console.log(category);
+  };
 
   useEffect(() => {
-    let categories 
-    if(selected === null) {
+    let categories;
+    if (selected === null) {
       categories = categoryList
-            .filter(cat => !cat.isParent)
-            .map((cat, index) => <CategoryItem key={index} item={cat} onClick={handleCategoryClick} /> )
+        .filter((cat) => !cat.isParent)
+        .map((cat, index) => (
+          <CategoryItem key={index} item={cat} onClick={handleCategoryClick} />
+        ));
       let notItem = itemList
-                    .filter(item => item.categoryId.length === 0)
-                    .map((item, index) => <MenuItem item={item} key={index} />)
+        .filter((item) => item.categoryId.length == 0)
+        .map((item, index) => <MenuItem item={item} key={index} />);
     }
-  }, [selected])
-  
+  }, [selected]);
+
   useEffect(() => {
     getItems();
-    getCategories()
+    getCategories();
   }, []);
 
   return (
     <div className="row m-t-20">
       <div className="col-md-12 menu_category_block">
         <div className="category_menu_search">
-          <span className="cate_menu">
+          {/* <span className="cate_menu">
             <a href="#" className="current">
               Menu
             </a>{" "}
@@ -129,7 +132,7 @@ const Menu = () => {
             <a href="#">Category 1</a>{" "}
             <i className="fa fa-caret-right" aria-hidden="true"></i>
             <a href="#">Category 2</a>
-          </span>
+          </span> */}
           <span className="cate_search">
             <input type="text" id="myInput1" placeholder="Search" />
             <a href="#" className="search_icon">
@@ -142,12 +145,18 @@ const Menu = () => {
         </div>
         <div className="cate_images_blk">
           <div className="row">
-            {categoryList && categoryList.map((category, index) => {
-              return <CategoryItem key={index} item={category} onClick={handleCategoryClick}/>
-            })
-            }
+            {categoryList &&
+              categoryList.map((category, index) => {
+                return (
+                  <CategoryItem
+                    key={index}
+                    item={category}
+                    onClick={handleCategoryClick}
+                  />
+                );
+              })}
             {itemList &&
-             itemList.map((item, index) => {
+              itemList.map((item, index) => {
                 return <MenuItem key={index} item={item} />;
               })}
           </div>
