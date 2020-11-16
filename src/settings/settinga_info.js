@@ -174,28 +174,33 @@ class SettingsInfo extends React.Component {
     var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
     if (sessionId) {
-      await firebase
+      const ref = await firebase
         .firestore()
-        .collection("/settings_info")
+        .collection("settings_info")
         .doc(businessId)
-        .get()
-        .then((snapshot) => {
-          // if (snapshot.size > 0) {
-          var info = snapshot.data();
+        .get();
+      if (ref.exists) {
+        await firebase
+          .firestore()
+          .collection("/settings_info")
+          .doc(businessId)
+          .get()
+          .then((snapshot) => {
+            var info = snapshot.data();
 
-          console.log(info);
-          this.setState({
-            easy_location_guide: info.easy_location_guide,
-            average_price: info.average_price,
-            help_line_number: info.help_line_number,
+            console.log(info);
+            this.setState({
+              easy_location_guide: info.easy_location_guide,
+              average_price: info.average_price,
+              help_line_number: info.help_line_number,
 
-            cusine: info.cusine,
-            businessId: info.businessId,
-            sessionId: info.sessionId,
+              cusine: info.cusine,
+              businessId: info.businessId,
+              sessionId: info.sessionId,
+            });
           });
-          // } else {
-          // }
-        });
+      } else {
+      }
     }
   };
 

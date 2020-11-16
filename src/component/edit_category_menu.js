@@ -741,14 +741,14 @@ class EditCategoryMenu extends React.Component {
                       temp
 
                     </button> */}
-                    <button
+                    {/* <button
                       onClick={(e) => {
                         e.preventDefault();
                         console.log(this.state.itemId);
                       }}
                     >
                       <strong>test</strong>
-                    </button>
+                    </button> */}
                     <div className="row">
                       <div className="col-md-12 p-0">
                         <div className="search_profile">

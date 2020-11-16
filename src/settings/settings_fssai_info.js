@@ -179,24 +179,30 @@ class SettingsFssaiInfo extends React.Component {
     var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
     if (sessionId) {
-      await firebase
+      const ref = await firebase
         .firestore()
-        .collection("/settings_fssai_info")
+        .collection("settings_fssai_info")
         .doc(businessId)
-        .get()
-        .then((snapshot) => {
-          var info = snapshot.data();
-          // if (snapshot.size > 0) {
-          console.log(info);
-          this.setState({
-            fssai_number: info.fssai_number,
-            fssai_form: info.fssai_form,
-            businessId: info.businessId,
-            sessionId: info.sessionId,
+        .get();
+      if (ref.exists) {
+        await firebase
+          .firestore()
+          .collection("/settings_fssai_info")
+          .doc(businessId)
+          .get()
+          .then((snapshot) => {
+            var info = snapshot.data();
+
+            console.log(info);
+            this.setState({
+              fssai_number: info.fssai_number,
+              fssai_form: info.fssai_form,
+              businessId: info.businessId,
+              sessionId: info.sessionId,
+            });
           });
-          // } else {
-          // }
-        });
+      } else {
+      }
     }
   };
 

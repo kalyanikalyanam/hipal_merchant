@@ -655,7 +655,7 @@ class AddCategoryMenuDuplicate extends React.Component {
                         <Link to="/AddItemMenu">
                           <span className="btn add_categoty_menu">Items</span>
                         </Link>
-                        <Link to="/AddCategoryMenu">
+                        <Link to="/AddCategoryMenuDuplicate">
                           <span className="btn add_categoty_menu">
                             <span className="active"></span>Category
                           </span>
@@ -669,7 +669,10 @@ class AddCategoryMenuDuplicate extends React.Component {
                         <div className="orders_menu">
                           <ul>
                             <li>
-                              <a href="#" className="activemenu">
+                              <a
+                                href="/AddCategoryMenuDuplicate"
+                                className="activemenu"
+                              >
                                 Add category
                               </a>
                             </li>

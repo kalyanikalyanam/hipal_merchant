@@ -194,6 +194,7 @@ class AllCustomers extends React.Component {
           countPage: data.length,
           loading: false,
         });
+        this.componentDidMount();
         // console.log(customersList);
       })
       .catch((err) => {

@@ -248,7 +248,9 @@ class TablesList extends React.Component {
           loading: false,
         });
         // console.log(tableList);
+        this.componentDidMount();
       })
+
       .catch((err) => {
         console.log(err);
       });
@@ -734,7 +736,11 @@ class TablesList extends React.Component {
                       </div>
                       <div className="col-12 col-md-6">
                         {this.state.table_icon && (
-                          <img src={this.state.table_icon} />
+                          <img
+                            src={this.state.table_icon}
+                            width="50%"
+                            height="50%"
+                          />
                         )}
                         <FileUploader
                           accept="image/*"

@@ -403,6 +403,7 @@ class AllEmplopyesRoles extends React.Component {
           countPage: data.length,
           loading: false,
         });
+        this.componentDidMount();
         console.log(this.state.employee_userroleList);
       });
   };

@@ -177,6 +177,8 @@ class SettingsStation extends React.Component {
           const GSTData = {
             stationId: doc.id,
             station_name: doc.data().station_name,
+            printer_details: doc.data().printer_details,
+
             businessId: doc.data().businessId,
             sessionId: doc.data().sessionId,
           };
@@ -211,7 +213,11 @@ class SettingsStation extends React.Component {
               {this.state.stationList &&
                 this.state.stationList.map((data, index) => {
                   return (
-                    <div className="col-md-4" key={index}>
+                    <div
+                      className="col-md-4"
+                      key={index}
+                      style={{ marginTop: "10px" }}
+                    >
                       <div className="billion_stations">
                         <span className="edit_billing">
                           {" "}
@@ -220,7 +226,11 @@ class SettingsStation extends React.Component {
                           </Link>
                         </span>
                         <p>{data.station_name}</p>
-                        {this.state.printer_details.map((data, index) => {
+                        <p>
+                          Number Of Printers :{" "}
+                          <span> {data.printer_details.length}</span>
+                        </p>
+                        {/* {this.state.printer_details.map((data, index) => {
                           return (
                             <>
                               <p>
@@ -234,7 +244,7 @@ class SettingsStation extends React.Component {
                               </p>
                             </>
                           );
-                        })}
+                        })} */}
 
                         {/* </>
                                      )})} */}

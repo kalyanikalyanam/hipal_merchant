@@ -7,7 +7,7 @@ import FileUploader from "react-firebase-file-uploader";
 import { Form } from "reactstrap";
 import { Link } from "react-router-dom";
 import "react-responsive-modal/styles.css";
-
+import swal from "sweetalert";
 class ViewItemMenu extends React.Component {
   constructor(props) {
     super(props);
@@ -81,6 +81,7 @@ class ViewItemMenu extends React.Component {
       // }
       //     ]
     };
+    this.deleteItem = this.deleteItem.bind(this);
   }
 
   componentDidMount() {
@@ -192,11 +193,28 @@ class ViewItemMenu extends React.Component {
           countPage: data.length,
           loading: false,
         });
+        this.componentDidMount();
         // console.log(itemTypeList);
       })
       .catch((err) => {
         console.log(err);
       });
+  };
+  deleteItem = (id) => {
+    swal({
+      title: "Are you sure?",
+      text: "Do your really want to remove?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        console.log(id);
+        var playersRef = firebase.firestore().collection("/menuitems2").doc(id);
+        playersRef.delete();
+      } else {
+      }
+    });
   };
 
   render() {
@@ -292,6 +310,70 @@ class ViewItemMenu extends React.Component {
                                 </a>
                               </li>
                             </ul>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="row mt-30">
+                        <div className="col-md-12 p-0 employes_table view_category_table">
+                          <div className="table-responsive table-data">
+                            <table className="table">
+                              <thead>
+                                <tr>
+                                  <td>S.no</td>
+                                  <td>Item Name</td>
+                                  {/* <td>No.Of Parent Catagory</td>
+                            <td>No.Sub Catagory</td> */}
+                                  {/* <td>Number of Items Number</td> */}
+                                  {/* <td>Color</td> */}
+                                  {/* <td>Add Item</td> */}
+                                  {/* <td>View Category</td> */}
+                                  <td>Actions</td>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {this.state.itemMenuList &&
+                                  this.state.itemMenuList.map((item, index) => {
+                                    return (
+                                      <tr key={index}>
+                                        <td>{index + 1}</td>
+                                        <td>{item.item_name}</td>
+                                        {/* <td>2</td>
+                                  <td>0</td> */}
+                                        {/* <td>{category.itemId.length}</td> */}
+                                        {/* <td>{category.color}</td> */}
+                                        {/* <td>ADD</td> */}
+                                        {/* <td>
+                                            {" "}
+                                            <Link
+                                              to={`/ViewCategoryMenu/${category.categoryId}`}
+                                            >
+                                              click
+                                            </Link>
+                                          </td> */}
+                                        <td>
+                                          <Link
+                                            to={`/EditItemMenu/${item.itemmenuid}`}
+                                          >
+                                            <img
+                                              src="images/icon/edit_icon_blue.svg"
+                                              className="edit_delete"
+                                            />{" "}
+                                          </Link>
+                                          <img
+                                            src="images/icon/delete_cross.svg"
+                                            onClick={this.deleteItem.bind(
+                                              this,
+                                              item.itemmenuid
+                                            )}
+                                            className="edit_delete"
+                                          />
+                                        </td>
+                                      </tr>
+                                    );
+                                  })}
+                              </tbody>
+                            </table>
                           </div>
                         </div>
                       </div>
@@ -480,11 +562,38 @@ class ViewItemMenu extends React.Component {
                                       <div className="right">
                                         <p>
                                           <span className="item_recipe">
-                                            <span className="dot veg"></span>
+                                            {item.item_type == "Veg" ? (
+                                              <span className="dot veg"></span>
+                                            ) : (
+                                              <span className="dot non-veg"></span>
+                                            )}
                                           </span>
-                                          <span className="btn best_seller">
+                                          {/* <span className="item_recipe">
+                                            <span className="dot veg"></span>
+                                          </span> */}
+                                          {/* <span className="btn best_seller">
                                             BESTSELLER
-                                          </span>{" "}
+                                          </span> */}
+                                          {item.extra == "Yes" ? (
+                                            <>
+                                              {item.bestsellertag == "Yes" ? (
+                                                <span className="btn best_seller">
+                                                  BESTSELLER
+                                                </span>
+                                              ) : (
+                                                ""
+                                              )}
+                                              {item.healthytag == "Yes" ? (
+                                                <span className="btn best_seller">
+                                                  HEALTHY
+                                                </span>
+                                              ) : (
+                                                ""
+                                              )}
+                                            </>
+                                          ) : (
+                                            ""
+                                          )}{" "}
                                           <Link
                                             to={`/EditItemMenu/${item.itemmenuid}`}
                                           >
@@ -510,74 +619,6 @@ class ViewItemMenu extends React.Component {
                               </div>
                             );
                           })}
-
-                        {/* <div className="m-t-20 row  mb-0">
-<div className="col-md-12 product_box mb-0">
-<div className="product_box_item">
-<div className="product_item_row sub_cate_product">
-<div className="left">
-<div className="img_box">
-<span className="star_yellow"><img src="images/icon/star_rate_ye.svg"/></span>
-<img src="images/category_img.png"/>
-</div>
-</div>
-<div className="right">
-<p><span className="item_recipe"><span className="dot veg"></span></span>
-<span className="btn best_seller">BESTSELLER</span> <span className="btn pull-right outer_edit_btn fill">Edit</span></p>
-<p className="item_name pl-0">Caesar Salad</p>
-<p className="price  pl-0">₹ 220.00</p>
-<p className="small_font-1 mb-0">Item-sub category 1, Item-sub category 2</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-
-
-<div className="m-t-20 row  mb-0">
-<div className="col-md-12 product_box mb-0">
-<div className="product_box_item">
-<div className="product_item_row sub_cate_product">
-<div className="left">
-<div className="img_box">
-<span className="star_yellow"><img src="images/icon/star_rate_ye.svg"/></span>
-<img src="images/category_img.png"/>
-</div>
-</div>
-<div className="right">
-<p><span className="item_recipe"><span className="dot veg"></span></span>
-<span className="btn best_seller">BESTSELLER</span> <span className="btn pull-right outer_edit_btn fill">Edit</span></p>
-<p className="item_name pl-0">Caesar Salad</p>
-<p className="price  pl-0">₹ 220.00</p>
-<p className="small_font-1 mb-0">Item-sub category 1, Item-sub category 2</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-
-
-<div className="m-t-20 row  mb-0">
-<div className="col-md-12 product_box mb-0">
-<div className="product_box_item">
-<div className="product_item_row sub_cate_product">
-<div className="left">
-<div className="img_box">
-<span className="star_yellow"><img src="images/icon/star_rate_ye.svg"/></span>
-<img src="images/category_img.png"/>
-</div>
-</div>
-<div className="right">
-<p><span className="item_recipe"><span className="dot veg"></span></span>
-<span className="btn best_seller">BESTSELLER</span> <span className="btn pull-right outer_edit_btn fill">Edit</span></p>
-<p className="item_name pl-0">Caesar Salad</p>
-<p className="price  pl-0">₹ 220.00</p>
-<p className="small_font-1 mb-0">Item-sub category 1, Item-sub category 2</p>
-</div>
-</div>
-</div>
-</div>
-</div> */}
                       </div>
                     </div>
                   </div>

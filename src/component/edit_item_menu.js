@@ -292,7 +292,7 @@ class EditItemMenu extends React.Component {
           created_on: items.created_on,
           sessionId: items.sessionId,
           businessId: items.businessId,
-          // categoryId: items.categoryId,
+          parentId: items.categoryId,
         });
       });
   };

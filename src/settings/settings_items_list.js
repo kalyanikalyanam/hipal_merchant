@@ -93,7 +93,7 @@ class SettingsItemsList extends React.Component {
     this.setState({ loading: true });
     await firebase
       .firestore()
-      .collection("/menuitems")
+      .collection("/menuitems2")
       .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .get()
@@ -162,14 +162,14 @@ class SettingsItemsList extends React.Component {
         console.log(err);
       });
   };
-  handleChange = (Id, bestrecommendation) => {
+  handleChange = async (Id, bestrecommendation) => {
     const value = bestrecommendation === "UnSelect" ? "Selected" : "UnSelect";
     const data = this.state.UploadCauroselList;
     for (var i in data) {
       if (this.state.UploadCauroselList && data[i].itemId == Id) {
-        firebase
+        await firebase
           .firestore()
-          .collection("/menuitems")
+          .collection("/menuitems2")
           .doc(data[i].itemId)
           .update({
             bestrecommendation: value,

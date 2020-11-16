@@ -333,7 +333,7 @@ class EditFloor extends React.Component {
                       <label className=" form-control-label">Capacity</label>
                     </div>
                     <div className="col-12 col-md-6">
-                      <select
+                      {/* <select
                         name="floor_capacity"
                         value={this.state.floor_capacity}
                         onChange={this.onChange}
@@ -344,7 +344,16 @@ class EditFloor extends React.Component {
                         <option value="60 Members">60 Members</option>
                         <option value="80 Members">80 Members</option>
                         <option value="100 Members">100 Members</option>
-                      </select>
+                      </select> */}
+                      <input
+                        type="number"
+                        id="text-input"
+                        name="floor_capacity"
+                        value={this.state.floor_capacity}
+                        onChange={this.onChange}
+                        placeholder=""
+                        className="form-control edit_product"
+                      />
                     </div>
                     {this.validator.message(
                       "Capacity",

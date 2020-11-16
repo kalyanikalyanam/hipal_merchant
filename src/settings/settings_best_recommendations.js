@@ -159,7 +159,7 @@ class SettingsBestRecommendations extends React.Component {
     this.setState({ loading: true });
     var ref = await firebase
       .firestore()
-      .collection("menuitems")
+      .collection("menuitems2")
       .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .where("bestrecommendation", "==", "Selected")

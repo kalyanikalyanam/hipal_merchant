@@ -436,7 +436,11 @@ class EditTable extends React.Component {
                     </div>
                     <div className="col-12 col-md-6">
                       {this.state.table_icon && (
-                        <img src={this.state.table_icon} />
+                        <img
+                          src={this.state.table_icon}
+                          width="50%"
+                          height="50%"
+                        />
                       )}
                       <FileUploader
                         accept="image/*"

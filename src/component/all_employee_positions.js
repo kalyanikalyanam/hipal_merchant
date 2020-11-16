@@ -206,6 +206,7 @@ class AllEmployeePositions extends React.Component {
           countPage: data.length,
           loading: false,
         });
+        this.componentDidMount();
         // console.log(itemTypeList);
       })
       .catch((err) => {

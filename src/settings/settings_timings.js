@@ -158,72 +158,78 @@ class SettingsTimings extends React.Component {
     var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
     if (sessionId) {
-      await firebase
+      const ref = await firebase
         .firestore()
-        .collection("/settings_Timings")
+        .collection("settings_Timings")
         .doc(businessId)
-        .get()
-        .then((snapshot) => {
-          var timings = snapshot.data();
-          //   if (snapshot.size > 0) {
-          console.log(timings);
-          this.setState({
-            Force: timings.Force,
+        .get();
+      if (ref.exists) {
+        await firebase
+          .firestore()
+          .collection("/settings_Timings")
+          .doc(businessId)
+          .get()
+          .then((snapshot) => {
+            var timings = snapshot.data();
 
-            Monday: timings.Monday,
-            Monday_Open_From: timings.Monday_Open_From,
-            Monday_Open_To: timings.Monday_Open_To,
-            Monday_Break: timings.Monday_Break,
-            Monday_Break_From: timings.Monday_Break_From,
-            Monday_Break_To: timings.Monday_Break_To,
+            console.log(timings);
+            this.setState({
+              Force: timings.Force,
 
-            Tuesday: timings.Tuesday,
-            Tuesday_Open_From: timings.Tuesday_Open_From,
-            Tuesday_Open_To: timings.Tuesday_Open_To,
-            Tuesday_Break: timings.Tuesday_Break,
-            Tuesday_Break_From: timings.Tuesday_Break_From,
-            Tuesday_Break_To: timings.Tuesday_Break_To,
+              Monday: timings.Monday,
+              Monday_Open_From: timings.Monday_Open_From,
+              Monday_Open_To: timings.Monday_Open_To,
+              Monday_Break: timings.Monday_Break,
+              Monday_Break_From: timings.Monday_Break_From,
+              Monday_Break_To: timings.Monday_Break_To,
 
-            Wednesday: timings.Wednesday,
-            Wednesday_Open_From: timings.Wednesday_Open_From,
-            Wednesday_Open_To: timings.Wednesday_Open_To,
-            Wednesday_Break: timings.Wednesday_Break,
-            Wednesday_Break_From: timings.Wednesday_Break_From,
-            Wednesday_Break_To: timings.Wednesday_Break_To,
+              Tuesday: timings.Tuesday,
+              Tuesday_Open_From: timings.Tuesday_Open_From,
+              Tuesday_Open_To: timings.Tuesday_Open_To,
+              Tuesday_Break: timings.Tuesday_Break,
+              Tuesday_Break_From: timings.Tuesday_Break_From,
+              Tuesday_Break_To: timings.Tuesday_Break_To,
 
-            Thrusday: timings.Thrusday,
-            Thrusday_Open_From: timings.Thrusday_Open_From,
-            Thrusday_Open_To: timings.Thrusday_Open_To,
-            Thrusday_Break: timings.Thrusday_Break,
-            Thrusday_Break_From: timings.Thrusday_Break_From,
-            Thrusday_Break_To: timings.Thrusday_Break_To,
+              Wednesday: timings.Wednesday,
+              Wednesday_Open_From: timings.Wednesday_Open_From,
+              Wednesday_Open_To: timings.Wednesday_Open_To,
+              Wednesday_Break: timings.Wednesday_Break,
+              Wednesday_Break_From: timings.Wednesday_Break_From,
+              Wednesday_Break_To: timings.Wednesday_Break_To,
 
-            Friday: timings.Friday,
-            Friday_Open_From: timings.Friday_Open_From,
-            Friday_Open_To: timings.Friday_Open_To,
-            Friday_Break: timings.Friday_Break,
-            Friday_Break_From: timings.Friday_Break_From,
-            Friday_Break_To: timings.Friday_Break_To,
+              Thrusday: timings.Thrusday,
+              Thrusday_Open_From: timings.Thrusday_Open_From,
+              Thrusday_Open_To: timings.Thrusday_Open_To,
+              Thrusday_Break: timings.Thrusday_Break,
+              Thrusday_Break_From: timings.Thrusday_Break_From,
+              Thrusday_Break_To: timings.Thrusday_Break_To,
 
-            Saturday: timings.Saturday,
-            Saturday_Open_From: timings.Saturday_Open_From,
-            Saturday_Open_To: timings.Saturday_Open_To,
-            Saturday_Break: timings.Saturday_Break,
-            Saturday_Break_From: timings.Saturday_Break_From,
-            Saturday_Break_To: timings.Saturday_Break_To,
+              Friday: timings.Friday,
+              Friday_Open_From: timings.Friday_Open_From,
+              Friday_Open_To: timings.Friday_Open_To,
+              Friday_Break: timings.Friday_Break,
+              Friday_Break_From: timings.Friday_Break_From,
+              Friday_Break_To: timings.Friday_Break_To,
 
-            Sunday: timings.Sunday,
-            Sunday_Open_From: timings.Sunday_Open_From,
-            Sunday_Open_To: timings.Sunday_Open_To,
-            Sunday_Break: timings.Sunday_Break,
-            Sunday_Break_From: timings.Sunday_Break_From,
-            Sunday_Break_To: timings.Sunday_Break_To,
-            businessId: timings.businessId,
-            sessionId: timings.sessionId,
+              Saturday: timings.Saturday,
+              Saturday_Open_From: timings.Saturday_Open_From,
+              Saturday_Open_To: timings.Saturday_Open_To,
+              Saturday_Break: timings.Saturday_Break,
+              Saturday_Break_From: timings.Saturday_Break_From,
+              Saturday_Break_To: timings.Saturday_Break_To,
+
+              Sunday: timings.Sunday,
+              Sunday_Open_From: timings.Sunday_Open_From,
+              Sunday_Open_To: timings.Sunday_Open_To,
+              Sunday_Break: timings.Sunday_Break,
+              Sunday_Break_From: timings.Sunday_Break_From,
+              Sunday_Break_To: timings.Sunday_Break_To,
+              businessId: timings.businessId,
+              sessionId: timings.sessionId,
+            });
           });
-          //   } else {
-          //   }
-        });
+      } else {
+      }
     }
   };
 

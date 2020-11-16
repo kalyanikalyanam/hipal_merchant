@@ -179,25 +179,33 @@ class SettingsGstInfo extends React.Component {
     var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
     if (sessionId) {
-      await firebase
+      const ref = await firebase
         .firestore()
-        .collection("/settings_gst_info")
+        .collection("settings_gst_info")
         .doc(businessId)
-        .get()
-        .then((snapshot) => {
-          var info = snapshot.data();
-          // if (snapshot.numChildren > 0) {
-          console.log(info);
-          this.setState({
-            gst_number: info.gst_number,
-            gst_registration_form: info.gst_registration_form,
-            businessId: info.businessId,
-            sessionId: info.sessionId,
+        .get();
+      if (ref.exists) {
+        await firebase
+          .firestore()
+          .collection("/settings_gst_info")
+          .doc(businessId)
+          .get()
+          .then((snapshot) => {
+            var info = snapshot.data();
+            // if (snapshot.numChildren > 0) {
+            console.log(info);
+            this.setState({
+              gst_number: info.gst_number,
+              gst_registration_form: info.gst_registration_form,
+              businessId: info.businessId,
+              sessionId: info.sessionId,
+            });
+            console.log(this.state.gst_registration_form);
+            // } else {
+            // }
           });
-          console.log(this.state.gst_registration_form);
-          // } else {
-          // }
-        });
+      } else {
+      }
     }
   };
 

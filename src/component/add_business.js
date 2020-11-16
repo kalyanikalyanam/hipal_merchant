@@ -792,7 +792,7 @@ class AddBusiness extends React.Component {
                                   </div>
                                   <div className="col-12 col-md-8">
                                     <input
-                                      type="number"
+                                      type="text"
                                       id="text-input"
                                       name="business_account_number"
                                       value={this.state.business_account_number}

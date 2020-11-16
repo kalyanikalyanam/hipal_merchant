@@ -302,9 +302,9 @@ class Settings extends React.Component {
 
                           <div className="w-50 pull-left">
                             <span className="pull-right">
-                              <button className="btn edit_small_button">
+                              {/* <button className="btn edit_small_button">
                                 Edit
-                              </button>
+                              </button> */}
                             </span>
                           </div>
                         </h1>
@@ -355,7 +355,7 @@ class Settings extends React.Component {
 </div> */}
 
                           {/* <hr></hr> */}
-                          {/* <SettingsTimings /> */}
+                          <SettingsTimings />
 
                           {/* <div className="row business_reg_box">
 
@@ -596,12 +596,12 @@ To
 
                           <hr></hr>
 
-                          {/* <SettingsInfo /> */}
+                          <SettingsInfo />
 
                           {/* <div className="row business_reg_box">
 
 <div className="col-md-12"><h3>Info</h3></div>
-
+git
 <div className="col-md-6">
 
 <div className="row form-group">
@@ -740,7 +740,7 @@ for 2 People</label>
 
 </div> */}
 
-                          <hr></hr>
+                          {/* <hr></hr> */}
 
                           {/* <SettingsBestRecommendations /> */}
                           {/* <div className="row business_reg_box">
@@ -1062,7 +1062,7 @@ Add station</div>
 
                           <hr></hr>
 
-                          {/* <SettingsGstInfo /> */}
+                          <SettingsGstInfo />
 
                           {/* <div className="row business_reg_box">
 <div className="col-md-6 p-0">
@@ -1099,7 +1099,7 @@ Add station</div>
 
                           <hr></hr>
 
-                          {/* <SettingsFssaiInfo /> */}
+                          <SettingsFssaiInfo />
 
                           {/* <div className="row business_reg_box">
 <div className="col-md-6 p-0">

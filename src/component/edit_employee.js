@@ -684,7 +684,9 @@ class EditEmployee extends React.Component {
                     <label className=" form-control-label">Photo</label>
                   </div>
                   <div className="col-12 col-md-6">
-                    {this.state.photo && <img src={this.state.photo} />}
+                    {this.state.photo && (
+                      <img src={this.state.photo} width="50%" height="50%" />
+                    )}
                     <FileUploader
                       accept="image/*"
                       name="photo"
@@ -886,7 +888,11 @@ class EditEmployee extends React.Component {
                   </div>
                   <div className="col-12 col-md-6">
                     {this.state.employee_adharcard && (
-                      <img src={this.state.employee_adharcard} />
+                      <img
+                        src={this.state.employee_adharcard}
+                        width="50%"
+                        height="50%"
+                      />
                     )}
                     <FileUploader
                       accept="image/*"
@@ -933,7 +939,7 @@ class EditEmployee extends React.Component {
                   </div>
                   <div className="col-12 col-md-6">
                     <input
-                      type="number"
+                      type="text"
                       id="text-input"
                       name="employee_account_number"
                       value={this.state.employee_account_number}
