@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import {useForm} from 'react-hook-form'
 import {dispatchContext} from './contexts'
 import * as actions from './actionTypes'
+import InputField from './inputField'
 
 const AddCustomerModal = ({tableData}) => {
     const [occupency, setOccupancy] = useState(0)
@@ -13,7 +14,17 @@ const AddCustomerModal = ({tableData}) => {
         mode: "onChange"
     })
     const onSubmit = (data) => {
-        console.log(data)
+        let flag = false
+        Object.keys(data).forEach(key => {
+            console.log(key)
+            if (key !== 'occupency' && data[key] !== '') {
+                flag = true
+            }
+        })
+        if (!flag) alert('Please enter at least 1 customer')
+        else {
+            console.log(data)
+        }
     }
     const onChange = (data) => {
         setOccupancy(data.occupency)
@@ -48,36 +59,10 @@ const AddCustomerModal = ({tableData}) => {
         getCustomers()
     }, [])
     useEffect(() => {
-        fields.current = []
+       fields.current = []
         for(var i = 0; i < occupency; i++){
             const field = (
-                <div key={i} className="col-12 w-100-row">
-                    <div className="w-10 no">{`${i + 1}`}</div>
-                    <div className="w-45 field">
-                        <div className="form-group">
-                            <input 
-                                ref={register} 
-                                type="text" 
-                                name={`customer ${i}`} 
-                                className="form-control" 
-                                key={1} 
-                                placeholder="Name"
-                            />
-                        </div>
-                    </div>
-                    <div className="w-45 field">
-                        <div className="form-group">
-                            <input 
-                                ref={register} 
-                                type="text" 
-                                name={`customer ${i}`} 
-                                className="form-control" 
-                                key={1} 
-                                placeholder="Number"
-                            />
-                        </div>
-                    </div>
-                </div>
+                <InputField customers={customers} i={i} key={i} />
             )
             fields.current.push(field)
         }
@@ -89,7 +74,6 @@ const AddCustomerModal = ({tableData}) => {
     }
     return (
         <div className="modal-dialog modal-sm hipal_pop" width="200px" role="document">
-        <form onSubmit={handleSubmit(onSubmit)}>
             <div className="modal-content">
                 <div className="modal-header">
                     <h5 className="modal-title">Add table to Table {tableData && tableData.table_name}</h5>
@@ -105,9 +89,9 @@ const AddCustomerModal = ({tableData}) => {
                 </div>
                 <div className="modal-footer">
                     <button onClick={close} className="btn close_btn">Close</button>
-                    <button type="submit" className="btn save_btn">Save</button>
+                    <button onClick={handleSubmit(onSubmit)} className="btn save_btn" >Save</button>
                 </div>
-            </div></form>
+            </div>
         </div>
     )
 }

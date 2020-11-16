@@ -1,5 +1,5 @@
 import React from "react";
-import firebase from "../config";
+import firebase, {db} from "../config";
 import Sidebar from "./sidebar";
 import Header from "./header";
 import SimpleReactValidator from "simple-react-validator";
@@ -130,8 +130,7 @@ class Dashboard extends React.Component {
     if (sessionId) {
       console.log(sessionId);
 
-      firebase
-        .firestore()
+      db
         .collection("/merchant_users")
         .doc(sessionId)
         .get()
@@ -147,8 +146,7 @@ class Dashboard extends React.Component {
           });
         });
       var businessId = sessionStorage.getItem("businessId");
-      firebase
-        .firestore()
+      db
         .collection("/businessdetails")
         .doc(businessId)
         .get()
@@ -157,6 +155,7 @@ class Dashboard extends React.Component {
           console.log(business);
           sessionStorage.setItem("BusinessName", business.business_name);
           sessionStorage.setItem("BusinessLogo", business.business_logo);
+          
         });
     }
 

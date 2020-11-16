@@ -1,9 +1,15 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import * as actions from './actionTypes'
 import {dispatchContext} from './contexts'
 
-const OrderItem = ({cart, index, cartNo}) => {
+const OrderItem = ({cart, index}) => {
     const dispatch = useContext(dispatchContext)
+    const [kotNum, setKotNum] = useState(0)
+    const [carts, setCarts] = useState()
+    const [, updateState] = useState()
+    useEffect(() => {
+        setCarts(cart)
+    }, [cart])
     const handleKOTCart = () => {
         dispatch({
             type: actions.KOTCART,
@@ -17,6 +23,16 @@ const OrderItem = ({cart, index, cartNo}) => {
             cart
         })
     }
+    useEffect(() => {
+        var i = 0
+        cart.forEach(item=> {
+            console.log(item)
+            if(item.kot){
+                i += 1
+            } 
+        });
+        setKotNum(i)
+    }, [carts])
     const select = <div>
         <select name="status">
             <option value="cooking">Cooking</option>
@@ -27,7 +43,7 @@ const OrderItem = ({cart, index, cartNo}) => {
     return(
         <div className="cart2_box col-md-12 m-t-20">
             <span className="ribbon_cart">
-                {cartNo ? cartNo : 0}/5
+                {kotNum}/{cart && cart.length}
             </span>
             <div className="cart2_row">
                 <div className="cart_head">

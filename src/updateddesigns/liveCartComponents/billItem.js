@@ -1,17 +1,17 @@
 import React, { useEffect, useState, useRef } from 'react'
 
-const BillItem = ({order, handlePrice}) => {
+const BillItem = ({order}) => {
     const [gst] = useState(8.75)
     const [cGst] = useState(8.75)
     const total = useRef(0)
+    const discount = useRef(0)
     const getTotal = () => {
-        const {orderPrice, orderDiscount} = order
-        const temp = orderPrice - orderDiscount
-        let price = temp 
-        price += parseFloat(price * gst /100)
-        price += parseFloat(temp* cGst / 100)
-        total.current = price.toFixed(2)
-        handlePrice(total.current)
+        let totalPrice = order.orderPrice
+        let temp = totalPrice
+        totalPrice += totalPrice * gst / 100
+        totalPrice += temp *cGst / 100
+        total.current = totalPrice 
+        discount.current = totalPrice - order.discount 
     }
     useEffect(() => {
         getTotal()
@@ -22,7 +22,6 @@ const BillItem = ({order, handlePrice}) => {
     const items = order && order.length !== 0 ? order.map((cart, cartIndex) => {
         return(
             cart.map((item, itemIndex) =>{
-            console.log(item)
             return(
             <tr key={`${cartIndex}-${itemIndex}`}>
                 <td style={{ textAlign: 'left', padding: '3px 10px' }}>{item.item_name}</td>
@@ -41,7 +40,7 @@ const BillItem = ({order, handlePrice}) => {
                             <table width="100%">
                                 <tbody>
                                     <tr>
-                                        <td style={{ textAlign: 'left', padding: '3px 10px' }}>Order ID : {order.orderId}</td>
+                                        <td style={{ textAlign: 'left', padding: '3px 10px' }}>Order ID : {order.id}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -70,7 +69,7 @@ const BillItem = ({order, handlePrice}) => {
                                 </tr>
                                     <tr>
                                         <td style={{ textAlign: 'left', padding: '3px 10px' }}>Offer</td>
-                                        <td style={{ textAlign: 'right', padding: '3px 10px' }}>-{order.orderDiscout}</td>
+                                        <td style={{ textAlign: 'right', padding: '3px 10px' }}>-{order.orderDiscount}</td>
                                     </tr>
                                     <tr>
                                         <td style={{ textAlign: 'left', padding: '3px 10px' }}>Extra charges</td>
@@ -97,7 +96,7 @@ const BillItem = ({order, handlePrice}) => {
                                 <tbody>
                                     <tr> 
                                         <td style={{ textAlign: 'left', padding: '5px 10px' }}><b>Total</b></td>
-                                        <td style={{ textAlign: 'right', padding: '5px 10px' }}><b>₹ {total.current}</b></td>
+                                        <td style={{ textAlign: 'right', padding: '5px 10px' }}><b>₹ {total.current.toFixed(2)}</b></td>
                                     </tr>
                                 </tbody>
                             </table>

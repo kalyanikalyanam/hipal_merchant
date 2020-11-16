@@ -2,6 +2,7 @@ import React, { useContext, useRef} from 'react'
 import OrderItem from './orderItem'
 import {dispatchContext, orderContext} from './contexts'
 import * as actions from './actionTypes'
+import { FormCheck } from 'react-bootstrap'
 
 const Orders = () => {
     const orderList = useContext(orderContext)
@@ -11,16 +12,30 @@ const Orders = () => {
     const totalDiscount= useRef()
     const handleKOT = () => {
         dispatch({
-            type: actions.SENDTOBILL,
-            orderId: orderId.current,
-            orderDiscount: totalDiscount.current,
-            orderPrice: totalPrice.current
-        })
-    }
-    const handleBillThis= () => {
-        dispatch({
             type: actions.KOTORDER
         })
+    }
+    const check = () => {
+        let flag = true
+        orderList.forEach(cart => {
+            cart.forEach(item => {
+                if(!item.kot) flag = false
+            })
+        })
+        return flag
+    }
+    const handleBillThis= () => {
+        if(check()){
+            dispatch({
+                type: actions.SENDTOBILL,
+                id: orderList.id,
+                orderDiscount: totalDiscount.current,
+                orderPrice: totalPrice.current
+            })
+        }
+        else {
+            alert('All items must be KOT or removed from the order')
+        }
     }
     totalDiscount.current = 0
     totalPrice.current = 0
