@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useContext, useRef } from "react";
 import OrderItem from "./orderItem";
 import { dispatchContext, orderContext } from "./contexts";
@@ -26,6 +27,51 @@ const Orders = () => {
   totalPrice.current = 0;
   orderId.current = Math.round(new Date().getTime() / 10000);
   return (
+=======
+import React, { useContext, useRef} from 'react'
+import OrderItem from './orderItem'
+import {dispatchContext, orderContext} from './contexts'
+import * as actions from './actionTypes'
+import { FormCheck } from 'react-bootstrap'
+
+const Orders = () => {
+    const orderList = useContext(orderContext)
+    const dispatch = useContext(dispatchContext)
+    const orderId = useRef()
+    const totalPrice = useRef()
+    const totalDiscount= useRef()
+    const handleKOT = () => {
+        dispatch({
+            type: actions.KOTORDER
+        })
+    }
+    const check = () => {
+        let flag = true
+        orderList.forEach(cart => {
+            cart.forEach(item => {
+                if(!item.kot) flag = false
+            })
+        })
+        return flag
+    }
+    const handleBillThis= () => {
+        if(check()){
+            dispatch({
+                type: actions.SENDTOBILL,
+                id: orderList.id,
+                orderDiscount: totalDiscount.current,
+                orderPrice: totalPrice.current
+            })
+        }
+        else {
+            alert('All items must be KOT or removed from the order')
+        }
+    }
+    totalDiscount.current = 0
+    totalPrice.current = 0
+    orderId.current=(Math.round((new Date().getTime() / 10000)));
+    return (
+>>>>>>> fb7b7109e4fcad83e8d3c8ad888fb87c9ac68eb7
     <div className="order_id_cart_box col-md-12 m-t-20">
       <p className="order_id_cart">Order ID {orderList.id} </p>
       <div className="cart_scroll_box">

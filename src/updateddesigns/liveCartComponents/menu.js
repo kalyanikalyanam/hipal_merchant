@@ -7,10 +7,9 @@ import { liveCartContext } from "./contexts";
 const Menu = () => {
   const [itemList, setItemsList] = useState([])
   const [categoryList, setCategoryList] = useState([])
-  const [loading, setLoading] = useState(false)
   const cartList = useContext(liveCartContext);
+  const [selected, setSelected] = useState(null)
   const getItems = async () => {
-    setLoading(true)
     var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
     await firebase
@@ -20,7 +19,6 @@ const Menu = () => {
       .where("businessId", "==", businessId)
       .get()
       .then((snapshot) => {
-        setLoading(true)
         const data = [];
         snapshot.forEach((childSnapShot) => {
           const Products = {
@@ -99,17 +97,26 @@ const Menu = () => {
       });
   }
   const handleCategoryClick = (category) => {
-
+    console.log(category)
   }
-  useEffect(()=>{
-    console.log(itemList)
-    console.log(categoryList)
-  }, [itemList, categoryList])
+
+  useEffect(() => {
+    let categories 
+    if(selected === null) {
+      categories = categoryList
+            .filter(cat => !cat.isParent)
+            .map((cat, index) => <CategoryItem key={index} item={cat} onClick={handleCategoryClick} /> )
+      let notItem = itemList
+                    .filter(item => item.categoryId.length === 0)
+                    .map((item, index) => <MenuItem item={item} key={index} />)
+    }
+  }, [selected])
+  
   useEffect(() => {
     getItems();
     getCategories()
-
   }, []);
+
   return (
     <div className="row m-t-20">
       <div className="col-md-12 menu_category_block">
@@ -134,7 +141,7 @@ const Menu = () => {
           </span>
         </div>
         <div className="cate_images_blk">
-          <div className="row" id="myDIV1">
+          <div className="row">
             {categoryList && categoryList.map((category, index) => {
               return <CategoryItem key={index} item={category} onClick={handleCategoryClick}/>
             })

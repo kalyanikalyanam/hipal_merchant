@@ -23,7 +23,7 @@ const LiveCartPage = () => {
     const handleSettle = () => {
         dispatch({
             type: actions.SENDTOORDER,
-            cartId: cartId.current,
+            cartId: cartList.id,
             cartDiscount: totalDiscount.current,
             cartPrice: totalPrice.current,
         })
@@ -36,9 +36,9 @@ const LiveCartPage = () => {
             <div className="cart_scroll_box">
                 <div className="cart2_box col-md-12 m-t-20 active_box">
                     <span className="ribbon_cart">{cartList ? cartList.length: "0"}</span>
-                    <div className="cart2_row">
+                    <div className="cart2_row bdr-none">
                         <div className="cart_head">
-                            <span>Cart ID : {cartId.current}</span>
+                            <span>Cart ID : {cartList.id}</span>
                         </div>
                         <div className="kot_box livecart_head">
                             Live Cart

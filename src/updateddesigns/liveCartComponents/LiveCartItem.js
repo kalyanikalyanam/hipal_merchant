@@ -8,15 +8,24 @@ const LiveCartItem = ({item, index, onChange}) => {
     useEffect(() => {
         onChange()
     } ,[quantity])
-    const onChangeq = (e) => {
-        setQuantity(e.target.value)
-        item.quantity = parseInt(e.target.value)
+    const onIncrease = () => {
+        const newQ = item.quantity
+        setQuantity(newQ + 1)  
+        item.quantity += 1
     }
-    const deleteitem = (itemId) => {
+    const onDecrease= () => {
+        if(item.quantity <= 1){
+            return
+        }
+        const newQ = item.quantity
+        setQuantity(newQ - 1)  
+        item.quantity -= 1
+    }
+    const deleteItem = () => {
         console.log("here")
         dispatch({
             type: actions.REMLIVE,
-            itemId
+            itemId: item.id 
         })
     }    
     const handleEdit = () => {
@@ -29,36 +38,33 @@ const LiveCartItem = ({item, index, onChange}) => {
             formOrder: false
         })
     }
-    const handleKeyDown = (e) => {
-        if (!((e.keyCode > 95 && e.keyCode < 106)
-            || (e.keyCode > 47 && e.keyCode < 58)
-            || e.keyCode == 8)) {
-            return false;
-        }
-    }
     return (item &&
-        <div className="cart2_row" key={index}>
-            <div className="box_1">
+        <div className="cart2_row cart_graybg" key={index}>
+            <div className="cart_controls">
+                <img src="/images/icon/close_black.png" alt="remove" onClick={deleteItem} />
+                <img src="/images/icon/Edit_black.png" alt="edit" onClick={handleEdit} />
+            </div>
+            <div className="box_1 cart_tab_head">
                 <p>{index + 1}.  {item.item_name} {item.portion ? (`(${item.portion})`) : ''}</p>
-                <div className="w-100-row m-b-10" onClick={handleEdit}>
-                    <div className="edit" data-toggle="modal" data-target="#edit_product">edit</div>
-                </div>
-                <p className="offer_applied">10% off applied</p>
             </div>
 
-            <div className="box_2">
-            <span>
+            <div className="box_2 cart_tab_width">
+            <table className="cart_tab">
+                <tbody>
+                    <td onClick={onDecrease}>-</td>
+                    <td style={{background: '#fd8a36', color: '#fff'}} >x{item.quantity}</td>
+                    <td onClick={onIncrease}>+</td>
+                </tbody>
+            </table>
+            <p className="last_update">00:03 min last update</p>
+            {/* <span>
                 <label>x</label>
                 <input type="number" onKeyDown={handleKeyDown} min="1" value={item.quantity} onChange={onChangeq} style={{ width: "100%" }} />
-            </span>
+            </span> */}
             </div>
-            <div className="box_3">
+            <div className="box_3 cart_tab_price">
                 <span> {parseFloat((item.quantity) * (item.price)).toFixed(2)}</span>
-                <span>00:03 min <br></br>last update</span>
-            </div>
-            <div className="box_4">
-                <span onClick={() => deleteitem(item.id)}
-                    id={item.itemid}><img src="/images/icon/cross_red.png" alt="close"/></span>
+                <p className="offer_applied">10% off Applied</p>
             </div>
 
         </div>

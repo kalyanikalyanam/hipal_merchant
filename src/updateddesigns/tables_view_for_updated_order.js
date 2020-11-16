@@ -1,5 +1,5 @@
 import React from "react";
-import firebase from '../config';
+import firebase, {db} from '../config';
 import Sidebar from '../component/sidebar';
 import Header from '../component/header';
 import {Link} from "react-router-dom";
@@ -17,16 +17,16 @@ class Table extends React.Component {
 
     componentDidMount() {
       this.setState({ loading: true });
-      var sessionId = sessionStorage.getItem("RoleId");
-      var businessId = sessionStorage.getItem("businessId");
+      var sessionName= sessionStorage.getItem("RoleId");
+      var businessName= sessionStorage.getItem("BusinessName");
+      this.setState({sessionName, businessName})
 
 
       var sessionId = sessionStorage.getItem("RoleId");
       if (sessionId ) {
         console.log(sessionId);
         this.setState({ loading: true });
-        firebase
-          .firestore()
+        db
           .collection("/merchant_users")
           .doc(sessionId)
           .get()
@@ -42,8 +42,7 @@ class Table extends React.Component {
             });
           });
         var businessId = sessionStorage.getItem("businessId");
-        firebase
-          .firestore()
+        db
           .collection("/businessdetails")
           .doc(businessId)
           .get()
@@ -61,7 +60,7 @@ class Table extends React.Component {
       floorsList = async () => {
         this.setState({ loading: true });
         var businessId = sessionStorage.getItem("businessId")
-        var ref = await firebase.firestore().collection('floors').where('businessId', '==', businessId).get()
+        var ref = await db.collection('floors').where('businessId', '==', businessId).get()
         var data = []
         ref.forEach(childSnapShot => {
             const GSTData = {
@@ -80,7 +79,7 @@ class Table extends React.Component {
         this.setState({ loading: true });
         var businessId = sessionStorage.getItem("businessId")
         console.log(businessId)
-        const snapshot = await firebase.firestore().collection('tables').where('businessId', '==', businessId).get()
+        const snapshot = await db.collection('tables').where('businessId', '==', businessId).get()
         var data = [];
         snapshot.forEach(childSnapShot => {
           const GSTData = {
@@ -120,7 +119,6 @@ class Table extends React.Component {
           <div className="table_2 mb-20" key={index + 1}>
             <div className="head_table"></div>
             <Link to={`/LiveCart/${table.tableId}`}>
-
               <div className="table-design three_people">
                 <div className="persons_row">
                   <span className="person vacant"></span>
@@ -161,7 +159,7 @@ class Table extends React.Component {
                               <div className="company_name_box">
                                 <div className="company_iocn"></div>
                                 <div className="company_details">
-                                  <p className="name">The Coffee Cup Sanikpuri </p>
+                                  <p className="name">{this.state.businessName}</p>
                                   <p className="open">OPEN <i className="fa fa-circle" aria-hidden="true"></i></p>
                                 </div>
                               </div>

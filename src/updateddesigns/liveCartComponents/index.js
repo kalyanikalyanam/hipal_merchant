@@ -24,6 +24,7 @@ import AdvancedOptionsModal from './advancedOptionsModal';
 import CustomerMoveModal from './customerMoveModal'
 import CustomerMergeModal from './customerMergeModal'
 import CustomerSwapModal from './customerSwapModal'
+import AddCutomerFormModal from './addCustomerFormModal'
 
 Modal.setAppElement(document.getElementById('root'));
 
@@ -56,44 +57,24 @@ const initState = {
     customerMergeModal: false,
     customerSwapModal: false,
     customerMoveModal: false,
+    addUserModal: false,
     editMode: false,
-    formOrder: false
+    formOrder: false,
+    userInfo: null
 }
 
 const LiveCartPage = (props) => {
     const [loading, setLoading] = useState(false)
     const [state, setState] = useState({})
+    const [businessName, setBusinessName] = useState()
     const [reducerState, dispatch] = useReducer(reducer, initState)
-    const getUserdata = async () => {
-        var sessionid = sessionStorage.getItem("roleId");
-        var businessid = sessionStorage.getItem("businessId");
-        if (sessionid && businessid) {
-            const ref = await firebase.database().ref('merchant_users/' + sessionid)
-            const snapshot = await ref.on('value')
-            var users = snapshot.val();
-            sessionStorage.setitem("username", users.user_name);
-            sessionStorage.setitem("email", users.email_id);
-            setState({
-                ...state,
-                userrole: users.role
-            });
-
-            const businessRef = await firebase.database().ref('merchant_bussiness_details/' + businessid).on()
-            const Bsnapshot = await businessRef.on("value")
-            var business = Bsnapshot.val();
-            sessionStorage.setitem("businessId", business.businessid);
-            sessionStorage.setitem("businessName", business.business_name);
-            sessionStorage.setitem("businessLogo", business.business_logo);
-            console.log(sessionStorage.getItem('businessLogo'))
-        }
-    }
-    
     useEffect(() => {
+        var businessName = sessionStorage.getItem("BusinessName") 
+        setBusinessName(businessName)
         setLoading(true)
         setState({
             tableList: []
         })
-        getUserdata()
         setLoading(false)
         dispatch({
             type: 'RESET'
@@ -119,10 +100,10 @@ const LiveCartPage = (props) => {
                                                             <div className="col-md-6">
                                                                 <div className="company_name_box">
                                                                     <div className="company_iocn">
-                                                                        <img src={sessionStorage.getItem('businessLogo')} />
+                                                                        <img src={sessionStorage.getItem('BusinessLogo')} style={{width: "100%", height: "100%"}} />
                                                                     </div>
                                                                     <div className="company_details">
-                                                                        <p className="name">The Coffee Cup Sanikpuri </p>
+                                                                        <p className="name">{businessName}</p>
                                                                         <p className="open">OPEN <i className="fa fa-circle" aria-hidden="true"></i></p>
                                                                     </div>
                                                                 </div>
@@ -182,6 +163,9 @@ const LiveCartPage = (props) => {
             </Modal>
             <Modal isOpen={reducerState.customerMoveModal} style={customStyles}>
                 <CustomerMoveModal tableData={reducerState.table} tables={state.tableList}/>
+            </Modal>
+            <Modal isOpen={reducerState.addUserModal}>
+                <AddCutomerFormModal data={reducerState.userInfo} style={customStyles}/>
             </Modal>
             </tableContext.Provider>
             </billPageContext.Provider >

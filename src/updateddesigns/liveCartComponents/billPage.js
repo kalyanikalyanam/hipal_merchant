@@ -1,15 +1,19 @@
-import React, { useContext, useRef, useEffect } from 'react'
+import React, { useContext, useRef, useEffect, useState } from 'react'
 import BillItem from './billItem'
 import {billContext, dispatchContext, tableContext} from './contexts'
 import * as actions from './actionTypes'
 const BillPage = () => {
+    const [businessLogo, setBusinessLogo] = useState()
     const billIdRef= useRef() 
-    const grandTotal= useRef(0.00) 
     const dispatch = useContext(dispatchContext)
     const table = useContext(tableContext)
     const bill = useContext(billContext)
+    const grandTotal = useRef(0.00)
     useEffect(() => {
+        setBusinessLogo(sessionStorage.getItem("BusinessLogo"))
+        console.log(bill)
         billIdRef.current = (Math.round((new Date().getTime() / 10000)))
+        grandTotal.current = Object.values(bill).reduce((r, {orderPrice}) => r + orderPrice , 0)
         dispatch({
             type: actions.SETBILLID,
             billId: billIdRef.current,
@@ -17,10 +21,6 @@ const BillPage = () => {
             bill: bill
         })
     }, [])
-    const handlePrice = (price) => {
-        console.log(price)
-        grandTotal.current += price
-    }
     const noItem = (
         <tr>
             <td style={{ textAlign: 'center', padding: '10px', paddingBottom: '0px',color: '#000000', borderBottom: '1px rgba(0, 0, 0, 0.5)' }}>
@@ -37,7 +37,7 @@ const BillPage = () => {
     const billItems =bill && bill.length !== 0 ? 
         bill.map((order, index) => {
             return(
-                <BillItem order={order} handlePrice={handlePrice} key={index} />
+                <BillItem order={order} key={index} />
             )
         }) : (noItem) 
     return(
@@ -49,7 +49,7 @@ const BillPage = () => {
                         </tr>
                             <tr>
                                 <td style={{ textAlign: 'center', padding: '10px' }}>
-                                    <img src="/images/logo_coffe_cup.png" />
+                                    <img src={businessLogo}  style={{maxWidth: '150px'}}/>
                                 </td>
                             </tr>
                             <tr>

@@ -65,6 +65,10 @@ const reducer = (state, action) => {
             return updateObject(state, { customerSwapModal: true })
         case 'swapModalHide':
             return updateObject(state, { customerSwapModal: false })
+        case 'addUserModal': 
+            return updateObject(state, {addUserModal: true, userInfo: action.info})
+        case 'addUserModalHide': 
+            return updateObject(state, {addUserModal: false, userInfo: null})
 
         case actions.BILLPAGESHOW:
             return handleBillPageShow(action, state)
@@ -133,6 +137,9 @@ const handleAddLiveCart = (action, state) => {
             items.id = action.id 
             items.kot = false
             liveCart.push(items)
+            if(liveCart.length === 1){
+                liveCart.id = Math.floor(Math.random() * 1000000000)
+            }
         }
     }
     else {
@@ -172,20 +179,19 @@ const handleToOrder = (action, state) => {
     currentCart.cartDiscount = action.cartDiscount
     const order = addToarray(state.order, currentCart)
     if(order.length === 1) {
-        order.id = Date.now()
+        order.id =  Math.floor(Math.random() * 100000000)
     }
     return updateObject(state, { liveCart: [], order })
 }
 
-const handleToBill = (action, state) => {
-    if(!action.orderId || state.order.length === 0) return state
-    console.log("here")
-    const currentOrders = state.order 
-    currentOrders.orderId = action.orderId
-    currentOrders.orderPrice = action.orderPrice
-    currentOrders.orderDiscount = action.orderDiscount
-    const bill = addToarray(state.bill,currentOrders) 
-    return  updateObject(state, {order: [], bill}) 
+const handleToBill = (action, state) => { 
+    let currentOrder = state.order 
+    currentOrder.id = state.order.id
+    currentOrder.orderPrice = action.orderPrice
+    currentOrder.orderDiscout = action.orderDiscount 
+    let currentBill = state.bill
+    currentBill.push(currentOrder)
+    return  updateObject(state, {bill: currentBill, order: []}) 
 }
 
 const handleKOTcart = (action, state) => {
@@ -198,19 +204,12 @@ const handleKOTcart = (action, state) => {
             updateCart = currentOrder[i]
             currentOrder[i].forEach(item=> {
                 item.kot = true
+                console.log(`KOT FOR ${item.item_name}`)
             })
-        }
-    }
-    let flag = false
-    for(let i = 0; i < currentBill.length; i++){
-        if(state.order.id === currentBill[i].id){
-            flag = true
-            currentBill[i].push(updateCart)
             break
         }
     }
     return updateObject(state, {order: currentOrder, bill: currentBill})
-
 }
 
 const handleKOTitem = (action, state) => {
@@ -221,6 +220,7 @@ const handleKOTitem = (action, state) => {
             for(var j = 0; j < currentOrder[i].length; j++){
                 if(currentOrder[i][j].id === item.id){
                     currentOrder[i][j].kot = true
+                    console.log(`KOT FOR ${currentOrder[i][j].item_name}`)
                 }
             }
         }
@@ -228,17 +228,13 @@ const handleKOTitem = (action, state) => {
     return updateObject(state, {order: currentOrder})
 }
 
-const handleKOTorder = (action, state) => {
-    const order = state.order
-    console.log(order)
-    let newOrder = []
-    order.forEach(cart => {
-        let newCart = cart
-        newCart = cart.filter(item => item.kot)
-        newOrder.push(order)
+const handleKOTorder = (action, state) => {    
+    const currentOrder = state.order
+    currentOrder.forEach(cart => {
+        cart.forEach(item => {
+            item.kot = true
+        })
     })
-    let currentBill = state.bill
-    currentBill.push(newOrder)
-    return updateObject(state, {bill: currentBill, order: []})
+    return updateObject(state, {order: currentOrder})
 }
 export default reducer
