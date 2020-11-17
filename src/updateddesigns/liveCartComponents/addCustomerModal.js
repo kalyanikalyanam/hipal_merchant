@@ -45,8 +45,14 @@ const AddCustomerModal = ({ tableData }) => {
     console.log(data);
     dispatch({
       type: actions.CustomerList,
+      value: customer_list,
+      status: "occupied",
     });
-    db.collection("tables").doc(table.id).update({ status: "occupied" });
+
+    db.collection("tables").doc(table.id).update({
+      status: "occupied",
+      customers: customer_list,
+    });
   };
   const onChange = (data) => {
     setOccupancy(data.occupency);

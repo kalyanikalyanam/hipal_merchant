@@ -1,12 +1,18 @@
 import { db } from "../../config";
 import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { billPageContext, tableContext, EmployeeContext } from "./contexts";
-
+import {
+  billPageContext,
+  tableContext,
+  EmployeeContext,
+  dispatchContext,
+} from "./contexts";
+import * as actions from "./actionTypes";
 import PaymentMethod from "./paymentMethods";
 
 const BillRight = () => {
   const billPage = useContext(billPageContext);
+  const dispatch = useContext(dispatchContext);
   const [state, setState] = useState();
   const [balance, setBalance] = useState(billPage.totalPrice);
   const tableData = useContext(tableContext);
@@ -35,17 +41,46 @@ const BillRight = () => {
       settle_by: employee,
       billId: billPage.billId,
       billAmount: billPage.totalPrice,
-      billTiming: Date.now(),
+      billTiming: new Date().toLocaleString(),
       table: tableData.table_name,
       businessId: tableData.businessId,
       paymentMethod: state,
     };
     try {
+      const temp = tableData.status.split(" ");
+      var Table2;
+      console.log(temp);
+      if (temp[0] === "Table") {
+        Table2 = temp[4];
+        db.collection("tables")
+          .where("businessId", "==", tableData.businessId)
+          .where("table_name", "==", Table2)
+          .limit(1)
+          .get()
+          .then((query) => {
+            const thing = query.docs[0];
+
+            thing.ref.update({
+              status: "Vacant",
+              customers: [],
+            });
+          });
+      }
       const res = await db.collection("bills").add(bill);
+      db.collection("tables").doc(tableData.id).update({
+        status: "Vacant",
+        customers: [],
+      });
+
       console.log(res);
     } catch (e) {
       console.log(e);
     }
+    dispatch({
+      type: actions.CustomerList,
+      value: null,
+      status: "Vacant",
+    });
   };
   const paymentMethods = [
     "Cash",

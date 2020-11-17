@@ -30,7 +30,7 @@ const LiveCartPage = () => {
   const handleSettle = () => {
     if (employee === null) {
       alert("Employee Name should Be selected");
-    } else if (CustomerList == "") {
+    } else if (CustomerList == []) {
       alert("Customers  should Be selected");
     } else {
       dispatch({

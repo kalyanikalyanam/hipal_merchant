@@ -353,7 +353,8 @@ class AddCategoryMenuDuplicate extends React.Component {
             created_on: childSnapShot.data().created_on,
             sessionId: childSnapShot.data().sessionId,
             businessId: childSnapShot.data().businessId,
-            categoryId: this.state.categoryId,
+            categoryId: childSnapShot.data().categoryId,
+            // categoryId: this.state.categoryId,
           };
 
           data.push(GSTData);

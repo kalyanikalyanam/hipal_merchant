@@ -11,17 +11,19 @@ class Orders extends React.Component {
 
   componentDidMount() {
     this.setState({ loading: true });
+
     var sessionId = sessionStorage.getItem("RoleId");
-    var businessId = sessionStorage.getItem("businessId");
     if (sessionId) {
-      //console.log(sessionId);
+      console.log(sessionId);
 
       firebase
-        .database()
-        .ref("merchant_users/" + sessionId)
-        .on("value", (snapshot) => {
-          var Users = snapshot.val();
-          //console.log(Users);
+        .firestore()
+        .collection("/merchant_users")
+        .doc(sessionId)
+        .get()
+        .then((snapshot) => {
+          var Users = snapshot.data();
+          console.log(Users);
           sessionStorage.setItem("username", Users.user_name);
           sessionStorage.setItem("email", Users.email_id);
 
@@ -30,75 +32,69 @@ class Orders extends React.Component {
             loading: false,
           });
         });
-
+      var businessId = sessionStorage.getItem("businessId");
       firebase
-        .database()
-        .ref("merchaant_business_details/" + businessId)
-        .on("value", (snapshot) => {
-          var business = snapshot.val();
+        .firestore()
+        .collection("/businessdetails")
+        .doc(businessId)
+        .get()
+        .then((snapshot) => {
+          var business = snapshot.data();
           console.log(business);
-          sessionStorage.setItem("BusinessId", business.businessId);
           sessionStorage.setItem("BusinessName", business.business_name);
           sessionStorage.setItem("BusinessLogo", business.business_logo);
         });
     }
+    this.orderList();
   }
+  orderList = async () => {
+    var businessId = sessionStorage.getItem("businessId");
+
+    this.setState({ loading: true });
+    firebase
+      .firestore()
+      .collection("orders")
+
+      .where("businessId", "==", businessId)
+      .get()
+      .then((querySnapshot) => {
+        var data = [];
+        querySnapshot.forEach((childSnapShot) => {
+          const GSTData = {
+            billid: childSnapShot.id,
+            orderTiming: childSnapShot.data().orderTiming,
+            orderId: childSnapShot.data().orderId,
+            orderDiscount: childSnapShot.data().orderDiscount,
+            orderPrice: childSnapShot.data().orderPrice,
+            tableName: childSnapShot.data().tableName,
+
+            businessId: childSnapShot.data().businessId,
+            sessionId: childSnapShot.data().sessionId,
+          };
+
+          data.push(GSTData);
+        });
+        this.setState({
+          orderList: data,
+          countPage: data.length,
+          loading: false,
+        });
+        // this.componentDidMount();
+        // console.log(orderList);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   render() {
     return (
       <div className="page-wrapper">
-        {/* 
-            <!-- MENU SIDEBAR--> */}
-        {/* <aside className="menu-sidebar d-none d-lg-block">
-                                
-                <div className="menu-sidebar__content js-scrollbar1">
-                    <nav className="navbar-sidebar">
-                        <ul className="list-unstyled navbar__list">
-
-    <li><a href="#" className="home"> Home</a></li>
-    <li><a href="#" className="oders active">Orders</a></li>
-    <li><a href="#" className="customers">Customers</a></li>
-    <li><a href="#"  className="employees">My Restaurent</a></li>
-    <li><a href="#"  className="employees">Employees</a></li>
-    <li><a href="#"  className="messages">Messages</a></li>
-    <li><a href="#"  className="bills">Bills</a></li>
-    <li><a href="#" className="settings">Settings</a></li>
-
-
-
-
-
-
-
-
-
-
-                        </ul>
-                    </nav>
-                </div>
-            </aside> */}
-
         <Sidebar />
-        {/* <!-- END MENU SIDEBAR--> */}
 
-        {/* <!-- PAGE CONTAINER--> */}
         <div className="page-container">
           <Header />
 
-          {/* <header className="header-desktop">
-                
-                <div className="logo_hipal">
-                    <a href="#">
-                        <img src="images/icon/logo.svg" alt="Hipal Admin" />
-                    </a>
-                </div>
-
-
-                Welcome Back Varun
-                </header> */}
-          {/* <!-- HEADER DESKTOP--> */}
-
-          {/* <!-- MAIN CONTENT--> */}
           <div className="main-content">
             <div className="section__content">
               <div className="container-fluid">
@@ -118,7 +114,9 @@ class Orders extends React.Component {
                               />
                             </div>
                             <div className="company_details">
-                              <p className="name">The Coffee Cup Sanikpuri </p>
+                              <p className="name">
+                                {sessionStorage.getItem("BusinessName")}{" "}
+                              </p>
                               <p className="open">
                                 OPEN{" "}
                                 <i
@@ -242,15 +240,15 @@ class Orders extends React.Component {
                       <div className="databox td_7">Time from Last Update</div>
                       <div className="databox td_8">Fulfilment Status</div>
                       <div className="databox td_9">Order ID</div>
-                      <div className="databox td_10">View Order</div>
+                      {/* <div className="databox td_10">View Order</div> */}
                     </div>
 
-                    <div className="order_data_row newupdate_head">
+                    {/* <div className="order_data_row newupdate_head">
                       <span className="bg">New</span>
                       <span className="line"></span>
-                    </div>
+                    </div> */}
 
-                    <div className="order_data_row data selected">
+                    {/* <div className="order_data_row data selected">
                       <div className="databox td_1">
                         <span className="order_round_color_dinebox">
                           <img src="images/icon/dine_icon_W.svg" />
@@ -272,9 +270,42 @@ class Orders extends React.Component {
                           View Table
                         </span>
                       </div>
-                    </div>
+                    </div> */}
+                    {this.state.orderList &&
+                      this.state.orderList.map((order, index) => {
+                        return (
+                          <div className="order_data_row data" key={index}>
+                            <div className="databox td_1">
+                              <span className="order_round_color dineine"></span>
+                            </div>
+                            <div className="databox td_2">{index + 1}</div>
+                            <div className="databox td_3">
+                              <span className="order_type_btn dineine">
+                                Dine In
+                              </span>
+                            </div>
+                            <div className="databox td_4">
+                              Table {order.tableName}
+                            </div>
+                            <div className="databox td_5">
+                              Rs {order.orderPrice}
+                            </div>
+                            <div className="databox td_6">Cooking</div>
+                            <div className="databox td_7">6 Mins</div>
+                            <div className="databox td_8 color">
+                              (2 /2) (3/3)
+                            </div>
+                            <div className="databox td_9">{order.orderId}</div>
+                            <div className="databox td_10">
+                              {/* <span className="btn view_order_btn_td">
+                                View Table
+                              </span> */}
+                            </div>
+                          </div>
+                        );
+                      })}
 
-                    <div className="order_data_row data">
+                    {/* <div className="order_data_row data">
                       <div className="databox td_1">
                         <span className="order_round_color dineine"></span>
                       </div>
@@ -314,30 +345,9 @@ class Orders extends React.Component {
                           View Table
                         </span>
                       </div>
-                    </div>
+                    </div> */}
 
-                    <div className="order_data_row data">
-                      <div className="databox td_1">
-                        <span className="order_round_color dineine"></span>
-                      </div>
-                      <div className="databox td_2">1</div>
-                      <div className="databox td_3">
-                        <span className="order_type_btn dineine">Dine In</span>
-                      </div>
-                      <div className="databox td_4">Table 7A</div>
-                      <div className="databox td_5">Rs 450</div>
-                      <div className="databox td_6">Cooking</div>
-                      <div className="databox td_7">6 Mins</div>
-                      <div className="databox td_8 color">(2 /2) (3/3)</div>
-                      <div className="databox td_9">thecoffee012</div>
-                      <div className="databox td_10">
-                        <span className="btn view_order_btn_td">
-                          View Table
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="order_data_row newupdate_head">
+                    {/* <div className="order_data_row newupdate_head">
                       <span className="bg">Update</span>
                       <span className="line"></span>
                     </div>
@@ -382,9 +392,9 @@ class Orders extends React.Component {
                           View Table
                         </span>
                       </div>
-                    </div>
+                    </div> */}
 
-                    <div className="order_data_row data">
+                    {/* <div className="order_data_row data">
                       <div className="databox td_1">
                         <span className="order_round_color dineine"></span>
                       </div>
@@ -403,7 +413,7 @@ class Orders extends React.Component {
                           View Table
                         </span>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
 

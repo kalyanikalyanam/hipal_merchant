@@ -1,13 +1,16 @@
 import React, { useContext, useRef } from "react";
 import OrderItem from "./orderItem";
-import { dispatchContext, orderContext } from "./contexts";
+import { dispatchContext, orderContext, tableContext } from "./contexts";
 import * as actions from "./actionTypes";
 import { FormCheck } from "react-bootstrap";
+import { db } from "../../config";
 
 const Orders = () => {
   const orderList = useContext(orderContext);
   const dispatch = useContext(dispatchContext);
+  const table = useContext(tableContext);
   const orderId = useRef();
+
   const totalPrice = useRef();
   const totalDiscount = useRef();
   const handleKOT = () => {
@@ -32,6 +35,15 @@ const Orders = () => {
         orderDiscount: totalDiscount.current,
         orderPrice: totalPrice.current,
       });
+      let orders = {
+        orderTiming: new Date().toLocaleString(),
+        orderId: orderList.id,
+        orderDiscount: totalDiscount.current,
+        orderPrice: totalPrice.current,
+        tableName: table.table_name,
+        businessId: table.businessId,
+      };
+      const res = db.collection("orders").add(orders);
     } else {
       alert("All items must be KOT or removed from the order");
     }

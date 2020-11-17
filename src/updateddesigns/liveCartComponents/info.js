@@ -1,10 +1,9 @@
-import React from 'react'
-
+import React from "react";
 
 const Info = () => {
-    return(
-        <div className="col-md-5 p-r-0">
-            <div className="user_love_box">
+  return (
+    <div className="col-md-5 p-r-0">
+      {/* <div className="user_love_box">
                 <div className="visit_row">
                     <span>116<br></br><span className="sub">Visits</span></span>
                     <span>Loves<br></br><span className="sub">Chicken Past</span></span>
@@ -35,9 +34,9 @@ const Info = () => {
                 <div className="knowmore_loves">
                     Know more
                 </div>
-            </div>
-        </div>
-    )
-}
+            </div> */}
+    </div>
+  );
+};
 
-export default Info
+export default Info;

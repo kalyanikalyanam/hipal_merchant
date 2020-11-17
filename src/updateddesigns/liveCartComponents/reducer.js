@@ -267,7 +267,7 @@ const handleADDEmployee = (action, state) => {
 
 const handleCustomerList = (action, state) => {
   let newtable = state.table;
-  newtable.status = "occupied";
+  newtable.status = action.status;
 
   console.log(action);
   return updateObject(state, {
