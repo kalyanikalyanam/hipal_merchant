@@ -1145,10 +1145,10 @@ class EditItemMenu extends React.Component {
                                       name="item_id"
                                       value={this.state.item_id}
                                       placeholder="IT10002345"
-                                      onChange={this.itemidChange}
+                                      // onChange={this.itemidChange}
                                       className="form-control"
                                     />
-                                    {this.validator.message(
+                                    {/* {this.validator.message(
                                       "Item Id",
                                       this.state.item_id,
                                       "required|whitespace|min:10|max:10"
@@ -1156,7 +1156,7 @@ class EditItemMenu extends React.Component {
                                     <div className="text-danger">
                                       {" "}
                                       {this.state.mobile_message}
-                                    </div>
+                                    </div> */}
                                   </div>
                                 </div>
 

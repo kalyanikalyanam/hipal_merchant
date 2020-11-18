@@ -185,8 +185,6 @@ class AllMessages extends React.Component {
           countPage: data.length,
           loading: false,
         });
-        this.componentDidMount();
-        // console.log(messageList);
       })
       .catch((err) => {
         console.log(err);

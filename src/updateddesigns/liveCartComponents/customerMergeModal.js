@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { dispatchContext, tableContext } from "./contexts";
+import { dispatchContext, tableContext, CustomerListContext } from "./contexts";
 import firebase from "../../config";
 import * as actions from "./actionTypes";
 import { db } from "../../config";
@@ -9,6 +9,7 @@ const CustomerMoveModal = ({ tableData }) => {
   const { handleSubmit, register, reset } = useForm();
   const [state, setState] = useState({ tableList: [] });
   const table = useContext(tableContext);
+  const CustomerList = useContext(CustomerListContext);
   const [merge, setMerge] = useState(0);
   const handleClose = () => {
     dispatch({
@@ -113,7 +114,8 @@ const CustomerMoveModal = ({ tableData }) => {
                 <div className="customers_merge bill_merge">
                   <div className="left">
                     <span>
-                      {tableData.customers && tableData.customers.length}
+                      {CustomerList && CustomerList.length}
+                      {/* {tableData.customers && tableData.customers.length} */}
                     </span>
                     Customers
                   </div>

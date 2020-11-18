@@ -302,7 +302,7 @@ class AddItemMenu extends React.Component {
         });
         this.setState({
           itemMenuList: data,
-          countPage: data.length,
+          itemMenuListcountPage: data.length,
           loading: false,
         });
         // console.log(itemTypeList);
@@ -347,7 +347,6 @@ class AddItemMenu extends React.Component {
       .catch((err) => {
         console.log(err);
       });
-    this.componentDidMount();
   };
 
   itemCategoryList = () => {
@@ -712,11 +711,12 @@ class AddItemMenu extends React.Component {
       var businessId = sessionStorage.getItem("businessId");
       let dbCon = await firebase.firestore().collection("menuitems2");
       var key = Math.round(new Date().getTime() / 1000);
-
+      var BusinessName = sessionStorage.getItem("BusinessName");
+      var itemId = `${BusinessName}-${this.state.itemMenuListcountPage + 1}`;
       let dbcon1 = await dbCon.add({
         item_unique_id: key,
 
-        item_id: this.state.item_id,
+        item_id: itemId,
         item_name: this.state.item_name,
         item_description: this.state.item_description,
         item_halal: this.state.item_halal,
@@ -864,6 +864,9 @@ class AddItemMenu extends React.Component {
       },
     };
 
+    var BusinessName = sessionStorage.getItem("BusinessName");
+    var itemId = `${BusinessName}-${this.state.itemMenuListcountPage + 1}`;
+
     return (
       <>
         <div className="page-wrapper">
@@ -995,12 +998,12 @@ class AddItemMenu extends React.Component {
                                       type="text"
                                       id="text-input"
                                       name="item_id"
-                                      value={this.state.item_id}
+                                      value={itemId}
                                       placeholder="IT10002345"
-                                      onChange={this.itemidChange}
+                                      // onChange={this.itemidChange}
                                       className="form-control"
                                     />
-                                    {this.validator.message(
+                                    {/* {this.validator.message(
                                       "Item Id",
                                       this.state.item_id,
                                       "required|whitespace|min:10|max:10"
@@ -1008,7 +1011,7 @@ class AddItemMenu extends React.Component {
                                     <div className="text-danger">
                                       {" "}
                                       {this.state.mobile_message}
-                                    </div>
+                                    </div> */}
                                   </div>
                                 </div>
 

@@ -80,7 +80,13 @@ const reducer = (state, action) => {
         userInfo: action.info,
       });
     case "addUserModalHide":
-      return updateObject(state, { addUserModal: false, userInfo: null });
+      var CustomerList = state.CustomerList;
+      CustomerList.push(action.customer);
+      return updateObject(state, {
+        addUserModal: false,
+        userInfo: null,
+        CustomerList,
+      });
 
     case actions.BILLPAGESHOW:
       return handleBillPageShow(action, state);

@@ -289,8 +289,6 @@ class AllEmployees extends React.Component {
           countPage: data.length,
           loading: false,
         });
-        this.componentDidMount();
-        // console.log(itemTypeList);
       })
       .catch((err) => {
         console.log(err);
@@ -330,113 +328,139 @@ class AllEmployees extends React.Component {
       .then((url) => this.setState({ employee_adharcard: url }));
   };
 
+  // handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   if (this.validator.allValid() && this.state.validError === true) {
+  //     var sessionId = sessionStorage.getItem("RoleId");
+  //     var username = sessionStorage.getItem("username");
+  //     var businessId = sessionStorage.getItem("businessId");
+  //     var user = null;
+  //     await firebase
+  //       .auth()
+  //       .createUserWithEmailAndPassword(
+  //         this.state.email_id,
+  //         this.state.password
+  //       )
+  //       .then((result) => {
+  //         var userId = result.user;
+  //         user = firebase.auth().currentUser;
+  //         //user.sendEmailVerification();
+  //         var key = Math.round(new Date().getTime() / 1000);
+  //         firebase.auth().sendPasswordResetEmail(this.state.email_id);
+  //         let dbCon = firebase
+  //           .firestore()
+  //           .collection("/merchant_users")
+  //           .doc(userId.uid)
+  //           .set({
+  //             employee_unique_id: key,
+  //             created_on: this.state.created_on,
+
+  //             // business_id:this.state.business_id,
+
+  //             employee_name: this.state.employee_name,
+  //             user_name: this.state.user_name,
+  //             password: this.state.password,
+  //             employee_position: this.state.employee_position,
+  //             employee_division: this.state.employee_division,
+  //             employee_employement_type: this.state.employee_employement_type,
+  //             email_id: this.state.email_id,
+  //             contact_number: this.state.contact_number,
+  //             photo: this.state.photo,
+  //             employee_special_password: this.state.employee_special_password,
+
+  //             employee_dateofbirth: this.state.employee_dateofbirth,
+  //             employee_bloodgroup: this.state.employee_bloodgroup,
+  //             employee_address: this.state.employee_address,
+  //             employee_emergency_contact_number: this.state
+  //               .employee_emergency_contact_number,
+  //             employee_adharcard: this.state.employee_adharcard,
+
+  //             employee_account_number: this.state.employee_account_number,
+  //             employee_ifsc_code: this.state.employee_ifsc_code,
+  //             employee_upi_id: this.state.employee_upi_id,
+
+  //             sessionId: sessionId,
+  //             username: username,
+  //             businessId: businessId,
+  //             role: "Employee",
+  //           });
+
+  //         var user = result.user;
+
+  //         if (user != null) {
+  //           user.sendEmailVerification();
+  //         }
+
+  //         window.location.href = "/AllEmployees";
+  //       })
+  //       .catch((error) => {
+  //         this.setState({ error });
+  //         console.log(this.state.error);
+  //         this.setState({ employer_sevice_message: this.state.error.message });
+  //       });
+  //   } else {
+  //     this.validator.showMessages();
+  //     this.forceUpdate();
+  //   }
+  // };
+
   handleSubmit = async (event) => {
+    var sessionId = sessionStorage.getItem("RoleId");
+    var username = sessionStorage.getItem("username");
+    var businessId = sessionStorage.getItem("businessId");
     event.preventDefault();
+    const { email_id, password } = this.state;
     if (this.validator.allValid() && this.state.validError === true) {
-      var sessionId = sessionStorage.getItem("RoleId");
-      var username = sessionStorage.getItem("username");
-      var businessId = sessionStorage.getItem("businessId");
-      var user = null;
-      await firebase
+      const res = await firebase
         .auth()
-        .createUserWithEmailAndPassword(
-          this.state.email_id,
-          this.state.password
-        )
-        .then((result) => {
-          var userId = result.user;
-          user = firebase.auth().currentUser;
-          //user.sendEmailVerification();
-          var key = Math.round(new Date().getTime() / 1000);
-          firebase.auth().sendPasswordResetEmail(this.state.email_id);
-          let dbCon = firebase
-            .firestore()
-            .collection("/merchant_users")
-            .doc(userId.uid)
-            .set({
-              employee_unique_id: key,
-              created_on: this.state.created_on,
+        .createUserWithEmailAndPassword(email_id, password);
+      var userID = res.user;
+      var user = firebase.auth().currentUser;
+      console.log(user);
+      var key = Math.round(new Date().getTime() / 1000);
+      let dbRef = firebase
+        .firestore()
+        .collection("/merchant_users")
+        .doc(userID.uid)
+        .set({
+          employee_unique_id: key,
+          created_on: this.state.created_on,
 
-              // business_id:this.state.business_id,
+          // business_id:this.state.business_id,
 
-              employee_name: this.state.employee_name,
-              user_name: this.state.user_name,
-              password: this.state.password,
-              employee_position: this.state.employee_position,
-              employee_division: this.state.employee_division,
-              employee_employement_type: this.state.employee_employement_type,
-              email_id: this.state.email_id,
-              contact_number: this.state.contact_number,
-              photo: this.state.photo,
-              employee_special_password: this.state.employee_special_password,
+          employee_name: this.state.employee_name,
+          user_name: this.state.user_name,
+          password: this.state.password,
+          employee_position: this.state.employee_position,
+          employee_division: this.state.employee_division,
+          employee_employement_type: this.state.employee_employement_type,
+          email_id: this.state.email_id,
+          contact_number: this.state.contact_number,
+          photo: this.state.photo,
+          employee_special_password: this.state.employee_special_password,
 
-              employee_dateofbirth: this.state.employee_dateofbirth,
-              employee_bloodgroup: this.state.employee_bloodgroup,
-              employee_address: this.state.employee_address,
-              employee_emergency_contact_number: this.state
-                .employee_emergency_contact_number,
-              employee_adharcard: this.state.employee_adharcard,
+          employee_dateofbirth: this.state.employee_dateofbirth,
+          employee_bloodgroup: this.state.employee_bloodgroup,
+          employee_address: this.state.employee_address,
+          employee_emergency_contact_number: this.state
+            .employee_emergency_contact_number,
+          employee_adharcard: this.state.employee_adharcard,
 
-              employee_account_number: this.state.employee_account_number,
-              employee_ifsc_code: this.state.employee_ifsc_code,
-              employee_upi_id: this.state.employee_upi_id,
+          employee_account_number: this.state.employee_account_number,
+          employee_ifsc_code: this.state.employee_ifsc_code,
+          employee_upi_id: this.state.employee_upi_id,
 
-              sessionId: sessionId,
-              username: username,
-              businessId: businessId,
-              role: "Employee",
-            });
-
-          //   let dbCon1 =await firebase
-          //     .firestore()
-          //     .collection("/merchant_employees")
-          //     .add({
-          //       employee_unique_id: key,
-          //       created_on: this.state.created_on,
-
-          //       // business_id:this.state.business_id,
-
-          //       employee_name: this.state.employee_name,
-          //       user_name: this.state.user_name,
-          //       password: this.state.password,
-          //       employee_position: this.state.employee_position,
-          //       employee_division: this.state.employee_division,
-          //       employee_employement_type: this.state.employee_employement_type,
-          //       email_id: this.state.email_id,
-          //       contact_number: this.state.contact_number,
-          //       photo: this.state.photo,
-          //       employee_special_password: this.state.employee_special_password,
-
-          //       employee_dateofbirth: this.state.employee_dateofbirth,
-          //       employee_bloodgroup: this.state.employee_bloodgroup,
-          //       employee_address: this.state.employee_address,
-          //       employee_emergency_contact_number: this.state
-          //         .employee_emergency_contact_number,
-          //       employee_adharcard: this.state.employee_adharcard,
-
-          //       employee_account_number: this.state.employee_account_number,
-          //       employee_ifsc_code: this.state.employee_ifsc_code,
-          //       employee_upi_id: this.state.employee_upi_id,
-
-          //       sessionId: sessionId,
-          //       username: username,
-          //       businessId: businessId,
-          //       role: "Employee",
-          //     });
-
-          var user = result.user;
-
-          if (user != null) {
-            user.sendEmailVerification();
-          }
-
-          window.location.href = "/AllEmployees";
-        })
-        .catch((error) => {
-          this.setState({ error });
-          console.log(this.state.error);
-          this.setState({ employer_sevice_message: this.state.error.message });
+          sessionId: sessionId,
+          username: username,
+          businessId: businessId,
+          role: "Employee",
+          created_on: this.state.created_on,
         });
+      // this.setState(initState);
+      if (userID !== null) {
+        userID.sendEmailVerification();
+      }
+      window.location.href = "/AllEmployees";
     } else {
       this.validator.showMessages();
       this.forceUpdate();

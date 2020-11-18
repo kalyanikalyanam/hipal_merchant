@@ -247,8 +247,6 @@ class TablesList extends React.Component {
           countPage: data.length,
           loading: false,
         });
-        // console.log(tableList);
-        this.componentDidMount();
       })
 
       .catch((err) => {

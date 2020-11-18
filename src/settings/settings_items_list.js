@@ -184,8 +184,6 @@ class SettingsItemsList extends React.Component {
 
       // }
     }
-
-    this.componentDidMount();
   };
 
   onclose = () => {

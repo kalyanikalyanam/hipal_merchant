@@ -157,7 +157,6 @@ class SettingsAddStation extends React.Component {
       .catch((err) => {
         console.log(err);
       });
-    this.componentDidMount();
   };
   onOpenModal = () => {
     this.setState({ open: true });

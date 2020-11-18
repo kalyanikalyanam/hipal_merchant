@@ -209,7 +209,6 @@ class CategoryList extends React.Component {
             },
           ],
         });
-        this.componentDidMount();
       })
       .catch((err) => {
         // console.log(err);

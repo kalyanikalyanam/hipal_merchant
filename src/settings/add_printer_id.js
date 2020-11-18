@@ -324,7 +324,7 @@ class AddPrinterId extends React.Component {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title" id="smallmodalLabel">
-              Add Station
+              Add Printer
             </h5>
           </div>
           <Form onSubmit={this.handleSubmit}>
@@ -332,7 +332,7 @@ class AddPrinterId extends React.Component {
               <div className="col-12 w-100-row">
                 <div className="row form-group">
                   <div className="col col-md-4">
-                    <label className=" form-control-label">Station name</label>
+                    <label className=" form-control-label">Printer ID</label>
                   </div>
                   <div className="col-12 col-md-6">
                     <input

@@ -1,13 +1,14 @@
 import firebase from "../../config";
 import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { dispatchContext, tableContext } from "./contexts";
+import { dispatchContext, tableContext, CustomerListContext } from "./contexts";
 import * as actions from "./actionTypes";
 import { db } from "../../config";
 const CustomerSwapModal = ({ tableData }) => {
   const dispatch = useContext(dispatchContext);
   const { handleSubmit, register, reset } = useForm();
   const table = useContext(tableContext);
+  const CustomerList = useContext(CustomerListContext);
   const [state, setState] = useState({ tableList: [] });
   const [swab, setSwab] = useState(null);
   const handleClose = () => {
@@ -35,6 +36,7 @@ const CustomerSwapModal = ({ tableData }) => {
         table_notes: childSnapShot.data().table_notes,
         table_qrcode: childSnapShot.data().table_qrcode,
         status: childSnapShot.data().status,
+        customers: childSnapShot.data().customers,
       };
       data.push(GSTData);
     });
@@ -118,7 +120,8 @@ const CustomerSwapModal = ({ tableData }) => {
                   Customers{" "}
                   <span>
                     {" "}
-                    {tableData.customers && tableData.customers.length}
+                    {CustomerList && CustomerList.length}
+                    {/* {tableData.customers && tableData.customers.length} */}
                   </span>
                 </p>
                 <p className="swab_box2">

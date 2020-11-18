@@ -190,8 +190,6 @@ class FloorList extends React.Component {
           countPage: data.length,
           loading: false,
         });
-        // console.log(floorsList);
-        this.componentDidMount();
       })
       .catch((err) => {
         console.log(err);

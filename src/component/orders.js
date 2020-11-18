@@ -79,8 +79,6 @@ class Orders extends React.Component {
           countPage: data.length,
           loading: false,
         });
-        // this.componentDidMount();
-        // console.log(orderList);
       })
       .catch((err) => {
         console.log(err);

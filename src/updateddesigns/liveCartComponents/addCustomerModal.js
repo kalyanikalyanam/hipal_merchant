@@ -1,7 +1,7 @@
 import { db } from "../../config";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { dispatchContext, tableContext } from "./contexts";
+import { dispatchContext, tableContext, CustomerListContext } from "./contexts";
 import * as actions from "./actionTypes";
 import InputField from "./inputField";
 
@@ -9,9 +9,9 @@ const AddCustomerModal = ({ tableData }) => {
   const [occupency, setOccupancy] = useState(0);
   const [customers, setCustomers] = useState([]);
   const [customerslist, setCustomerslist] = useState({});
-
+  const [customernamenumber, setCustomernamenumber] = useState({});
   const dispatch = useContext(dispatchContext);
-
+  const CustomerList = useContext(CustomerListContext);
   const table = useContext(tableContext);
   const fields = useRef();
   const { handleSubmit, register, reset } = useForm({
@@ -39,10 +39,9 @@ const AddCustomerModal = ({ tableData }) => {
           }
         });
       }
-      setCustomerslist(customer_list);
-      console.log(customer_list);
     }
-    console.log(data);
+    setCustomerslist(customer_list);
+    console.log(customer_list);
     dispatch({
       type: actions.CustomerList,
       value: customer_list,
@@ -90,7 +89,26 @@ const AddCustomerModal = ({ tableData }) => {
     setCustomers(data);
   };
   useEffect(() => {
-    reset({ occupency: 0 });
+    console.log(CustomerList);
+    if (CustomerList && CustomerList.length !== 0) {
+      let customers = {};
+
+      // customerslist.forEach((cus, i) => {
+      for (var i = 0; i < CustomerList.length; i++) {
+        let newcustomers = {
+          ...customers,
+          [`customer-number-${i}`]: CustomerList[i].phone,
+          [`customer-name-${i}`]: CustomerList[i].name,
+        };
+        customers = newcustomers;
+      }
+
+      setOccupancy(customerslist.length);
+      setCustomernamenumber({ occupency: CustomerList.length, ...customers });
+    } else {
+      reset({ occupency: 0 });
+    }
+
     getCustomers();
   }, []);
   useEffect(() => {
@@ -101,7 +119,13 @@ const AddCustomerModal = ({ tableData }) => {
       );
       fields.current.push(field);
     }
+    if (CustomerList && CustomerList.length !== 0) reset(customernamenumber);
   }, [occupency]);
+
+  // useEffect(() => {
+  //   reset(customernamenumber);
+  // }, [fields.current]);
+
   const close = () => {
     dispatch({
       type: actions.ADDCUSTOMERHIDE,

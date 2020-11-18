@@ -30,8 +30,10 @@ const LiveCartPage = () => {
   const handleSettle = () => {
     if (employee === null) {
       alert("Employee Name should Be selected");
-    } else if (CustomerList == []) {
+    } else if (CustomerList.length === 0) {
       alert("Customers  should Be selected");
+    } else if (cartList.length === 0) {
+      alert("item  should Be selected");
     } else {
       dispatch({
         type: actions.SENDTOORDER,
@@ -104,7 +106,7 @@ const LiveCartPage = () => {
         </span>
         <span className="btn view_ord" onClick={handleSettle}>
           <a href="#" data-toggle="modal" data-target="#add_edit_position">
-            Settle
+            Confirm
           </a>{" "}
         </span>
       </div>
