@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useReducer } from "react";
-import firebase from "../../config";
 import Modal from "react-modal";
 
 import Header from "../../component/header";
@@ -18,6 +17,7 @@ import {
   tableContext,
   EmployeeContext,
   CustomerListContext,
+  BalanceContext
 } from "./contexts";
 import reducer from "./reducer";
 import BottomComp from "./BottomComp";
@@ -27,9 +27,22 @@ import CustomerMoveModal from "./customerMoveModal";
 import CustomerMergeModal from "./customerMergeModal";
 import CustomerSwapModal from "./customerSwapModal";
 import AddCutomerFormModal from "./addCustomerFormModal";
+import BillModal from './billModal'
+import KotModal from "./kotModal";
 
 Modal.setAppElement(document.getElementById("root"));
-
+const customStyles2 = {
+  content: {
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    minWidht: "30%",
+    height: "90%"
+  },
+};
 const customStyles = {
   content: {
     top: "50%",
@@ -61,10 +74,15 @@ const initState = {
   customerMergeModal: false,
   customerSwapModal: false,
   customerMoveModal: false,
+  billModal: false,
   addUserModal: false,
   editMode: false,
   formOrder: false,
   userInfo: null,
+  billModalData: null,
+  kotModal: false,
+  kotModalData: null,
+  balance: 0
 };
 
 const LiveCartPage = (props) => {
@@ -95,6 +113,7 @@ const LiveCartPage = (props) => {
                   <CustomerListContext.Provider
                     value={reducerState.CustomerList}
                   >
+                  <BalanceContext.Provider value={reducerState.balance}>
                     <div className="page-wrapper">
                       <Sidebar />
                       <div className="page-container">
@@ -184,8 +203,8 @@ const LiveCartPage = (props) => {
                         formOrder: reducerState.formOrder,
                       }}
                     >
-                      <Modal isOpen={reducerState.show} style={customStyles}>
-                        <ModalForm item={reducerState.modalItem} />
+                      <Modal isOpen={reducerState.show} style={customStyles} >
+                        <ModalForm item={reducerState.modalItem} formOrder= {reducerState.formOrder}/>
                       </Modal>
                     </modalContext.Provider>
                     <Modal
@@ -227,6 +246,16 @@ const LiveCartPage = (props) => {
                         style={customStyles}
                       />
                     </Modal>
+                    <Modal isOpen={reducerState.billModal} style={customStyles2} >
+                      <BillModal 
+                        data={reducerState.billModalData}
+                      />
+                    </Modal>
+                    <Modal isOpen={reducerState.kotModal} style={customStyles} >
+                      <KotModal
+                        data={reducerState.kotModalData}
+                      />
+                    </Modal></BalanceContext.Provider>
                   </CustomerListContext.Provider>
                 </EmployeeContext.Provider>
               </tableContext.Provider>

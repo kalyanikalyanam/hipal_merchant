@@ -2,7 +2,6 @@ import React, { useContext, useRef } from "react";
 import OrderItem from "./orderItem";
 import { dispatchContext, orderContext, tableContext } from "./contexts";
 import * as actions from "./actionTypes";
-import { FormCheck } from "react-bootstrap";
 import { db } from "../../config";
 
 const Orders = () => {

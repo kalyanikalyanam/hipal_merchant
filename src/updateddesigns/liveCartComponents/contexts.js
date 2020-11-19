@@ -9,3 +9,4 @@ export const tableContext = React.createContext();
 export const addCustomerContext = React.createContext();
 export const EmployeeContext = React.createContext();
 export const CustomerListContext = React.createContext();
+export const BalanceContext = React.createContext();
