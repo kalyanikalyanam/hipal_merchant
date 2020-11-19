@@ -27,6 +27,13 @@ const Orders = () => {
     });
     return flag;
   };
+  const kot = () => {
+    console.log(orderList)
+    dispatch({
+      type: 'kotModalShow'
+    })
+
+  }
   const handleBillThis = () => {
     if (check()) {
       dispatch({
@@ -65,6 +72,7 @@ const Orders = () => {
                 key={index}
                 cartNo={index + 1}
                 index={index}
+                kot={kot}
               />
             );
           })}

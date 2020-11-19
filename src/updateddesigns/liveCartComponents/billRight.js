@@ -20,7 +20,6 @@ const BillRight = () => {
   const { handleSubmit, register, errors } = useForm({
     mode: "onChange",
   });
-
   useEffect(() => {
     var temp = 0;
     for (var key in state) {
@@ -36,6 +35,24 @@ const BillRight = () => {
     setState({ ...state, ...data });
   };
 
+  const newHandleSettle = (data) => {
+    const newBillPage = billPage
+    billPage.employee = data.employee
+    dispatch({
+      type: 'billModalShow',
+      isSettle: true,
+      bill: newBillPage
+    }) 
+  }
+  const handleBIllView = (data) => {
+    const newBillPage = billPage
+    billPage.employee = data.employee
+    dispatch({
+      type: 'billModalShow',
+      isSettle: false,
+      bill: newBillPage
+    }) 
+  }
   const handleSettle = async (data) => {
     let bill = {
       settle_by: employee,
@@ -118,9 +135,6 @@ const BillRight = () => {
                   className="form-control settle"
                 >
                   <option value={0}>{employee}</option>
-                  {/* <option value={1}>Raju</option>
-                  <option value={2}>Krishna</option>
-                  <option value={3}>Rani</option> */}
                 </select>
                 {errors.settle_by && errors.settle_by.message}
               </div>
@@ -169,12 +183,13 @@ const BillRight = () => {
                   type="button"
                   className="btn close_btn width-150"
                   data-dismiss="modal"
+                  onClick={handleSubmit(handleBIllView)}
                 >
                   Bill View
                 </button>
                 <button
                   type="button"
-                  onClick={handleSubmit(handleSettle)}
+                  onClick={handleSubmit(newHandleSettle)}
                   className="btn save_btn width-150"
                 >
                   Settele

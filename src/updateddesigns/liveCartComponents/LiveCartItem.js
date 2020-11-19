@@ -51,9 +51,10 @@ const LiveCartItem = ({item, index, onChange}) => {
             <div className="box_2 cart_tab_width">
             <table className="cart_tab">
                 <tbody>
+                    <tr>
                     <td onClick={onDecrease}>-</td>
                     <td style={{background: '#fd8a36', color: '#fff'}} >x{item.quantity}</td>
-                    <td onClick={onIncrease}>+</td>
+                    <td onClick={onIncrease}>+</td></tr>
                 </tbody>
             </table>
             <p className="last_update">00:03 min last update</p>

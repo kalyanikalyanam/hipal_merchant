@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useReducer } from "react";
-import firebase from "../../config";
 import Modal from "react-modal";
 
 import Header from "../../component/header";
@@ -27,6 +26,8 @@ import CustomerMoveModal from "./customerMoveModal";
 import CustomerMergeModal from "./customerMergeModal";
 import CustomerSwapModal from "./customerSwapModal";
 import AddCutomerFormModal from "./addCustomerFormModal";
+import BillModal from './billModal'
+import KotModal from "./kotModal";
 
 Modal.setAppElement(document.getElementById("root"));
 
@@ -39,6 +40,7 @@ const customStyles = {
     marginRight: "-50%",
     transform: "translate(-50%, -50%)",
     minWidht: "30%",
+    maxHeight : "80%"
   },
 };
 const initState = {
@@ -61,10 +63,14 @@ const initState = {
   customerMergeModal: false,
   customerSwapModal: false,
   customerMoveModal: false,
+  billModal: false,
   addUserModal: false,
   editMode: false,
   formOrder: false,
   userInfo: null,
+  billModalData: null,
+  kotModal: false,
+  kotModalData: null
 };
 
 const LiveCartPage = (props) => {
@@ -225,6 +231,16 @@ const LiveCartPage = (props) => {
                       <AddCutomerFormModal
                         data={reducerState.userInfo}
                         style={customStyles}
+                      />
+                    </Modal>
+                    <Modal isOpen={reducerState.billModal} style={customStyles} >
+                      <BillModal 
+                        data={reducerState.billModalData}
+                      />
+                    </Modal>
+                    <Modal isOpen={reducerState.kotModal} style={customStyles} >
+                      <KotModal
+                        data={reducerState.kotModalData}
                       />
                     </Modal>
                   </CustomerListContext.Provider>

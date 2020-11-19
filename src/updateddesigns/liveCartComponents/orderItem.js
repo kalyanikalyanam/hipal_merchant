@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import * as actions from "./actionTypes";
 import { dispatchContext } from "./contexts";
 
-const OrderItem = ({ cart, index }) => {
+const OrderItem = ({ cart, index, kot}) => {
   const dispatch = useContext(dispatchContext);
   const [kotNum, setKotNum] = useState(0);
   const [carts, setCarts] = useState();
@@ -16,6 +16,15 @@ const OrderItem = ({ cart, index }) => {
       cart,
     });
   };
+  const handleEdit = (item) => {
+    dispatch({
+      type: actions.OPENMODEL,
+      item,
+      editMode: true,
+      id: item.id,
+      formOrder: false
+    })
+  }
   const handleKOTItem = (item) => {
     dispatch({
       type: actions.KOTITEM,
@@ -51,9 +60,9 @@ const OrderItem = ({ cart, index }) => {
         <div className="cart_head">
           Cart {index + 1} ID:{cart.cartId}
         </div>
-        {/* <div className="kot_box" onClick={handleKOTCart}>
+        <div className="kot_box" onClick={handleKOTCart}>
                 <span className="btn kot">KOT</span>
-            </div> */}
+            </div>
       </div>
       <div className="cart_scroll no_hieght">
         {cart &&
@@ -65,14 +74,8 @@ const OrderItem = ({ cart, index }) => {
                     {index + 1}. {item.item_name}
                   </p>
                   <div className="w-100-row m-b-10">
-                    {/* <div
-                      className="edit"
-                      data-toggle="modal"
-                      data-target="#edit_product"
-                    >
-                      Edit
-                    </div> */}
                     {!item.kot ? (
+                      <>
                       <div
                         className="kot"
                         onClick={() => {
@@ -81,9 +84,17 @@ const OrderItem = ({ cart, index }) => {
                       >
                         KOT
                       </div>
-                    ) : (
+                      <div
+                        className="edit"
+                        data-toggle="modal"
+                        data-target="#edit_product"
+                        onClick={() => { handleEdit(item) }}
+                      >
+                        Edit
+                    </div>
+                    </>) : (
                       select
-                    )}
+                      )}
                   </div>
                   <p className="offer_applied">10% Off Applied</p>
                 </div>

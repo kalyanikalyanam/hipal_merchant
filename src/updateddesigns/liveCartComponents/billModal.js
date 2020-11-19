@@ -1,42 +1,33 @@
-import React, { useContext, useRef, useEffect, useState } from "react";
-import BillItem from "./billItem";
-import {
-  billContext,
-  dispatchContext,
-  EmployeeContext,
-  tableContext,
-} from "./contexts";
-import * as actions from "./actionTypes";
-const BillPage = () => {
-  const [businessLogo, setBusinessLogo] = useState();
-  const [total, setTotal] = useState(0)
-  const [gst]= useState(8.75)
-  const [cGst]= useState(8.75)
-  const dispatch = useContext(dispatchContext);
-  const table = useContext(tableContext);
-  const bill = useContext(billContext);
-  const employee = useContext(EmployeeContext);
-  const grandTotal = useRef(0.0);
-  useEffect(() => {
-    setBusinessLogo(sessionStorage.getItem("BusinessLogo"));
-    let Total = 0
-    for(var i = 0; i < bill.length; i++){
-      var order = bill[i]
-      var orderP = order.orderPrice - order.orderDiscout
-      var temp = orderP
-      orderP += order.orderPrice * gst / 100
-      orderP += temp * cGst / 100
-      Total += orderP
-    }
-    setTotal(Total)
-    dispatch({
-      type: actions.SETBILLID,
-      billId: bill.id, 
-      totalBill: Math.round(grandTotal.current),
-      bill: bill,
-      total: Total
-    });
-  }, []);
+import React, { useEffect, useState, useRef, useContext } from 'react'
+import {tableContext, dispatchContext} from './contexts'
+import BillItem from './billItem'
+
+const BillModal = ({data}) => {
+    const [businessLogo, setBusinessLogo] = useState();
+    const [isSettle, setIsSettle] = useState(false)
+    const [bill, setBill] = useState()
+    const dispatch = useContext(dispatchContext)
+    const [employee, setEmployee] = useState()
+    const billIdRef = useRef();
+    const grandTotal = useRef(0.0);
+    const table = useContext(tableContext);
+    billIdRef.current = Math.round(new Date().getTime() / 10000);
+    useEffect(() => {
+        setBill(data.bill.bill)
+        setEmployee(data.bill.employee)
+        setIsSettle(data.isSettle)
+        setBusinessLogo(sessionStorage.getItem("BusinessLogo"));
+    }, [])
+  const date = () => {
+    let today = new Date(Date.now());
+    let options = {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    };
+    return today.toLocaleDateString("en-US", options).toString();
+  };
   const noItem = (
     <tr>
       <td
@@ -52,32 +43,26 @@ const BillPage = () => {
       </td>
     </tr>
   );
-  const date = () => {
-    let today = new Date(Date.now());
-    let options = {
-      weekday: "short",
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    };
-    return today.toLocaleDateString("en-US", options).toString();
-  };
+  const handleClose = () => {
+      dispatch({
+          type: 'billModalHide'
+      })
+  }
+  const handleSettle = () => {
+      dispatch({
+          type: 'billModalHide'
+      })
+  }
   const billItems =
     bill && bill.length !== 0
       ? bill.map((order, index) => {
-          var orderP = order.orderPrice - order.orderDiscout 
-          var discount = order.orderDiscout
-          var temp = orderP
-          orderP += order.orderPrice * gst / 100
-          orderP += temp * cGst / 100
-          return <BillItem order={order} orderPrice={orderP} discount={discount} key={index} />;
+          return <BillItem order={order} key={index} />;
         })
       : noItem;
-  return (
-    <>
-      <div className="order_id_cart_box col-md-12 m-t-20 bg-w m-b-20">
-        <div className="width-100 bill_scroll">
+   return (
+        <>
           <table width="100%" style={{ display: "table" }}>
+          <button onClick={handleClose}>close</button>
             <tbody>
               <tr>
                 <td
@@ -170,7 +155,7 @@ const BillPage = () => {
                           <b>Grand Total</b>
                         </td>
                         <td style={{ textAlign: "right", padding: "5px 10px" }}>
-                          <b>₹ {parseFloat(total).toFixed(2)}</b>
+                          <b>₹ {parseFloat(grandTotal.current).toFixed(2)}</b>
                         </td>
                       </tr>
                       <tr>
@@ -178,7 +163,7 @@ const BillPage = () => {
                           <b>Payable</b>
                         </td>
                         <td style={{ textAlign: "right", padding: "5px 10px" }}>
-                          <b>₹ {Math.round(total)}</b>
+                          <b>₹ {Math.round(grandTotal.current)}</b>
                         </td>
                       </tr>
                     </tbody>
@@ -209,19 +194,19 @@ const BillPage = () => {
               </tr>
             </tbody>
           </table>
-        </div>
-        <div className="w-100-row kotsettle_btn">
+        {isSettle && <div className="w-100-row kotsettle_btn">
           <span className="btn add_ord ">
             <a href="#" data-toggle="modal" data-target="#add_edit_position">
-              Bill View
+                Print Bill
             </a>
           </span>
-          <span className="btn view_ord">
-            <a href="#">Settle</a>
+          <span className="btn view_ord" onClick={handleSettle}>
+                  Settle
           </span>
-        </div>
-      </div>
+        </div>}
     </>
-  );
-};
-export default BillPage;
+
+   ) 
+}
+
+export default BillModal
