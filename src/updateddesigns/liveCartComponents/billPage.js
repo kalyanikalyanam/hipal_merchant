@@ -1,6 +1,7 @@
 import React, { useContext, useRef, useEffect, useState } from "react";
 import BillItem from "./billItem";
 import {
+  BalanceContext,
   billContext,
   dispatchContext,
   EmployeeContext,
@@ -14,9 +15,22 @@ const BillPage = () => {
   const [cGst]= useState(8.75)
   const dispatch = useContext(dispatchContext);
   const table = useContext(tableContext);
+  const balance = useContext(BalanceContext)
   const bill = useContext(billContext);
   const employee = useContext(EmployeeContext);
   const grandTotal = useRef(0.0);
+  const handleSettle = () => {
+    const newBillPage = bill
+    newBillPage.id = bill.id
+    newBillPage.bill = bill
+    newBillPage.totalPrice = total
+    newBillPage.employee = employee
+    dispatch({
+      type: 'billModalShow',
+      isSettle: true,
+      bill: newBillPage
+    }) 
+  }
   useEffect(() => {
     setBusinessLogo(sessionStorage.getItem("BusinessLogo"));
     let Total = 0
@@ -216,9 +230,11 @@ const BillPage = () => {
               Bill View
             </a>
           </span>
-          <span className="btn view_ord">
+          {balance === 0 && bill.length !== 0 ?  <span className="btn view_ord" onClick={handleSettle}>
             <a href="#">Settle</a>
-          </span>
+          </span> : <span className="btn view_ord">
+            <a href="#">Settle</a>
+          </span>}
         </div>
       </div>
     </>

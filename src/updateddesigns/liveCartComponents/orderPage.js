@@ -2,7 +2,6 @@ import React, { useContext, useRef } from "react";
 import OrderItem from "./orderItem";
 import { dispatchContext, orderContext, tableContext } from "./contexts";
 import * as actions from "./actionTypes";
-import { FormCheck } from "react-bootstrap";
 import { db } from "../../config";
 
 const Orders = () => {
@@ -27,13 +26,6 @@ const Orders = () => {
     });
     return flag;
   };
-  const kot = () => {
-    console.log(orderList)
-    dispatch({
-      type: 'kotModalShow'
-    })
-
-  }
   const handleBillThis = () => {
     if (check()) {
       dispatch({
@@ -72,7 +64,6 @@ const Orders = () => {
                 key={index}
                 cartNo={index + 1}
                 index={index}
-                kot={kot}
               />
             );
           })}

@@ -1,12 +1,16 @@
+import {db} from '../../config'
 import React, { useEffect, useState, useRef, useContext } from 'react'
-import {tableContext, dispatchContext} from './contexts'
+import {tableContext, dispatchContext, billPageContext} from './contexts'
 import BillItem from './billItem'
+import * as actions from './actionTypes'
 
 const BillModal = ({data}) => {
     const [businessLogo, setBusinessLogo] = useState();
     const [isSettle, setIsSettle] = useState(false)
     const [bill, setBill] = useState()
     const dispatch = useContext(dispatchContext)
+    const billPage = useContext(billPageContext)
+    const tableData = useContext(tableContext)
     const [employee, setEmployee] = useState()
     const billIdRef = useRef();
     const grandTotal = useRef(0.0);
@@ -48,10 +52,50 @@ const BillModal = ({data}) => {
           type: 'billModalHide'
       })
   }
-  const handleSettle = () => {
-      dispatch({
-          type: 'billModalHide'
-      })
+  const handleSettle = async () => {
+    let bill = {
+      settle_by: employee,
+      billId: billPage.billId,
+      billAmount: billPage.totalPrice,
+      billTiming: new Date().toLocaleString(),
+      table: tableData.table_name,
+      businessId: tableData.businessId,
+    };
+    try {
+      const temp = tableData.status.split(" ");
+      var Table2;
+      console.log(temp);
+      if (temp[0] === "Table") {
+        Table2 = temp[4];
+        db.collection("tables")
+          .where("businessId", "==", tableData.businessId)
+          .where("table_name", "==", Table2)
+          .limit(1)
+          .get()
+          .then((query) => {
+            const thing = query.docs[0];
+
+            thing.ref.update({
+              status: "Vacant",
+              customers: [],
+            });
+          });
+      }
+      const res = await db.collection("bills").add(bill);
+      db.collection("tables").doc(tableData.id).update({
+        status: "Vacant",
+        customers: [],
+        occupency: "0",
+      });
+
+      console.log(res);
+    } catch (e) {
+      console.log(e);
+    }
+    dispatch({
+      type: 'reset'
+    });
+
   }
   const billItems =
     bill && bill.length !== 0
@@ -59,10 +103,10 @@ const BillModal = ({data}) => {
           return <BillItem order={order} key={index} />;
         })
       : noItem;
-   return (
-        <>
-          <table width="100%" style={{ display: "table" }}>
+   return (<>
           <button onClick={handleClose}>close</button>
+        <div className="modal-dialog modal-sm hipal_pop" role="document">
+          <table width="100%" style={{ display: "table" }}>
             <tbody>
               <tr>
                 <td
@@ -194,7 +238,8 @@ const BillModal = ({data}) => {
               </tr>
             </tbody>
           </table>
-        {isSettle && <div className="w-100-row kotsettle_btn">
+       
+        </div> {isSettle && <div className="w-100-row kotsettle_btn">
           <span className="btn add_ord ">
             <a href="#" data-toggle="modal" data-target="#add_edit_position">
                 Print Bill
@@ -203,8 +248,7 @@ const BillModal = ({data}) => {
           <span className="btn view_ord" onClick={handleSettle}>
                   Settle
           </span>
-        </div>}
-    </>
+        </div>}</>
 
    ) 
 }

@@ -6,15 +6,16 @@ import {
   tableContext,
   EmployeeContext,
   dispatchContext,
+  BalanceContext,
 } from "./contexts";
 import * as actions from "./actionTypes";
 import PaymentMethod from "./paymentMethods";
 
 const BillRight = () => {
   const billPage = useContext(billPageContext);
+  const balance = useContext(BalanceContext)
   const dispatch = useContext(dispatchContext);
   const [state, setState] = useState();
-  const [balance, setBalance] = useState(billPage.totalPrice);
   const tableData = useContext(tableContext);
   const employee = useContext(EmployeeContext);
   const { handleSubmit, register, errors } = useForm({
@@ -24,17 +25,22 @@ const BillRight = () => {
     var temp = 0;
     for (var key in state) {
       if (state.hasOwnProperty(key)) {
+        console.log(state[key])
         temp += parseInt(state[key]);
       }
     }
-    setBalance(parseInt(billPage.totalPrice - temp, 10));
+    var newBalance = parseInt(billPage.totalPrice - temp, 10);
+    dispatch({
+      type: 'balance',
+      balance: newBalance
+    })
   }, [state]);
 
   const onValue = (data) => {
-    console.log(state);
     setState({ ...state, ...data });
   };
 
+  
   const newHandleSettle = (data) => {
     const newBillPage = billPage
     billPage.employee = data.employee
@@ -187,13 +193,19 @@ const BillRight = () => {
                 >
                   Bill View
                 </button>
-                <button
+                {balance === 0 && billPage ? <button
                   type="button"
                   onClick={handleSubmit(newHandleSettle)}
                   className="btn save_btn width-150"
                 >
                   Settele
-                </button>
+                </button> : <button
+                  type="button"
+                  className="btn save_btn width-150"
+                  disabled
+                >
+                  Settele
+                </button>}
               </div>
             </div>
           </div>

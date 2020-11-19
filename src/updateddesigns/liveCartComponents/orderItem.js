@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import * as actions from "./actionTypes";
 import { dispatchContext } from "./contexts";
 
-const OrderItem = ({ cart, index, kot}) => {
+const OrderItem = ({ cart, index}) => {
   const dispatch = useContext(dispatchContext);
   const [kotNum, setKotNum] = useState(0);
   const [carts, setCarts] = useState();
@@ -22,7 +22,7 @@ const OrderItem = ({ cart, index, kot}) => {
       item,
       editMode: true,
       id: item.id,
-      formOrder: false
+      formOrder: true 
     })
   }
   const handleKOTItem = (item) => {

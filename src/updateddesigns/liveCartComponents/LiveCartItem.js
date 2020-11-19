@@ -35,7 +35,7 @@ const LiveCartItem = ({item, index, onChange}) => {
             item,
             editMode: true,
             id: item.id,
-            formOrder: false
+            formOrder: true 
         })
     }
     return (item &&

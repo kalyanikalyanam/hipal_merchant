@@ -9,7 +9,9 @@ const ModalForm = (props) => {
     const [item, setItem] = useState(props.item) 
     const {editMode}  = useContext(modalContext)
     const dispatch = useContext(dispatchContext)
+    const [authenticated, setAuthenticated] = useState(false)
     useEffect(() => {
+        console.log(props.formOrder)
         reset({
             quantity: item.quantity ? item.quantity : 1, 
             status: item.status,
@@ -23,6 +25,10 @@ const ModalForm = (props) => {
         })
     }
     const onSubmit = (data) => {
+        if(data.item_discount !== "0" && !authenticated){
+            alert('Login to add discount')
+            return
+        }
         const items = JSON.parse(JSON.stringify(item))
         if(data.portion){
             items.portion = data.portion
@@ -119,6 +125,7 @@ const ModalForm = (props) => {
                                 </div>
                             </div>
                         </div>
+                        {!authenticated && <LoginForm auth={setAuthenticated}/>}
                         <div className="col-12 w-100-row">
                             <div className="row form-group">
                                 <div className="col col-md-4">

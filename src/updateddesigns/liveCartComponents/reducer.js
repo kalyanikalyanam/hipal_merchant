@@ -3,8 +3,40 @@ import { act } from "react-dom/test-utils";
 import { CustomInput } from "reactstrap";
 import * as actions from "./actionTypes";
 import { addToarray, updateObject } from "./reducerUtils";
+const initState = {
+  liveCart: [],
+  order: [],
+  bill: [],
+  show: false,
+  modalItem: {},
+  cardId: {},
+  orderId: {},
+  billPage: {
+    billId: null,
+    show: false,
+  },
+  currentEmployee: null,
+  CustomerList: [],
+  table: {},
+  addCustomerShow: false,
+  advancedOptionsShow: false,
+  customerMergeModal: false,
+  customerSwapModal: false,
+  customerMoveModal: false,
+  billModal: false,
+  addUserModal: false,
+  editMode: false,
+  formOrder: false,
+  userInfo: null,
+  billModalData: null,
+  kotModal: false,
+  kotModalData: null,
+  balance: 0
+};
 const reducer = (state, action) => {
   switch (action.type) {
+    case 'reset': 
+      return initState
     case actions.ADDLIVE:
       return handleAddLiveCart(action, state);
     case actions.REMLIVE:
@@ -113,6 +145,8 @@ const reducer = (state, action) => {
       return updateObject(state, {kotModal: true, kotModalData: action.bill})
     case 'kotModalHide': 
       return updateObject(state, {kotModal: false, kotModalData: null})
+    case 'balance':
+      return updateObject(state, {balance: action.balance})
     default:
       return state;
   }
@@ -139,7 +173,7 @@ const handleSetBillId = (action, state) => {
   billPage.billId = action.billId
   billPage.totalPrice = action.total
   billPage.bill = action.bill
-  return updateObject(state, { billPage })
+  return updateObject(state, { billPage,balance: action.total })
 };
 
 const handleAddLiveCart = (action, state) => {
@@ -241,8 +275,10 @@ const handleKOTcart = (action, state) => {
     if (currentOrder[i].cartId === cart.cartId) {
       updateCart = currentOrder[i];
       currentOrder[i].forEach((item) => {
-        item.kot = true;
-        items.push(item)
+        if(!item.kot){
+          item.kot = true;
+          items.push(item)
+        }
         console.log(`KOT FOR ${item.item_name}`);
       });
       break;
@@ -280,7 +316,8 @@ const handleKOTorder = (action, state) => {
   let items = []
   state.order.forEach(cart => {
     cart.forEach(item => {
-      if(item.kot){
+      if(!item.kot){
+        item.kot = true
         items.push(item)
       }
     })
@@ -288,8 +325,10 @@ const handleKOTorder = (action, state) => {
   const currentOrder = state.order;
   currentOrder.forEach((cart) => {
     cart.forEach((item) => {
-      item.kot = true;
-      items.push(item)
+      if(item.kot){
+        item.kot = true;
+        items.push(item)
+      }
     });
   });
   return updateObject(state, { order: currentOrder, kotModal: true, kotModalData: items });
