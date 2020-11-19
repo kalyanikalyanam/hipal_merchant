@@ -276,8 +276,10 @@ const handleCustomerList = (action, state) => {
   newtable.status = action.status;
   newtable.occupency = aciton.occupency
   console.log(action);
+  // newtable.occupency = action.occupency;
   return updateObject(state, {
     CustomerList: action.value,
+
     table: newtable,
     addCustomerShow: false,
   });
