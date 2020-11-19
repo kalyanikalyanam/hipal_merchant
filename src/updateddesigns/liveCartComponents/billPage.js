@@ -10,45 +10,45 @@ import {
 import * as actions from "./actionTypes";
 const BillPage = () => {
   const [businessLogo, setBusinessLogo] = useState();
-  const [total, setTotal] = useState(0)
-  const [gst]= useState(8.75)
-  const [cGst]= useState(8.75)
+  const [total, setTotal] = useState(0);
+  const [gst] = useState(8.75);
+  const [cGst] = useState(8.75);
   const dispatch = useContext(dispatchContext);
   const table = useContext(tableContext);
-  const balance = useContext(BalanceContext)
+  const balance = useContext(BalanceContext);
   const bill = useContext(billContext);
   const employee = useContext(EmployeeContext);
   const grandTotal = useRef(0.0);
   const handleSettle = () => {
-    const newBillPage = bill
-    newBillPage.id = bill.id
-    newBillPage.bill = bill
-    newBillPage.totalPrice = total
-    newBillPage.employee = employee
+    const newBillPage = bill;
+    newBillPage.id = bill.id;
+    newBillPage.bill = bill;
+    newBillPage.totalPrice = total;
+    newBillPage.employee = employee;
     dispatch({
-      type: 'billModalShow',
+      type: "billModalShow",
       isSettle: true,
-      bill: newBillPage
-    }) 
-  }
+      bill: newBillPage,
+    });
+  };
   useEffect(() => {
     setBusinessLogo(sessionStorage.getItem("BusinessLogo"));
-    let Total = 0
-    for(var i = 0; i < bill.length; i++){
-      var order = bill[i]
-      var orderP = order.orderPrice - order.orderDiscout
-      var temp = orderP
-      orderP += order.orderPrice * gst / 100
-      orderP += temp * cGst / 100
-      Total += orderP
+    let Total = 0;
+    for (var i = 0; i < bill.length; i++) {
+      var order = bill[i];
+      var orderP = order.orderPrice - order.orderDiscout;
+      var temp = orderP;
+      orderP += (order.orderPrice * gst) / 100;
+      orderP += (temp * cGst) / 100;
+      Total += orderP;
     }
-    setTotal(Total)
+    setTotal(Total);
     dispatch({
       type: actions.SETBILLID,
-      billId: bill.id, 
+      billId: bill.id,
       totalBill: Math.round(grandTotal.current),
       bill: bill,
-      total: Total
+      total: Total,
     });
   }, []);
   const noItem = (
@@ -79,12 +79,19 @@ const BillPage = () => {
   const billItems =
     bill && bill.length !== 0
       ? bill.map((order, index) => {
-          var orderP = order.orderPrice - order.orderDiscout 
-          var discount = order.orderDiscout
-          var temp = orderP
-          orderP += order.orderPrice * gst / 100
-          orderP += temp * cGst / 100
-          return <BillItem order={order} orderPrice={orderP} discount={discount} key={index} />;
+          var orderP = order.orderPrice - order.orderDiscout;
+          var discount = order.orderDiscout;
+          var temp = orderP;
+          orderP += (order.orderPrice * gst) / 100;
+          orderP += (temp * cGst) / 100;
+          return (
+            <BillItem
+              order={order}
+              orderPrice={orderP}
+              discount={discount}
+              key={index}
+            />
+          );
         })
       : noItem;
   return (
@@ -230,11 +237,15 @@ const BillPage = () => {
               Bill View
             </a>
           </span>
-          {balance === 0 && bill.length !== 0 ?  <span className="btn view_ord" onClick={handleSettle}>
-            <a href="#">Settle</a>
-          </span> : <span className="btn view_ord">
-            <a href="#">Settle</a>
-          </span>}
+          {balance === 0 && bill.length !== 0 ? (
+            <span className="btn view_ord" onClick={handleSettle}>
+              <a href="#">Settle</a>
+            </span>
+          ) : (
+            <span className="btn view_ord">
+              <a href="#">Settle</a>
+            </span>
+          )}
         </div>
       </div>
     </>

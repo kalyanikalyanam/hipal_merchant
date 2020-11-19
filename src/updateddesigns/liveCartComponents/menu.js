@@ -18,7 +18,7 @@ const Menu = () => {
       .collection("menuitems2")
       .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
-      .where("categoryId", "==", "")
+      // .where("categoryId", "==", "")
 
       .get()
       .then((snapshot) => {

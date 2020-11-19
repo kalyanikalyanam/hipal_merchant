@@ -13,7 +13,7 @@ import PaymentMethod from "./paymentMethods";
 
 const BillRight = () => {
   const billPage = useContext(billPageContext);
-  const balance = useContext(BalanceContext)
+  const balance = useContext(BalanceContext);
   const dispatch = useContext(dispatchContext);
   const [state, setState] = useState();
   const tableData = useContext(tableContext);
@@ -25,40 +25,39 @@ const BillRight = () => {
     var temp = 0;
     for (var key in state) {
       if (state.hasOwnProperty(key)) {
-        console.log(state[key])
+        console.log(state[key]);
         temp += parseInt(state[key]);
       }
     }
     var newBalance = parseInt(billPage.totalPrice - temp, 10);
     dispatch({
-      type: 'balance',
-      balance: newBalance
-    })
+      type: "balance",
+      balance: newBalance,
+    });
   }, [state]);
 
   const onValue = (data) => {
     setState({ ...state, ...data });
   };
 
-  
   const newHandleSettle = (data) => {
-    const newBillPage = billPage
-    billPage.employee = data.employee
+    const newBillPage = billPage;
+    billPage.employee = data.employee;
     dispatch({
-      type: 'billModalShow',
+      type: "billModalShow",
       isSettle: true,
-      bill: newBillPage
-    }) 
-  }
+      bill: newBillPage,
+    });
+  };
   const handleBIllView = (data) => {
-    const newBillPage = billPage
-    billPage.employee = data.employee
+    const newBillPage = billPage;
+    billPage.employee = data.employee;
     dispatch({
-      type: 'billModalShow',
+      type: "billModalShow",
       isSettle: false,
-      bill: newBillPage
-    }) 
-  }
+      bill: newBillPage,
+    });
+  };
   const handleSettle = async (data) => {
     let bill = {
       settle_by: employee,
@@ -193,19 +192,23 @@ const BillRight = () => {
                 >
                   Bill View
                 </button>
-                {balance === 0 && billPage ? <button
-                  type="button"
-                  onClick={handleSubmit(newHandleSettle)}
-                  className="btn save_btn width-150"
-                >
-                  Settele
-                </button> : <button
-                  type="button"
-                  className="btn save_btn width-150"
-                  disabled
-                >
-                  Settele
-                </button>}
+                {balance === 0 && billPage ? (
+                  <button
+                    type="button"
+                    onClick={handleSubmit(newHandleSettle)}
+                    className="btn save_btn width-150"
+                  >
+                    Settele
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="btn save_btn width-150"
+                    disabled
+                  >
+                    Settele
+                  </button>
+                )}
               </div>
             </div>
           </div>
