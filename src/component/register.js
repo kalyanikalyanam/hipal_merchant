@@ -248,6 +248,13 @@ class Register extends React.Component {
       if (userID !== null) {
         userID.sendEmailVerification();
       }
+
+      this.props.history.push("/");
+      // .catch((error) => {
+      //   this.setState({ error });
+      //   console.log(this.state.error);
+      //   this.setState({ employer_sevice_message: this.state.error.message });
+      // });
     } else {
       this.validator.showMessages();
       this.forceUpdate();
@@ -368,7 +375,7 @@ class Register extends React.Component {
 
   //     };
   render() {
-    //const {email, password, error} = this.state;
+    const { error } = this.state;
     return (
       <div className="page-wrapper login_register_box">
         <div className="row h-100">
@@ -387,6 +394,7 @@ class Register extends React.Component {
 
                   <span className="btn active">Register</span>
                 </div>
+
                 <Form onSubmit={this.handleSubmit}>
                   <div className="row form-group">
                     <div className="col col-md-5">
@@ -453,6 +461,7 @@ class Register extends React.Component {
                       this.state.contact_number,
                       "required|phone|min:10|max:10"
                     )}
+
                     <div className="text-danger">
                       {" "}
                       {this.state.mobile_message}
