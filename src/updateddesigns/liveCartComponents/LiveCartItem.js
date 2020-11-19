@@ -65,7 +65,7 @@ const LiveCartItem = ({item, index, onChange}) => {
             </div>
             <div className="box_3 cart_tab_price">
                 <span> {parseFloat((item.quantity) * (item.price)).toFixed(2)}</span>
-                <p className="offer_applied">10% off Applied</p>
+                {item.discount != 0 && <p className="offer_applied">{`${item.discount}% off Applied`}</p>}
             </div>
 
         </div>
