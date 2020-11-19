@@ -70,6 +70,7 @@ const BillRight = () => {
       db.collection("tables").doc(tableData.id).update({
         status: "Vacant",
         customers: [],
+        occupency: "0",
       });
 
       console.log(res);
@@ -169,7 +170,7 @@ const BillRight = () => {
                   className="btn close_btn width-150"
                   data-dismiss="modal"
                 >
-                  Cancel
+                  Bill View
                 </button>
                 <button
                   type="button"

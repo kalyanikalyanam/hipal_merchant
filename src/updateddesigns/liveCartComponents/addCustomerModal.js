@@ -1,5 +1,11 @@
 import { db } from "../../config";
-import React, { useContext, useDebugValue, useEffect, useRef, useState } from "react";
+import React, {
+  useContext,
+  useDebugValue,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useForm } from "react-hook-form";
 import { dispatchContext, tableContext, CustomerListContext } from "./contexts";
 import * as actions from "./actionTypes";
@@ -14,7 +20,7 @@ const AddCustomerModal = ({ tableData }) => {
   const CustomerList = useContext(CustomerListContext);
   const table = useContext(tableContext);
   const fields = useRef();
-  const { handleSubmit, register, reset,setValue } = useForm({
+  const { handleSubmit, register, reset, setValue } = useForm({
     mode: "onChange",
   });
   const onSubmit = (data) => {
@@ -33,11 +39,13 @@ const AddCustomerModal = ({ tableData }) => {
       type: actions.CustomerList,
       value: customer_list,
       status: "occupied",
+      // occupency: occupency,
     });
 
     db.collection("tables").doc(table.id).update({
       status: "occupied",
       customers: customer_list,
+      occupency: occupency,
     });
   };
   const onChange = (data) => {
@@ -75,29 +83,28 @@ const AddCustomerModal = ({ tableData }) => {
     });
     setCustomers(data);
   };
-  
+
   useEffect(() => {
-    if(CustomerList){
+    if (CustomerList) {
       if (CustomerList.length === 0) {
         reset({ occupency: 0 });
-        setOccupancy(0)
-      }
-      else {
+        setOccupancy(0);
+      } else {
         reset({ occupency: CustomerList.length });
-        setOccupancy(parseInt(CustomerList.length))
+        setOccupancy(parseInt(CustomerList.length));
       }
     }
-    getCustomers()
-  }, [])
+    getCustomers();
+  }, []);
   useEffect(() => {
-    let newFields = []
+    let newFields = [];
     for (var i = 0; i < occupency; i++) {
       const field = (
         <InputField customers={customers} i={i} key={i} register={register} />
       );
       newFields.push(field);
     }
-    fields.current = newFields
+    fields.current = newFields;
   }, [occupency]);
 
   useEffect(() => {
@@ -113,14 +120,13 @@ const AddCustomerModal = ({ tableData }) => {
       }
       setCustomernamenumber({ ...customers });
     }
-  }, [fields.current])
+  }, [fields.current]);
   useEffect(() => {
-    
-    Object.keys(customernamenumber).forEach(key => {
-      setValue(key, customernamenumber[key])
-    })
-    console.log({occupency, ...customernamenumber})
-  }, [customernamenumber])
+    Object.keys(customernamenumber).forEach((key) => {
+      setValue(key, customernamenumber[key]);
+    });
+    console.log({ occupency, ...customernamenumber });
+  }, [customernamenumber]);
 
   const close = () => {
     dispatch({

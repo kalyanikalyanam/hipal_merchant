@@ -109,7 +109,7 @@ const Orders = () => {
       <div className="w-100-row kotsettle_btn">
         <span className="btn add_ord " onClick={handleKOT}>
           <a href="#" data-toggle="modal" data-target="#add_edit_position">
-            KOT
+            KOT For All
           </a>
         </span>
         <span className="btn view_ord">
