@@ -7,47 +7,48 @@ import FileUploader from "react-firebase-file-uploader";
 import { Form } from "reactstrap";
 import { Link } from "react-router-dom";
 import swal from "sweetalert";
+const initState = {
+  created_on: new Date().toLocaleString(),
+
+  employee_name: "",
+  user_name: "",
+  password: "",
+  employee_position: "",
+  employee_division: "",
+  employee_employement_type: "",
+  email_id: "",
+  contact_number: "",
+  photo: "",
+  employee_special_password: "",
+
+  employee_dateofbirth: "",
+  employee_bloodgroup: "",
+  employee_address: "",
+  employee_emergency_contact_number: "",
+  employee_adharcard: "",
+
+  employee_account_number: "",
+  employee_ifsc_code: "",
+  employee_upi_id: "",
+
+  employer_sevice_message: "",
+  validError: false,
+  mobile_message: "",
+  email_message: "",
+  avatar: "",
+  isUploading: false,
+  progress: 0,
+  avatarURL: "",
+  filenames: [],
+  uploadProgress: 0,
+
+  employeePositionsList: [],
+  validError: false,
+};
 class AllEmployees extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      created_on: new Date().toLocaleString(),
-
-      employee_name: "",
-      user_name: "",
-      password: "",
-      employee_position: "",
-      employee_division: "",
-      employee_employement_type: "",
-      email_id: "",
-      contact_number: "",
-      photo: "",
-      employee_special_password: "",
-
-      employee_dateofbirth: "",
-      employee_bloodgroup: "",
-      employee_address: "",
-      employee_emergency_contact_number: "",
-      employee_adharcard: "",
-
-      employee_account_number: "",
-      employee_ifsc_code: "",
-      employee_upi_id: "",
-
-      employer_sevice_message: "",
-      validError: false,
-      mobile_message: "",
-      email_message: "",
-      avatar: "",
-      isUploading: false,
-      progress: 0,
-      avatarURL: "",
-      filenames: [],
-      uploadProgress: 0,
-
-      employeePositionsList: [],
-      validError: false,
-    };
+    this.state = initState;
 
     this.onChange = this.onChange.bind(this);
 
@@ -456,11 +457,11 @@ class AllEmployees extends React.Component {
           role: "Employee",
           created_on: this.state.created_on,
         });
-      // this.setState(initState);
+      this.setState(initState);
       if (userID !== null) {
         userID.sendEmailVerification();
       }
-      window.location.href = "/AllEmployees";
+      // window.location.href = "/AllEmployees";
     } else {
       this.validator.showMessages();
       this.forceUpdate();

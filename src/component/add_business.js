@@ -47,6 +47,8 @@ class AddBusiness extends React.Component {
       avatarURL: "",
       filenames: [],
       uploadProgress: 0,
+      mobile_message: "",
+      businessurl: "",
 
       created_on: new Date().toLocaleString(),
     };
@@ -227,6 +229,12 @@ class AddBusiness extends React.Component {
           business_account_number: this.state.business_account_number,
           business_ifsc_code: this.state.business_ifsc_code,
 
+          businessurl: `https://hipal-9a554.web.app/${this.state.business_name}`,
+          businessqrcode:
+            "https://chart.googleapis.com/chart?cht=qr&chl=" +
+            this.state.businessurl +
+            "&chs=160x160&chld=L|0",
+
           status: "InActive",
 
           sessionId: sessionId,
@@ -243,8 +251,44 @@ class AddBusiness extends React.Component {
       this.forceUpdate();
     }
   };
+  businessNameChange = async (e) => {
+    var sessionId = sessionStorage.getItem("RoleId");
+    var username = sessionStorage.getItem("username");
+    var businessId = sessionStorage.getItem("businessId");
+    this.setState({
+      business_name: e.target.value,
+    });
+    if (this.state.validError != true) {
+      var ref = await firebase
+        .firestore()
+        .collection("businessdetails/")
+        .where("sessionId", "==", sessionId)
+
+        .where("business_name", "==", e.target.value)
+
+        .get()
+        .then((snapshot) => {
+          var user_exist = snapshot.size;
+          console.log(user_exist);
+
+          if (user_exist > 0 && this.state.validError != true) {
+            this.setState({
+              mobile_message: "Business Name already exist",
+              validError: false,
+            });
+          } else {
+            this.setState({ mobile_message: "", validError: true });
+          }
+        });
+    }
+  };
 
   render() {
+    var url = `https://hipal-9a554.web.app/${this.state.business_name}`;
+    var qrcode =
+      "https://chart.googleapis.com/chart?cht=qr&chl=" +
+      this.state.businessurl +
+      "&chs=160x160&chld=L|0";
     return (
       <div className="page-wrapper">
         <aside className="menu-sidebar d-none d-lg-block">
@@ -377,7 +421,7 @@ class AddBusiness extends React.Component {
                                     id="text-input"
                                     name="business_name"
                                     value={this.state.business_name}
-                                    onChange={this.onChange}
+                                    onChange={this.businessNameChange}
                                     placeholder="Text here"
                                     className="form-control"
                                   />
@@ -387,6 +431,10 @@ class AddBusiness extends React.Component {
                                   this.state.business_name,
                                   "required|whitespace|min:2|max:70"
                                 )}
+                                <div className="text-danger">
+                                  {" "}
+                                  {this.state.mobile_message}
+                                </div>
                               </div>
                             </div>
 
@@ -413,6 +461,41 @@ class AddBusiness extends React.Component {
                                   this.state.business_legal_name,
                                   "required|whitespace|min:2|max:70"
                                 )}
+                              </div>
+                            </div>
+                            <div className="col-md-6">
+                              <div className="row form-group">
+                                <div className="col col-md-4">
+                                  <label className=" form-control-label">
+                                    Business URL
+                                  </label>
+                                </div>
+                                <div className="col-12 col-md-8">
+                                  <input
+                                    type="url"
+                                    id="text-input"
+                                    name="businessurl"
+                                    value={url}
+                                    // onChange={this.onChange}
+                                    placeholder=" "
+                                    className="form-control"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            <div className="col-md-6">
+                              <div className="row form-group">
+                                <div className="col col-md-4">
+                                  <label className=" form-control-label">
+                                    Business Qrcode
+                                  </label>
+                                </div>
+                                <div className="col-12 col-md-8">
+                                  <span className="pop_qr">
+                                    <img src={qrcode} />
+                                    {/* <img src="images/icon/QR_1.svg"/> */}
+                                  </span>
+                                </div>
                               </div>
                             </div>
 

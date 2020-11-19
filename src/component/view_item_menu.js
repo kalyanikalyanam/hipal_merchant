@@ -366,14 +366,14 @@ class ViewItemMenu extends React.Component {
                                               className="edit_delete"
                                             />{" "}
                                           </Link>
-                                          <img
+                                          {/* <img
                                             src="images/icon/delete_cross.svg"
                                             onClick={this.deleteItem.bind(
                                               this,
                                               item.itemmenuid
                                             )}
                                             className="edit_delete"
-                                          />
+                                          /> */}
                                         </td>
                                       </tr>
                                     );
