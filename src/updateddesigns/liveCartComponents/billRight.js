@@ -184,31 +184,6 @@ const BillRight = () => {
             <div className="col-12 w-100-row bill_price balance text-center">
               Balance ({balance ? balance : 0})
               <div className="modal-footer">
-                {/* <button
-                  type="button"
-                  className="btn close_btn width-150"
-                  data-dismiss="modal"
-                  onClick={handleSubmit(handleBIllView)}
-                >
-                  Bill View
-                </button> */}
-                {/* {balance === 0 && billPage ? (
-                  <button
-                    type="button"
-                    onClick={handleSubmit(newHandleSettle)}
-                    className="btn save_btn width-150"
-                  >
-                    Settele
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    className="btn save_btn width-150"
-                    disabled
-                  >
-                    Settele
-                  </button>
-                )} */}
               </div>
             </div>
           </div>

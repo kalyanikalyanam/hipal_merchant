@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React from 'react'
 
-const BillItem = ({order, orderPrice, discount}) => {
+const BillItem = ({order, orderPrice, discount, tax}) => {
     const style = {
         borderBottom:'1px dashed rgb(0, 0, 0, 0.5)',
     }
@@ -81,7 +81,7 @@ const BillItem = ({order, orderPrice, discount}) => {
                                 <tbody>
                                     <tr> 
                                         <td style={{ textAlign: 'left', padding: '5px 10px' }}><b>Total</b></td>
-                                        <td style={{ textAlign: 'right', padding: '5px 10px' }}><b>₹ {orderPrice}</b></td>
+                                        <td style={{ textAlign: 'right', padding: '5px 10px' }}><b>₹ {parseInt(orderPrice).toFixed(2)}</b></td>
                                     </tr>
                                 </tbody>
                             </table>

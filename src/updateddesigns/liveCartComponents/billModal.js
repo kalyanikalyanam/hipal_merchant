@@ -2,24 +2,25 @@ import { db } from "../../config";
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { tableContext, dispatchContext, billPageContext } from "./contexts";
 import BillItem from "./billItem";
-import * as actions from "./actionTypes";
+import {useReactToPrint} from 'react-to-print'
 
-const BillModal = ({ data }) => {
+const BillModal = React.forwardRef(({ data }, ref) => {
   const [businessLogo, setBusinessLogo] = useState();
-  const [isSettle, setIsSettle] = useState(false);
   const [bill, setBill] = useState();
+  const [total, setTotal] = useState(0)
+  const [gst, setGst] = useState(8.75);
+  const [cGst, setCgst] = useState(8.75);
   const dispatch = useContext(dispatchContext);
   const billPage = useContext(billPageContext);
   const tableData = useContext(tableContext);
   const [employee, setEmployee] = useState();
-  const billIdRef = useRef();
-  const grandTotal = useRef(0.0);
   const table = useContext(tableContext);
-  billIdRef.current = Math.round(new Date().getTime() / 10000);
   useEffect(() => {
+    setGst(data.bill.gst)
+    setCgst(data.bill.cGst)
+    setTotal(data.bill.totalPrice)
     setBill(data.bill.bill);
     setEmployee(data.bill.employee);
-    setIsSettle(data.isSettle);
     setBusinessLogo(sessionStorage.getItem("BusinessLogo"));
   }, []);
   const date = () => {
@@ -92,18 +93,27 @@ const BillModal = ({ data }) => {
     } catch (e) {
       console.log(e);
     }
-    dispatch({
-      type: "reset",
-    });
   };
   const billItems =
     bill && bill.length !== 0
       ? bill.map((order, index) => {
-          return <BillItem order={order} key={index} />;
+          var orderP = order.orderPrice - order.orderDiscout;
+          var discount = order.orderDiscout;
+          var temp = orderP;
+          orderP += (order.orderPrice * gst) / 100;
+          orderP += (temp * cGst) / 100;
+          return (
+            <BillItem
+              order={order}
+              orderPrice={orderP}
+              discount={discount}
+              key={index}
+            />
+          );
         })
       : noItem;
   return (
-    <>
+    <div width="100%" ref={ref}>
       <button onClick={handleClose}>close</button>
       <div className="modal-dialog modal-sm hipal_pop" role="document">
         <table width="100%" style={{ display: "table" }}>
@@ -199,7 +209,7 @@ const BillModal = ({ data }) => {
                         <b>Grand Total</b>
                       </td>
                       <td style={{ textAlign: "right", padding: "5px 10px" }}>
-                        <b>₹ {parseFloat(grandTotal.current).toFixed(2)}</b>
+                        <b>₹ {total && total.toFixed(2)}</b>
                       </td>
                     </tr>
                     <tr>
@@ -207,7 +217,7 @@ const BillModal = ({ data }) => {
                         <b>Payable</b>
                       </td>
                       <td style={{ textAlign: "right", padding: "5px 10px" }}>
-                        <b>₹ {Math.round(grandTotal.current)}</b>
+                        <b>₹ {total && Math.round(total)}</b>
                       </td>
                     </tr>
                   </tbody>
@@ -239,20 +249,36 @@ const BillModal = ({ data }) => {
           </tbody>
         </table>
       </div>{" "}
+    </div>
+  );
+})
+
+const Print = ({data}) => {
+  const componentRef = useRef()
+  const [isSettle, setIsSettle] = useState(false);
+  useEffect(() => {
+    setIsSettle(data.isSettle)
+  }, [])
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current
+  })
+  return (
+    <>
+      <BillModal data={data} ref ={componentRef}/>
       {isSettle && (
         <div className="w-100-row kotsettle_btn">
-          <span className="btn add_ord ">
+          <span className="btn add_ord" onClick={handlePrint}>
             <a href="#" data-toggle="modal" data-target="#add_edit_position">
               Print Bill
             </a>
           </span>
-          <span className="btn view_ord" onClick={handleSettle}>
-            Settle
+          <span className="btn view_ord">
+            Close
           </span>
         </div>
       )}
-    </>
-  );
-};
+      </>
+  )
+}
 
-export default BillModal;
+export default Print;
