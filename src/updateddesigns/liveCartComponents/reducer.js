@@ -173,7 +173,7 @@ const handleSetBillId = (action, state) => {
   billPage.billId = action.billId
   billPage.totalPrice = action.total
   billPage.bill = action.bill
-  return updateObject(state, { billPage,balance: action.total })
+  return updateObject(state, { billPage,balance: Math.round(action.total) })
 };
 
 const handleAddLiveCart = (action, state) => {
@@ -266,9 +266,7 @@ const handleKOTcart = (action, state) => {
   let items = []
   state.order.forEach(cart => {
     cart.forEach(item => {
-      if(item.kot){
         items.push(item)
-      }
     })
   }) 
   for (var i = 0; i < currentOrder.length; i++) {
@@ -277,7 +275,6 @@ const handleKOTcart = (action, state) => {
       currentOrder[i].forEach((item) => {
         if(!item.kot){
           item.kot = true;
-          items.push(item)
         }
         console.log(`KOT FOR ${item.item_name}`);
       });

@@ -1,4 +1,5 @@
-import React, { useContext, useRef, useEffect, useState } from "react";
+import React, { useContext,useEffect, useState } from "react";
+import {db} from '../../config'
 import BillItem from "./billItem";
 import {
   BalanceContext,
@@ -17,21 +18,58 @@ const BillPage = () => {
   const dispatch = useContext(dispatchContext);
   const table = useContext(tableContext);
   const balance = useContext(BalanceContext);
-  const billPage = useContext(billPageContext);
   const bill = useContext(billContext);
   const employee = useContext(EmployeeContext);
-  const grandTotal = useRef(0.0);
-  const handleSettle = () => {
-    const newBillPage = bill;
+  const handleSettle = async() => {
+    let newBillPage = bill;
     newBillPage.id = bill.id;
     newBillPage.bill = bill;
     newBillPage.totalPrice = total;
     newBillPage.employee = employee;
+    newBillPage.gst = gst
+    newBillPage.cGst = cGst
+    let Bill = {
+      settle_by: employee,
+      billId: bill.id,
+      billAmount: total,
+      billTiming: new Date().toLocaleString(),
+      table: table.table_name,
+      businessId: table.businessId
+    };
     dispatch({
       type: "billModalShow",
       isSettle: true,
       bill: newBillPage,
-    });
+    });    
+    try {
+      const temp = table.status.split(" ");
+      var Table2;
+      console.log(temp);
+      if (temp[0] === "Table") {
+        Table2 = temp[4];
+        db.collection("tables")
+          .where("businessId", "==", table.businessId)
+          .where("table_name", "==", Table2)
+          .limit(1)
+          .get()
+          .then((query) => {
+            const thing = query.docs[0];
+
+            thing.ref.update({
+              status: "Vacant",
+              customers: [],
+            });
+          });
+      }
+      await db.collection("bills").add(Bill);
+      db.collection("tables").doc(table.id).update({
+        status: "Vacant",
+        customers: [],
+        occupency: "0",
+      });
+    } catch (e) {
+      console.log(e);
+    }
   };
   useEffect(() => {
     setBusinessLogo(sessionStorage.getItem("BusinessLogo"));
@@ -48,7 +86,6 @@ const BillPage = () => {
     dispatch({
       type: actions.SETBILLID,
       billId: bill.id,
-      totalBill: Math.round(grandTotal.current),
       bill: bill,
       total: Total,
     });
@@ -70,8 +107,13 @@ const BillPage = () => {
   );
 
   const handleBIllView = (data) => {
-    const newBillPage = billPage;
-    billPage.employee = data.employee;
+    let newBillPage = bill;
+    newBillPage.id = bill.id;
+    newBillPage.bill = bill;
+    newBillPage.totalPrice = total;
+    newBillPage.employee = employee;
+    newBillPage.gst = gst
+    newBillPage.cGst = cGst
     dispatch({
       type: "billModalShow",
       isSettle: false,
