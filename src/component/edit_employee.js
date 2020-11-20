@@ -228,6 +228,19 @@ class EditEmployee extends React.Component {
           employee_account_number: employee.employee_account_number,
           employee_ifsc_code: employee.employee_ifsc_code,
           employee_upi_id: employee.employee_upi_id,
+
+          customers: employee.customers,
+          employees: employee.employees,
+          categories: employee.categories,
+          items: employee.items,
+          bill: employee.bill,
+          tables: employee.tables,
+          floors: employee.floors,
+          settings: employee.settings,
+          viewbill: employee.viewbill,
+          settle: employee.settle,
+          additemdiscount: employee.additemdiscount,
+          deleteitemafterkot: employee.deleteitemafterkot,
         });
       });
   };
@@ -367,9 +380,22 @@ class EditEmployee extends React.Component {
           //   employee_ifsc_code: this.state.employee_ifsc_code,
           //   employee_upi_id: this.state.employee_upi_id,
 
-          sessionId: sessionId,
-          username: username,
-          businessId: businessId,
+          // sessionId: sessionId,
+          // username: username,
+          // businessId: businessId,
+          customers: this.state.customers,
+          employees: this.state.employees,
+          categories: this.state.categories,
+          items: this.state.items,
+          bill: this.state.bill,
+          tables: this.state.tables,
+          floors: this.state.floors,
+          settings: this.state.settings,
+          viewbill: this.state.viewbill,
+          settle: this.state.settle,
+
+          additemdiscount: this.state.additemdiscount,
+          deleteitemafterkot: this.state.deleteitemafterkot,
         });
       window.location.href = "/AllEmployees";
       // this
@@ -999,6 +1025,458 @@ class EditEmployee extends React.Component {
                       "UPI ID",
                       this.state.employee_upi_id,
                       "required|whitespace|min:10|max:16"
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="col-12 w-100-row">
+                <h3>Give Permissions</h3>
+              </div>
+
+              <div className="col-12 w-100-row">
+                <div className="row form-group user_roles_check">
+                  <div className="col col-md-6">
+                    <label>Customers</label>
+                  </div>
+                  <div className="col col-md-6">
+                    <label>
+                      <input
+                        type="radio"
+                        name="customers"
+                        value="Read&Write"
+                        onChange={this.onChange}
+                        checked={this.state.customers === "Read&Write"}
+                      />
+                      Read&Write
+                    </label>
+                    <label style={{ paddingLeft: "20px" }}>
+                      <input
+                        type="radio"
+                        name="customers"
+                        value="Read"
+                        onChange={this.onChange}
+                        checked={this.state.customers === "Read"}
+                      />
+                      Read
+                    </label>
+                    <label style={{ paddingLeft: "20px" }}>
+                      <input
+                        type="radio"
+                        name="customers"
+                        value="None"
+                        onChange={this.onChange}
+                        checked={this.state.customers === "None"}
+                      />
+                      None
+                    </label>
+                    {this.validator.message(
+                      "customers",
+                      this.state.customers,
+                      "required"
+                    )}
+                  </div>
+                  <div className="col col-md-6">
+                    <label>Employees</label>
+                  </div>
+                  <div className="col col-md-6">
+                    <label>
+                      <input
+                        type="radio"
+                        name="employees"
+                        value="Read&Write"
+                        onChange={this.onChange}
+                        checked={this.state.employees === "Read&Write"}
+                      />
+                      Read&Write
+                    </label>
+                    <label style={{ paddingLeft: "20px" }}>
+                      <input
+                        type="radio"
+                        name="employees"
+                        value="Read"
+                        onChange={this.onChange}
+                        checked={this.state.employees === "Read"}
+                      />
+                      Read
+                    </label>
+                    <label style={{ paddingLeft: "20px" }}>
+                      <input
+                        type="radio"
+                        name="employees"
+                        value="None"
+                        onChange={this.onChange}
+                        checked={this.state.employees === "None"}
+                      />
+                      None
+                    </label>
+                    {this.validator.message(
+                      "Employees",
+                      this.state.employees,
+                      "required"
+                    )}
+                  </div>
+
+                  <div className="col col-md-6">
+                    <label>Categories</label>
+                  </div>
+                  <div className="col col-md-6">
+                    <label>
+                      <input
+                        type="radio"
+                        name="categories"
+                        value="Read&Write"
+                        onChange={this.onChange}
+                        checked={this.state.categories === "Read&Write"}
+                      />
+                      Read&Write
+                    </label>
+                    <label style={{ paddingLeft: "20px" }}>
+                      <input
+                        type="radio"
+                        name="categories"
+                        value="Read"
+                        onChange={this.onChange}
+                        checked={this.state.categories === "Read"}
+                      />
+                      Read
+                    </label>
+                    <label style={{ paddingLeft: "20px" }}>
+                      <input
+                        type="radio"
+                        name="categories"
+                        value="None"
+                        onChange={this.onChange}
+                        checked={this.state.categories === "None"}
+                      />
+                      None
+                    </label>
+                    {this.validator.message(
+                      "Categories",
+                      this.state.categories,
+                      "required"
+                    )}
+                  </div>
+
+                  <div className="col col-md-6">
+                    <label>Items</label>
+                  </div>
+                  <div className="col col-md-6">
+                    <label>
+                      <input
+                        type="radio"
+                        name="items"
+                        value="Read&Write"
+                        onChange={this.onChange}
+                        checked={this.state.items === "Read&Write"}
+                      />
+                      Read&Write
+                    </label>
+                    <label style={{ paddingLeft: "20px" }}>
+                      <input
+                        type="radio"
+                        name="items"
+                        value="Read"
+                        onChange={this.onChange}
+                        checked={this.state.items === "Read"}
+                      />
+                      Read
+                    </label>
+                    <label style={{ paddingLeft: "20px" }}>
+                      <input
+                        type="radio"
+                        name="items"
+                        value="None"
+                        onChange={this.onChange}
+                        checked={this.state.items === "None"}
+                      />
+                      None
+                    </label>
+                    {this.validator.message(
+                      "Items",
+                      this.state.items,
+                      "required"
+                    )}
+                  </div>
+
+                  <div className="col col-md-6">
+                    <label>Bill</label>
+                  </div>
+                  <div className="col col-md-6">
+                    <label>
+                      <input
+                        type="radio"
+                        name="bill"
+                        value="Read&Write"
+                        onChange={this.onChange}
+                        checked={this.state.bill === "Read&Write"}
+                      />
+                      Read&Write
+                    </label>
+                    <label style={{ paddingLeft: "20px" }}>
+                      <input
+                        type="radio"
+                        name="bill"
+                        value="Read"
+                        onChange={this.onChange}
+                        checked={this.state.bill === "Read"}
+                      />
+                      Read
+                    </label>
+                    <label style={{ paddingLeft: "20px" }}>
+                      <input
+                        type="radio"
+                        name="bill"
+                        value="None"
+                        onChange={this.onChange}
+                        checked={this.state.bill === "None"}
+                      />
+                      None
+                    </label>
+                    {this.validator.message(
+                      "Bill",
+                      this.state.bill,
+                      "required"
+                    )}
+                  </div>
+
+                  <div className="col col-md-6">
+                    <label>Tables</label>
+                  </div>
+                  <div className="col col-md-6">
+                    <label>
+                      <input
+                        type="radio"
+                        name="tables"
+                        value="Read&Write"
+                        onChange={this.onChange}
+                        checked={this.state.tables === "Read&Write"}
+                      />
+                      Read&Write
+                    </label>
+                    <label style={{ paddingLeft: "20px" }}>
+                      <input
+                        type="radio"
+                        name="tables"
+                        value="Read"
+                        onChange={this.onChange}
+                        checked={this.state.tables === "Read"}
+                      />
+                      Read
+                    </label>
+                    <label style={{ paddingLeft: "20px" }}>
+                      <input
+                        type="radio"
+                        name="tables"
+                        value="None"
+                        onChange={this.onChange}
+                        checked={this.state.tables === "None"}
+                      />
+                      None
+                    </label>
+                    {this.validator.message(
+                      "Tables",
+                      this.state.tables,
+                      "required"
+                    )}
+                  </div>
+
+                  <div className="col col-md-6">
+                    <label>Floors</label>
+                  </div>
+                  <div className="col col-md-6">
+                    <label>
+                      <input
+                        type="radio"
+                        name="floors"
+                        value="Read&Write"
+                        onChange={this.onChange}
+                        checked={this.state.floors === "Read&Write"}
+                      />
+                      Read&Write
+                    </label>
+                    <label style={{ paddingLeft: "20px" }}>
+                      <input
+                        type="radio"
+                        name="floors"
+                        value="Read"
+                        onChange={this.onChange}
+                        checked={this.state.floors === "Read"}
+                      />
+                      Read
+                    </label>
+                    <label style={{ paddingLeft: "20px" }}>
+                      <input
+                        type="radio"
+                        name="floors"
+                        value="None"
+                        onChange={this.onChange}
+                        checked={this.state.floors === "None"}
+                      />
+                      None
+                    </label>
+                    {this.validator.message(
+                      "Floors",
+                      this.state.floors,
+                      "required"
+                    )}
+                  </div>
+                  <div className="col col-md-6">
+                    <label>Settings</label>
+                  </div>
+                  <div className="col col-md-6">
+                    <label>
+                      <input
+                        type="radio"
+                        name="settings"
+                        value="Yes"
+                        onChange={this.onChange}
+                        checked={this.state.settings === "Yes"}
+                      />
+                      Yes
+                    </label>
+                    <label style={{ paddingLeft: "20px" }}>
+                      <input
+                        type="radio"
+                        name="settings"
+                        value="No"
+                        onChange={this.onChange}
+                        checked={this.state.settings === "No"}
+                      />
+                      No
+                    </label>
+
+                    {this.validator.message(
+                      "Settings",
+                      this.state.settings,
+                      "required"
+                    )}
+                  </div>
+                  <div className="col col-md-6">
+                    <label>View Bill</label>
+                  </div>
+                  <div className="col col-md-6">
+                    <label>
+                      <input
+                        type="radio"
+                        name="viewbill"
+                        value="Yes"
+                        onChange={this.onChange}
+                        checked={this.state.viewbill === "Yes"}
+                      />
+                      Yes
+                    </label>
+                    <label style={{ paddingLeft: "20px" }}>
+                      <input
+                        type="radio"
+                        name="viewbill"
+                        value="No"
+                        onChange={this.onChange}
+                        checked={this.state.viewbill === "No"}
+                      />
+                      No
+                    </label>
+
+                    {this.validator.message(
+                      "View Bill",
+                      this.state.viewbill,
+                      "required"
+                    )}
+                  </div>
+
+                  <div className="col col-md-6">
+                    <label>Settle</label>
+                  </div>
+                  <div className="col col-md-6">
+                    <label>
+                      <input
+                        type="radio"
+                        name="settle"
+                        value="Yes"
+                        onChange={this.onChange}
+                        checked={this.state.settle === "Yes"}
+                      />
+                      Yes
+                    </label>
+                    <label style={{ paddingLeft: "20px" }}>
+                      <input
+                        type="radio"
+                        name="settle"
+                        value="No"
+                        onChange={this.onChange}
+                        checked={this.state.settle === "No"}
+                      />
+                      No
+                    </label>
+
+                    {this.validator.message(
+                      "Settle",
+                      this.state.settle,
+                      "required"
+                    )}
+                  </div>
+
+                  <div className="col col-md-6">
+                    <label>Add Item Discount</label>
+                  </div>
+                  <div className="col col-md-6">
+                    <label>
+                      <input
+                        type="radio"
+                        name="additemdiscount"
+                        value="Yes"
+                        onChange={this.onChange}
+                        checked={this.state.additemdiscount === "Yes"}
+                      />
+                      Yes
+                    </label>
+                    <label style={{ paddingLeft: "20px" }}>
+                      <input
+                        type="radio"
+                        name="additemdiscount"
+                        value="No"
+                        onChange={this.onChange}
+                        checked={this.state.additemdiscount === "No"}
+                      />
+                      No
+                    </label>
+
+                    {this.validator.message(
+                      "Add Item Discount",
+                      this.state.additemdiscount,
+                      "required"
+                    )}
+                  </div>
+
+                  <div className="col col-md-6">
+                    <label>Delete Item After KOT</label>
+                  </div>
+                  <div className="col col-md-6">
+                    <label>
+                      <input
+                        type="radio"
+                        name="deleteitemafterkot"
+                        value="Yes"
+                        onChange={this.onChange}
+                        checked={this.state.deleteitemafterkot === "Yes"}
+                      />
+                      Yes
+                    </label>
+                    <label style={{ paddingLeft: "20px" }}>
+                      <input
+                        type="radio"
+                        name="deleteitemafterkot"
+                        value="No"
+                        onChange={this.onChange}
+                        checked={this.state.deleteitemafterkot === "No"}
+                      />
+                      No
+                    </label>
+
+                    {this.validator.message(
+                      "Delete Item After KOT",
+                      this.state.deleteitemafterkot,
+                      "required"
                     )}
                   </div>
                 </div>

@@ -55,47 +55,75 @@ class Sidebar extends React.Component {
                   Orders
                 </Link>
               </li>
-
-              <li>
-                <Link to="/AllCustomers" className="customers">
-                  Customers
-                </Link>
-              </li>
+              {sessionStorage.getItem("role") == "Merchant" ||
+              sessionStorage.getItem("customers") == "Read" ||
+              sessionStorage.getItem("customers") == "Read&Write" ? (
+                <li>
+                  <Link to="/AllCustomers" className="customers">
+                    Customers
+                  </Link>
+                </li>
+              ) : (
+                ""
+              )}
               {/* <li>
                 <Link to="/AddItemMenu" className="resturent">
                   Menu
                 </Link>
               </li> */}
+
               <li>
                 <Link to="/AddItemMenu" className="resturent">
                   My Restaurant
                 </Link>
               </li>
-              <li>
-                <Link to="/AllEmployees" className="employees">
-                  Employees
-                </Link>
-              </li>
+
+              {sessionStorage.getItem("role") == "Merchant" ||
+              sessionStorage.getItem("employees") == "Read" ||
+              sessionStorage.getItem("employees") == "Read&Write" ? (
+                <li>
+                  <Link to="/AllEmployees" className="employees">
+                    Employees
+                  </Link>
+                </li>
+              ) : (
+                ""
+              )}
+
               <li>
                 <Link to="/AllMessages" className="messages">
                   Messages
                 </Link>
               </li>
-              <li>
-                <Link to="/Bills" className="bills">
-                  Bills
-                </Link>
-              </li>
+
+              {sessionStorage.getItem("role") == "Merchant" ||
+              sessionStorage.getItem("bill") == "Read" ||
+              sessionStorage.getItem("bill") == "Read&Write" ? (
+                <li>
+                  <Link to="/Bills" className="bills">
+                    Bills
+                  </Link>
+                </li>
+              ) : (
+                ""
+              )}
+
               <li>
                 <Link to="/TablesList" className="tabels">
                   Tabels
                 </Link>
               </li>
-              <li>
-                <Link to="/Settings" className="settings">
-                  Settings
-                </Link>
-              </li>
+
+              {sessionStorage.getItem("role") == "Merchant" ||
+              sessionStorage.getItem("settings") == "Yes" ? (
+                <li>
+                  <Link to="/Settings" className="settings">
+                    Settings
+                  </Link>
+                </li>
+              ) : (
+                ""
+              )}
               {sessionStorage.getItem("role") == "Merchant" ? (
                 <li>
                   <Link to="/BusinessList" className="settings">

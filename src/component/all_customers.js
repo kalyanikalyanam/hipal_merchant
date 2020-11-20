@@ -411,22 +411,27 @@ class AllCustomers extends React.Component {
                             </span>
                           </button>
                         </div> */}
-                        <div class="order_btns">
-                          <button
-                            type="button"
-                            data-toggle="modal"
-                            data-target="#add_customer"
-                          >
-                            <span
-                              class="btn add_ord m-l-0 p_btn"
+                        {sessionStorage.getItem("role") == "Merchant" ||
+                        sessionStorage.getItem("customers") == "Read&Write" ? (
+                          <div class="order_btns">
+                            <button
+                              type="button"
                               data-toggle="modal"
-                              data-target="#add_edit_employee"
+                              data-target="#add_customer"
                             >
-                              <img src="/images/icon/add_plus_icon_w.svg" />
-                              Add Customers
-                            </span>
-                          </button>
-                        </div>
+                              <span
+                                class="btn add_ord m-l-0 p_btn"
+                                data-toggle="modal"
+                                data-target="#add_edit_employee"
+                              >
+                                <img src="/images/icon/add_plus_icon_w.svg" />
+                                Add Customers
+                              </span>
+                            </button>
+                          </div>
+                        ) : (
+                          ""
+                        )}
                       </div>
                     </div>
 
@@ -469,7 +474,14 @@ class AllCustomers extends React.Component {
                                       <td>Email Address</td>
                                       <td>Mobile</td>
                                       <td>Points </td>
-                                      <td>Actions</td>
+                                      {sessionStorage.getItem("role") ==
+                                        "Merchant" ||
+                                      sessionStorage.getItem("customers") ==
+                                        "Read&Write" ? (
+                                        <td>Actions</td>
+                                      ) : (
+                                        ""
+                                      )}
                                     </tr>
                                   </thead>
                                   <tbody id="myTable">
@@ -486,24 +498,32 @@ class AllCustomers extends React.Component {
                                                 {customer.customer_phonenumber}
                                               </td>
                                               <td>10+</td>
-                                              <td>
-                                                <Link
-                                                  to={`/EditCustomer/${customer.customerId}`}
-                                                >
+                                              {sessionStorage.getItem("role") ==
+                                                "Merchant" ||
+                                              sessionStorage.getItem(
+                                                "customers"
+                                              ) == "Read&Write" ? (
+                                                <td>
+                                                  <Link
+                                                    to={`/EditCustomer/${customer.customerId}`}
+                                                  >
+                                                    <img
+                                                      src="images/icon/edit_icon_blue.svg"
+                                                      className="edit_delete"
+                                                    />
+                                                  </Link>
                                                   <img
-                                                    src="images/icon/edit_icon_blue.svg"
+                                                    src="images/icon/delete_cross.svg"
+                                                    onClick={this.deleteItem.bind(
+                                                      this,
+                                                      customer.customerId
+                                                    )}
                                                     className="edit_delete"
                                                   />
-                                                </Link>
-                                                <img
-                                                  src="images/icon/delete_cross.svg"
-                                                  onClick={this.deleteItem.bind(
-                                                    this,
-                                                    customer.customerId
-                                                  )}
-                                                  className="edit_delete"
-                                                />
-                                              </td>
+                                                </td>
+                                              ) : (
+                                                ""
+                                              )}
                                             </tr>
                                           );
                                         }

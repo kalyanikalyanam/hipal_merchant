@@ -376,6 +376,27 @@ class EmployeeLogin extends React.Component {
               sessionStorage.setItem("role", gstData.role);
               sessionStorage.setItem("emai", gstData.email_id);
               sessionStorage.setItem("businessId", gstData.businessId);
+              sessionStorage.setItem("customers", gstData.customers);
+              sessionStorage.setItem("employees", gstData.employees);
+              sessionStorage.setItem("categories", gstData.categories);
+              sessionStorage.setItem("items", gstData.items);
+              sessionStorage.setItem("bill", gstData.bill);
+              sessionStorage.setItem("tables", gstData.tables);
+              sessionStorage.setItem("floors", gstData.floors);
+              sessionStorage.setItem("settings", gstData.settings);
+
+              sessionStorage.setItem("viewbill", gstData.viewbill);
+              sessionStorage.setItem("settle", gstData.settle);
+              sessionStorage.setItem(
+                "additemdiscount",
+                gstData.additemdiscount
+              );
+
+              sessionStorage.setItem(
+                "deleteitemafterkot",
+                gstData.deleteitemafterkot
+              );
+
               this.props.history.push("/Dashboard");
               // } else {
               //   this.setState({
