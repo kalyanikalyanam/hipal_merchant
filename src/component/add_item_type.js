@@ -163,7 +163,7 @@ class AddItemType extends React.Component {
       await firebase
         .firestore()
         .collection("ItemType")
-        .where("sessionId", "==", sessionId)
+        // .where("sessionId", "==", sessionId)
         .where("businessId", "==", businessId)
         .where("item_type", "==", e.target.value)
 
@@ -184,32 +184,6 @@ class AddItemType extends React.Component {
         });
     }
   };
-
-  // itemTypeChange = (e) => {
-  //   this.setState({
-  //     item_type: e.target.value,
-  //   });
-  //   if (this.state.validError != true) {
-  //     var ref = firebase
-  //       .database()
-  //       .ref("ItemType/")
-  //       .orderByChild("item_type")
-  //       .equalTo(e.target.value);
-  //     ref.on("value", (snapshot) => {
-  //       var user_exist = snapshot.numChildren();
-  //       console.log(user_exist);
-
-  //       if (user_exist > 0 && this.state.validError != true) {
-  //         this.setState({
-  //           mobile_message: "Type Name already exist",
-  //           validError: false,
-  //         });
-  //       } else {
-  //         this.setState({ mobile_message: "", validError: true });
-  //       }
-  //     });
-  //   }
-  // };
 
   render() {
     return (

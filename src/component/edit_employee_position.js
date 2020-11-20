@@ -271,7 +271,7 @@ class EditEmployeePosition extends React.Component {
       var ref = await firebase
         .firestore()
         .collection("employee_positions/")
-        .where("sessionId", "==", sessionId)
+        // .where("sessionId", "==", sessionId)
         .where("businessId", "==", businessId)
         .where("employee_position", "==", e.target.value)
 

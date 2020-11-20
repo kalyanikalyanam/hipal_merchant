@@ -171,7 +171,7 @@ class AllCustomers extends React.Component {
     firebase
       .firestore()
       .collection("customers")
-      .where("sessionId", "==", sessionId)
+      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .get()
       .then((querySnapshot) => {
@@ -253,7 +253,7 @@ class AllCustomers extends React.Component {
       var ref = firebase
         .firestore()
         .collection("customers")
-        .where("sessionId", "==", sessionId)
+        // .where("sessionId", "==", sessionId)
         .where("businessId", "==", businessId)
         .where("customer_email", "==", e.target.value)
         .get()
@@ -284,7 +284,7 @@ class AllCustomers extends React.Component {
       var ref = firebase
         .firestore()
         .collection("customers")
-        .where("sessionId", "==", sessionId)
+        // .where("sessionId", "==", sessionId)
         .where("businessId", "==", businessId)
         .where("customer_phonenumber", "==", e.target.value)
         .get()
@@ -366,7 +366,7 @@ class AllCustomers extends React.Component {
                             </div>
                           </div>
                           <div className="col-md-3">
-                            <div className="search_top">
+                            {/* <div className="search_top">
                               <a href="#" className="search_icon">
                                 <i className="fas fa-search"></i>
                               </a>
@@ -376,7 +376,7 @@ class AllCustomers extends React.Component {
                                 name=""
                                 placeholder="Search..."
                               />
-                            </div>
+                            </div> */}
                           </div>
                           <div className="col-md-3 ">
                             <div className="profile_user">
@@ -399,7 +399,7 @@ class AllCustomers extends React.Component {
                   <div className="row mt-30">
                     <div className="col-md-5 p-0">
                       <div className="overview-wrap">
-                        <div className="order_btns">
+                        {/* <div className="order_btns">
                           <button
                             type="button"
                             data-toggle="modal"
@@ -408,6 +408,22 @@ class AllCustomers extends React.Component {
                             <span className="btn add_ord m-l-0">
                               <img src="/images/icon/add_plus_icon_w.svg" />
                               Add Customer
+                            </span>
+                          </button>
+                        </div> */}
+                        <div class="order_btns">
+                          <button
+                            type="button"
+                            data-toggle="modal"
+                            data-target="#add_customer"
+                          >
+                            <span
+                              class="btn add_ord m-l-0 p_btn"
+                              data-toggle="modal"
+                              data-target="#add_edit_employee"
+                            >
+                              <img src="/images/icon/add_plus_icon_w.svg" />
+                              Add Customers
                             </span>
                           </button>
                         </div>

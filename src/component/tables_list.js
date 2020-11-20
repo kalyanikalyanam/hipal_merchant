@@ -180,7 +180,7 @@ class TablesList extends React.Component {
     firebase
       .firestore()
       .collection("floors")
-      .where("sessionId", "==", sessionId)
+      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .get()
       .then((querySnapshot) => {
@@ -218,7 +218,7 @@ class TablesList extends React.Component {
     firebase
       .firestore()
       .collection("tables")
-      .where("sessionId", "==", sessionId)
+      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .get()
       .then((querySnapshot) => {
@@ -367,7 +367,7 @@ class TablesList extends React.Component {
       var ref = firebase
         .firestore()
         .collection("tables")
-        .where("sessionId", "==", sessionId)
+        // .where("sessionId", "==", sessionId)
         .where("businessId", "==", businessId)
         .where("table_name", "==", e.target.value)
 
@@ -476,7 +476,7 @@ class TablesList extends React.Component {
                             </div>
                           </div>
                           <div className="col-md-3">
-                            <div className="search_top">
+                            {/* <div className="search_top">
                               <a href="#" className="search_icon">
                                 <i className="fas fa-search"></i>
                               </a>
@@ -486,7 +486,7 @@ class TablesList extends React.Component {
                                 name=""
                                 placeholder="Search..."
                               />
-                            </div>
+                            </div> */}
                           </div>
                           <div className="col-md-3 ">
                             <div className="profile_user">
@@ -509,7 +509,7 @@ class TablesList extends React.Component {
                   <div className="row mt-30">
                     <div className="col-md-5 p-0">
                       <div className="overview-wrap">
-                        <div className="order_btns">
+                        {/* <div className="order_btns">
                           <button
                             type="button"
                             data-toggle="modal"
@@ -520,11 +520,21 @@ class TablesList extends React.Component {
                               ADD Tables
                             </span>
                           </button>
+                        </div> */}
+                        <div className="order_btns">
+                          <span
+                            className="btn add_ord m-l-0 p_btn"
+                            data-toggle="modal"
+                            data-target="#add_table"
+                          >
+                            <img src="/images/icon/add_plus_icon_w.svg" />
+                            Add Tables
+                          </span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="col-md-7 p-0">
+                    {/* <div className="col-md-7 p-0">
                       <div className="track_box">
                         <div className="track_ord_block">
                           <div className="track_bg">
@@ -548,7 +558,7 @@ class TablesList extends React.Component {
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
 
                   <div className="row mt-30">

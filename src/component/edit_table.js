@@ -174,7 +174,7 @@ class EditTable extends React.Component {
     await firebase
       .firestore()
       .collection("floors")
-      .where("sessionId", "==", sessionId)
+      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .get()
       .then((querySnapshot) => {
@@ -308,31 +308,37 @@ class EditTable extends React.Component {
   };
 
   tablenameChange = (e) => {
+    var sessionId = sessionStorage.getItem("RoleId");
+    var username = sessionStorage.getItem("username");
+    var businessId = sessionStorage.getItem("businessId");
     this.setState({
       table_name: e.target.value,
     });
     if (this.state.validError != true) {
       var ref = firebase
-        .database()
-        .ref("tables_with_floors/")
-        .orderByChild("table_name")
-        .equalTo(e.target.value);
-      ref.on("value", (snapshot) => {
-        var user_exist = snapshot.numChildren();
-        console.log(user_exist);
+        .firestore()
+        .collection("tables")
+        // .where("sessionId", "==", sessionId)
+        .where("businessId", "==", businessId)
+        .where("table_name", "==", e.target.value)
 
-        if (user_exist > 0 && this.state.validError != true) {
-          this.setState({
-            mobile_message: "Table Name already exist",
-            validError: false,
-          });
-        } else {
-          this.setState({ mobile_message: "", validError: true });
-        }
-      });
+        .get()
+        .then((snapshot) => {
+          var user_exist = snapshot.size;
+
+          console.log(user_exist);
+
+          if (user_exist > 0 && this.state.validError != true) {
+            this.setState({
+              mobile_message: "Table Name already exist",
+              validError: false,
+            });
+          } else {
+            this.setState({ mobile_message: "", validError: true });
+          }
+        });
     }
   };
-
   onChange = (event) => {
     this.setState({
       [event.target.name]: event.target.value,

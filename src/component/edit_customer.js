@@ -232,7 +232,7 @@ class EditCustomer extends React.Component {
       var ref = firebase
         .firestore()
         .collection("customers")
-        .where("sessionId", "==", sessionId)
+        // .where("sessionId", "==", sessionId)
         .where("businessId", "==", businessId)
         .where("customer_email", "==", e.target.value)
         .get()
@@ -263,7 +263,7 @@ class EditCustomer extends React.Component {
       var ref = firebase
         .firestore()
         .collection("customers")
-        .where("sessionId", "==", sessionId)
+        // .where("sessionId", "==", sessionId)
         .where("businessId", "==", businessId)
         .where("customer_phonenumber", "==", e.target.value)
         .get()

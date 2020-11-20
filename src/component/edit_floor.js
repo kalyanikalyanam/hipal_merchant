@@ -254,28 +254,34 @@ class EditFloor extends React.Component {
   };
 
   floornameChange = (e) => {
+    var sessionId = sessionStorage.getItem("RoleId");
+    var username = sessionStorage.getItem("username");
+    var businessId = sessionStorage.getItem("businessId");
     this.setState({
       floor_name: e.target.value,
     });
     if (this.state.validError != true) {
       var ref = firebase
-        .database()
-        .ref("floors/")
-        .orderByChild("floor_name")
-        .equalTo(e.target.value);
-      ref.on("value", (snapshot) => {
-        var user_exist = snapshot.numChildren();
-        console.log(user_exist);
+        .firestore()
+        .collection("floors")
+        // .where("sessionId", "==", sessionId)
+        .where("businessId", "==", businessId)
+        .where("floor_name", "==", e.target.value)
+        .get()
+        .then((snapshot) => {
+          var user_exist = snapshot.size;
 
-        if (user_exist > 0 && this.state.validError != true) {
-          this.setState({
-            mobile_message: "Floor Name already exist",
-            validError: false,
-          });
-        } else {
-          this.setState({ mobile_message: "", validError: true });
-        }
-      });
+          console.log(user_exist);
+
+          if (user_exist > 0 && this.state.validError != true) {
+            this.setState({
+              mobile_message: "Floor Name already exist",
+              validError: false,
+            });
+          } else {
+            this.setState({ mobile_message: "", validError: true });
+          }
+        });
     }
   };
 

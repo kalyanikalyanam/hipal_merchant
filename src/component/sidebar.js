@@ -49,11 +49,13 @@ class Sidebar extends React.Component {
                   Dashboard
                 </Link>
               </li>
+
               <li>
                 <Link to="/Table" className="oders">
                   Orders
                 </Link>
               </li>
+
               <li>
                 <Link to="/AllCustomers" className="customers">
                   Customers
@@ -94,11 +96,15 @@ class Sidebar extends React.Component {
                   Settings
                 </Link>
               </li>
-              <li>
-                <Link to="/BusinessList" className="settings">
-                  Business List
-                </Link>
-              </li>
+              {sessionStorage.getItem("role") == "Merchant" ? (
+                <li>
+                  <Link to="/BusinessList" className="settings">
+                    Business List
+                  </Link>
+                </li>
+              ) : (
+                ""
+              )}
             </ul>
           </nav>
         </div>

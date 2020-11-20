@@ -381,7 +381,7 @@ class EditItemMenu extends React.Component {
     await firebase
       .firestore()
       .collection("ItemType")
-      .where("sessionId", "==", sessionId)
+      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .get()
       .then((querySnapshot) => {
@@ -418,7 +418,7 @@ class EditItemMenu extends React.Component {
       .firestore()
 
       .collection("categories2")
-      .where("sessionId", "==", sessionId)
+      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .where("parentId", "==", "")
       .get()
@@ -467,7 +467,7 @@ class EditItemMenu extends React.Component {
     firebase
       .firestore()
       .collection("categories2")
-      .where("sessionId", "==", sessionId)
+      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .where("parentId", "==", id)
       .get()
@@ -557,7 +557,7 @@ class EditItemMenu extends React.Component {
     await firebase
       .firestore()
       .collection("settings_station")
-      .where("sessionId", "==", sessionId)
+      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .get()
       .then((querySnapshot) => {
@@ -899,7 +899,7 @@ class EditItemMenu extends React.Component {
         let result = await firebase
           .firestore()
           .collection("categories2")
-          .where("sessionId", "==", sessionId)
+          // .where("sessionId", "==", sessionId)
           .where("businessId", "==", businessId)
           .get()
           .then((snap) => {
@@ -939,7 +939,7 @@ class EditItemMenu extends React.Component {
       var ref = firebase
         .firestore()
         .collection("menuitems2/")
-        .where("sessionId", "==", sessionId)
+        // .where("sessionId", "==", sessionId)
         .where("businessId", "==", businessId)
         .where("item_id", "==", e.target.value)
 
@@ -970,7 +970,7 @@ class EditItemMenu extends React.Component {
       var ref = await firebase
         .firestore()
         .collection("menuitems2/")
-        .where("sessionId", "==", sessionId)
+        // .where("sessionId", "==", sessionId)
         .where("businessId", "==", businessId)
         .where("item_name", "==", e.target.value)
 

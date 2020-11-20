@@ -200,7 +200,7 @@ class AddPrinterId extends React.Component {
       var ref = await firebase
         .firestore()
         .collection("Printers/")
-        .where("sessionId", "==", sessionId)
+        // .where("sessionId", "==", sessionId)
         .where("businessId", "==", businessId)
         .where("printer_id", "==", e.target.value)
 

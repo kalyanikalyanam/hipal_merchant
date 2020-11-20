@@ -193,7 +193,7 @@ class AddCategoryMenuDuplicate extends React.Component {
     firebase
       .firestore()
       .collection("categories2")
-      .where("sessionId", "==", sessionId)
+      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .where("parentId", "==", "")
       .get()
@@ -242,7 +242,7 @@ class AddCategoryMenuDuplicate extends React.Component {
     firebase
       .firestore()
       .collection("categories2")
-      .where("sessionId", "==", sessionId)
+      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .where("parentId", "==", id)
       .get()
@@ -301,7 +301,7 @@ class AddCategoryMenuDuplicate extends React.Component {
     firebase
       .firestore()
       .collection("menuitems2")
-      .where("sessionId", "==", sessionId)
+      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .get()
       .then((querySnapshot) => {
@@ -563,7 +563,7 @@ class AddCategoryMenuDuplicate extends React.Component {
       firebase
         .firestore()
         .collection("categories2")
-        .where("sessionId", "==", sessionId)
+        // .where("sessionId", "==", sessionId)
         .where("businessId", "==", businessId)
         .where("name", "==", e.target.value)
 
@@ -630,7 +630,7 @@ class AddCategoryMenuDuplicate extends React.Component {
                               </div>
                             </div>
                             <div className="col-md-3">
-                              <div className="search_top">
+                              {/* <div className="search_top">
                                 <a href="#" className="search_icon">
                                   <i className="fas fa-search"></i>
                                 </a>
@@ -640,7 +640,7 @@ class AddCategoryMenuDuplicate extends React.Component {
                                   name=""
                                   placeholder="Search..."
                                 />
-                              </div>
+                              </div> */}
                             </div>
                             <div className="col-md-3 ">
                               <div className="profile_user">

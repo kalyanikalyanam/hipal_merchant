@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import * as actions from "./actionTypes";
 import { dispatchContext } from "./contexts";
 
-const OrderItem = ({ cart, index}) => {
+const OrderItem = ({ cart, index }) => {
   const dispatch = useContext(dispatchContext);
   const [kotNum, setKotNum] = useState(0);
   const [carts, setCarts] = useState();
@@ -22,9 +22,9 @@ const OrderItem = ({ cart, index}) => {
       item,
       editMode: true,
       id: item.id,
-      formOrder: true 
-    })
-  }
+      formOrder: true,
+    });
+  };
   const handleKOTItem = (item) => {
     dispatch({
       type: actions.KOTITEM,
@@ -61,8 +61,8 @@ const OrderItem = ({ cart, index}) => {
           Cart {index + 1} ID:{cart.cartId}
         </div>
         <div className="kot_box" onClick={handleKOTCart}>
-                <span className="btn kot">KOT</span>
-            </div>
+          <span className="btn kot">KOT</span>
+        </div>
       </div>
       <div className="cart_scroll no_hieght">
         {cart &&
@@ -76,27 +76,33 @@ const OrderItem = ({ cart, index}) => {
                   <div className="w-100-row m-b-10">
                     {!item.kot ? (
                       <>
-                      <div
-                        className="kot"
-                        onClick={() => {
-                          handleKOTItem(item);
-                        }}
-                      >
-                        KOT
-                      </div>
-                      <div
-                        className="edit"
-                        data-toggle="modal"
-                        data-target="#edit_product"
-                        onClick={() => { handleEdit(item) }}
-                      >
-                        Edit
-                    </div>
-                    </>) : (
+                        <div
+                          className="kot"
+                          onClick={() => {
+                            handleKOTItem(item);
+                          }}
+                        >
+                          KOT
+                        </div>
+                        <div
+                          className="edit"
+                          data-toggle="modal"
+                          data-target="#edit_product"
+                          onClick={() => {
+                            handleEdit(item);
+                          }}
+                        >
+                          Edit
+                        </div>
+                      </>
+                    ) : (
                       select
-                      )}
+                    )}
                   </div>
-                  <p className="offer_applied">10% Off Applied</p>
+                  {/* <p className="offer_applied">10% Off Applied</p> */}
+                  {item.discount != 0 && (
+                    <p className="offer_applied">{`${item.discount}% off Applied`}</p>
+                  )}
                 </div>
                 <div className="box_2">
                   <span>x{item.quantity}</span>

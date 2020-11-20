@@ -239,7 +239,7 @@ class EditEmployee extends React.Component {
     await firebase
       .firestore()
       .collection("employee_positions")
-      .where("sessionId", "==", sessionId)
+      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .get()
       .then((querySnapshot) => {
@@ -399,7 +399,7 @@ class EditEmployee extends React.Component {
       var ref = await firebase
         .firestore()
         .collection("merchant_users")
-        .where("sessionId", "==", sessionId)
+        // .where("sessionId", "==", sessionId)
         .where("businessId", "==", businessId)
         .where("email_id", "==", e.target.value)
 
@@ -432,7 +432,7 @@ class EditEmployee extends React.Component {
 
         .firestore()
         .collection("merchant_users")
-        .where("sessionId", "==", sessionId)
+        // .where("sessionId", "==", sessionId)
         .where("businessId", "==", businessId)
         .where("contact_number", "==", e.target.value)
 

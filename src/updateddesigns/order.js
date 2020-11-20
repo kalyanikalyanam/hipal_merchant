@@ -93,7 +93,7 @@ class Order extends React.Component {
     await firebase
       .firestore()
       .collection("menuitems")
-      .where("sessionId", "==", sessionId)
+      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .get()
       .then((querySnapshot) => {

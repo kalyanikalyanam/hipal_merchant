@@ -48,7 +48,7 @@ const Table = ({ tableId }) => {
     await firebase
       .firestore()
       .collection("merchant_users")
-      .where("sessionId", "==", sessionId)
+      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .where("role", "==", "Employee")
 

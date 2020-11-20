@@ -126,7 +126,7 @@ class Orders extends React.Component {
                           </div>
                         </div>
                         <div className="col-md-3">
-                          <div className="search_top">
+                          {/* <div className="search_top">
                             <a href="#" className="search_icon">
                               <i className="fas fa-search"></i>
                             </a>
@@ -136,7 +136,7 @@ class Orders extends React.Component {
                               name=""
                               placeholder="Search..."
                             />
-                          </div>
+                          </div> */}
                         </div>
                         <div className="col-md-3 ">
                           <div className="profile_user">
@@ -159,7 +159,7 @@ class Orders extends React.Component {
                 <div className="row mt-30">
                   <div className="col-md-5 p-0">
                     <div className="overview-wrap">
-                      <div className="order_btns">
+                      {/* <div className="order_btns">
                         <Link to="/Orders">
                           <span className="btn view_ord">
                             View Order
@@ -172,11 +172,25 @@ class Orders extends React.Component {
                             Order
                           </span>
                         </Link>
+                      </div> */}
+                      <div class="order_btns">
+                        <Link to="/Orders">
+                          <span class="btn view_ord btn-padding">
+                            View Order
+                            <span class="red_dot"></span>
+                          </span>
+                        </Link>
+                        <Link to="/Table">
+                          <span class="btn add_ord btn-padding">
+                            <img src="/images/icon/add_plus_icon_w.svg" /> Add
+                            Order
+                          </span>
+                        </Link>
                       </div>
                     </div>
                   </div>
 
-                  <div className="col-md-7 p-0">
+                  {/* <div className="col-md-7 p-0">
                     <div className="track_box">
                       <div className="track_ord_block">
                         <div className="track_bg">
@@ -200,7 +214,7 @@ class Orders extends React.Component {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
 
                 <div className="row mt-30">

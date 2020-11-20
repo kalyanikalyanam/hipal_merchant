@@ -21,7 +21,8 @@ import Orders from "./component/orders";
 
 import AddCategoryMenu from "./component/add_category_menu";
 import AddCategoryMenuDuplicate from "./component/add_category_menu_duplicate";
-import ViewCategory from "./component/view_category";
+import EditCategoryMenu from "./component/edit_category_menu";
+import ViewCategoryMenu from "./component/view_category_menu";
 
 import AddItemMenu from "./component/add_item_menu";
 import EditItemMenu from "./component/edit_item_menu";
@@ -40,7 +41,6 @@ import EditEmployeeRole from "./component/edit_employee_role";
 import Bills from "./component/bills";
 import Home from "./component/home";
 
-import PopupTesting from "./component/popuptesting";
 import BillPrintPage from "./component/bill_print_page";
 
 import FloorList from "./component/floor_List";
@@ -82,9 +82,6 @@ import SettingsAddImageMedia from "./settings/settings_add_media image";
 import SettingsEditImageMedia from "./settings/settings_edit_media_page";
 
 import Table from "./updateddesigns/tables_view_for_updated_order";
-
-import EditCategoryMenu from "./component/edit_category_menu";
-import ViewCategoryMenu from "./component/view_category_menu";
 
 export const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route
@@ -152,13 +149,13 @@ class Routing extends React.Component {
           component={AddCategoryMenuDuplicate}
         />
         <PrivateRoute path="/CategoryList" component={CategoryList} />
-        <PrivateRoute path="/ViewCategory" component={ViewCategory} />
+
         <PrivateRoute path="/AddItemMenu" component={AddItemMenu} />
         <PrivateRoute path="/ViewItemMenu" component={ViewItemMenu} />
         <PrivateRoute path="/AddItemType" component={AddItemType} />
         <PrivateRoute path="/Bills" component={Bills} />
         <PrivateRoute path="/Home" component={Home} />
-        <PrivateRoute path="/PopupTesting" component={PopupTesting} />
+
         <PrivateRoute path="/BillPrintPage" component={BillPrintPage} />
         <PrivateRoute path="/FloorList" component={FloorList} />
         <PrivateRoute path="/EditFloor/:floorId" component={EditFloor} />

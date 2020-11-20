@@ -6,6 +6,7 @@ import {
   dispatchContext,
   EmployeeContext,
   tableContext,
+  billPageContext,
 } from "./contexts";
 import * as actions from "./actionTypes";
 const BillPage = () => {
@@ -16,6 +17,7 @@ const BillPage = () => {
   const dispatch = useContext(dispatchContext);
   const table = useContext(tableContext);
   const balance = useContext(BalanceContext);
+  const billPage = useContext(billPageContext);
   const bill = useContext(billContext);
   const employee = useContext(EmployeeContext);
   const grandTotal = useRef(0.0);
@@ -66,6 +68,16 @@ const BillPage = () => {
       </td>
     </tr>
   );
+
+  const handleBIllView = (data) => {
+    const newBillPage = billPage;
+    billPage.employee = data.employee;
+    dispatch({
+      type: "billModalShow",
+      isSettle: false,
+      bill: newBillPage,
+    });
+  };
   const date = () => {
     let today = new Date(Date.now());
     let options = {
@@ -233,7 +245,15 @@ const BillPage = () => {
         </div>
         <div className="w-100-row kotsettle_btn">
           <span className="btn add_ord ">
-            <a href="#" data-toggle="modal" data-target="#add_edit_position">
+            {/* <a href="#" data-toggle="modal" data-target="#add_edit_position" >
+              Bill View
+            </a> */}
+            <a
+              href="#"
+              type="button"
+              data-dismiss="modal"
+              onClick={handleBIllView}
+            >
               Bill View
             </a>
           </span>

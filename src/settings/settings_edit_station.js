@@ -168,7 +168,7 @@ class SettingsEditStation extends React.Component {
     await firebase
       .firestore()
       .collection("Printers")
-      .where("sessionId", "==", sessionId)
+      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .get()
       .then((querySnapshot) => {
@@ -294,7 +294,7 @@ class SettingsEditStation extends React.Component {
       var ref = firebase
         .firestore()
         .collection("settings_station/")
-        .where("sessionId", "==", sessionId)
+        // .where("sessionId", "==", sessionId)
         .where("businessId", "==", businessId)
         .where("station_name", "==", e.target.value)
 

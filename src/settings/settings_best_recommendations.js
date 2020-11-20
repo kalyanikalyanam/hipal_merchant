@@ -160,7 +160,7 @@ class SettingsBestRecommendations extends React.Component {
     var ref = await firebase
       .firestore()
       .collection("menuitems2")
-      .where("sessionId", "==", sessionId)
+      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .where("bestrecommendation", "==", "Selected")
       .get()

@@ -1,8 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import firebase from "../../config";
 import MenuItem from "./menuItem";
 import CategoryItem from "./categoryItem";
 import { liveCartContext } from "./contexts";
+import CategoryList from "../../component/category_list";
 
 const Menu = () => {
   const [itemList, setItemsList] = useState([]);
@@ -16,9 +18,9 @@ const Menu = () => {
     await firebase
       .firestore()
       .collection("menuitems2")
-      .where("sessionId", "==", sessionId)
+      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
-      // .where("categoryId", "==", "")
+      .where("categoryId", "==", "")
 
       .get()
       .then((snapshot) => {
@@ -72,7 +74,7 @@ const Menu = () => {
     firebase
       .firestore()
       .collection("categories2")
-      .where("sessionId", "==", sessionId)
+      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .where("parentId", "==", "")
       .get()
@@ -109,7 +111,7 @@ const Menu = () => {
     firebase
       .firestore()
       .collection("categories2")
-      .where("sessionId", "==", sessionId)
+      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .where("parentId", "==", category.categoryId)
       .get()
@@ -141,9 +143,9 @@ const Menu = () => {
     firebase
       .firestore()
       .collection("menuitems2")
-      .where("sessionId", "==", sessionId)
+      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
-      .where("categoryId", "==", category.itemId)
+      .where("categoryId", "array-contains-any", [category.categoryId])
 
       .get()
       .then((snapshot) => {
@@ -191,65 +193,61 @@ const Menu = () => {
         setItemsList(data);
       });
   };
-  // const explore = async (e, name) => {
-  //   var sessionId = sessionStorage.getItem("RoleId");
-  //   var businessId = sessionStorage.getItem("businessId");
-  //   e.preventDefault();
-  //   let { id } = e.target;
-  //   firebase
-  //     .firestore()
-  //     .collection("categories2")
-  //     .where("sessionId", "==", sessionId)
-  //     .where("businessId", "==", businessId)
-  //     .where("parentId", "==", id)
-  //     .get()
-  //     .then((querySnapshot) => {
-  //       var data = [];
-  //       querySnapshot.forEach((childSnapShot) => {
-  //         const GSTData = {
-  //           categoryId: childSnapShot.id,
 
-  //           name: childSnapShot.data().name,
-  //           isParent: childSnapShot.data().isParent,
-  //           photo: childSnapShot.data().photo,
-  //           color: childSnapShot.data().color,
-  //           created_on: childSnapShot.data().created_on,
-  //           parentId: childSnapShot.data().parentId,
-  //           sessionId: childSnapShot.data().sessionId,
-  //           username: childSnapShot.data().username,
-  //         };
+  const explore = async (e, name) => {
+    var sessionId = sessionStorage.getItem("RoleId");
+    var businessId = sessionStorage.getItem("businessId");
+    e.preventDefault();
+    let { id } = e.target;
+    firebase
+      .firestore()
+      .collection("categories2")
+      // .where("sessionId", "==", sessionId)
+      .where("businessId", "==", businessId)
+      .where("parentId", "==", id)
+      .get()
+      .then((querySnapshot) => {
+        var data = [];
+        querySnapshot.forEach((childSnapShot) => {
+          const GSTData = {
+            categoryId: childSnapShot.id,
 
-  //         data.push(GSTData);
-  //       });
+            name: childSnapShot.data().name,
+            isParent: childSnapShot.data().isParent,
+            photo: childSnapShot.data().photo,
+            color: childSnapShot.data().color,
+            created_on: childSnapShot.data().created_on,
+            parentId: childSnapShot.data().parentId,
+            sessionId: childSnapShot.data().sessionId,
+            username: childSnapShot.data().username,
+          };
 
-  //       setCategoryList(data);
-  //       //  this.setState({
-  //       //    CategoryList: data,
-  //       //    countPage: data.length,
-  //       //    loading: false,
-  //       //  });
-  //       let arr = this.state.currentCategory;
-  //       for (let i = 0; i < this.state.currentCategory.length; i++) {
-  //         // console.log(arr);
-  //         // console.log(arr[i]);
-  //         if (arr[i].id === id) {
-  //           arr = arr.slice(0, i);
-  //           break;
-  //         }
-  //       }
-  //       // console.log(arr);
+          data.push(GSTData);
+        });
 
-  //       arr.push({
-  //         id: id,
-  //         name: name,
-  //       });
-  //       this.setState({ currentCategory: arr });
-  //       // console.log(this.state.currentCategory);
-  //     })
-  //     .catch((err) => {
-  //       // console.log(err);
-  //     });
-  // };
+        setCategoryList(data);
+        let arr = CategoryList;
+        for (let i = 0; i < CategoryList.length; i++) {
+          // console.log(arr);
+          // console.log(arr[i]);
+          if (arr[i].id === id) {
+            arr = arr.slice(0, i);
+            break;
+          }
+        }
+        // console.log(arr);
+
+        arr.push({
+          id: id,
+          name: name,
+        });
+        setCategoryList(arr);
+        // console.log(this.state.currentCategory);
+      })
+      .catch((err) => {
+        // console.log(err);
+      });
+  };
 
   useEffect(() => {
     let categories;
@@ -274,15 +272,52 @@ const Menu = () => {
     <div className="row m-t-20">
       <div className="col-md-12 menu_category_block">
         <div className="category_menu_search">
-          <span className="cate_menu">
+          {/* <span className="cate_menu">
             <a href="#" className="current">
               Menu
             </a>{" "}
             <i className="fa fa-caret-right" aria-hidden="true"></i>
             <a href="#">Category 1</a>{" "}
-            {/* <i className="fa fa-caret-right" aria-hidden="true"></i>
-            <a href="#">Category 2</a> */}
-          </span>
+            
+          </span> */}
+          {/* <div
+            className="breadcrumbs menu_cate_links"
+            style={{ fontSize: "15px", display: "flex" }}
+          >
+            {categoryList.map((i, index) => (
+              <p style={{ marginLeft: "3px" }} id={i.id}>
+                {" "}
+                &gt; {i.name}{" "}
+              </p>
+            ))}
+            <p>
+            
+            </p>
+          </div> */}
+          {/* <div className="col col-md-12 font-15">
+            Menu :{" "}
+            <Link to="">
+              {" "}
+              <div
+                className="breadcrumbs"
+                style={{ fontSize: "15px", display: "flex" }}
+              >
+                {categoryList.map((i, index) => (
+                  <p
+                    style={{ marginLeft: "3px" }}
+                    id={i.id}
+                    onClick={(e) => {
+                      this.explore(e, i.name);
+                    }}
+                  >
+                    {" "}
+                    &gt; {i.name}{" "}
+                  </p>
+                ))}
+              </div>
+            </Link>
+          </div> */}
+
           <span className="cate_search">
             <input type="text" id="myInput1" placeholder="Search" />
             <a href="#" className="search_icon">

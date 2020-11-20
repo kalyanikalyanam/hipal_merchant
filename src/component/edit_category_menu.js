@@ -183,54 +183,6 @@ class EditCategoryMenu extends React.Component {
     this.itemMenuList();
   }
 
-  //   itemCategoryList = () => {
-  //     var sessionId = sessionStorage.getItem("RoleId");
-  //     var businessId = sessionStorage.getItem("businessId");
-  //     this.setState({ loading: true });
-  //     firebase
-  //       .firestore()
-  //       .collection("categories2")
-  //       .where("sessionId", "==", sessionId)
-  //       .where("businessId", "==", businessId)
-  //       .where("parentId", "==", "")
-  //       .get()
-  //       .then((querySnapshot) => {
-  //         var data = [];
-  //         querySnapshot.forEach((childSnapShot) => {
-  //           const GSTData = {
-  //             categoryId: childSnapShot.id,
-  //             name: childSnapShot.data().name,
-  //             isParent: childSnapShot.data().isParent,
-  //             photo: childSnapShot.data().photo,
-  //             color: childSnapShot.data().color,
-  //             created_on: childSnapShot.data().created_on,
-  //             parentId: childSnapShot.data().parentId,
-  //             sessionId: childSnapShot.data().sessionId,
-  //             username: childSnapShot.data().username,
-  //           };
-
-  //           data.push(GSTData);
-  //         });
-  //         this.setState({
-  //           CategoryList: data,
-  //           countPage: data.length,
-  //           loading: false,
-  //         });
-  //         // console.log(CategoryList);
-  //         this.setState({
-  //           currentCategory: [
-  //             {
-  //               id: "",
-  //               name: "categories2",
-  //             },
-  //           ],
-  //         });
-  //       })
-  //       .catch((err) => {
-  //         // console.log(err);
-  //       });
-  //   };
-
   itemCategoryList = async () => {
     const { categoryId } = this.props.match.params;
     this.setState({ loading: true });
@@ -272,7 +224,7 @@ class EditCategoryMenu extends React.Component {
     let rrr = await firebase
       .firestore()
       .collection("menuitems2")
-      .where("sessionId", "==", sessionId)
+      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       // .where("categoryId", "==", "bSZnzQSrsw8eeWwkeHc4")
       .where("categoryId", "array-contains-any", [categoryId])
@@ -354,7 +306,7 @@ class EditCategoryMenu extends React.Component {
     firebase
       .firestore()
       .collection("categories2")
-      .where("sessionId", "==", sessionId)
+      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .where("parentId", "==", id)
       .get()
@@ -413,7 +365,7 @@ class EditCategoryMenu extends React.Component {
     firebase
       .firestore()
       .collection("menuitems2")
-      .where("sessionId", "==", sessionId)
+      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .get()
       .then((querySnapshot) => {
@@ -557,7 +509,7 @@ class EditCategoryMenu extends React.Component {
         let result = await firebase
           .firestore()
           .collection("menuitems2")
-          .where("sessionId", "==", sessionId)
+          // .where("sessionId", "==", sessionId)
           .where("businessId", "==", businessId)
           .get()
           .then((snap) => {
@@ -705,7 +657,7 @@ class EditCategoryMenu extends React.Component {
       firebase
         .firestore()
         .collection("categories2")
-        .where("sessionId", "==", sessionId)
+        // .where("sessionId", "==", sessionId)
         .where("businessId", "==", businessId)
         .where("name", "==", e.target.value)
 

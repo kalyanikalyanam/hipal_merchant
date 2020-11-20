@@ -207,7 +207,7 @@ class AllEmplopyesRoles extends React.Component {
     await firebase
       .firestore()
       .collection("employee_positions")
-      .where("sessionId", "==", sessionId)
+      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .get()
       .then((querySnapshot) => {
@@ -247,7 +247,7 @@ class AllEmplopyesRoles extends React.Component {
     await firebase
       .firestore()
       .collection("merchant_users")
-      .where("sessionId", "==", sessionId)
+      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .where("role", "==", "Employee")
 
@@ -350,7 +350,7 @@ class AllEmplopyesRoles extends React.Component {
     await firebase
       .firestore()
       .collection("employee_userroles")
-      .where("sessionId", "==", sessionId)
+      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .get()
       .then((snapshot) => {
@@ -569,7 +569,7 @@ class AllEmplopyesRoles extends React.Component {
                             </div>
                           </div>
                           <div className="col-md-3">
-                            <div className="search_top">
+                            {/* <div className="search_top">
                               <a href="#" className="search_icon">
                                 <i className="fas fa-search"></i>
                               </a>
@@ -579,7 +579,7 @@ class AllEmplopyesRoles extends React.Component {
                                 name=""
                                 placeholder="Search..."
                               />
-                            </div>
+                            </div> */}
                           </div>
                           <div className="col-md-3 ">
                             <div className="profile_user">
@@ -602,7 +602,7 @@ class AllEmplopyesRoles extends React.Component {
                   <div className="row mt-30">
                     <div className="col-md-5 p-0">
                       <div className="overview-wrap">
-                        <div className="order_btns">
+                        {/* <div className="order_btns">
                           <button
                             type="button"
                             data-toggle="modal"
@@ -613,11 +613,21 @@ class AllEmplopyesRoles extends React.Component {
                               Add User Roles
                             </span>
                           </button>
+                        </div> */}
+                        <div className="order_btns">
+                          <span
+                            className="btn add_ord m-l-0 p_btn"
+                            data-toggle="modal"
+                            data-target="#add_employee_role"
+                          >
+                            <img src="/images/icon/add_plus_icon_w.svg" />
+                            Add User Roles
+                          </span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="col-md-7 p-0">
+                    {/* <div className="col-md-7 p-0">
                       <div className="track_box">
                         <div className="track_ord_block">
                           <div className="track_bg">
@@ -641,7 +651,7 @@ class AllEmplopyesRoles extends React.Component {
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
 
                   <div className="row mt-30">

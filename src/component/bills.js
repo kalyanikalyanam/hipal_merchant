@@ -159,7 +159,7 @@ class Bills extends React.Component {
                           </div>
                         </div>
                         <div className="col-md-3">
-                          <div className="search_top">
+                          {/* <div className="search_top">
                             <a href="#" className="search_icon">
                               <i className="fas fa-search"></i>
                             </a>
@@ -169,7 +169,7 @@ class Bills extends React.Component {
                               name=""
                               placeholder="Search..."
                             />
-                          </div>
+                          </div> */}
                         </div>
                         <div className="col-md-3 ">
                           <div className="profile_user">
@@ -208,7 +208,7 @@ class Bills extends React.Component {
                                     {/* <td>Order Id</td>
                                     <td>Timing</td>
                                     <td>Photo</td> */}
-                                    <td>Actions</td>
+                                    {/* <td>Actions</td> */}
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -236,14 +236,14 @@ class Bills extends React.Component {
                                               src="/images/icon/edit_icon_blue.svg"
                                               className="edit_delete"
                                             /> */}
-                                            <img
+                                            {/* <img
                                               onClick={this.deleteItem.bind(
                                                 this,
                                                 bill.billid
                                               )}
                                               src="/images/icon/delete_cross.svg"
                                               className="edit_delete"
-                                            />
+                                            /> */}
                                           </td>
                                         </tr>
                                       );
