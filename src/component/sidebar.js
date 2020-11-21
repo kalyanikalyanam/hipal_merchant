@@ -73,22 +73,16 @@ class Sidebar extends React.Component {
               </li> */}
 
               <li>
-                <Link to="/AddItemMenu" className="resturent">
+                <Link to="/ViewItemMenu" className="resturent">
                   My Restaurant
                 </Link>
               </li>
 
-              {sessionStorage.getItem("role") == "Merchant" ||
-              sessionStorage.getItem("employees") == "Read" ||
-              sessionStorage.getItem("employees") == "Read&Write" ? (
-                <li>
-                  <Link to="/AllEmployees" className="employees">
-                    Employees
-                  </Link>
-                </li>
-              ) : (
-                ""
-              )}
+              <li>
+                <Link to="/AllEmployees" className="employees">
+                  Employees
+                </Link>
+              </li>
 
               <li>
                 <Link to="/AllMessages" className="messages">
@@ -96,17 +90,11 @@ class Sidebar extends React.Component {
                 </Link>
               </li>
 
-              {sessionStorage.getItem("role") == "Merchant" ||
-              sessionStorage.getItem("bill") == "Read" ||
-              sessionStorage.getItem("bill") == "Read&Write" ? (
-                <li>
-                  <Link to="/Bills" className="bills">
-                    Bills
-                  </Link>
-                </li>
-              ) : (
-                ""
-              )}
+              <li>
+                <Link to="/Bills" className="bills">
+                  Bills
+                </Link>
+              </li>
 
               <li>
                 <Link to="/TablesList" className="tabels">

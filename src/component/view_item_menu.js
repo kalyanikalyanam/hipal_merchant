@@ -289,12 +289,12 @@ class ViewItemMenu extends React.Component {
                     <div className="col-lg-7">
                       <div className="row mt-30">
                         <div className="col-md-12 p-0">
-                          <Link to="/AddItemMenu">
+                          <Link to="/ViewItemMenu">
                             <span className="btn add_categoty_menu">
                               Items <span className="active"></span>
                             </span>
                           </Link>
-                          <Link to="/AddCategoryMenuDuplicate">
+                          <Link to="/CategoryList">
                             <span className="btn add_categoty_menu">
                               Category
                             </span>
@@ -308,13 +308,18 @@ class ViewItemMenu extends React.Component {
                           <div className="orders_menu">
                             <ul>
                               <li>
-                                <a href="/AddItemMenu">Add Items</a>
-                              </li>
-                              <li>
                                 <a href="/ViewItemMenu" className="activemenu">
                                   View Items
                                 </a>
                               </li>
+                              {sessionStorage.getItem("role") == "Merchant" ||
+                              sessionStorage.getItem("items") == "Yes" ? (
+                                <li>
+                                  <a href="/AddItemMenu">Add Items</a>
+                                </li>
+                              ) : (
+                                ""
+                              )}
                             </ul>
                           </div>
                         </div>
@@ -334,7 +339,13 @@ class ViewItemMenu extends React.Component {
                                   {/* <td>Color</td> */}
                                   {/* <td>Add Item</td> */}
                                   {/* <td>View Category</td> */}
-                                  <td>Actions</td>
+                                  {sessionStorage.getItem("role") ==
+                                    "Merchant" ||
+                                  sessionStorage.getItem("items") == "Yes" ? (
+                                    <td>Actions</td>
+                                  ) : (
+                                    ""
+                                  )}
                                 </tr>
                               </thead>
                               <tbody>
@@ -357,24 +368,31 @@ class ViewItemMenu extends React.Component {
                                               click
                                             </Link>
                                           </td> */}
-                                        <td>
-                                          <Link
-                                            to={`/EditItemMenu/${item.itemmenuid}`}
-                                          >
-                                            <img
-                                              src="images/icon/edit_icon_blue.svg"
+                                        {sessionStorage.getItem("role") ==
+                                          "Merchant" ||
+                                        sessionStorage.getItem("items") ==
+                                          "Yes" ? (
+                                          <td>
+                                            <Link
+                                              to={`/EditItemMenu/${item.itemmenuid}`}
+                                            >
+                                              <img
+                                                src="images/icon/edit_icon_blue.svg"
+                                                className="edit_delete"
+                                              />{" "}
+                                            </Link>
+                                            {/* <img
+                                              src="images/icon/delete_cross.svg"
+                                              onClick={this.deleteItem.bind(
+                                                this,
+                                                item.itemmenuid
+                                              )}
                                               className="edit_delete"
-                                            />{" "}
-                                          </Link>
-                                          {/* <img
-                                            src="images/icon/delete_cross.svg"
-                                            onClick={this.deleteItem.bind(
-                                              this,
-                                              item.itemmenuid
-                                            )}
-                                            className="edit_delete"
-                                          /> */}
-                                        </td>
+                                            /> */}
+                                          </td>
+                                        ) : (
+                                          ""
+                                        )}
                                       </tr>
                                     );
                                   })}
@@ -600,13 +618,20 @@ class ViewItemMenu extends React.Component {
                                           ) : (
                                             ""
                                           )}{" "}
-                                          <Link
-                                            to={`/EditItemMenu/${item.itemmenuid}`}
-                                          >
-                                            <span className="btn pull-right outer_edit_btn fill">
-                                              Edit
-                                            </span>
-                                          </Link>
+                                          {sessionStorage.getItem("role") ==
+                                            "Merchant" ||
+                                          sessionStorage.getItem("items") ==
+                                            "Yes" ? (
+                                            <Link
+                                              to={`/EditItemMenu/${item.itemmenuid}`}
+                                            >
+                                              <span className="btn pull-right outer_edit_btn fill">
+                                                Edit
+                                              </span>
+                                            </Link>
+                                          ) : (
+                                            ""
+                                          )}
                                         </p>
                                         <p className="item_name pl-0">
                                           {item.item_name}

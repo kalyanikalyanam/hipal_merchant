@@ -542,10 +542,10 @@ class ViewCategoryMenu extends React.Component {
 
                   <div className="row mt-30">
                     <div className="col-md-12 p-0">
-                      <Link to="/AddItemMenu">
+                      <Link to="/ViewItemMenu">
                         <span className="btn add_categoty_menu">Items</span>
                       </Link>
-                      <Link to="/AddCategoryMenuDuplicate">
+                      <Link to="/CategoryList">
                         <span className="btn add_categoty_menu">
                           <span className="active"></span>Category
                         </span>
@@ -558,14 +558,14 @@ class ViewCategoryMenu extends React.Component {
                     <div className="col-md-12 p-0">
                       <div className="orders_menu">
                         <ul>
-                          <li>
+                          {/* <li>
                             <Link to="/AddCategoryMenuDuplicate">
                               Add category
                             </Link>
                           </li>
                           <li>
                             <Link to="/CategoryList">View category</Link>
-                          </li>
+                          </li> */}
                         </ul>
                       </div>
                     </div>

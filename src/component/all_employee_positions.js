@@ -492,9 +492,9 @@ class AllEmployeePositions extends React.Component {
                             </a>
                           </li>
 
-                          <li>
+                          {/* <li>
                             <a href="/AllEmplopyesRoles">User roles</a>
-                          </li>
+                          </li> */}
                         </ul>
                       </div>
                     </div>

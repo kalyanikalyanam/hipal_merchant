@@ -441,7 +441,7 @@ class FloorList extends React.Component {
                           </button>
                         </div> */}
                         {sessionStorage.getItem("role") == "Merchant" ||
-                        sessionStorage.getItem("floors") == "Read&Write" ? (
+                        sessionStorage.getItem("addfloors") == "Yes" ? (
                           <div className="order_btns">
                             <span
                               className="btn add_ord m-l-0 p_btn"
@@ -512,14 +512,8 @@ class FloorList extends React.Component {
                               <td>S.no</td>
                               <td>Floor Name</td>
                               <td>Capacity</td>
-                              {sessionStorage.getItem("role") == "Merchant" ||
-                              sessionStorage.getItem("floors") ==
-                                "Read&Write" ||
-                              sessionStorage.getItem("floors") == "Read" ? (
-                                <td>Actions</td>
-                              ) : (
-                                ""
-                              )}
+
+                              <td>Actions</td>
                             </tr>
                           </thead>
                           <tbody id="myTable">
@@ -531,69 +525,50 @@ class FloorList extends React.Component {
 
                                     <td>{floor.floor_name}</td>
                                     <td>{floor.floor_capacity}</td>
-                                    {sessionStorage.getItem("role") ==
-                                      "Merchant" ||
-                                    sessionStorage.getItem("floors") ==
-                                      "Read&Write" ? (
-                                      <td>
-                                        <Link
-                                          to={`/EditFloor/${floor.floorId}`}
-                                        >
+                                    <td>
+                                      {sessionStorage.getItem("role") ==
+                                        "Merchant" ||
+                                      sessionStorage.getItem(
+                                        "editdeletefloors"
+                                      ) == "Yes" ? (
+                                        <>
+                                          <Link
+                                            to={`/EditFloor/${floor.floorId}`}
+                                          >
+                                            <img
+                                              src="images/icon/edit_icon_blue.svg"
+                                              className="edit_delete"
+                                            />
+                                          </Link>
+
                                           <img
-                                            src="images/icon/edit_icon_blue.svg"
+                                            src="images/icon/delete_cross.svg"
+                                            onClick={this.deleteItem.bind(
+                                              this,
+                                              floor.floorId
+                                            )}
                                             className="edit_delete"
                                           />
-                                        </Link>
-
-                                        <img
-                                          src="images/icon/delete_cross.svg"
-                                          onClick={this.deleteItem.bind(
+                                        </>
+                                      ) : (
+                                        ""
+                                      )}
+                                      <button
+                                        type="button"
+                                        data-toggle="modal"
+                                        data-target="#view_floor"
+                                      >
+                                        <span
+                                          className="btn view_order_btn_td"
+                                          onClick={this.viewFloor.bind(
                                             this,
                                             floor.floorId
                                           )}
-                                          className="edit_delete"
-                                        />
-                                        <button
-                                          type="button"
-                                          data-toggle="modal"
-                                          data-target="#view_floor"
                                         >
-                                          <span
-                                            className="btn view_order_btn_td"
-                                            onClick={this.viewFloor.bind(
-                                              this,
-                                              floor.floorId
-                                            )}
-                                          >
-                                            View Floor
-                                          </span>
-                                        </button>
-                                      </td>
-                                    ) : (
-                                      ""
-                                    )}
-                                    {sessionStorage.getItem("floors") ==
-                                    "Read" ? (
-                                      <td>
-                                        <button
-                                          type="button"
-                                          data-toggle="modal"
-                                          data-target="#view_floor"
-                                        >
-                                          <span
-                                            className="btn view_order_btn_td"
-                                            onClick={this.viewFloor.bind(
-                                              this,
-                                              floor.floorId
-                                            )}
-                                          >
-                                            View Floor
-                                          </span>
-                                        </button>
-                                      </td>
-                                    ) : (
-                                      ""
-                                    )}
+                                          View Floor
+                                        </span>
+                                      </button>
+                                    </td>
                                   </tr>
                                 );
                               })}

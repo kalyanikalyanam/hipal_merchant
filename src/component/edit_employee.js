@@ -229,13 +229,20 @@ class EditEmployee extends React.Component {
           employee_ifsc_code: employee.employee_ifsc_code,
           employee_upi_id: employee.employee_upi_id,
 
-          customers: employee.customers,
-          employees: employee.employees,
+          viewcustomersdetails: employee.viewcustomersdetails,
+          deleteeditcustomers: employee.deleteeditcustomers,
+          chatwithcustomers: employee.chatwithcustomers,
+          addemployees: employee.addemployees,
+          vieweditdeleteemployees: employee.vieweditdeleteemployees,
+
           categories: employee.categories,
           items: employee.items,
-          bill: employee.bill,
-          tables: employee.tables,
-          floors: employee.floors,
+
+          addtables: employee.addtables,
+          editdeletetables: employee.editdeletetables,
+          addfloors: employee.addfloors,
+          editdeletefloors: employee.editdeletefloors,
+
           settings: employee.settings,
           viewbill: employee.viewbill,
           settle: employee.settle,
@@ -358,38 +365,20 @@ class EditEmployee extends React.Component {
           username: username,
           businessId: businessId,
 
-          //   employee_name: this.state.employee_name,
-          //   employee_username: this.state.employee_username,
-          //   employee_password: this.state.employee_password,
-          //   employee_position: this.state.employee_position,
-          //   employee_division: this.state.employee_division,
-          //   employee_employement_type: this.state.employee_employement_type,
-          //   employee_emailaddress: this.state.employee_emailaddress,
-          //   employee_mobile_number: this.state.employee_mobile_number,
-          //   employee_photo: this.state.employee_photo,
-          //   employee_special_password: this.state.employee_special_password,
+          viewcustomersdetails: this.state.viewcustomersdetails,
 
-          //   employee_dateofbirth: this.state.employee_dateofbirth,
-          //   employee_bloodgroup: this.state.employee_bloodgroup,
-          //   employee_address: this.state.employee_address,
-          //   employee_emergency_contact_number: this.state
-          //     .employee_emergency_contact_number,
-          //   employee_adharcard: this.state.employee_adharcard,
+          deleteeditcustomers: this.state.deleteeditcustomers,
+          chatwithcustomers: this.state.chatwithcustomers,
+          addemployees: this.state.addemployees,
+          vieweditdeleteemployees: this.state.vieweditdeleteemployees,
 
-          //   employee_account_number: this.state.employee_account_number,
-          //   employee_ifsc_code: this.state.employee_ifsc_code,
-          //   employee_upi_id: this.state.employee_upi_id,
-
-          // sessionId: sessionId,
-          // username: username,
-          // businessId: businessId,
-          customers: this.state.customers,
-          employees: this.state.employees,
           categories: this.state.categories,
           items: this.state.items,
-          bill: this.state.bill,
-          tables: this.state.tables,
-          floors: this.state.floors,
+
+          addtables: this.state.addtables,
+          editdeletetables: this.state.editdeletetables,
+          addfloors: this.state.addfloors,
+          editdeletefloors: this.state.editdeletefloors,
           settings: this.state.settings,
           viewbill: this.state.viewbill,
           settle: this.state.settle,
@@ -501,7 +490,6 @@ class EditEmployee extends React.Component {
                   <div className="col-12 col-md-6">
                     <input
                       type="text"
-                      id="text-input"
                       name="employee_name"
                       value={this.state.employee_name}
                       onChange={this.onChange}
@@ -525,7 +513,6 @@ class EditEmployee extends React.Component {
                   <div className="col-12 col-md-6">
                     <input
                       type="text"
-                      id="text-input"
                       name="user_name"
                       value={this.state.user_name}
                       onChange={this.onChange}
@@ -549,7 +536,6 @@ class EditEmployee extends React.Component {
                   <div className="col-12 col-md-6">
                     <input
                       type="password"
-                      id="text-input"
                       name="password"
                       value={this.state.password}
                       onChange={this.onChange}
@@ -606,7 +592,6 @@ class EditEmployee extends React.Component {
                   <div className="col-12 col-md-6">
                     <input
                       type="text"
-                      id="text-input"
                       name="employee_division"
                       value={this.state.employee_division}
                       onChange={this.onChange}
@@ -632,7 +617,6 @@ class EditEmployee extends React.Component {
                   <div className="col-12 col-md-6">
                     <input
                       type="text"
-                      id="text-input"
                       name="employee_employement_type"
                       value={this.state.employee_employement_type}
                       onChange={this.onChange}
@@ -656,7 +640,6 @@ class EditEmployee extends React.Component {
                   <div className="col-12 col-md-6">
                     <input
                       type="text"
-                      id="text-input"
                       name="email_id"
                       value={this.state.email_id}
                       onChange={this.employeemailChange}
@@ -684,7 +667,6 @@ class EditEmployee extends React.Component {
                   <div className="col-12 col-md-6">
                     <input
                       type="number"
-                      id="text-input"
                       name="contact_number"
                       value={this.state.contact_number}
                       onChange={this.employeemobileChange}
@@ -757,7 +739,6 @@ class EditEmployee extends React.Component {
                   <div className="col-12 col-md-6">
                     <input
                       type="password"
-                      id="text-input"
                       name="employee_special_password"
                       value={this.state.employee_special_password}
                       onChange={this.onChange}
@@ -785,7 +766,6 @@ class EditEmployee extends React.Component {
                   <div className="col-12 col-md-6">
                     <input
                       type="date"
-                      id="text-input"
                       name="employee_dateofbirth"
                       value={this.state.employee_dateofbirth}
                       onChange={this.onChange}
@@ -886,7 +866,6 @@ class EditEmployee extends React.Component {
                   <div className="col-12 col-md-6">
                     <input
                       type="text"
-                      id="text-input"
                       name="employee_emergency_contact_number"
                       value={this.state.employee_emergency_contact_number}
                       onChange={this.onChange}
@@ -966,7 +945,6 @@ class EditEmployee extends React.Component {
                   <div className="col-12 col-md-6">
                     <input
                       type="text"
-                      id="text-input"
                       name="employee_account_number"
                       value={this.state.employee_account_number}
                       onChange={this.onChange}
@@ -990,7 +968,6 @@ class EditEmployee extends React.Component {
                   <div className="col-12 col-md-6">
                     <input
                       type="text"
-                      id="text-input"
                       name="employee_ifsc_code"
                       value={this.state.employee_ifsc_code}
                       onChange={this.onChange}
@@ -1014,7 +991,6 @@ class EditEmployee extends React.Component {
                   <div className="col-12 col-md-6">
                     <input
                       type="text"
-                      id="text-input"
                       name="employee_upi_id"
                       value={this.state.employee_upi_id}
                       onChange={this.onChange}
@@ -1036,7 +1012,7 @@ class EditEmployee extends React.Component {
 
               <div className="col-12 w-100-row">
                 <div className="row form-group user_roles_check">
-                  <div className="col col-md-6">
+                  {/* <div className="col col-md-6">
                     <label>Customers</label>
                   </div>
                   <div className="col col-md-6">
@@ -1075,82 +1051,192 @@ class EditEmployee extends React.Component {
                       this.state.customers,
                       "required"
                     )}
-                  </div>
+                  </div> */}
+
                   <div className="col col-md-6">
-                    <label>Employees</label>
+                    <label>View Customers Details</label>
                   </div>
                   <div className="col col-md-6">
                     <label>
                       <input
                         type="radio"
-                        name="employees"
-                        value="Read&Write"
+                        name="viewcustomersdetails"
+                        value="Yes"
                         onChange={this.onChange}
-                        checked={this.state.employees === "Read&Write"}
+                        checked={this.state.viewcustomersdetails === "Yes"}
                       />
-                      Read&Write
+                      Yes
                     </label>
                     <label style={{ paddingLeft: "20px" }}>
                       <input
                         type="radio"
-                        name="employees"
-                        value="Read"
+                        name="viewcustomersdetails"
+                        value="No"
                         onChange={this.onChange}
-                        checked={this.state.employees === "Read"}
+                        checked={this.state.viewcustomersdetails === "No"}
                       />
-                      Read
+                      No
                     </label>
-                    <label style={{ paddingLeft: "20px" }}>
-                      <input
-                        type="radio"
-                        name="employees"
-                        value="None"
-                        onChange={this.onChange}
-                        checked={this.state.employees === "None"}
-                      />
-                      None
-                    </label>
+
                     {this.validator.message(
-                      "Employees",
-                      this.state.employees,
+                      "View customers Details",
+                      this.state.viewcustomersdetails,
                       "required"
                     )}
                   </div>
 
                   <div className="col col-md-6">
-                    <label>Categories</label>
+                    <label>Delete/Edit Customers </label>
+                  </div>
+                  <div className="col col-md-6">
+                    <label>
+                      <input
+                        type="radio"
+                        name="deleteeditcustomers"
+                        value="Yes"
+                        onChange={this.onChange}
+                        checked={this.state.deleteeditcustomers === "Yes"}
+                      />
+                      Yes
+                    </label>
+                    <label style={{ paddingLeft: "20px" }}>
+                      <input
+                        type="radio"
+                        name="deleteeditcustomers"
+                        value="No"
+                        onChange={this.onChange}
+                        checked={this.state.deleteeditcustomers === "No"}
+                      />
+                      No
+                    </label>
+
+                    {this.validator.message(
+                      "Delete Edit Customers",
+                      this.state.deleteeditcustomers,
+                      "required"
+                    )}
+                  </div>
+
+                  <div className="col col-md-6">
+                    <label>Chat With Customers </label>
+                  </div>
+                  <div className="col col-md-6">
+                    <label>
+                      <input
+                        type="radio"
+                        name="chatwithcustomers"
+                        value="Yes"
+                        onChange={this.onChange}
+                        checked={this.state.chatwithcustomers === "Yes"}
+                      />
+                      Yes
+                    </label>
+                    <label style={{ paddingLeft: "20px" }}>
+                      <input
+                        type="radio"
+                        name="chatwithcustomers"
+                        value="No"
+                        onChange={this.onChange}
+                        checked={this.state.chatwithcustomers === "No"}
+                      />
+                      No
+                    </label>
+
+                    {this.validator.message(
+                      "Chat With Customers",
+                      this.state.chatwithcustomers,
+                      "required"
+                    )}
+                  </div>
+
+                  <div className="col col-md-6">
+                    <label>Add Employees</label>
+                  </div>
+                  <div className="col col-md-6">
+                    <label>
+                      <input
+                        type="radio"
+                        name="addemployees"
+                        value="Yes"
+                        onChange={this.onChange}
+                        checked={this.state.addemployees === "Yes"}
+                      />
+                      Yes
+                    </label>
+                    <label style={{ paddingLeft: "20px" }}>
+                      <input
+                        type="radio"
+                        name="addemployees"
+                        value="No"
+                        onChange={this.onChange}
+                        checked={this.state.addemployees === "No"}
+                      />
+                      No
+                    </label>
+
+                    {this.validator.message(
+                      "Add Employees",
+                      this.state.addemployees,
+                      "required"
+                    )}
+                  </div>
+                  <div className="col col-md-6">
+                    <label>View/Edit/Delete Employees</label>
+                  </div>
+                  <div className="col col-md-6">
+                    <label>
+                      <input
+                        type="radio"
+                        name="vieweditdeleteemployees"
+                        value="Yes"
+                        onChange={this.onChange}
+                        checked={this.state.vieweditdeleteemployees === "Yes"}
+                      />
+                      Yes
+                    </label>
+                    <label style={{ paddingLeft: "20px" }}>
+                      <input
+                        type="radio"
+                        name="vieweditdeleteemployees"
+                        value="No"
+                        onChange={this.onChange}
+                        checked={this.state.vieweditdeleteemployees === "No"}
+                      />
+                      No
+                    </label>
+
+                    {this.validator.message(
+                      "View/Edit/Delete Employees",
+                      this.state.vieweditdeleteemployees,
+                      "required"
+                    )}
+                  </div>
+
+                  <div className="col col-md-6">
+                    <label>Add/Edit/Delete Categories</label>
                   </div>
                   <div className="col col-md-6">
                     <label>
                       <input
                         type="radio"
                         name="categories"
-                        value="Read&Write"
+                        value="Yes"
                         onChange={this.onChange}
-                        checked={this.state.categories === "Read&Write"}
+                        checked={this.state.categories === "Yes"}
                       />
-                      Read&Write
+                      Yes
                     </label>
                     <label style={{ paddingLeft: "20px" }}>
                       <input
                         type="radio"
                         name="categories"
-                        value="Read"
+                        value="No"
                         onChange={this.onChange}
-                        checked={this.state.categories === "Read"}
+                        checked={this.state.categories === "No"}
                       />
-                      Read
+                      No
                     </label>
-                    <label style={{ paddingLeft: "20px" }}>
-                      <input
-                        type="radio"
-                        name="categories"
-                        value="None"
-                        onChange={this.onChange}
-                        checked={this.state.categories === "None"}
-                      />
-                      None
-                    </label>
+
                     {this.validator.message(
                       "Categories",
                       this.state.categories,
@@ -1159,39 +1245,30 @@ class EditEmployee extends React.Component {
                   </div>
 
                   <div className="col col-md-6">
-                    <label>Items</label>
+                    <label>Add/Edit/Delete Items</label>
                   </div>
                   <div className="col col-md-6">
                     <label>
                       <input
                         type="radio"
                         name="items"
-                        value="Read&Write"
+                        value="Yes"
                         onChange={this.onChange}
-                        checked={this.state.items === "Read&Write"}
+                        checked={this.state.items === "Yes"}
                       />
-                      Read&Write
+                      Yes
                     </label>
                     <label style={{ paddingLeft: "20px" }}>
                       <input
                         type="radio"
                         name="items"
-                        value="Read"
+                        value="No"
                         onChange={this.onChange}
-                        checked={this.state.items === "Read"}
+                        checked={this.state.items === "No"}
                       />
-                      Read
+                      No
                     </label>
-                    <label style={{ paddingLeft: "20px" }}>
-                      <input
-                        type="radio"
-                        name="items"
-                        value="None"
-                        onChange={this.onChange}
-                        checked={this.state.items === "None"}
-                      />
-                      None
-                    </label>
+
                     {this.validator.message(
                       "Items",
                       this.state.items,
@@ -1200,124 +1277,127 @@ class EditEmployee extends React.Component {
                   </div>
 
                   <div className="col col-md-6">
-                    <label>Bill</label>
+                    <label>Add Tables</label>
                   </div>
                   <div className="col col-md-6">
                     <label>
                       <input
                         type="radio"
-                        name="bill"
-                        value="Read&Write"
+                        name="addtables"
+                        value="Yes"
                         onChange={this.onChange}
-                        checked={this.state.bill === "Read&Write"}
+                        checked={this.state.addtables === "Yes"}
                       />
-                      Read&Write
+                      Yes
                     </label>
                     <label style={{ paddingLeft: "20px" }}>
                       <input
                         type="radio"
-                        name="bill"
-                        value="Read"
+                        name="addtables"
+                        value="No"
                         onChange={this.onChange}
-                        checked={this.state.bill === "Read"}
+                        checked={this.state.addtables === "No"}
                       />
-                      Read
+                      No
                     </label>
-                    <label style={{ paddingLeft: "20px" }}>
-                      <input
-                        type="radio"
-                        name="bill"
-                        value="None"
-                        onChange={this.onChange}
-                        checked={this.state.bill === "None"}
-                      />
-                      None
-                    </label>
+
                     {this.validator.message(
-                      "Bill",
-                      this.state.bill,
+                      "Add Tables",
+                      this.state.addtables,
+                      "required"
+                    )}
+                  </div>
+                  <div className="col col-md-6">
+                    <label>Edit/Delete Tables</label>
+                  </div>
+                  <div className="col col-md-6">
+                    <label>
+                      <input
+                        type="radio"
+                        name="editdeletetables"
+                        value="Yes"
+                        onChange={this.onChange}
+                        checked={this.state.editdeletetables === "Yes"}
+                      />
+                      Yes
+                    </label>
+                    <label style={{ paddingLeft: "20px" }}>
+                      <input
+                        type="radio"
+                        name="editdeletetables"
+                        value="No"
+                        onChange={this.onChange}
+                        checked={this.state.editdeletetables === "No"}
+                      />
+                      No
+                    </label>
+
+                    {this.validator.message(
+                      "Edit/Delete Tables",
+                      this.state.editdeletetables,
                       "required"
                     )}
                   </div>
 
                   <div className="col col-md-6">
-                    <label>Tables</label>
+                    <label>Add Floors</label>
                   </div>
                   <div className="col col-md-6">
                     <label>
                       <input
                         type="radio"
-                        name="tables"
-                        value="Read&Write"
+                        name="addfloors"
+                        value="Yes"
                         onChange={this.onChange}
-                        checked={this.state.tables === "Read&Write"}
+                        checked={this.state.addfloors === "Yes"}
                       />
-                      Read&Write
+                      Yes
                     </label>
                     <label style={{ paddingLeft: "20px" }}>
                       <input
                         type="radio"
-                        name="tables"
-                        value="Read"
+                        name="addfloors"
+                        value="No"
                         onChange={this.onChange}
-                        checked={this.state.tables === "Read"}
+                        checked={this.state.addfloors === "No"}
                       />
-                      Read
+                      No
                     </label>
-                    <label style={{ paddingLeft: "20px" }}>
-                      <input
-                        type="radio"
-                        name="tables"
-                        value="None"
-                        onChange={this.onChange}
-                        checked={this.state.tables === "None"}
-                      />
-                      None
-                    </label>
+
                     {this.validator.message(
-                      "Tables",
-                      this.state.tables,
+                      "Add Floors",
+                      this.state.addfloors,
                       "required"
                     )}
                   </div>
-
                   <div className="col col-md-6">
-                    <label>Floors</label>
+                    <label>Edit/Delete Floors</label>
                   </div>
                   <div className="col col-md-6">
                     <label>
                       <input
                         type="radio"
-                        name="floors"
-                        value="Read&Write"
+                        name="editdeletefloors"
+                        value="Yes"
                         onChange={this.onChange}
-                        checked={this.state.floors === "Read&Write"}
+                        checked={this.state.editdeletefloors === "Yes"}
                       />
-                      Read&Write
+                      Yes
                     </label>
                     <label style={{ paddingLeft: "20px" }}>
                       <input
                         type="radio"
-                        name="floors"
-                        value="Read"
+                        name="editdeletefloors"
+                        value="No"
                         onChange={this.onChange}
-                        checked={this.state.floors === "Read"}
+                        checked={this.state.editdeletefloors === "No"}
                       />
-                      Read
+                      No
                     </label>
-                    <label style={{ paddingLeft: "20px" }}>
-                      <input
-                        type="radio"
-                        name="floors"
-                        value="None"
-                        onChange={this.onChange}
-                        checked={this.state.floors === "None"}
-                      />
-                      None
-                    </label>
+
                     {this.validator.message(
-                      "Floors",
-                      this.state.floors,
+                      "Edit/Delete Floors",
+                      this.state.editdeletefloors,
                       "required"
                     )}
                   </div>

@@ -62,7 +62,7 @@ const Menu = () => {
           };
           data.push(Products);
         });
-        setPermanentItemList(data)
+        setPermanentItemList(data);
       });
   };
   const getCategories = () => {
@@ -90,7 +90,7 @@ const Menu = () => {
 
           data.push(GSTData);
         });
-        setPermanentCategoryList(data)
+        setPermanentCategoryList(data);
       })
       .catch((err) => {
         console.log(err);
@@ -98,90 +98,109 @@ const Menu = () => {
   };
 
   const handleBackClick = () => {
-    let newSelected = selected
-    newSelected.pop()
-    setSelected(newSelected)
-    if(newSelected.length !== 0){
-      let newCategories = permanentCategoryList.filter(cat => cat.parentId === newSelected[newSelected.length - 1].categoryId) 
-      let newItems = permanentItemList
+    let newSelected = selected;
+    newSelected.pop();
+    setSelected(newSelected);
+    if (newSelected.length !== 0) {
+      let newCategories = permanentCategoryList.filter(
+        (cat) => cat.parentId === newSelected[newSelected.length - 1].categoryId
+      );
+      let newItems = permanentItemList;
       for (var i; i < newSelected.length; i++) {
-        var cat = selected[i]
-        newItems = newItems.fill(item => item.categoryId.includes(cat.categoryId))
+        var cat = selected[i];
+        newItems = newItems.fill((item) =>
+          item.categoryId.includes(cat.categoryId)
+        );
       }
-      setCategoryList(newCategories)
-      setItemsList(newItems)
+      setCategoryList(newCategories);
+      setItemsList(newItems);
     } else {
-      handleHome()
+      handleHome();
     }
-  }
+  };
   const handleCrumbClick = (index) => {
-    let newSelected = []
+    let newSelected = [];
     for (var i = 0; i <= index; i++) {
-      newSelected.push(selected[i])
+      newSelected.push(selected[i]);
     }
-    console.log(newSelected)
-    let newCategories = permanentCategoryList.filter(cat => cat.parentId === newSelected[newSelected.length - 1].categoryId)
-    let newItems = permanentItemList
+    console.log(newSelected);
+    let newCategories = permanentCategoryList.filter(
+      (cat) => cat.parentId === newSelected[newSelected.length - 1].categoryId
+    );
+    let newItems = permanentItemList;
     for (var i; i < newSelected.length; i++) {
-      var cat = newSelected[i]
-      newItems = newItems.filter(item => item.categoryId.includes(cat.categoryId))
+      var cat = newSelected[i];
+      newItems = newItems.filter((item) =>
+        item.categoryId.includes(cat.categoryId)
+      );
     }
-    console.log(newCategories)
-    console.log(newItems)
-    setCategoryList(newCategories)
-    setItemsList(newItems)
-    setSelected(newSelected)
-  }
+    console.log(newCategories);
+    console.log(newItems);
+    setCategoryList(newCategories);
+    setItemsList(newItems);
+    setSelected(newSelected);
+  };
 
   const handleHome = () => {
-      let newCategories = permanentCategoryList.filter(category => category.parentId === "")
-      setCategoryList(newCategories)
-      let newItems = permanentItemList.filter(item => item.categoryId === "")
-      setItemsList(newItems)
-      setSelected([])
-  }
+    let newCategories = permanentCategoryList.filter(
+      (category) => category.parentId === ""
+    );
+    setCategoryList(newCategories);
+    let newItems = permanentItemList.filter((item) => item.categoryId === "");
+    setItemsList(newItems);
+    setSelected([]);
+  };
   const handleCategoryClick = (category) => {
-    const id = category.categoryId
-    let newSelected = selected.concat(category)
-    setSelected(newSelected)
-    let newCategories = permanentCategoryList.filter(cat => cat.parentId === id)
-    let newItems = permanentItemList 
-    for(var i; i < selected.length; i++){
-      var cat = selected[i]
-      newItems = newItems.filter(item => item.categoryId.includes(cat.categoryId))
+    const id = category.categoryId;
+    let newSelected = selected.concat(category);
+    setSelected(newSelected);
+    let newCategories = permanentCategoryList.filter(
+      (cat) => cat.parentId === id
+    );
+    let newItems = permanentItemList;
+    for (var i; i < selected.length; i++) {
+      var cat = selected[i];
+      newItems = newItems.filter((item) =>
+        item.categoryId.includes(cat.categoryId)
+      );
     }
-    setCategoryList(newCategories)
-    setItemsList(newItems)
+    setCategoryList(newCategories);
+    setItemsList(newItems);
   };
 
   useEffect(() => {
-    console.log(selected)
-  }, [selected])
+    console.log(selected);
+  }, [selected]);
   useEffect(() => {
-      handleHome()
+    handleHome();
   }, [permanentItemList, permanentCategoryList]);
 
   useEffect(() => {
     getItems();
     getCategories();
-  }, [])
+  }, []);
   return (
     <div className="row m-t-20">
       <div className="col-md-12 menu_category_block">
         <div className="category_menu_search">
           <span className="cate_menu" onClick={handleHome}>
-            <a href="#" className="current" >
+            <a href="#" className="current">
               Menu
             </a>{" "}
-            {selected.length !== 0 && selected.map((cat, index) => {
-              return(
-              <span key={index} onClick={() => {handleCrumbClick(index)}}>
-                <i className="fa fa-caret-right" aria-hidden="true"></i>
-                <a>{cat.name}{" "}</a>
-                </span>
-              )
-            })}
-
+            {selected.length !== 0 &&
+              selected.map((cat, index) => {
+                return (
+                  <span
+                    key={index}
+                    onClick={() => {
+                      handleCrumbClick(index);
+                    }}
+                  >
+                    <i className="fa fa-caret-right" aria-hidden="true"></i>
+                    <a>{cat.name} </a>
+                  </span>
+                );
+              })}
           </span>
           <span className="cate_search">
             <input type="text" id="myInput1" placeholder="Search" />
@@ -199,16 +218,15 @@ const Menu = () => {
         <div className="cate_images_blk">
           <div className="row">
             {categoryList &&
-              categoryList
-                .map((category, index) => {
-                  return (
-                    <CategoryItem
-                      key={index}
-                      item={category}
-                      onClick={handleCategoryClick}
-                    />
-                  );
-                })}
+              categoryList.map((category, index) => {
+                return (
+                  <CategoryItem
+                    key={index}
+                    item={category}
+                    onClick={handleCategoryClick}
+                  />
+                );
+              })}
             {itemList &&
               itemList.map((item, index) => {
                 return <MenuItem key={index} item={item} />;

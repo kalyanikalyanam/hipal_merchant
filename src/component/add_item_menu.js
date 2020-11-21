@@ -732,7 +732,7 @@ class AddItemMenu extends React.Component {
         item_tax: this.state.item_tax,
 
         sessionId: sessionId,
-        status: this.state.status,
+        status: "Active",
         username: username,
 
         portions: this.state.portions,
@@ -940,13 +940,13 @@ class AddItemMenu extends React.Component {
 
                   <div className="row mt-30">
                     <div className="col-md-12 p-0">
-                      <Link to="/AddItemMenu">
+                      <Link to="/ViewItemMenu">
                         <span className="btn add_categoty_menu">
                           {" "}
                           <span className="active"></span> items
                         </span>
                       </Link>
-                      <Link to="/AddCategoryMenuDuplicate">
+                      <Link to="/CategoryList">
                         <span className="btn add_categoty_menu">Category</span>
                       </Link>
 
@@ -960,13 +960,18 @@ class AddItemMenu extends React.Component {
                         <div className="orders_menu">
                           <ul>
                             <li>
-                              <a href="/AddItemMenu" className="activemenu">
-                                Add Items
-                              </a>
-                            </li>
-                            <li>
                               <a href="/ViewItemMenu">View Items</a>
                             </li>
+                            {sessionStorage.getItem("role") == "Merchant" ||
+                            sessionStorage.getItem("items") == "Yes" ? (
+                              <li>
+                                <a href="/AddItemMenu" className="activemenu">
+                                  Add Items
+                                </a>
+                              </li>
+                            ) : (
+                              ""
+                            )}
                           </ul>
                         </div>
                       </div>
@@ -1159,21 +1164,22 @@ class AddItemMenu extends React.Component {
                                     </label>
                                   </div>
                                   <div className="col-12 col-md-8">
-                                    <select
+                                    <input
                                       name="status"
-                                      onChange={this.onChange}
-                                      value={this.state.status}
+                                      value="Active"
+                                      // onChange={this.onChange}
+
                                       className="form-control"
-                                    >
-                                      <option value="select">select</option>
+                                    />
+                                    {/* <option value="select">select</option>
                                       <option value="Active">Active</option>
                                       <option value="InActive">InActive</option>
-                                    </select>
-                                    {this.validator.message(
+                                    </select> */}
+                                    {/* {this.validator.message(
                                       "status",
                                       this.state.status,
                                       "required"
-                                    )}
+                                    )} */}
                                   </div>
                                 </div>
                               </div>
@@ -1380,11 +1386,11 @@ class AddItemMenu extends React.Component {
                                       placeholder="Tax in %"
                                       className="form-control"
                                     />
-                                    {this.validator.message(
+                                    {/* {this.validator.message(
                                       "Tax",
                                       this.state.item_tax,
                                       "required"
-                                    )}
+                                    )} */}
                                   </div>
                                 </div>
 
@@ -1518,7 +1524,7 @@ Choose Category
                                           </div>
                                           <div className="col-12 col-md-8">
                                             <input
-                                              type="text"
+                                              type="number"
                                               id="text-input"
                                               name="price"
                                               value={portions_details.price}

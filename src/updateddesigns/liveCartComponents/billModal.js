@@ -2,12 +2,12 @@ import { db } from "../../config";
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { tableContext, dispatchContext, billPageContext } from "./contexts";
 import BillItem from "./billItem";
-import {useReactToPrint} from 'react-to-print'
+import { useReactToPrint } from "react-to-print";
 
 const BillModal = React.forwardRef(({ data }, ref) => {
   const [businessLogo, setBusinessLogo] = useState();
   const [bill, setBill] = useState();
-  const [total, setTotal] = useState(0)
+  const [total, setTotal] = useState(0);
   const [gst, setGst] = useState(8.75);
   const [cGst, setCgst] = useState(8.75);
   const dispatch = useContext(dispatchContext);
@@ -16,9 +16,9 @@ const BillModal = React.forwardRef(({ data }, ref) => {
   const [employee, setEmployee] = useState();
   const table = useContext(tableContext);
   useEffect(() => {
-    setGst(data.bill.gst)
-    setCgst(data.bill.cGst)
-    setTotal(data.bill.totalPrice)
+    setGst(data.bill.gst);
+    setCgst(data.bill.cGst);
+    setTotal(data.bill.totalPrice);
     setBill(data.bill.bill);
     setEmployee(data.bill.employee);
     setBusinessLogo(sessionStorage.getItem("BusinessLogo"));
@@ -251,20 +251,26 @@ const BillModal = React.forwardRef(({ data }, ref) => {
       </div>{" "}
     </div>
   );
-})
+});
 
-const Print = ({data}) => {
-  const componentRef = useRef()
+const Print = ({ data }) => {
+  const componentRef = useRef();
   const [isSettle, setIsSettle] = useState(false);
+  const dispatch = useContext(dispatchContext);
   useEffect(() => {
-    setIsSettle(data.isSettle)
-  }, [])
+    setIsSettle(data.isSettle);
+  }, []);
   const handlePrint = useReactToPrint({
-    content: () => componentRef.current
-  })
+    content: () => componentRef.current,
+  });
+  const handleClose = () => {
+    dispatch({
+      type: "billModalHide",
+    });
+  };
   return (
     <>
-      <BillModal data={data} ref ={componentRef}/>
+      <BillModal data={data} ref={componentRef} />
       {isSettle && (
         <div className="w-100-row kotsettle_btn">
           <span className="btn add_ord" onClick={handlePrint}>
@@ -272,13 +278,13 @@ const Print = ({data}) => {
               Print Bill
             </a>
           </span>
-          <span className="btn view_ord">
-            Close
+          <span className="btn view_ord" onClick={handleClose}>
+            Cancel
           </span>
         </div>
       )}
-      </>
-  )
-}
+    </>
+  );
+};
 
 export default Print;

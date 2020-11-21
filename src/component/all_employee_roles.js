@@ -666,11 +666,11 @@ class AllEmplopyesRoles extends React.Component {
                             <a href="/AllEmployeePositions">Positions</a>
                           </li>
 
-                          <li>
+                          {/* <li>
                             <a href="/AllEmplopyesRoles" className="activemenu">
                               User roles
                             </a>
-                          </li>
+                          </li> */}
                         </ul>
                       </div>
                     </div>
