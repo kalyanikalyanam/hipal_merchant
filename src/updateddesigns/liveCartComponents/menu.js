@@ -59,7 +59,7 @@ const Menu = () => {
           };
           data.push(Products);
         });
-        setPermanentItemList(data)
+        setPermanentItemList(data);
       });
   };
   const getCategories = () => {
@@ -86,7 +86,7 @@ const Menu = () => {
 
           data.push(GSTData);
         });
-        setPermanentCategoryList(data)
+        setPermanentCategoryList(data);
       })
       .catch((err) => {
         console.log(err);
@@ -104,16 +104,16 @@ const Menu = () => {
         var cat = selected[i]
         newItems = newItems.filter(item => item.categoryId.includes(cat.categoryId))
       }
-      setCategoryList(newCategories)
-      setItemsList(newItems)
+      setCategoryList(newCategories);
+      setItemsList(newItems);
     } else {
-      handleHome()
+      handleHome();
     }
-  }
+  };
   const handleCrumbClick = (index) => {
-    let newSelected = []
+    let newSelected = [];
     for (var i = 0; i <= index; i++) {
-      newSelected.push(selected[i])
+      newSelected.push(selected[i]);
     }
     let newCategories = permanentCategoryList.filter(cat => cat.parentId === newSelected[newSelected.length - 1].categoryId)
     let newItems = permanentItemList
@@ -194,16 +194,15 @@ const Menu = () => {
         <div className="cate_images_blk">
           <div className="row">
             {categoryList &&
-              categoryList
-                .map((category, index) => {
-                  return (
-                    <CategoryItem
-                      key={index}
-                      item={category}
-                      onClick={handleCategoryClick}
-                    />
-                  );
-                })}
+              categoryList.map((category, index) => {
+                return (
+                  <CategoryItem
+                    key={index}
+                    item={category}
+                    onClick={handleCategoryClick}
+                  />
+                );
+              })}
             {itemList &&
               itemList.map((item, index) => {
                 return <MenuItem key={index} item={item} />;

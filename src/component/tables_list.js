@@ -521,16 +521,21 @@ class TablesList extends React.Component {
                             </span>
                           </button>
                         </div> */}
-                        <div className="order_btns">
-                          <span
-                            className="btn add_ord m-l-0 p_btn"
-                            data-toggle="modal"
-                            data-target="#add_table"
-                          >
-                            <img src="/images/icon/add_plus_icon_w.svg" />
-                            Add Tables
-                          </span>
-                        </div>
+                        {sessionStorage.getItem("role") == "Merchant" ||
+                        sessionStorage.getItem("addtables") == "Yes" ? (
+                          <div className="order_btns">
+                            <span
+                              className="btn add_ord m-l-0 p_btn"
+                              data-toggle="modal"
+                              data-target="#add_table"
+                            >
+                              <img src="/images/icon/add_plus_icon_w.svg" />
+                              Add Tables
+                            </span>
+                          </div>
+                        ) : (
+                          ""
+                        )}
                       </div>
                     </div>
 
@@ -590,6 +595,7 @@ class TablesList extends React.Component {
                               <td>Table Capacity</td>
                               <td>Table floor</td>
                               <td>Table Icon</td>
+
                               <td>Actions</td>
                             </tr>
                           </thead>
@@ -606,22 +612,34 @@ class TablesList extends React.Component {
                                     <td>
                                       <img src={table.table_icon} width="15%" />
                                     </td>
-
                                     <td>
-                                      <Link to={`/EditTable/${table.tableId}`}>
-                                        <img
-                                          src="images/icon/edit_icon_blue.svg"
-                                          className="edit_delete"
-                                        />
-                                      </Link>
-                                      <img
-                                        src="images/icon/delete_cross.svg"
-                                        onClick={this.deleteItem.bind(
-                                          this,
-                                          table.tableId
-                                        )}
-                                        className="edit_delete"
-                                      />
+                                      {sessionStorage.getItem("role") ==
+                                        "Merchant" ||
+                                      sessionStorage.getItem(
+                                        "editdeletetables"
+                                      ) == "Yes" ? (
+                                        <>
+                                          <Link
+                                            to={`/EditTable/${table.tableId}`}
+                                          >
+                                            <img
+                                              src="images/icon/edit_icon_blue.svg"
+                                              className="edit_delete"
+                                            />
+                                          </Link>
+
+                                          <img
+                                            src="images/icon/delete_cross.svg"
+                                            onClick={this.deleteItem.bind(
+                                              this,
+                                              table.tableId
+                                            )}
+                                            className="edit_delete"
+                                          />
+                                        </>
+                                      ) : (
+                                        ""
+                                      )}
                                       <button
                                         type="button"
                                         data-toggle="modal"

@@ -731,7 +731,7 @@ class EditCategoryMenu extends React.Component {
                               </div>
                             </div>
                             <div className="col-md-3">
-                              <div className="search_top">
+                              {/* <div className="search_top">
                                 <a href="#" className="search_icon">
                                   <i className="fas fa-search"></i>
                                 </a>
@@ -741,7 +741,7 @@ class EditCategoryMenu extends React.Component {
                                   name=""
                                   placeholder="Search..."
                                 />
-                              </div>
+                              </div> */}
                             </div>
                             <div className="col-md-3 ">
                               <div className="profile_user">
@@ -763,10 +763,10 @@ class EditCategoryMenu extends React.Component {
 
                     <div className="row mt-30">
                       <div className="col-md-12 p-0">
-                        <Link to="/AddItemMenu">
+                        <Link to="/ViewItemMenu">
                           <span className="btn add_categoty_menu">Items</span>
                         </Link>
-                        <Link to="/AddCategoryMenuDuplicate">
+                        <Link to="/CategoryList">
                           <span className="btn add_categoty_menu">
                             <span className="active"></span>Category
                           </span>
@@ -779,14 +779,14 @@ class EditCategoryMenu extends React.Component {
                       <div className="col-md-12 p-0">
                         <div className="orders_menu">
                           <ul>
-                            <li>
+                            {/* <li>
                               <Link to="/AddCategoryMenuDuplicate">
                                 Add category
                               </Link>
                             </li>
                             <li>
                               <Link to="/CategoryList">View category</Link>
-                            </li>
+                            </li> */}
                           </ul>
                         </div>
                       </div>

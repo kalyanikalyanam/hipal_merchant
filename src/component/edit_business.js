@@ -352,9 +352,9 @@ class EditBusiness extends React.Component {
                 <li><a href="#"  className="bills">Bills</a></li>
                 <li><a href="TablesList"  className="tabels">Tabels</a></li> */}
                 <li>
-                  <a href="#" className="settings">
-                    Settings
-                  </a>
+                  <Link to="/BusinessList" className="settings">
+                    Business List
+                  </Link>
                 </li>
               </ul>
             </nav>

@@ -1,5 +1,5 @@
-import React, { useContext,useEffect, useState } from "react";
-import {db} from '../../config'
+import React, { useContext, useEffect, useState } from "react";
+import { db } from "../../config";
 import BillItem from "./billItem";
 import {
   BalanceContext,
@@ -20,27 +20,27 @@ const BillPage = () => {
   const balance = useContext(BalanceContext);
   const bill = useContext(billContext);
   const employee = useContext(EmployeeContext);
-  const handleSettle = async() => {
+  const handleSettle = async () => {
     let newBillPage = bill;
     newBillPage.id = bill.id;
     newBillPage.bill = bill;
     newBillPage.totalPrice = total;
     newBillPage.employee = employee;
-    newBillPage.gst = gst
-    newBillPage.cGst = cGst
+    newBillPage.gst = gst;
+    newBillPage.cGst = cGst;
     let Bill = {
       settle_by: employee,
       billId: bill.id,
       billAmount: total,
       billTiming: new Date().toLocaleString(),
       table: table.table_name,
-      businessId: table.businessId
+      businessId: table.businessId,
     };
     dispatch({
       type: "billModalShow",
       isSettle: true,
       bill: newBillPage,
-    });    
+    });
     try {
       const temp = table.status.split(" ");
       var Table2;
@@ -112,8 +112,8 @@ const BillPage = () => {
     newBillPage.bill = bill;
     newBillPage.totalPrice = total;
     newBillPage.employee = employee;
-    newBillPage.gst = gst
-    newBillPage.cGst = cGst
+    newBillPage.gst = gst;
+    newBillPage.cGst = cGst;
     dispatch({
       type: "billModalShow",
       isSettle: false,
@@ -299,14 +299,21 @@ const BillPage = () => {
               Bill View
             </a>
           </span>
-          {balance === 0 && bill.length !== 0 ? (
-            <span className="btn view_ord" onClick={handleSettle}>
-              <a href="#">Settle</a>
-            </span>
+          {sessionStorage.getItem("role") == "Merchant" ||
+          sessionStorage.getItem("settle") == "Yes" ? (
+            <>
+              {balance === 0 && bill.length !== 0 ? (
+                <span className="btn view_ord" onClick={handleSettle}>
+                  <a href="#">Settle</a>
+                </span>
+              ) : (
+                <span className="btn view_ord">
+                  <a href="#">Settle</a>
+                </span>
+              )}
+            </>
           ) : (
-            <span className="btn view_ord">
-              <a href="#">Settle</a>
-            </span>
+            ""
           )}
         </div>
       </div>

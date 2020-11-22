@@ -764,71 +764,6 @@ class EditItemMenu extends React.Component {
     });
   };
 
-  // handleSubmit = async (event) => {
-  //   event.preventDefault();
-  //   if (this.validator.allValid()) {
-  //     var sessionId = sessionStorage.getItem("RoleId");
-  //     var username = sessionStorage.getItem("username");
-  //     var businessId = sessionStorage.getItem("businessId");
-  //     let dbCon = await firebase.firestore().collection("menuitems2");
-  //     var key = Math.round(new Date().getTime() / 1000);
-
-  //     dbCon.add({
-  //       item_unique_id: key,
-
-  //       item_id: this.state.item_id,
-  //       item_name: this.state.item_name,
-  //       item_description: this.state.item_description,
-  //       item_halal: this.state.item_halal,
-  //       item_image: this.state.item_image,
-  //       item_points: this.state.item_points,
-
-  //       station_name: this.state.selectedOption1,
-  //       // station_name: this.state.station_name,
-  //       // item_restaurant_id:this.state.item_restaurant_id,
-  //       item_type: this.state.item_type,
-  //       item_hash_tags: this.state.item_hash_tags,
-  //       item_price: this.state.item_price,
-  //       item_tax: this.state.item_tax,
-
-  //       sessionId: sessionId,
-  //       status: this.state.status,
-  //       username: username,
-
-  //       portions: this.state.portions,
-  //       portions_details: this.state.portions_details,
-
-  //       advance: this.state.advance,
-  //       carbs: this.state.carbs,
-  //       protien: this.state.protien,
-  //       fat: this.state.fat,
-  //       item_video: this.state.item_video,
-  //       item_multiple_image: this.state.downloadURLs,
-
-  //       extra: this.state.extra,
-  //       healthytag: this.state.healthytag,
-  //       bestsellertag: this.state.bestsellertag,
-
-  //       recommend: this.state.recommend,
-  //       // recommenditem:this.state. recommenditem,
-  //       recommendations: this.state.recommendations,
-
-  //       created_on: this.state.created_on,
-  //       bestrecommendation: "UnSelect",
-
-  //       businessId: businessId,
-
-  //       categoryId: this.state.parentId,
-  //       // categoryId: this.state.CategoryList,
-  //     });
-  //     // window.location.href="/ViewItemMenu";
-  //     this.props.history.push("/ViewItemMenu");
-  //   } else {
-  //     this.validator.showMessages();
-  //     this.forceUpdate();
-  //   }
-  // };
-
   handleSubmit = async (event) => {
     event.preventDefault();
     if (this.validator.allValid()) {
@@ -1053,7 +988,7 @@ class EditItemMenu extends React.Component {
                             </div>
                           </div>
                           <div className="col-md-3">
-                            <div className="search_top">
+                            {/* <div className="search_top">
                               <a href="#" className="search_icon">
                                 <i className="fas fa-search"></i>
                               </a>
@@ -1063,7 +998,7 @@ class EditItemMenu extends React.Component {
                                 name=""
                                 placeholder="Search..."
                               />
-                            </div>
+                            </div> */}
                           </div>
                           <div className="col-md-3 ">
                             <div className="profile_user">
@@ -1085,13 +1020,13 @@ class EditItemMenu extends React.Component {
 
                   <div className="row mt-30">
                     <div className="col-md-12 p-0">
-                      <Link to="/AddItemMenu">
+                      <Link to="/ViewItemMenu">
                         <span className="btn add_categoty_menu">
                           {" "}
                           <span className="active"></span> items
                         </span>
                       </Link>
-                      <Link to="/AddCategoryMenuDuplicate">
+                      <Link to="/CategoryList">
                         <span className="btn add_categoty_menu">Category</span>
                       </Link>
 
@@ -1104,14 +1039,14 @@ class EditItemMenu extends React.Component {
                       <div className="col-md-7 p-0">
                         <div className="orders_menu">
                           <ul>
-                            <li>
+                            {/* <li>
                               <a href="/AddItemMenu" className="activemenu">
                                 Add Items
                               </a>
                             </li>
                             <li>
                               <a href="/ViewItemMenu">View Items</a>
-                            </li>
+                            </li> */}
                           </ul>
                         </div>
                       </div>
@@ -1529,11 +1464,6 @@ class EditItemMenu extends React.Component {
                                       placeholder="Tax in %"
                                       className="form-control"
                                     />
-                                    {this.validator.message(
-                                      "Tax",
-                                      this.state.item_tax,
-                                      "required"
-                                    )}
                                   </div>
                                 </div>
 
@@ -1667,7 +1597,7 @@ Choose Category
                                           </div>
                                           <div className="col-12 col-md-8">
                                             <input
-                                              type="text"
+                                              type="number"
                                               id="text-input"
                                               name="price"
                                               value={portions_details.price}

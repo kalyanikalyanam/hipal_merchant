@@ -382,10 +382,10 @@ class CategoryList extends React.Component {
 
                 <div className="row mt-30">
                   <div className="col-md-12 p-0">
-                    <Link to="/AddItemMenu">
+                    <Link to="/ViewItemMenu">
                       <span className="btn add_categoty_menu">Items</span>
                     </Link>
-                    <Link to="/AddCategoryMenu">
+                    <Link to="/CategoryList">
                       <span className="btn add_categoty_menu">
                         <span className="active"></span>Category
                       </span>
@@ -399,15 +399,20 @@ class CategoryList extends React.Component {
                     <div className="orders_menu">
                       <ul>
                         <li>
-                          <Link to="AddCategoryMenuDuplicate">
-                            Add category
-                          </Link>
-                        </li>
-                        <li>
                           <Link to="/CategoryList" className="activemenu">
                             View category
                           </Link>
                         </li>
+                        {sessionStorage.getItem("role") == "Merchant" ||
+                        sessionStorage.getItem("categories") == "Yes" ? (
+                          <li>
+                            <Link to="AddCategoryMenuDuplicate">
+                              Add category
+                            </Link>
+                          </li>
+                        ) : (
+                          ""
+                        )}
                       </ul>
                     </div>
                   </div>
@@ -427,7 +432,12 @@ class CategoryList extends React.Component {
                             <td>Color</td>
                             {/* <td>Add Item</td> */}
                             <td>View Category</td>
-                            <td>Actions</td>
+                            {sessionStorage.getItem("role") == "Merchant" ||
+                            sessionStorage.getItem("categories") == "Yes" ? (
+                              <td>Actions</td>
+                            ) : (
+                              ""
+                            )}
                           </tr>
                         </thead>
                         <tbody>
@@ -450,24 +460,31 @@ class CategoryList extends React.Component {
                                       click
                                     </Link>
                                   </td>
-                                  <td>
-                                    <Link
-                                      to={`/EditCategoryMenu/${category.categoryId}`}
-                                    >
+                                  {sessionStorage.getItem("role") ==
+                                    "Merchant" ||
+                                  sessionStorage.getItem("categories") ==
+                                    "Yes" ? (
+                                    <td>
+                                      <Link
+                                        to={`/EditCategoryMenu/${category.categoryId}`}
+                                      >
+                                        <img
+                                          src="images/icon/edit_icon_blue.svg"
+                                          className="edit_delete"
+                                        />{" "}
+                                      </Link>
                                       <img
-                                        src="images/icon/edit_icon_blue.svg"
+                                        src="images/icon/delete_cross.svg"
+                                        onClick={this.deleteItem.bind(
+                                          this,
+                                          category.categoryId
+                                        )}
                                         className="edit_delete"
-                                      />{" "}
-                                    </Link>
-                                    <img
-                                      src="images/icon/delete_cross.svg"
-                                      onClick={this.deleteItem.bind(
-                                        this,
-                                        category.categoryId
-                                      )}
-                                      className="edit_delete"
-                                    />
-                                  </td>
+                                      />
+                                    </td>
+                                  ) : (
+                                    ""
+                                  )}
                                 </tr>
                               );
                             })}

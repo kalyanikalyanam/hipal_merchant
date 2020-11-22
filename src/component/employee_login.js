@@ -376,6 +376,53 @@ class EmployeeLogin extends React.Component {
               sessionStorage.setItem("role", gstData.role);
               sessionStorage.setItem("emai", gstData.email_id);
               sessionStorage.setItem("businessId", gstData.businessId);
+              sessionStorage.setItem(
+                "viewcustomersdetails",
+                gstData.viewcustomersdetails
+              );
+              sessionStorage.setItem(
+                "deleteeditcustomers",
+                gstData.deleteeditcustomers
+              );
+              sessionStorage.setItem(
+                "chatwithcustomers",
+                gstData.chatwithcustomers
+              );
+
+              sessionStorage.setItem("addemployees", gstData.addemployees);
+              sessionStorage.setItem(
+                "vieweditdeleteemployees",
+                gstData.vieweditdeleteemployees
+              );
+
+              sessionStorage.setItem("categories", gstData.categories);
+              sessionStorage.setItem("items", gstData.items);
+
+              sessionStorage.setItem("addtables", gstData.addtables);
+              sessionStorage.setItem(
+                "editdeletetables",
+                gstData.editdeletetables
+              );
+
+              sessionStorage.setItem("addfloors", gstData.addfloors);
+              sessionStorage.setItem(
+                "editdeletefloors",
+                gstData.editdeletefloors
+              );
+              sessionStorage.setItem("settings", gstData.settings);
+
+              sessionStorage.setItem("viewbill", gstData.viewbill);
+              sessionStorage.setItem("settle", gstData.settle);
+              sessionStorage.setItem(
+                "additemdiscount",
+                gstData.additemdiscount
+              );
+
+              sessionStorage.setItem(
+                "deleteitemafterkot",
+                gstData.deleteitemafterkot
+              );
+
               this.props.history.push("/Dashboard");
               // } else {
               //   this.setState({
@@ -472,9 +519,9 @@ class EmployeeLogin extends React.Component {
                   </div>
                   <div className="form-group col-12 m-t-30">
                     <button className="btn login_btn_menu">Login</button>
-                    {/* <div className="btn ">
-                      Login As <a href="/EmployeeLogin"> Employee</a>
-                    </div> */}
+                    <div className="btn ">
+                      Login As <a href="/"> Owner</a>
+                    </div>
                     {this.state.employer_sevice_message ? (
                       <div className="alert alert-warning" role="alert">
                         {this.state.employer_sevice_message}

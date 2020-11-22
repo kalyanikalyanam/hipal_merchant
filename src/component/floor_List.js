@@ -440,16 +440,21 @@ class FloorList extends React.Component {
                             </span>
                           </button>
                         </div> */}
-                        <div className="order_btns">
-                          <span
-                            className="btn add_ord m-l-0 p_btn"
-                            data-toggle="modal"
-                            data-target="#add_floor"
-                          >
-                            <img src="/images/icon/add_plus_icon_w.svg" />
-                            Add Floors
-                          </span>
-                        </div>
+                        {sessionStorage.getItem("role") == "Merchant" ||
+                        sessionStorage.getItem("addfloors") == "Yes" ? (
+                          <div className="order_btns">
+                            <span
+                              className="btn add_ord m-l-0 p_btn"
+                              data-toggle="modal"
+                              data-target="#add_floor"
+                            >
+                              <img src="/images/icon/add_plus_icon_w.svg" />
+                              Add Floors
+                            </span>
+                          </div>
+                        ) : (
+                          ""
+                        )}
                       </div>
                     </div>
 
@@ -507,6 +512,7 @@ class FloorList extends React.Component {
                               <td>S.no</td>
                               <td>Floor Name</td>
                               <td>Capacity</td>
+
                               <td>Actions</td>
                             </tr>
                           </thead>
@@ -519,23 +525,34 @@ class FloorList extends React.Component {
 
                                     <td>{floor.floor_name}</td>
                                     <td>{floor.floor_capacity}</td>
-
                                     <td>
-                                      <Link to={`/EditFloor/${floor.floorId}`}>
-                                        <img
-                                          src="images/icon/edit_icon_blue.svg"
-                                          className="edit_delete"
-                                        />
-                                      </Link>
+                                      {sessionStorage.getItem("role") ==
+                                        "Merchant" ||
+                                      sessionStorage.getItem(
+                                        "editdeletefloors"
+                                      ) == "Yes" ? (
+                                        <>
+                                          <Link
+                                            to={`/EditFloor/${floor.floorId}`}
+                                          >
+                                            <img
+                                              src="images/icon/edit_icon_blue.svg"
+                                              className="edit_delete"
+                                            />
+                                          </Link>
 
-                                      <img
-                                        src="images/icon/delete_cross.svg"
-                                        onClick={this.deleteItem.bind(
-                                          this,
-                                          floor.floorId
-                                        )}
-                                        className="edit_delete"
-                                      />
+                                          <img
+                                            src="images/icon/delete_cross.svg"
+                                            onClick={this.deleteItem.bind(
+                                              this,
+                                              floor.floorId
+                                            )}
+                                            className="edit_delete"
+                                          />
+                                        </>
+                                      ) : (
+                                        ""
+                                      )}
                                       <button
                                         type="button"
                                         data-toggle="modal"

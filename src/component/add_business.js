@@ -304,9 +304,9 @@ class AddBusiness extends React.Component {
                 <li><a href="#"  className="bills">Bills</a></li>
                 <li><a href="TablesList"  className="tabels">Tabels</a></li> */}
                 <li>
-                  <a href="#" className="settings">
-                    Settings
-                  </a>
+                  <Link to="/BusinessList" className="settings">
+                    Business List
+                  </Link>
                 </li>
               </ul>
             </nav>
@@ -324,7 +324,7 @@ class AddBusiness extends React.Component {
                     <div className="search_profile">
                       <div className="row">
                         <div className="col-md-8">
-                          <div className="search_top">
+                          {/* <div className="search_top">
                             <a href="#" className="search_icon">
                               <i className="fas fa-search"></i>
                             </a>
@@ -334,7 +334,7 @@ class AddBusiness extends React.Component {
                               name=""
                               placeholder="Search..."
                             />
-                          </div>
+                          </div> */}
                         </div>
 
                         <div className="col-md-4 ">

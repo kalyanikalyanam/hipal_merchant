@@ -23,7 +23,7 @@ class AllCustomers extends React.Component {
     };
 
     this.onChange = this.onChange.bind(this);
-
+    this.viewCustomer = this.viewCustomer.bind(this);
     this.deleteItem = this.deleteItem.bind(this);
     this.validator = new SimpleReactValidator({
       className: "text-danger",
@@ -326,6 +326,28 @@ class AllCustomers extends React.Component {
       [event.target.name]: event.target.value,
     });
   };
+  viewCustomer = async (id) => {
+    const { floorTd } = this.props.match.params;
+    console.log(floorTd);
+
+    var ref = await firebase
+      .firestore()
+      .collection("customers")
+      .doc(id)
+      .get()
+
+      .then((snapshot) => {
+        var userData = snapshot.data();
+        console.log(userData);
+        this.setState({
+          customer_name: userData.customer_name,
+          customer_email: userData.customer_email,
+          customer_phonenumber: userData.customer_phonenumber,
+          customer_notes: userData.customer_notes,
+        });
+        //console.log(this.state.pageTitle);
+      });
+  };
   render() {
     return (
       <>
@@ -411,21 +433,16 @@ class AllCustomers extends React.Component {
                             </span>
                           </button>
                         </div> */}
+
                         <div class="order_btns">
-                          <button
-                            type="button"
+                          <span
+                            class="btn add_ord m-l-0 p_btn"
                             data-toggle="modal"
                             data-target="#add_customer"
                           >
-                            <span
-                              class="btn add_ord m-l-0 p_btn"
-                              data-toggle="modal"
-                              data-target="#add_edit_employee"
-                            >
-                              <img src="/images/icon/add_plus_icon_w.svg" />
-                              Add Customers
-                            </span>
-                          </button>
+                            <img src="/images/icon/add_plus_icon_w.svg" />
+                            Add Customers
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -469,7 +486,18 @@ class AllCustomers extends React.Component {
                                       <td>Email Address</td>
                                       <td>Mobile</td>
                                       <td>Points </td>
-                                      <td>Actions</td>
+                                      {sessionStorage.getItem("role") ==
+                                        "Merchant" ||
+                                      sessionStorage.getItem(
+                                        "deleteeditcustomers"
+                                      ) == "Yes" ||
+                                      sessionStorage.getItem(
+                                        "viewcustomersdetails"
+                                      ) == "Yes" ? (
+                                        <td>Actions</td>
+                                      ) : (
+                                        ""
+                                      )}
                                     </tr>
                                   </thead>
                                   <tbody id="myTable">
@@ -483,26 +511,98 @@ class AllCustomers extends React.Component {
                                               <td>{customer.customer_name}</td>
                                               <td>{customer.customer_email}</td>
                                               <td>
-                                                {customer.customer_phonenumber}
+                                                **********
+                                                {/* {customer.customer_phonenumber} */}
                                               </td>
                                               <td>10+</td>
                                               <td>
-                                                <Link
-                                                  to={`/EditCustomer/${customer.customerId}`}
-                                                >
-                                                  <img
-                                                    src="images/icon/edit_icon_blue.svg"
-                                                    className="edit_delete"
-                                                  />
-                                                </Link>
-                                                <img
-                                                  src="images/icon/delete_cross.svg"
-                                                  onClick={this.deleteItem.bind(
-                                                    this,
-                                                    customer.customerId
-                                                  )}
-                                                  className="edit_delete"
-                                                />
+                                                {sessionStorage.getItem(
+                                                  "role"
+                                                ) == "Merchant" ? (
+                                                  <>
+                                                    <Link
+                                                      to={`/EditCustomer/${customer.customerId}`}
+                                                    >
+                                                      <img
+                                                        src="images/icon/edit_icon_blue.svg"
+                                                        className="edit_delete"
+                                                      />
+                                                    </Link>
+                                                    <img
+                                                      src="images/icon/delete_cross.svg"
+                                                      onClick={this.deleteItem.bind(
+                                                        this,
+                                                        customer.customerId
+                                                      )}
+                                                      className="edit_delete"
+                                                    />
+                                                    <button
+                                                      type="button"
+                                                      data-toggle="modal"
+                                                      data-target="#view_customer"
+                                                    >
+                                                      <span
+                                                        className="btn view_order_btn_td"
+                                                        onClick={this.viewCustomer.bind(
+                                                          this,
+                                                          customer.customerId
+                                                        )}
+                                                      >
+                                                        View Customers
+                                                      </span>
+                                                    </button>
+                                                  </>
+                                                ) : (
+                                                  ""
+                                                )}
+
+                                                {sessionStorage.getItem(
+                                                  "deleteeditcustomers"
+                                                ) == "Yes" ? (
+                                                  <>
+                                                    <Link
+                                                      to={`/EditCustomer/${customer.customerId}`}
+                                                    >
+                                                      <img
+                                                        src="images/icon/edit_icon_blue.svg"
+                                                        className="edit_delete"
+                                                      />
+                                                    </Link>
+                                                    <img
+                                                      src="images/icon/delete_cross.svg"
+                                                      onClick={this.deleteItem.bind(
+                                                        this,
+                                                        customer.customerId
+                                                      )}
+                                                      className="edit_delete"
+                                                    />
+                                                  </>
+                                                ) : (
+                                                  ""
+                                                )}
+                                                {sessionStorage.getItem(
+                                                  "viewcustomersdetails"
+                                                ) == "Yes" ? (
+                                                  <>
+                                                    <button
+                                                      type="button"
+                                                      data-toggle="modal"
+                                                      data-target="#view_customer"
+                                                    >
+                                                      <span
+                                                        className="btn view_order_btn_td"
+                                                        onClick={this.viewCustomer.bind(
+                                                          this,
+                                                          customer.customerId
+                                                        )}
+                                                      >
+                                                        View Customers
+                                                      </span>
+                                                    </button>
+                                                  </>
+                                                ) : (
+                                                  ""
+                                                )}
                                               </td>
                                             </tr>
                                           );
@@ -665,6 +765,103 @@ class AllCustomers extends React.Component {
                   </button>
                 </div>
               </Form>
+            </div>
+          </div>
+        </div>
+        <div
+          className="modal fade"
+          id="view_customer"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="smallmodalLabel"
+          aria-hidden="true"
+        >
+          <div className="modal-dialog modal-sm hipal_pop" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="smallmodalLabel">
+                  View Customer
+                </h5>
+              </div>
+
+              <div className="modal-body product_edit">
+                <div className="col-12 w-100-row">
+                  <div className="row form-group">
+                    <div className="col col-md-4">
+                      <label className=" form-control-label">
+                        Customer Name
+                      </label>
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <input
+                        value={this.state.customer_name}
+                        className="form-control edit_product"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-12 w-100-row">
+                  <div className="row form-group">
+                    <div className="col col-md-4">
+                      <label className=" form-control-label">
+                        Email Address
+                      </label>
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <input
+                        value={this.state.customer_email}
+                        className="form-control edit_product"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-12 w-100-row">
+                  <div className="row form-group">
+                    <div className="col col-md-4">
+                      <label className=" form-control-label">Mobile</label>
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <input
+                        value={this.state.customer_phonenumber}
+                        className="form-control edit_product"
+                      />
+                      <div className="text-danger">
+                        {" "}
+                        {this.state.mobile_message}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-12 w-100-row">
+                  <div className="row form-group">
+                    <div className="col col-md-4">
+                      <label className=" form-control-label">Notes</label>
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <textarea
+                        value={this.state.customer_notes}
+                        rows="3"
+                        className="form-control edit_product"
+                      ></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="modal-footer">
+                <Link to="/AllCustomers">
+                  <button
+                    type="button"
+                    className="btn close_btn"
+                    data-dismiss="modal"
+                  >
+                    Close{" "}
+                  </button>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
