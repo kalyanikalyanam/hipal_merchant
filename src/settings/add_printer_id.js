@@ -177,13 +177,13 @@ class AddPrinterId extends React.Component {
         username: username,
         businessId: businessId,
       });
-
+      await this.props.onPrinterAdd({
+        printer_id: this.state.printer_id,
+        sessionId: this.state.sessionId,
+        username: this.state.username,
+        businessId: this.state.businessId,
+      });
       this.props.onClose();
-      // window.location.href = "/SettingsAddStation";
-      // this
-      //     .props
-      //     .history
-      //     .push("/AddCategory");
     } else {
       this.validator.showMessages();
       this.forceUpdate();

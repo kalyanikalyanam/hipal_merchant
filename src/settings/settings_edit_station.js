@@ -4,7 +4,8 @@ import Sidebar from "../component/sidebar";
 import Header from "../component/header";
 import { Form } from "reactstrap";
 import SimpleReactValidator from "simple-react-validator";
-import { Link } from "react-router-dom";
+import { Modal } from "react-responsive-modal";
+import AddPrinterId from "./add_printer_id";
 class SettingsEditStation extends React.Component {
   constructor(props) {
     super(props);
@@ -14,12 +15,13 @@ class SettingsEditStation extends React.Component {
           printer_name: "",
         },
       ],
-
+      open: false,
       employer_sevice_message: "",
       validError: false,
       mobile_message: "",
     };
     this.onChange = this.onChange.bind(this);
+    this.onPrinterAdd = this.onPrinterAdd.bind(this);
     this.validator = new SimpleReactValidator({
       className: "text-danger",
       validators: {
@@ -159,7 +161,13 @@ class SettingsEditStation extends React.Component {
     this.stationList();
     this.printeridList();
   }
-
+  onPrinterAdd = async (data) => {
+    console.log(data);
+    let temp = this.state.printeridList;
+    temp.push(data);
+    await this.setState({ printeridList: temp });
+    this.forceUpdate();
+  };
   printeridList = async () => {
     var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
@@ -225,7 +233,12 @@ class SettingsEditStation extends React.Component {
       [event.target.name]: event.target.value,
     });
   };
-
+  onOpenModal = () => {
+    this.setState({ open: true });
+  };
+  onCloseModal = () => {
+    this.setState({ open: false });
+  };
   handleprinterRemoveShareholder = (idx) => () => {
     this.setState({
       printer_details: this.state.printer_details.filter(
@@ -277,6 +290,14 @@ class SettingsEditStation extends React.Component {
           // printer_name:this.state.printer_name,
           printer_details: this.state.printer_details,
         });
+      // await this.props.onSettingStationAdd({
+      //   sessionId: this.state.sessionId,
+
+      //   username: this.state.username,
+      //   businessId: this.state.businessId,
+      //   station_name: this.state.station_name,
+      //   printer_details: this.state.printer_details,
+      // });
       window.location.href = "/Settings";
     } else {
       this.validator.showMessages();
@@ -316,6 +337,7 @@ class SettingsEditStation extends React.Component {
   };
 
   render() {
+    const { open } = this.state;
     return (
       <>
         {/* <div className="modal fade" tabindex="-1" role="dialog" aria-labelledby="smallmodalLabel" aria-hidden="true"> */}
@@ -391,16 +413,6 @@ class SettingsEditStation extends React.Component {
                                 );
                               })}
                           </select>
-                          {/* <select 
-  name="printer_name"
-  value={printer_details.printer_name}
-  onChange={this.handleprinterShareholderNameChange(idx)}
-id="select" className="form-control edit_product">
-<option value="0">Select Printer :</option>
-<option value="1st Floor">1st Floor</option>
-<option value="2st Floor">2nd Floor</option>
-<option value="3st Floor">3rd Floor</option>
-</select> */}
                         </div>
 
                         {idx != 0 ? (
@@ -434,11 +446,12 @@ id="select" className="form-control edit_product">
                       </label>
                     </div>
                     <div className="col-12 col-md-6">
-                      <Link to="/AddPrinterId">
-                        <div className="btn add_btn_pop_orange addmode_pad m-t-15">
-                          Add Printer Id
-                        </div>
-                      </Link>
+                      <div
+                        className="btn add_btn_pop_orange addmode_pad m-t-15"
+                        onClick={this.onOpenModal}
+                      >
+                        Add Printer Id
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -452,6 +465,16 @@ id="select" className="form-control edit_product">
             </Form>
           </div>
         </div>
+        {open ? (
+          <Modal open={open} onClose={this.onCloseModal}>
+            <AddPrinterId
+              onClose={this.onCloseModal}
+              onPrinterAdd={this.onPrinterAdd}
+            />
+          </Modal>
+        ) : (
+          ""
+        )}
         {/* </div> */}
       </>
     );

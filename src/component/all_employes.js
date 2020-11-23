@@ -44,14 +44,26 @@ const initState = {
 
   employeePositionsList: [],
   validError: false,
-  customers: "",
-  employees: "",
+  viewcustomersdetails: "",
+
+  deleteeditcustomers: "",
+  chatwithcustomers: "",
+  addemployees: "",
+  vieweditdeleteemployees: "",
+
   categories: "",
   items: "",
-  bill: "",
-  tables: "",
-  floors: "",
+
+  addtables: "",
+  editdeletetables: "",
+  addfloors: "",
+  editdeletefloors: "",
+
   settings: "",
+  viewbill: "",
+  settle: "",
+  additemdiscount: "",
+  deleteitemafterkot: "",
 };
 class AllEmployees extends React.Component {
   constructor(props) {

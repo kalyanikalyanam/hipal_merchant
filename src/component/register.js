@@ -245,9 +245,9 @@ class Register extends React.Component {
           created_on: this.state.created_on,
         });
       this.setState(initState);
-      if (userID !== null) {
-        userID.sendEmailVerification();
-      }
+      // if (userID !== null) {
+      //   userID.sendEmailVerification();
+      // }
 
       this.props.history.push("/");
       // .catch((error) => {

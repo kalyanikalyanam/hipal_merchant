@@ -713,7 +713,7 @@ class TablesList extends React.Component {
                       {this.validator.message(
                         "Table Name",
                         this.state.table_name,
-                        "required|whitespace|min:2|max:70"
+                        "required|min:2|max:70"
                       )}
                     </div>
                   </div>
@@ -724,27 +724,6 @@ class TablesList extends React.Component {
                         <label className=" form-control-label">Capacity</label>
                       </div>
                       <div className="col-12 col-md-6">
-                        {/* <select
-                          name="table_capacity"
-                          //  value={this.state.table_capacity}
-                          onChange={this.onChange}
-                          id="select"
-                          className="form-control edit_product"
-                        >
-                          <option value={this.state.table_capacity}>
-                            Select Capacity
-                          </option>
-                          <option value="1 Members">1 Members</option>
-                          <option value="2 Members">2 Members</option>
-                          <option value="3 Members">3 Members</option>
-                          <option value="4 Members">4 Members</option>
-                          <option value="5 Members">5 Members</option>
-                          <option value="6 Members">6 Members</option>
-                          <option value="7 Members">7 Members</option>
-                          <option value="8 Members">8 Members</option>
-                          <option value="9 Members">9 Members</option>
-                          <option value="10 Members">10 Members</option>
-                        </select> */}
                         <input
                           type="number"
                           id="text-input"
@@ -786,19 +765,6 @@ class TablesList extends React.Component {
                           onUploadSuccess={this.handleTableIconSuccess}
                           onProgress={this.handleProgress}
                         />
-                        {/* <div className="upload_img upload_small_icn">
- <div className="form-group">
-	<div className="img_show icon_small"><img id="img-upload"/></div>
-       <div className="input-group">
-            <span className="input-group-btn">
-                <span className="btn btn-default btn-file">
-                    Upload Icon <input type="file" id="imgInp"/>
-                </span>
-            </span>
-            <input type="text" className="form-control" readonly=""/>
-        </div>
-
-    </div></div> */}
                       </div>
                       {this.validator.message(
                         "Table Capacity",

@@ -8,7 +8,6 @@ import { Form } from "reactstrap";
 import { Link } from "react-router-dom";
 import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
-// import Modal from 'react-responsive-modal';
 import AddItemType from "./add_item_type";
 import AddStation from "./add_station";
 import Select from "react-select";
@@ -88,12 +87,16 @@ class EditItemMenu extends React.Component {
       currentCategory: [{}],
       stationList: [],
       selectedOption1: null,
+      selectedstations: [],
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleInputKeyDown = this.handleInputKeyDown.bind(this);
     this.handleRemoveItem = this.handleRemoveItem.bind(this);
-
+    this.onStationAdd = this.onStationAdd.bind(this);
+    this.onItemType = this.onItemType.bind(this);
+    this.updateSelectedStations = this.updateSelectedStations.bind(this);
+    this.updateSelectedStations1 = this.updateSelectedStations1.bind(this);
     this.onChange = this.onChange.bind(this);
     this.validator = new SimpleReactValidator({
       className: "text-danger",
@@ -258,7 +261,7 @@ class EditItemMenu extends React.Component {
           item_image: items.item_image,
           item_points: items.item_points,
 
-          selectedOption1: items.station_name,
+          selectedstations: items.station_name,
 
           item_type: items.item_type,
           item_hash_tags: items.item_hash_tags,
@@ -297,82 +300,13 @@ class EditItemMenu extends React.Component {
       });
   };
 
-  // itemMenuList = async () => {
-  //   var sessionId = sessionStorage.getItem("RoleId");
-  //   var businessId = sessionStorage.getItem("businessId");
-
-  //   this.setState({ loading: true });
-  //   await firebase
-  //     .firestore()
-  //     .collection("menuitems2")
-  //     .where("sessionId", "==", sessionId)
-  //     .where("businessId", "==", businessId)
-  //     .get()
-  //     .then((querySnapshot) => {
-  //       var data = [];
-  //       querySnapshot.forEach((childSnapShot) => {
-  //         const GSTData = {
-  //           itemmenuid: childSnapShot.id,
-  //           item_unique_id: childSnapShot.data().item_unique_id,
-
-  //           item_id: childSnapShot.data().item_id,
-  //           item_name: childSnapShot.data().item_name,
-  //           item_description: childSnapShot.data().item_description,
-  //           item_halal: childSnapShot.data().item_halal,
-  //           item_image: childSnapShot.data().item_image,
-  //           item_points: childSnapShot.data().item_points,
-
-  //           station_name: childSnapShot.data().station_name,
-
-  //           item_type: childSnapShot.data().item_type,
-  //           item_hash_tags: childSnapShot.data().item_hash_tags,
-  //           item_price: childSnapShot.data().item_price,
-  //           item_tax: childSnapShot.data().item_tax,
-
-  //           sessionId: childSnapShot.data().sessionId,
-  //           businessId: childSnapShot.data().businessId,
-
-  //           status: childSnapShot.data().status,
-  //           username: childSnapShot.data().username,
-
-  //           portions: childSnapShot.data().portions,
-  //           portions_details: childSnapShot.data().portions_details,
-
-  //           advance: childSnapShot.data().advance,
-  //           carbs: childSnapShot.data().carbs,
-  //           protien: childSnapShot.data().protien,
-  //           fat: childSnapShot.data().fat,
-  //           item_video: childSnapShot.data().item_video,
-  //           item_multiple_image: childSnapShot.data().downloadURLs,
-
-  //           extra: childSnapShot.data().extra,
-  //           healthytag: childSnapShot.data().healthytag,
-  //           bestsellertag: childSnapShot.data().bestsellertag,
-
-  //           recommend: childSnapShot.data().recommend,
-
-  //           recommendations: childSnapShot.data().recommendations,
-
-  //           created_on: childSnapShot.data().created_on,
-  //           sessionId: childSnapShot.data().sessionId,
-  //           businessId: childSnapShot.data().businessId,
-  //           categoryId: childSnapShot.data().categoryId,
-  //         };
-
-  //         data.push(GSTData);
-  //       });
-  //       this.setState({
-  //         itemMenuList: data,
-  //         countPage: data.length,
-  //         loading: false,
-  //       });
-  //       // console.log(itemTypeList);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
-
+  onItemType = async (data) => {
+    console.log(data);
+    let temp = this.state.itemTypeList;
+    temp.push(data);
+    await this.setState({ itemTypeList: temp });
+    this.forceUpdate();
+  };
   itemTypeList = async () => {
     var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
@@ -518,37 +452,13 @@ class EditItemMenu extends React.Component {
       });
   };
 
-  // stationList = async () => {
-  //   var sessionId = sessionStorage.getItem("RoleId");
-  //   var businessId = sessionStorage.getItem("businessId");
-
-  //   this.setState({ loading: true });
-  //   await firebase
-  //     .firestore()
-  //     .collection("settings_station")
-  //     .where("sessionId", "==", sessionId)
-  //     .where("businessId", "==", businessId)
-  //     .get()
-  //     .then((querySnapshot) => {
-  //       var stationList = [];
-  //       querySnapshot.forEach((doc) => {
-  //         const GSTData = {
-  //           stationId: doc.id,
-  //           station_name: doc.data().station_name,
-  //           businessId: doc.data().businessId,
-  //           sessionId: doc.data().sessionId,
-  //         };
-
-  //         stationList.push(GSTData);
-  //       });
-  //       this.setState({ stationList: stationList });
-  //       console.log(stationList);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
-
+  onStationAdd = async (data) => {
+    console.log(data);
+    let temp = this.state.stationList;
+    temp.push(data);
+    await this.setState({ stationList: temp });
+    this.forceUpdate();
+  };
   stationList = async () => {
     var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
@@ -557,7 +467,7 @@ class EditItemMenu extends React.Component {
     await firebase
       .firestore()
       .collection("settings_station")
-      // .where("sessionId", "==", sessionId)
+
       .where("businessId", "==", businessId)
       .get()
       .then((querySnapshot) => {
@@ -772,10 +682,6 @@ class EditItemMenu extends React.Component {
       var businessId = sessionStorage.getItem("businessId");
       const { itemmenuid } = this.props.match.params;
       var businessId = sessionStorage.getItem("businessId");
-      // let itemArray = [];
-      // for (let i = 0; i < this.state.itemId.length; i++) {
-      //   itemArray.push(this.state.itemId[i].itemmenuid);
-      // }
 
       var dbcon = await firebase
         .firestore()
@@ -790,7 +696,7 @@ class EditItemMenu extends React.Component {
           item_image: this.state.item_image,
           item_points: this.state.item_points,
 
-          station_name: this.state.selectedOption1,
+          station_name: this.state.selectedstations,
           // station_name: this.state.station_name,
           // item_restaurant_id:this.state.item_restaurant_id,
           item_type: this.state.item_type,
@@ -928,6 +834,28 @@ class EditItemMenu extends React.Component {
   handleSelect1 = (selectedOption1) => {
     this.setState({ selectedOption1 });
     console.log(`Option selected:`, selectedOption1);
+  };
+  updateSelectedStations = async (e) => {
+    let val = e.target.id;
+    let arr = this.state.selectedstations;
+    console.log(arr.includes(val.toString()), val);
+
+    if (arr.includes(val) === true) {
+      let index = arr.indexOf(val);
+      arr.splice(index, 1);
+    }
+    console.log(arr);
+    await this.setState({ selectedstations: arr });
+  };
+  updateSelectedStations1 = async (e) => {
+    console.log("dropdown select", e.target.value);
+    let val = e.target.value;
+    let arr = this.state.selectedstations;
+    if (arr.includes(val) === false) {
+      arr.push(val);
+    }
+    console.log(arr);
+    this.setState({ selectedstations: arr });
   };
 
   render() {
@@ -1133,14 +1061,14 @@ class EditItemMenu extends React.Component {
                                       name="item_description"
                                       onChange={this.onChange}
                                       value={this.state.item_description}
-                                      rows="3"
+                                      // rows="3"
                                       placeholder="Enter text here"
                                       className="form-control"
                                     ></textarea>
                                     {this.validator.message(
                                       "Item Description",
                                       this.state.item_description,
-                                      "required|whitespace|min:2|max:70"
+                                      "required|whitespace|min:2|max:500"
                                     )}
                                   </div>
                                 </div>
@@ -1162,6 +1090,9 @@ class EditItemMenu extends React.Component {
                                       <option value="select">select</option>
                                       <option value="Yes">Yes</option>
                                       <option value="NO">NO</option>
+                                      <option value="Not Applicable">
+                                        Not Applicable
+                                      </option>
                                     </select>
                                     {this.validator.message(
                                       "Halal",
@@ -1266,27 +1197,7 @@ class EditItemMenu extends React.Component {
                                     </label>
                                   </div>
                                   <div className="col-12 col-md-8">
-                                    {/* <select
-                                      className="form-control pro-edt-select form-control-primary"
-                                      name="station_name"
-                                      onChange={this.onChange}
-                                    >
-                                      <option>Select Station Name</option>
-                                      {this.state.stationList &&
-                                        this.state.stationList.map(
-                                          (data, index) => {
-                                            return (
-                                              <option
-                                                value={data.station_name}
-                                                key={index}
-                                              >
-                                                {data.station_name}
-                                              </option>
-                                            );
-                                          }
-                                        )}
-                                    </select> */}
-                                    <Select
+                                    {/* <Select
                                       value={selectedOption1}
                                       onChange={this.handleSelect1}
                                       options={stationList}
@@ -1305,6 +1216,67 @@ class EditItemMenu extends React.Component {
                                     {this.validator.message(
                                       "Station Name",
                                       this.state.selectedOption1,
+                                      "required"
+                                    )}
+                                  </div>
+                                </div> */}
+
+                                    <span className="form-control pro-edt-select form-control-primary">
+                                      {this.state.selectedstations &&
+                                        this.state.selectedstations.map(
+                                          (i, index) => (
+                                            <div
+                                              style={{
+                                                padding: "5px",
+                                                margin: "5px",
+                                                color: "#000",
+                                                backgroundColor: "#e6ebe7",
+                                                borderRadius: "5px",
+                                                width: "fit-content",
+                                              }}
+                                            >
+                                              <p
+                                                style={{
+                                                  float: "left",
+                                                  marginRight: "10px",
+                                                }}
+                                              >
+                                                {i}
+                                              </p>
+                                              <p
+                                                id={i}
+                                                onClick={
+                                                  this.updateSelectedStations
+                                                }
+                                              >
+                                                x
+                                              </p>
+                                            </div>
+                                          )
+                                        )}
+                                    </span>
+                                    <label>Select Station</label>
+                                    <select
+                                      onChange={this.updateSelectedStations1}
+                                    >
+                                      {this.state.stationList.map(
+                                        (i, index) => (
+                                          <option id={i.station_name}>
+                                            {i.station_name}
+                                          </option>
+                                        )
+                                      )}
+                                    </select>
+
+                                    <div
+                                      onClick={this.onOpenModal1}
+                                      className="btn add_btn_pop_orange addmode_pad m-t-15"
+                                    >
+                                      Add Station
+                                    </div>
+                                    {this.validator.message(
+                                      "Station Name",
+                                      this.state.selectedstations,
                                       "required"
                                     )}
                                   </div>
@@ -2100,14 +2072,20 @@ Choose Category
 
           {open ? (
             <Modal open={open} onClose={this.onCloseModal}>
-              <AddItemType onClose={this.onCloseModal} />
+              <AddItemType
+                onClose={this.onCloseModal}
+                onItemType={this.onItemType}
+              />
             </Modal>
           ) : (
             ""
           )}
           {open1 ? (
             <Modal open={open1} onClose={this.onCloseModal1}>
-              <AddStation onClose={this.onCloseModal1} />
+              <AddStation
+                onClose={this.onCloseModal1}
+                onStationAdd={this.onStationAdd}
+              />
             </Modal>
           ) : (
             ""

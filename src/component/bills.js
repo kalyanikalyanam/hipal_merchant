@@ -8,6 +8,7 @@ class Bills extends React.Component {
     super(props);
     this.state = {};
     this.deleteItem = this.deleteItem.bind(this);
+    this.viewBill = this.viewBill.bind(this);
   }
   componentDidMount() {
     this.setState({ loading: true });
@@ -102,6 +103,34 @@ class Bills extends React.Component {
       } else {
       }
     });
+  };
+  viewBill = async (id) => {
+    const { billid } = this.props.match.params;
+    console.log(billid);
+
+    var ref = await firebase
+      .firestore()
+      .collection("bills")
+      .doc(id)
+      .get()
+
+      .then((snapshot) => {
+        var userData = snapshot.data();
+        console.log(userData);
+        this.setState({
+          billAmount: userData.billAmount,
+          billId: userData.billId,
+          billTiming: userData.billTiming,
+          paymentMethod: userData.paymentMethod,
+
+          settle_by: userData.settle_by,
+          table: userData.table,
+
+          businessId: userData.businessId,
+          sessionId: userData.sessionId,
+        });
+        //console.log(this.state.pageTitle);
+      });
   };
   render() {
     return (
@@ -231,12 +260,27 @@ class Bills extends React.Component {
                                               className="bill_img"
                                             />
                                           </td> */}
-                                          <td>
-                                            {/* <img
+                                          {/* <td> */}
+                                          {/* <button
+                                              type="button"
+                                              data-toggle="modal"
+                                              data-target="#view_bill"
+                                            >
+                                              <span
+                                                className="btn view_order_btn_td"
+                                                onClick={this.viewBill.bind(
+                                                  this,
+                                                  bill.billid
+                                                )}
+                                              >
+                                                View Bill
+                                              </span>
+                                            </button> */}
+                                          {/* <img
                                               src="/images/icon/edit_icon_blue.svg"
                                               className="edit_delete"
                                             /> */}
-                                            {/* <img
+                                          {/* <img
                                               onClick={this.deleteItem.bind(
                                                 this,
                                                 bill.billid
@@ -244,7 +288,7 @@ class Bills extends React.Component {
                                               src="/images/icon/delete_cross.svg"
                                               className="edit_delete"
                                             /> */}
-                                          </td>
+                                          {/* </td> */}
                                         </tr>
                                       );
                                     })}

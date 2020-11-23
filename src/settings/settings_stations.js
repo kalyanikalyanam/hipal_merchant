@@ -22,6 +22,7 @@ class SettingsStation extends React.Component {
       mobile_message: "",
       open: false,
     };
+    this.onSettingStationAdd = this.onSettingStationAdd.bind(this);
 
     this.validator = new SimpleReactValidator({
       className: "text-danger",
@@ -160,6 +161,13 @@ class SettingsStation extends React.Component {
 
     this.stationList();
   }
+  onSettingStationAdd = async (data) => {
+    console.log(data);
+    let temp = this.state.stationList;
+    temp.push(data);
+    await this.setState({ stationList: temp });
+    this.forceUpdate();
+  };
   stationList = async () => {
     var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
@@ -274,7 +282,10 @@ class SettingsStation extends React.Component {
         </div>
         {open ? (
           <Modal open={open} onClose={this.onCloseModal}>
-            <SettingsAddStation onClose={this.onCloseModal} />
+            <SettingsAddStation
+              onClose={this.onCloseModal}
+              onSettingStationAdd={this.onSettingStationAdd}
+            />
           </Modal>
         ) : (
           ""

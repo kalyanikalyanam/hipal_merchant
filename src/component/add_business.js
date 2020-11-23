@@ -235,7 +235,7 @@ class AddBusiness extends React.Component {
             this.state.businessurl +
             "&chs=160x160&chld=L|0",
 
-          status: "InActive",
+          status: "Active",
 
           sessionId: sessionId,
           username: username,
@@ -295,14 +295,6 @@ class AddBusiness extends React.Component {
           <div className="menu-sidebar__content js-scrollbar1">
             <nav className="navbar-sidebar">
               <ul className="list-unstyled navbar__list">
-                {/* <li><a href="#" className="home">Home</a></li>
-                <li><a href="/Tables" className="oders">Orders</a></li>
-                <li><a href="/AllCustomers" className="customers">Customers</a></li>
-                <li><a href="/AddItemMenu"  className="resturent">My Restaurent</a></li>
-                <li><a href="/AllEmployees"  className="employees">Employees</a></li>
-                <li><a href="/AllMessages"  className="messages">Messages</a></li>
-                <li><a href="#"  className="bills">Bills</a></li>
-                <li><a href="TablesList"  className="tabels">Tabels</a></li> */}
                 <li>
                   <Link to="/BusinessList" className="settings">
                     Business List

@@ -87,12 +87,16 @@ class AddItemMenu extends React.Component {
       currentCategory: [{}],
       stationList: [],
       selectedOption1: null,
+      selectedstations: [],
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleInputKeyDown = this.handleInputKeyDown.bind(this);
     this.handleRemoveItem = this.handleRemoveItem.bind(this);
-
+    this.onStationAdd = this.onStationAdd.bind(this);
+    this.onItemType = this.onItemType.bind(this);
+    this.updateSelectedStations = this.updateSelectedStations.bind(this);
+    this.updateSelectedStations1 = this.updateSelectedStations1.bind(this);
     this.onChange = this.onChange.bind(this);
     this.validator = new SimpleReactValidator({
       className: "text-danger",
@@ -312,6 +316,13 @@ class AddItemMenu extends React.Component {
       });
   };
 
+  onItemType = async (data) => {
+    console.log(data);
+    let temp = this.state.itemTypeList;
+    temp.push(data);
+    await this.setState({ itemTypeList: temp });
+    this.forceUpdate();
+  };
   itemTypeList = async () => {
     var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
@@ -456,38 +467,13 @@ class AddItemMenu extends React.Component {
         console.log(err);
       });
   };
-
-  // stationList = async () => {
-  //   var sessionId = sessionStorage.getItem("RoleId");
-  //   var businessId = sessionStorage.getItem("businessId");
-
-  //   this.setState({ loading: true });
-  //   await firebase
-  //     .firestore()
-  //     .collection("settings_station")
-  //     .where("sessionId", "==", sessionId)
-  //     .where("businessId", "==", businessId)
-  //     .get()
-  //     .then((querySnapshot) => {
-  //       var stationList = [];
-  //       querySnapshot.forEach((doc) => {
-  //         const GSTData = {
-  //           stationId: doc.id,
-  //           station_name: doc.data().station_name,
-  //           businessId: doc.data().businessId,
-  //           sessionId: doc.data().sessionId,
-  //         };
-
-  //         stationList.push(GSTData);
-  //       });
-  //       this.setState({ stationList: stationList });
-  //       console.log(stationList);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
-
+  onStationAdd = async (data) => {
+    console.log(data);
+    let temp = this.state.stationList;
+    temp.push(data);
+    await this.setState({ stationList: temp });
+    this.forceUpdate();
+  };
   stationList = async () => {
     var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
@@ -496,7 +482,7 @@ class AddItemMenu extends React.Component {
     await firebase
       .firestore()
       .collection("settings_station")
-      // .where("sessionId", "==", sessionId)
+
       .where("businessId", "==", businessId)
       .get()
       .then((querySnapshot) => {
@@ -723,9 +709,8 @@ class AddItemMenu extends React.Component {
         item_image: this.state.item_image,
         item_points: this.state.item_points,
 
-        station_name: this.state.selectedOption1,
-        // station_name: this.state.station_name,
-        // item_restaurant_id:this.state.item_restaurant_id,
+        station_name: this.state.selectedstations,
+
         item_type: this.state.item_type,
         item_hash_tags: this.state.item_hash_tags,
         item_price: this.state.item_price,
@@ -842,9 +827,31 @@ class AddItemMenu extends React.Component {
         });
     }
   };
-  handleSelect1 = (selectedOption1) => {
-    this.setState({ selectedOption1 });
-    console.log(`Option selected:`, selectedOption1);
+  // handleSelect1 = (selectedOption1) => {
+  //   this.setState({ selectedOption1 });
+  //   console.log(`Option selected:`, selectedOption1);
+  // };
+  updateSelectedStations = async (e) => {
+    let val = e.target.id;
+    let arr = this.state.selectedstations;
+    console.log(arr.includes(val.toString()), val);
+
+    if (arr.includes(val) === true) {
+      let index = arr.indexOf(val);
+      arr.splice(index, 1);
+    }
+    console.log(arr);
+    await this.setState({ selectedstations: arr });
+  };
+  updateSelectedStations1 = async (e) => {
+    console.log("dropdown select", e.target.value);
+    let val = e.target.value;
+    let arr = this.state.selectedstations;
+    if (arr.includes(val) === false) {
+      arr.push(val);
+    }
+    console.log(arr);
+    this.setState({ selectedstations: arr });
   };
 
   render() {
@@ -951,6 +958,13 @@ class AddItemMenu extends React.Component {
                       </Link>
 
                       <span className="btn add_categoty_menu"> coupon</span>
+                      {/* <button
+                        onClick={() => {
+                          console.log(this.state.stationList);
+                        }}
+                      >
+                        weacf
+                      </button> */}
                     </div>
                   </div>
 
@@ -1058,14 +1072,14 @@ class AddItemMenu extends React.Component {
                                       name="item_description"
                                       onChange={this.onChange}
                                       value={this.state.item_description}
-                                      rows="3"
+                                      // rows="3"
                                       placeholder="Enter text here"
                                       className="form-control"
                                     ></textarea>
                                     {this.validator.message(
                                       "Item Description",
                                       this.state.item_description,
-                                      "required|whitespace|min:2|max:70"
+                                      "required|whitespace|min:2|max:500"
                                     )}
                                   </div>
                                 </div>
@@ -1087,6 +1101,9 @@ class AddItemMenu extends React.Component {
                                       <option value="select">select</option>
                                       <option value="Yes">Yes</option>
                                       <option value="NO">NO</option>
+                                      <option value="Not Applicable">
+                                        Not Applicable
+                                      </option>
                                     </select>
                                     {this.validator.message(
                                       "Halal",
@@ -1212,15 +1229,60 @@ class AddItemMenu extends React.Component {
                                           }
                                         )}
                                     </select> */}
-                                    <Select
+                                    {/* <Select
                                       value={selectedOption1}
                                       onChange={this.handleSelect1}
-                                      options={stationList}
+                                      options={this.state.stationList}
                                       isMulti
                                       name="station_name"
                                       className="basic-multi-select"
                                       classNamePrefix="select"
-                                    />
+                                    /> */}
+                                    <span className="form-control pro-edt-select form-control-primary">
+                                      {this.state.selectedstations.map(
+                                        (i, index) => (
+                                          <div
+                                            style={{
+                                              padding: "5px",
+                                              margin: "5px",
+                                              color: "#000",
+                                              backgroundColor: "#e6ebe7",
+                                              borderRadius: "5px",
+                                              width: "fit-content",
+                                            }}
+                                          >
+                                            <p
+                                              style={{
+                                                float: "left",
+                                                marginRight: "10px",
+                                              }}
+                                            >
+                                              {i}
+                                            </p>
+                                            <p
+                                              id={i}
+                                              onClick={
+                                                this.updateSelectedStations
+                                              }
+                                            >
+                                              x
+                                            </p>
+                                          </div>
+                                        )
+                                      )}
+                                    </span>
+                                    <label>Select Station</label>
+                                    <select
+                                      onChange={this.updateSelectedStations1}
+                                    >
+                                      {this.state.stationList.map(
+                                        (i, index) => (
+                                          <option id={i.station_name}>
+                                            {i.station_name}
+                                          </option>
+                                        )
+                                      )}
+                                    </select>
 
                                     <div
                                       onClick={this.onOpenModal1}
@@ -1230,7 +1292,7 @@ class AddItemMenu extends React.Component {
                                     </div>
                                     {this.validator.message(
                                       "Station Name",
-                                      this.state.selectedOption1,
+                                      this.state.selectedstations,
                                       "required"
                                     )}
                                   </div>
@@ -2027,14 +2089,20 @@ Choose Category
 
           {open ? (
             <Modal open={open} onClose={this.onCloseModal}>
-              <AddItemType onClose={this.onCloseModal} />
+              <AddItemType
+                onClose={this.onCloseModal}
+                onItemType={this.onItemType}
+              />
             </Modal>
           ) : (
             ""
           )}
           {open1 ? (
             <Modal open={open1} onClose={this.onCloseModal1}>
-              <AddStation onClose={this.onCloseModal1} />
+              <AddStation
+                onClose={this.onCloseModal1}
+                onStationAdd={this.onStationAdd}
+              />
             </Modal>
           ) : (
             ""

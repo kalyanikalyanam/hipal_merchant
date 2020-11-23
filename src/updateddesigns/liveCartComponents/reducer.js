@@ -31,12 +31,12 @@ const initState = {
   billModalData: null,
   kotModal: false,
   kotModalData: null,
-  balance: 0
+  balance: 0,
 };
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'reset': 
-      return initState
+    case "reset":
+      return initState;
     case actions.ADDLIVE:
       return handleAddLiveCart(action, state);
     case actions.REMLIVE:
@@ -45,6 +45,9 @@ const reducer = (state, action) => {
       return handleToOrder(action, state);
     case actions.REMALLLIVE:
       return updateObject(state, { liveCart: [] });
+
+    case actions.DELETEITEM:
+      return deleteKotItem(action, state);
 
     case actions.REMALLORDER:
       return updateObject(state, { order: [] });
@@ -104,22 +107,22 @@ const reducer = (state, action) => {
         userInfo: null,
         CustomerList,
       });
-    case "billModalShow": 
-      const {bill, isSettle} = action
+    case "billModalShow":
+      const { bill, isSettle } = action;
       const newBillModalData = {
         bill,
-        isSettle
-      }
+        isSettle,
+      };
       return updateObject(state, {
         billModal: true,
-        billModalData: newBillModalData 
-      })  
+        billModalData: newBillModalData,
+      });
 
-    case 'billModalHide': 
+    case "billModalHide":
       return updateObject(state, {
         billModal: false,
-        billModalData: null
-      })
+        billModalData: null,
+      });
     case actions.BILLPAGESHOW:
       return handleBillPageShow(action, state);
     case actions.BILLPAGEHIDE:
@@ -141,12 +144,12 @@ const reducer = (state, action) => {
     case actions.CustomerList:
       return handleCustomerList(action, state);
 
-    case 'kotModalShow': 
-      return updateObject(state, {kotModal: true, kotModalData: action.bill})
-    case 'kotModalHide': 
-      return updateObject(state, {kotModal: false, kotModalData: null})
-    case 'balance':
-      return updateObject(state, {balance: action.balance})
+    case "kotModalShow":
+      return updateObject(state, { kotModal: true, kotModalData: action.bill });
+    case "kotModalHide":
+      return updateObject(state, { kotModal: false, kotModalData: null });
+    case "balance":
+      return updateObject(state, { balance: action.balance });
     default:
       return state;
   }
@@ -169,11 +172,11 @@ const handleBillPageHide = (aciton, state) => {
 };
 
 const handleSetBillId = (action, state) => {
-  let billPage = state.billPage
-  billPage.billId = action.billId
-  billPage.totalPrice = action.total
-  billPage.bill = action.bill
-  return updateObject(state, { billPage,balance: Math.round(action.total) })
+  let billPage = state.billPage;
+  billPage.billId = action.billId;
+  billPage.totalPrice = action.total;
+  billPage.bill = action.bill;
+  return updateObject(state, { billPage, balance: Math.round(action.total) });
 };
 
 const handleAddLiveCart = (action, state) => {
@@ -254,7 +257,8 @@ const handleToBill = (action, state) => {
   currentOrder.orderDiscout = action.orderDiscount;
   let currentBill = state.bill;
   currentBill.push(currentOrder);
-  if(currentBill.length === 1) currentBill.id = Math.floor(Math.random() * 1000000000)
+  if (currentBill.length === 1)
+    currentBill.id = Math.floor(Math.random() * 1000000000);
   return updateObject(state, { bill: currentBill, order: [] });
 };
 
@@ -263,17 +267,17 @@ const handleKOTcart = (action, state) => {
   let currentOrder = state.order;
   let currentBill = state.bill;
   let updateCart;
-  let items = []
-  state.order.forEach(cart => {
-    cart.forEach(item => {
-        items.push(item)
-    })
-  }) 
+  let items = [];
+  state.order.forEach((cart) => {
+    cart.forEach((item) => {
+      items.push(item);
+    });
+  });
   for (var i = 0; i < currentOrder.length; i++) {
     if (currentOrder[i].cartId === cart.cartId) {
       updateCart = currentOrder[i];
       currentOrder[i].forEach((item) => {
-        if(!item.kot){
+        if (!item.kot) {
           item.kot = true;
         }
         console.log(`KOT FOR ${item.item_name}`);
@@ -281,54 +285,81 @@ const handleKOTcart = (action, state) => {
       break;
     }
   }
-  return updateObject(state, { order: currentOrder, bill: currentBill,kotModal: true, kotModalData: items });
+  return updateObject(state, {
+    order: currentOrder,
+    bill: currentBill,
+    kotModal: true,
+    kotModalData: items,
+  });
 };
 
 const handleKOTitem = (action, state) => {
   const { cart, item } = action;
-  let items = []
-  state.order.forEach(cart => {
-    cart.forEach(item => {
-      if(item.kot){
-        items.push(item)
+  let items = [];
+  state.order.forEach((cart) => {
+    cart.forEach((item) => {
+      if (item.kot) {
+        items.push(item);
       }
-    })
-  }) 
+    });
+  });
   let currentOrder = state.order;
   for (var i = 0; i < currentOrder.length; i++) {
     if (currentOrder[i].cartId === cart.cartId) {
       for (var j = 0; j < currentOrder[i].length; j++) {
         if (currentOrder[i][j].id === item.id) {
           currentOrder[i][j].kot = true;
-          items.push(currentOrder[i][j])
+          items.push(currentOrder[i][j]);
           console.log(`KOT FOR ${currentOrder[i][j].item_name}`);
         }
       }
     }
   }
-  return updateObject(state, { order: currentOrder, kotModal: true, kotModalData: items });
+  return updateObject(state, {
+    order: currentOrder,
+    kotModal: true,
+    kotModalData: items,
+  });
+};
+
+const deleteKotItem = (action, state) => {
+  console.log(state.order);
+  let newOrder = [];
+  state.order.forEach((cart) => {
+    let newcart = cart.filter((item) => {
+      return item.id != action.itemId;
+    });
+    if (newcart.length !== 0) newOrder.push(newcart);
+  });
+  return updateObject(state, {
+    order: newOrder,
+  });
 };
 
 const handleKOTorder = (action, state) => {
-  let items = []
-  state.order.forEach(cart => {
-    cart.forEach(item => {
-      if(!item.kot){
-        item.kot = true
-        items.push(item)
-      }
-    })
-  }) 
-  const currentOrder = state.order;
-  currentOrder.forEach((cart) => {
+  let items = [];
+  state.order.forEach((cart) => {
     cart.forEach((item) => {
-      if(item.kot){
+      if (!item.kot) {
         item.kot = true;
-        items.push(item)
+        items.push(item);
       }
     });
   });
-  return updateObject(state, { order: currentOrder, kotModal: true, kotModalData: items });
+  const currentOrder = state.order;
+  currentOrder.forEach((cart) => {
+    cart.forEach((item) => {
+      if (item.kot) {
+        item.kot = true;
+        items.push(item);
+      }
+    });
+  });
+  return updateObject(state, {
+    order: currentOrder,
+    kotModal: true,
+    kotModalData: items,
+  });
 };
 
 const handleADDEmployee = (action, state) => {
@@ -341,7 +372,7 @@ const handleADDEmployee = (action, state) => {
 const handleCustomerList = (action, state) => {
   let newtable = state.table;
   newtable.status = action.status;
-  newtable.occupency = action.occupency
+  newtable.occupency = action.occupency;
   console.log(action);
   // newtable.occupency = action.occupency;
   return updateObject(state, {

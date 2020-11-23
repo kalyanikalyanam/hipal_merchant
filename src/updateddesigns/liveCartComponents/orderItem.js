@@ -2,7 +2,36 @@ import React, { useContext, useEffect, useState } from "react";
 import * as actions from "./actionTypes";
 import { dispatchContext } from "./contexts";
 
-const OrderItem = ({ cart, index }) => {
+const Select = ({ item, deleteItem }) => {
+  return (
+    <>
+      <div>
+        <select name="status">
+          <option value="cooking">Cooking</option>
+          <option value="delivery">Delivery</option>
+          <option value="delivered">Delivered</option>
+        </select>
+      </div>
+      {sessionStorage.getItem("role") == "Merchant" ||
+      sessionStorage.getItem("deleteitemafterkot") == "Yes" ? (
+        <div
+          className="edit"
+          data-toggle="modal"
+          data-target="#edit_product"
+          onClick={() => {
+            deleteItem(item);
+          }}
+        >
+          Delete
+        </div>
+      ) : (
+        ""
+      )}
+    </>
+  );
+};
+
+const OrderItem = ({ item, cart, index }) => {
   const dispatch = useContext(dispatchContext);
   const [kotNum, setKotNum] = useState(0);
   const [carts, setCarts] = useState();
@@ -32,6 +61,14 @@ const OrderItem = ({ cart, index }) => {
       cart,
     });
   };
+  const deleteItem = (item) => {
+    console.log(item);
+    dispatch({
+      type: actions.DELETEITEM,
+      itemId: item.id,
+    });
+  };
+
   useEffect(() => {
     var i = 0;
     cart.forEach((item) => {
@@ -42,15 +79,7 @@ const OrderItem = ({ cart, index }) => {
     });
     setKotNum(i);
   }, [carts]);
-  const select = (
-    <div>
-      <select name="status">
-        <option value="cooking">Cooking</option>
-        <option value="delivery">Delivery</option>
-        <option value="delivered">Delivered</option>
-      </select>
-    </div>
-  );
+
   return (
     <div className="cart2_box col-md-12 m-t-20">
       <span className="ribbon_cart">
@@ -94,12 +123,23 @@ const OrderItem = ({ cart, index }) => {
                         >
                           Edit
                         </div>
+
+                        <div
+                          className="edit"
+                          data-toggle="modal"
+                          data-target="#edit_product"
+                          onClick={() => {
+                            deleteItem(item);
+                          }}
+                        >
+                          Delete
+                        </div>
                       </>
                     ) : (
-                      select
+                      <Select item={item} deleteItem={deleteItem} />
                     )}
                   </div>
-                  {/* <p className="offer_applied">10% Off Applied</p> */}
+
                   {item.discount != 0 && (
                     <p className="offer_applied">{`${item.discount}% off Applied`}</p>
                   )}
@@ -123,4 +163,5 @@ const OrderItem = ({ cart, index }) => {
     </div>
   );
 };
+
 export default OrderItem;

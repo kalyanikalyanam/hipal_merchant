@@ -128,15 +128,22 @@ class AddItemType extends React.Component {
     });
   };
 
-  handleSubmit = (event) => {
+  handleSubmit = async (event) => {
     event.preventDefault();
     if (this.validator.allValid()) {
       var sessionId = sessionStorage.getItem("RoleId");
       var username = sessionStorage.getItem("username");
       var businessId = sessionStorage.getItem("businessId");
-      let dbCon = firebase.firestore().collection("/ItemType");
+      let dbCon = await firebase.firestore().collection("/ItemType");
 
       dbCon.add({
+        item_type: this.state.item_type,
+        created_on: this.state.created_on,
+        color: this.state.color,
+        sessionId: sessionId,
+        businessId: businessId,
+      });
+      await this.props.onItemType({
         item_type: this.state.item_type,
         created_on: this.state.created_on,
         color: this.state.color,

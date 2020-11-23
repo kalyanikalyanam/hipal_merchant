@@ -25,3 +25,4 @@ export const CustomerList = "CustomerList";
 export const KOTORDER = "KOTORDER";
 export const KOTCART = "KOTCART";
 export const KOTITEM = "KOTITEM";
+export const DELETEITEM = "DELETEITEM";

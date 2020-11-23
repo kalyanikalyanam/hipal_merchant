@@ -23,6 +23,8 @@ class SettingsAddStation extends React.Component {
       mobile_message: "",
     };
     this.onChange = this.onChange.bind(this);
+
+    this.onPrinterAdd = this.onPrinterAdd.bind(this);
     this.validator = new SimpleReactValidator({
       className: "text-danger",
       validators: {
@@ -125,6 +127,13 @@ class SettingsAddStation extends React.Component {
   componentDidMount() {
     this.printeridList();
   }
+  onPrinterAdd = async (data) => {
+    console.log(data);
+    let temp = this.state.printeridList;
+    temp.push(data);
+    await this.setState({ printeridList: temp });
+    this.forceUpdate();
+  };
   printeridList = async () => {
     var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
@@ -219,9 +228,15 @@ class SettingsAddStation extends React.Component {
         // printer_name:this.state.printer_name,
         printer_details: this.state.printer_details,
       });
+      await this.props.onSettingStationAdd({
+        sessionId: this.state.sessionId,
 
+        username: this.state.username,
+        businessId: this.state.businessId,
+        station_name: this.state.station_name,
+        printer_details: this.state.printer_details,
+      });
       this.props.onClose();
-      window.location.href = "/Settings";
     } else {
       this.validator.showMessages();
       this.forceUpdate();
@@ -336,16 +351,6 @@ class SettingsAddStation extends React.Component {
                                 );
                               })}
                           </select>
-                          {/* <select 
-  name="printer_name"
-  value={printer_details.printer_name}
-  onChange={this.handleprinterShareholderNameChange(idx)}
-id="select" className="form-control edit_product">
-<option value="0">Select Printer :</option>
-<option value="1st Floor">1st Floor</option>
-<option value="2st Floor">2nd Floor</option>
-<option value="3st Floor">3rd Floor</option>
-</select> */}
                         </div>
 
                         {idx != 0 ? (
@@ -404,7 +409,10 @@ id="select" className="form-control edit_product">
 
         {open ? (
           <Modal open={open} onClose={this.onCloseModal}>
-            <AddPrinterId onClose={this.onCloseModal} />
+            <AddPrinterId
+              onClose={this.onCloseModal}
+              onPrinterAdd={this.onPrinterAdd}
+            />
           </Modal>
         ) : (
           ""
