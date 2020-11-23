@@ -1,10 +1,8 @@
+import {db} from '../../config'
 import React, { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import firebase from "../../config";
 import MenuItem from "./menuItem";
 import CategoryItem from "./categoryItem";
 import { liveCartContext } from "./contexts";
-import CategoryList from "../../component/category_list";
 
 const Menu = () => {
   const [itemList, setItemsList] = useState([]);
@@ -15,8 +13,7 @@ const Menu = () => {
   const [selected, setSelected] = useState([]);
   const getItems = async () => {
     var businessId = sessionStorage.getItem("businessId");
-    await firebase
-      .firestore()
+    await db
       .collection("menuitems2")
       .where("businessId", "==", businessId)
       .get()
@@ -67,8 +64,7 @@ const Menu = () => {
   };
   const getCategories = () => {
     var businessId = sessionStorage.getItem("businessId");
-    firebase
-      .firestore()
+      db 
       .collection("categories2")
       .where("businessId", "==", businessId)
       .get()
@@ -98,19 +94,15 @@ const Menu = () => {
   };
 
   const handleBackClick = () => {
-    let newSelected = selected;
-    newSelected.pop();
-    setSelected(newSelected);
-    if (newSelected.length !== 0) {
-      let newCategories = permanentCategoryList.filter(
-        (cat) => cat.parentId === newSelected[newSelected.length - 1].categoryId
-      );
-      let newItems = permanentItemList;
-      for (var i; i < newSelected.length; i++) {
-        var cat = selected[i];
-        newItems = newItems.fill((item) =>
-          item.categoryId.includes(cat.categoryId)
-        );
+    let newSelected = selected
+    newSelected.pop()
+    setSelected(newSelected)
+    if(newSelected.length !== 0){
+      let newCategories = permanentCategoryList.filter(cat => cat.parentId === newSelected[newSelected.length - 1].categoryId) 
+      let newItems = permanentItemList
+      for (var i = 0; i < newSelected.length; i++) {
+        var cat = selected[i]
+        newItems = newItems.filter(item => item.categoryId.includes(cat.categoryId))
       }
       setCategoryList(newCategories);
       setItemsList(newItems);
@@ -123,84 +115,68 @@ const Menu = () => {
     for (var i = 0; i <= index; i++) {
       newSelected.push(selected[i]);
     }
-    console.log(newSelected);
-    let newCategories = permanentCategoryList.filter(
-      (cat) => cat.parentId === newSelected[newSelected.length - 1].categoryId
-    );
-    let newItems = permanentItemList;
-    for (var i; i < newSelected.length; i++) {
-      var cat = newSelected[i];
-      newItems = newItems.filter((item) =>
-        item.categoryId.includes(cat.categoryId)
-      );
+    let newCategories = permanentCategoryList.filter(cat => cat.parentId === newSelected[newSelected.length - 1].categoryId)
+    let newItems = permanentItemList
+    for (var i = 0; i < newSelected.length; i++) {
+      var cat = newSelected[i]
+      newItems = newItems.filter(item => item.categoryId.includes(cat.categoryId))
     }
-    console.log(newCategories);
-    console.log(newItems);
-    setCategoryList(newCategories);
-    setItemsList(newItems);
-    setSelected(newSelected);
-  };
+    setCategoryList(newCategories)
+    setItemsList(newItems)
+    setSelected(newSelected)
+  }
 
   const handleHome = () => {
-    let newCategories = permanentCategoryList.filter(
-      (category) => category.parentId === ""
-    );
-    setCategoryList(newCategories);
-    let newItems = permanentItemList.filter((item) => item.categoryId === "");
-    setItemsList(newItems);
-    setSelected([]);
-  };
+      let newCategories = permanentCategoryList.filter(category => category.parentId === "")
+      setCategoryList(newCategories)
+      let newItems = permanentItemList.filter(item => item.categoryId.length === 0)
+      setItemsList(newItems)
+      setSelected([])
+      console.log(newItems)
+      console.log(permanentItemList)
+  }
   const handleCategoryClick = (category) => {
-    const id = category.categoryId;
-    let newSelected = selected.concat(category);
-    setSelected(newSelected);
-    let newCategories = permanentCategoryList.filter(
-      (cat) => cat.parentId === id
-    );
-    let newItems = permanentItemList;
-    for (var i; i < selected.length; i++) {
-      var cat = selected[i];
-      newItems = newItems.filter((item) =>
-        item.categoryId.includes(cat.categoryId)
-      );
+    const id = category.categoryId
+    let newSelected = selected.concat(category)
+    setSelected(newSelected)
+    let newCategories = permanentCategoryList.filter(cat => cat.parentId === id)
+    let newItems = permanentItemList 
+    for(var i = 0; i < newSelected.length; i++){
+      var cat = newSelected[i]
+      newItems = newItems.filter(item => item.categoryId.includes(cat.categoryId))
     }
-    setCategoryList(newCategories);
-    setItemsList(newItems);
+    setCategoryList(newCategories)
+    setItemsList(newItems)
+      console.log('click')
   };
 
   useEffect(() => {
-    console.log(selected);
-  }, [selected]);
-  useEffect(() => {
-    handleHome();
+      handleHome()
+      console.log('UseEffect')
   }, [permanentItemList, permanentCategoryList]);
 
   useEffect(() => {
     getItems();
     getCategories();
-  }, []);
+      console.log('componenetDid')
+  }, [])
   return (
     <div className="row m-t-20">
       <div className="col-md-12 menu_category_block">
         <div className="category_menu_search">
-          <span className="cate_menu" onClick={handleHome}>
-            <a href="#" className="current">
+          <span className="cate_menu" >
+            <a href="#" className="current" onClick={handleHome}>
               Menu
             </a>{" "}
-            {selected.length !== 0 &&
-              selected.map((cat, index) => {
-                return (
-                  <span
-                    key={index}
-                    onClick={() => {
-                      handleCrumbClick(index);
-                    }}
-                  >
-                    <i className="fa fa-caret-right" aria-hidden="true"></i>
-                    <a>{cat.name} </a>
-                  </span>
-                );
-              })}
+            {selected.length !== 0 && selected.map((cat, index) => {
+              return(
+              < label key={index} >
+                <i className="fa fa-caret-right" aria-hidden="true"></i>
+                <a onClick={() => {handleCrumbClick(index)}}>{cat.name}{" "}</a>
+                </label>
+              )
+            })}
+
           </span>
           <span className="cate_search">
             <input type="text" id="myInput1" placeholder="Search" />
