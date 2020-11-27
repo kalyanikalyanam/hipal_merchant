@@ -3,9 +3,6 @@ import firebase from "../config";
 import Sidebar from "./sidebar";
 import Header from "./header";
 import SimpleReactValidator from "simple-react-validator";
-import FileUploader from "react-firebase-file-uploader";
-import { Form } from "reactstrap";
-import { Link } from "react-router-dom";
 import swal from "sweetalert";
 class AllMessages extends React.Component {
   constructor(props) {
@@ -23,8 +20,6 @@ class AllMessages extends React.Component {
             "The :attribute must be at least 6 and at most 30 with 1 numeric,1 special charac" +
             "ter and 1 alphabet.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(
                 val,
@@ -44,8 +39,6 @@ class AllMessages extends React.Component {
         whitespace: {
           message: "The :attribute not allowed first whitespace   characters.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /[^\s\\]/) &&
               params.indexOf(val) === -1
@@ -55,8 +48,6 @@ class AllMessages extends React.Component {
         specialChar: {
           message: "The :attribute not allowed special   characters.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^[ A-Za-z0-9_@./#&+-]*$/i) &&
               params.indexOf(val) === -1
@@ -66,8 +57,6 @@ class AllMessages extends React.Component {
         specialCharText: {
           message: "The :attribute may only contain letters, dot and spaces.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^[ A-Za-z_@./#&+-]*$/i) &&
               params.indexOf(val) === -1
@@ -78,8 +67,6 @@ class AllMessages extends React.Component {
         zip: {
           message: "Invalid Pin Code",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^(\d{5}(\d{4})?)?$/i) &&
               params.indexOf(val) === -1
@@ -89,8 +76,6 @@ class AllMessages extends React.Component {
         website: {
           message: "The Url should be example.com ",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(
                 val,
@@ -154,14 +139,12 @@ class AllMessages extends React.Component {
     this.messageList();
   }
   messageList = async () => {
-    var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
 
     this.setState({ loading: true });
     firebase
       .firestore()
       .collection("Message")
-      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .get()
       .then((querySnapshot) => {

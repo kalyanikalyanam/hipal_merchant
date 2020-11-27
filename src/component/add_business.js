@@ -1,12 +1,13 @@
 import React from "react";
 import firebase from "../config";
-import Sidebar from "./sidebar";
+import BusinessSidebar from "./business_list_sidebar";
 import Header from "./header";
 import SimpleReactValidator from "simple-react-validator";
 import FileUploader from "react-firebase-file-uploader";
 import { Form } from "reactstrap";
 import { Link } from "react-router-dom";
 import Iframe from "react-iframe";
+import TimezoneSelect from "react-timezone-select";
 class AddBusiness extends React.Component {
   constructor(props) {
     super(props);
@@ -26,9 +27,6 @@ class AddBusiness extends React.Component {
       status: "InActive",
 
       business_currency: "",
-      // business_timezone:'',
-      business_timezone_from: "",
-      business_timezone_to: "",
 
       business_fssai_number: "",
       business_fssai_form: "",
@@ -49,7 +47,7 @@ class AddBusiness extends React.Component {
       uploadProgress: 0,
       mobile_message: "",
       businessurl: "",
-
+      timezone: {},
       created_on: new Date().toLocaleString(),
     };
     this.onChange = this.onChange.bind(this);
@@ -61,8 +59,6 @@ class AddBusiness extends React.Component {
             "The :attribute must be at least 6 and at most 30 with 1 numeric,1 special charac" +
             "ter and 1 alphabet.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(
                 val,
@@ -82,8 +78,6 @@ class AddBusiness extends React.Component {
         whitespace: {
           message: "The :attribute not allowed first whitespace   characters.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /[^\s\\]/) &&
               params.indexOf(val) === -1
@@ -93,8 +87,6 @@ class AddBusiness extends React.Component {
         specialChar: {
           message: "The :attribute not allowed special   characters.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^[ A-Za-z0-9_@./#&+-]*$/i) &&
               params.indexOf(val) === -1
@@ -104,8 +96,6 @@ class AddBusiness extends React.Component {
         specialCharText: {
           message: "The :attribute may only contain letters, dot and spaces.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^[ A-Za-z_@./#&+-]*$/i) &&
               params.indexOf(val) === -1
@@ -116,8 +106,6 @@ class AddBusiness extends React.Component {
         zip: {
           message: "Invalid Pin Code",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^(\d{5}(\d{4})?)?$/i) &&
               params.indexOf(val) === -1
@@ -127,8 +115,6 @@ class AddBusiness extends React.Component {
         website: {
           message: "The Url should be example.com ",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(
                 val,
@@ -162,7 +148,6 @@ class AddBusiness extends React.Component {
   handleUploadError = (error) => {
     this.setState({
       isUploading: false,
-      // Todo: handle error
     });
     console.error(error);
   };
@@ -190,6 +175,11 @@ class AddBusiness extends React.Component {
       [event.target.name]: event.target.value,
     });
   };
+  timezone = (data) => {
+    this.setState({
+      timezone: data,
+    });
+  };
 
   handleSubmit = async (event) => {
     event.preventDefault();
@@ -209,7 +199,6 @@ class AddBusiness extends React.Component {
           business_name: this.state.business_name,
           business_legal_name: this.state.business_legal_name,
           business_nick_name: this.state.business_nick_name,
-          // business_automatic_id:this.state.business_automatic_id,
 
           business_email: this.state.business_email,
           business_secondary_email: this.state.business_secondary_email,
@@ -218,9 +207,7 @@ class AddBusiness extends React.Component {
           business_logo: this.state.business_logo,
 
           business_currency: this.state.business_currency,
-          // business_timezone:this.state.business_timezone,
-          business_timezone_from: this.state.business_timezone_from,
-          business_timezone_to: this.state.business_timezone_to,
+          timezone: this.state.timezone,
 
           business_fssai_number: this.state.business_fssai_number,
           business_fssai_form: this.state.business_fssai_form,
@@ -291,19 +278,7 @@ class AddBusiness extends React.Component {
       "&chs=160x160&chld=L|0";
     return (
       <div className="page-wrapper">
-        <aside className="menu-sidebar d-none d-lg-block">
-          <div className="menu-sidebar__content js-scrollbar1">
-            <nav className="navbar-sidebar">
-              <ul className="list-unstyled navbar__list">
-                <li>
-                  <Link to="/BusinessList" className="settings">
-                    Business List
-                  </Link>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </aside>
+        <BusinessSidebar />
 
         <div className="page-container">
           <Header />
@@ -468,7 +443,6 @@ class AddBusiness extends React.Component {
                                     id="text-input"
                                     name="businessurl"
                                     value={url}
-                                    // onChange={this.onChange}
                                     placeholder=" "
                                     className="form-control"
                                   />
@@ -485,7 +459,6 @@ class AddBusiness extends React.Component {
                                 <div className="col-12 col-md-8">
                                   <span className="pop_qr">
                                     <img src={qrcode} />
-                                    {/* <img src="images/icon/QR_1.svg"/> */}
                                   </span>
                                 </div>
                               </div>
@@ -516,17 +489,6 @@ class AddBusiness extends React.Component {
                                 )}
                               </div>
                             </div>
-
-                            {/* <div className="col-md-6">
-    <div className="row form-group">
-    <div className="col col-md-4">
-    <label className=" form-control-label">Business ID</label>
-    </div>
-    <div className="col-12 col-md-8">
-    <input type="text" id="text-input" name="text-input" placeholder="Auto Genrated Business ID By Hipal" className="form-control"/>
-    </div>
-    </div>
-    </div> */}
                           </div>
 
                           <hr></hr>
@@ -622,21 +584,6 @@ class AddBusiness extends React.Component {
                                   </label>
                                 </div>
                                 <div className="col-12 col-md-8">
-                                  {/* <div className="upload_img">
-     <div className="form-group">
-        <div className="img_show" style={{height:"200px"}}><img id="img-upload"/></div>
-           <div className="input-group">
-                <span className="input-group-btn">
-                    <span className="btn btn-default btn-file">
-                        Upload Logo <input type="file" id="imgInp"/>
-                    </span>
-                </span>
-                <input type="text" className="form-control" readonly=""/>
-            </div>
-            
-        </div>
-     </div> */}
-
                                   {this.state.business_logo && (
                                     <img src={this.state.business_logo} />
                                   )}
@@ -703,39 +650,20 @@ class AddBusiness extends React.Component {
                                       Time Zone
                                     </label>
                                   </div>
-                                  <div className="col-12 col-md-4">
-                                    <input
-                                      type="time"
-                                      id="text-input"
-                                      name="business_timezone_from"
-                                      value={this.state.business_timezone_from}
-                                      onChange={this.onChange}
-                                      placeholder=""
-                                      className="form-control"
+
+                                  <div className="col-12 col-md-8">
+                                    <TimezoneSelect
+                                      style={{ width: "50px" }}
+                                      value={this.state.timezone}
+                                      onChange={this.timezone}
                                     />
                                   </div>
-                                  {this.validator.message(
-                                    "Business Time Zone From",
-                                    this.state.business_timezone_from,
-                                    "required"
-                                  )}
-                                  <div className="col-12 col-md-4">
-                                    <input
-                                      type="time"
-                                      id="text-input"
-                                      name="business_timezone_to"
-                                      value={this.state.business_timezone_to}
-                                      onChange={this.onChange}
-                                      placeholder=""
-                                      className="form-control"
-                                    />
-                                  </div>
-                                  {this.validator.message(
-                                    "Business Time Zone To",
-                                    this.state.business_timezone_to,
-                                    "required"
-                                  )}
                                 </div>
+                                {this.validator.message(
+                                  "Time Zone",
+                                  this.state.timezone,
+                                  "required"
+                                )}
                               </div>
                             </div>
                           </div>
@@ -778,8 +706,6 @@ class AddBusiness extends React.Component {
                                     </label>
                                   </div>
                                   <div className="col-12 col-md-8">
-                                    {/* {this.state.business_fssai_form && <img src={this.state.business_fssai_form} />} */}
-
                                     <Iframe
                                       url={this.state.business_fssai_form}
                                       width="50%"
@@ -805,12 +731,6 @@ class AddBusiness extends React.Component {
                                       }
                                       onProgress={this.handleProgress}
                                     />
-
-                                    {/* <input type="file" id="text-input" 
-     name="business_fssai_number"
-     value={this.state.business_fssai_number}
-     onChange={this.onChange}
-     placeholder="Text here" className="form-control"/> */}
                                   </div>
                                   {this.validator.message(
                                     "FSSAI Form",

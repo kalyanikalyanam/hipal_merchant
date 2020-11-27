@@ -3,7 +3,6 @@ import firebase from "../config";
 import Sidebar from "./sidebar";
 import Header from "./header";
 import SimpleReactValidator from "simple-react-validator";
-import FileUploader from "react-firebase-file-uploader";
 import { Form } from "reactstrap";
 import { Link } from "react-router-dom";
 import swal from "sweetalert";
@@ -33,8 +32,6 @@ class AllCustomers extends React.Component {
             "The :attribute must be at least 6 and at most 30 with 1 numeric,1 special charac" +
             "ter and 1 alphabet.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(
                 val,
@@ -54,8 +51,6 @@ class AllCustomers extends React.Component {
         whitespace: {
           message: "The :attribute not allowed first whitespace   characters.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /[^\s\\]/) &&
               params.indexOf(val) === -1
@@ -65,8 +60,6 @@ class AllCustomers extends React.Component {
         specialChar: {
           message: "The :attribute not allowed special   characters.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^[ A-Za-z0-9_@./#&+-]*$/i) &&
               params.indexOf(val) === -1
@@ -76,8 +69,6 @@ class AllCustomers extends React.Component {
         specialCharText: {
           message: "The :attribute may only contain letters, dot and spaces.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^[ A-Za-z_@./#&+-]*$/i) &&
               params.indexOf(val) === -1
@@ -88,8 +79,6 @@ class AllCustomers extends React.Component {
         zip: {
           message: "Invalid Pin Code",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^(\d{5}(\d{4})?)?$/i) &&
               params.indexOf(val) === -1
@@ -99,8 +88,6 @@ class AllCustomers extends React.Component {
         website: {
           message: "The Url should be example.com ",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(
                 val,
@@ -171,7 +158,6 @@ class AllCustomers extends React.Component {
     firebase
       .firestore()
       .collection("customers")
-      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .get()
       .then((querySnapshot) => {
@@ -206,7 +192,7 @@ class AllCustomers extends React.Component {
       var sessionId = sessionStorage.getItem("RoleId");
       var username = sessionStorage.getItem("username");
       var businessId = sessionStorage.getItem("businessId");
-      let dbCon = await firebase
+      await firebase
         .firestore()
         .collection("/customers")
 
@@ -216,9 +202,7 @@ class AllCustomers extends React.Component {
           customer_name: this.state.customer_name,
           customer_email: this.state.customer_email,
           customer_phonenumber: this.state.customer_phonenumber,
-
           customer_notes: this.state.customer_notes,
-
           sessionId: sessionId,
           username: username,
           businessId: businessId,
@@ -231,11 +215,6 @@ class AllCustomers extends React.Component {
         customer_notes: "",
       });
       window.location.href = "/AllCustomers";
-
-      // this
-      //     .props
-      //     .history
-      //     .push("/AllCustomers");
     } else {
       this.validator.showMessages();
       this.forceUpdate();
@@ -250,10 +229,9 @@ class AllCustomers extends React.Component {
       customer_email: e.target.value,
     });
     if (this.state.validError != true) {
-      var ref = firebase
+      firebase
         .firestore()
         .collection("customers")
-        // .where("sessionId", "==", sessionId)
         .where("businessId", "==", businessId)
         .where("customer_email", "==", e.target.value)
         .get()
@@ -274,8 +252,6 @@ class AllCustomers extends React.Component {
   };
 
   customerphonenumberchange = (e) => {
-    var sessionId = sessionStorage.getItem("RoleId");
-    var username = sessionStorage.getItem("username");
     var businessId = sessionStorage.getItem("businessId");
     this.setState({
       customer_phonenumber: e.target.value,
@@ -284,7 +260,6 @@ class AllCustomers extends React.Component {
       var ref = firebase
         .firestore()
         .collection("customers")
-        // .where("sessionId", "==", sessionId)
         .where("businessId", "==", businessId)
         .where("customer_phonenumber", "==", e.target.value)
         .get()
@@ -345,7 +320,6 @@ class AllCustomers extends React.Component {
           customer_phonenumber: userData.customer_phonenumber,
           customer_notes: userData.customer_notes,
         });
-        //console.log(this.state.pageTitle);
       });
   };
   render() {
@@ -421,19 +395,6 @@ class AllCustomers extends React.Component {
                   <div className="row mt-30">
                     <div className="col-md-5 p-0">
                       <div className="overview-wrap">
-                        {/* <div className="order_btns">
-                          <button
-                            type="button"
-                            data-toggle="modal"
-                            data-target="#add_customer"
-                          >
-                            <span className="btn add_ord m-l-0">
-                              <img src="/images/icon/add_plus_icon_w.svg" />
-                              Add Customer
-                            </span>
-                          </button>
-                        </div> */}
-
                         <div class="order_btns">
                           <span
                             class="btn add_ord m-l-0 p_btn"
@@ -510,10 +471,7 @@ class AllCustomers extends React.Component {
 
                                               <td>{customer.customer_name}</td>
                                               <td>{customer.customer_email}</td>
-                                              <td>
-                                                **********
-                                                {/* {customer.customer_phonenumber} */}
-                                              </td>
+                                              <td>**********</td>
                                               <td>10+</td>
                                               <td>
                                                 {sessionStorage.getItem(

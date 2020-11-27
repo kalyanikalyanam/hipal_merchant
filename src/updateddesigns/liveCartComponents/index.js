@@ -17,7 +17,7 @@ import {
   tableContext,
   EmployeeContext,
   CustomerListContext,
-  BalanceContext
+  BalanceContext,
 } from "./contexts";
 import reducer from "./reducer";
 import BottomComp from "./BottomComp";
@@ -27,7 +27,7 @@ import CustomerMoveModal from "./customerMoveModal";
 import CustomerMergeModal from "./customerMergeModal";
 import CustomerSwapModal from "./customerSwapModal";
 import AddCutomerFormModal from "./addCustomerFormModal";
-import BillModal from './billModal'
+import BillModal from "./billModal";
 import KotModal from "./kotModal";
 
 Modal.setAppElement(document.getElementById("root"));
@@ -40,7 +40,7 @@ const customStyles2 = {
     marginRight: "-50%",
     transform: "translate(-50%, -50%)",
     minWidht: "30%",
-    height: "90%"
+    height: "90%",
   },
 };
 const customStyles = {
@@ -82,7 +82,7 @@ const initState = {
   billModalData: null,
   kotModal: false,
   kotModalData: null,
-  balance: 0
+  balance: 0,
 };
 
 const LiveCartPage = (props) => {
@@ -113,149 +113,161 @@ const LiveCartPage = (props) => {
                   <CustomerListContext.Provider
                     value={reducerState.CustomerList}
                   >
-                  <BalanceContext.Provider value={reducerState.balance}>
-                    <div className="page-wrapper">
-                      <Sidebar />
-                      <div className="page-container">
-                        <Header />
-                        <div className="main-content">
-                          <div className="section__content">
-                            <div className="row">
-                              <div className="col-md-12 p-0">
-                                <div className="search_profile">
-                                  <div className="row">
-                                    <div className="col-md-6">
-                                      <div className="company_name_box">
-                                        <div className="company_iocn">
-                                          <img
-                                            src={sessionStorage.getItem(
-                                              "BusinessLogo"
-                                            )}
-                                            style={{
-                                              width: "100%",
-                                              height: "100%",
-                                            }}
+                    <BalanceContext.Provider value={reducerState.balance}>
+                      <div className="page-wrapper">
+                        <Sidebar />
+                        <div className="page-container">
+                          <Header />
+                          <div className="main-content">
+                            <div className="section__content">
+                              <div className="row">
+                                <div className="col-md-12 p-0">
+                                  <div className="search_profile">
+                                    <div className="row">
+                                      <div className="col-md-6">
+                                        <div className="company_name_box">
+                                          <div className="company_iocn">
+                                            <img
+                                              src={sessionStorage.getItem(
+                                                "BusinessLogo"
+                                              )}
+                                              style={{
+                                                width: "100%",
+                                                height: "100%",
+                                              }}
+                                            />
+                                          </div>
+                                          <div className="company_details">
+                                            <p className="name">
+                                              {businessName}
+                                            </p>
+                                            <p className="open">
+                                              OPEN{" "}
+                                              <i
+                                                className="fa fa-circle"
+                                                aria-hidden="true"
+                                              ></i>
+                                            </p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div className="col-md-3">
+                                        <div className="search_top">
+                                          <a href="#" className="search_icon">
+                                            <i className="fas fa-search"></i>
+                                          </a>
+                                          <input
+                                            className="search_input"
+                                            type="text"
+                                            name=""
+                                            placeholder="Search..."
                                           />
                                         </div>
-                                        <div className="company_details">
-                                          <p className="name">{businessName}</p>
-                                          <p className="open">
-                                            OPEN{" "}
-                                            <i
-                                              className="fa fa-circle"
-                                              aria-hidden="true"
-                                            ></i>
-                                          </p>
+                                      </div>
+                                      <div className="col-md-3 ">
+                                        <div className="profile_user">
+                                          <span className="usericon">
+                                            <img src="/images/icon/profile.jpg" />
+                                          </span>
+                                          <span className="profile_data">
+                                            <p className="name">
+                                              {sessionStorage.getItem(
+                                                "username"
+                                              )}
+                                            </p>
+                                            <p>
+                                              {sessionStorage.getItem("email")}
+                                            </p>
+                                          </span>
                                         </div>
-                                      </div>
-                                    </div>
-                                    <div className="col-md-3">
-                                      <div className="search_top">
-                                        <a href="#" className="search_icon">
-                                          <i className="fas fa-search"></i>
-                                        </a>
-                                        <input
-                                          className="search_input"
-                                          type="text"
-                                          name=""
-                                          placeholder="Search..."
-                                        />
-                                      </div>
-                                    </div>
-                                    <div className="col-md-3 ">
-                                      <div className="profile_user">
-                                        <span className="usericon">
-                                          <img src="/images/icon/profile.jpg" />
-                                        </span>
-                                        <span className="profile_data">
-                                          <p className="name">
-                                            {sessionStorage.getItem("username")}
-                                          </p>
-                                          <p>
-                                            {sessionStorage.getItem("email")}
-                                          </p>
-                                        </span>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                            <div className="row mt-30">
-                              <div className="col-lg-7 cart_box_width_1">
-                                <div className="row">
-                                  <Table tableId={props.match.params.tableId} />
-                                  <Info />
-                                </div>
+                              <div className="row mt-30">
+                                <div className="col-lg-7 cart_box_width_1">
+                                  <div className="row">
+                                    <Table
+                                      tableId={props.match.params.tableId}
+                                    />
+                                    <Info />
+                                  </div>
 
-                                <BottomComp />
+                                  <BottomComp />
+                                </div>
+                                <LeftSidebar />
                               </div>
-                              <LeftSidebar />
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
 
-                    <modalContext.Provider
-                      value={{
-                        editMode: reducerState.editMode,
-                        formOrder: reducerState.formOrder,
-                      }}
-                    >
-                      <Modal isOpen={reducerState.show} style={customStyles} >
-                        <ModalForm item={reducerState.modalItem} formOrder= {reducerState.formOrder}/>
-                      </Modal>
-                    </modalContext.Provider>
-                    <Modal
-                      isOpen={reducerState.addCustomerShow}
-                      style={customStyles}
-                    >
-                      <AddCustomerModal tableData={reducerState.table} />
-                    </Modal>
-                    <Modal
-                      isOpen={reducerState.avancedOptionsShow}
-                      style={customStyles}
-                    >
-                      <AdvancedOptionsModal />
-                    </Modal>
-                    <Modal
-                      isOpen={reducerState.customerMergeModal}
-                      style={customStyles}
-                    >
-                      <CustomerMergeModal tableData={reducerState.table} />
-                    </Modal>
-                    <Modal
-                      isOpen={reducerState.customerSwapModal}
-                      style={customStyles}
-                    >
-                      <CustomerSwapModal tableData={reducerState.table} />
-                    </Modal>
-                    <Modal
-                      isOpen={reducerState.customerMoveModal}
-                      style={customStyles}
-                    >
-                      <CustomerMoveModal
-                        tableData={reducerState.table}
-                        tables={state.tableList}
-                      />
-                    </Modal>
-                    <Modal isOpen={reducerState.addUserModal}>
-                      <AddCutomerFormModal
-                        data={reducerState.userInfo}
+                      <modalContext.Provider
+                        value={{
+                          editMode: reducerState.editMode,
+                          formOrder: reducerState.formOrder,
+                        }}
+                      >
+                        <Modal isOpen={reducerState.show} style={customStyles}>
+                          <ModalForm
+                            item={reducerState.modalItem}
+                            formOrder={reducerState.formOrder}
+                          />
+                        </Modal>
+                      </modalContext.Provider>
+                      <Modal
+                        isOpen={reducerState.addCustomerShow}
                         style={customStyles}
-                      />
-                    </Modal>
-                    <Modal isOpen={reducerState.billModal} style={customStyles2} >
-                      <BillModal 
-                        data={reducerState.billModalData}
-                      />
-                    </Modal>
-                    <Modal isOpen={reducerState.kotModal} style={customStyles} >
-                      <KotModal
-                        data={reducerState.kotModalData}
-                      />
-                    </Modal></BalanceContext.Provider>
+                      >
+                        <AddCustomerModal tableData={reducerState.table} />
+                      </Modal>
+                      <Modal
+                        isOpen={reducerState.avancedOptionsShow}
+                        style={customStyles}
+                      >
+                        <AdvancedOptionsModal />
+                      </Modal>
+                      <Modal
+                        isOpen={reducerState.customerMergeModal}
+                        style={customStyles}
+                      >
+                        <CustomerMergeModal tableData={reducerState.table} />
+                      </Modal>
+                      <Modal
+                        isOpen={reducerState.customerSwapModal}
+                        style={customStyles}
+                      >
+                        <CustomerSwapModal tableData={reducerState.table} />
+                      </Modal>
+                      <Modal
+                        isOpen={reducerState.customerMoveModal}
+                        style={customStyles}
+                      >
+                        <CustomerMoveModal
+                          tableData={reducerState.table}
+                          tables={state.tableList}
+                        />
+                      </Modal>
+                      <Modal isOpen={reducerState.addUserModal}>
+                        <AddCutomerFormModal
+                          data={reducerState.userInfo}
+                          style={customStyles}
+                        />
+                      </Modal>
+                      <Modal
+                        isOpen={reducerState.billModal}
+                        style={customStyles2}
+                      >
+                        <BillModal data={reducerState.billModalData} />
+                      </Modal>
+                      <Modal
+                        isOpen={reducerState.kotModal}
+                        style={customStyles}
+                      >
+                        <KotModal data={reducerState.kotModalData} />
+                      </Modal>
+                    </BalanceContext.Provider>
                   </CustomerListContext.Provider>
                 </EmployeeContext.Provider>
               </tableContext.Provider>

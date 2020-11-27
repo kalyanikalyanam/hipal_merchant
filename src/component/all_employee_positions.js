@@ -17,7 +17,6 @@ class AllEmployeePositions extends React.Component {
       employee_details: "",
       employee_task_list: "",
       employee_position_document: "",
-
       employer_sevice_message: "",
       validError: false,
       mobile_message: "",
@@ -27,7 +26,6 @@ class AllEmployeePositions extends React.Component {
       avatarURL: "",
       filenames: [],
       uploadProgress: 0,
-
       employeePositionsList: [],
     };
 
@@ -42,8 +40,6 @@ class AllEmployeePositions extends React.Component {
             "The :attribute must be at least 6 and at most 30 with 1 numeric,1 special charac" +
             "ter and 1 alphabet.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(
                 val,
@@ -63,8 +59,6 @@ class AllEmployeePositions extends React.Component {
         whitespace: {
           message: "The :attribute not allowed first whitespace   characters.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /[^\s\\]/) &&
               params.indexOf(val) === -1
@@ -74,8 +68,6 @@ class AllEmployeePositions extends React.Component {
         specialChar: {
           message: "The :attribute not allowed special   characters.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^[ A-Za-z0-9_@./#&+-]*$/i) &&
               params.indexOf(val) === -1
@@ -85,8 +77,6 @@ class AllEmployeePositions extends React.Component {
         specialCharText: {
           message: "The :attribute may only contain letters, dot and spaces.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^[ A-Za-z_@./#&+-]*$/i) &&
               params.indexOf(val) === -1
@@ -97,8 +87,6 @@ class AllEmployeePositions extends React.Component {
         zip: {
           message: "Invalid Pin Code",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^(\d{5}(\d{4})?)?$/i) &&
               params.indexOf(val) === -1
@@ -108,8 +96,6 @@ class AllEmployeePositions extends React.Component {
         website: {
           message: "The Url should be example.com ",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(
                 val,
@@ -174,14 +160,12 @@ class AllEmployeePositions extends React.Component {
   }
 
   employeePositionsList = async () => {
-    var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
 
     this.setState({ loading: true });
     await firebase
       .firestore()
       .collection("employee_positions")
-      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .get()
       .then((querySnapshot) => {
@@ -222,7 +206,6 @@ class AllEmployeePositions extends React.Component {
   handleUploadError = (error) => {
     this.setState({
       isUploading: false,
-      // Todo: handle error
     });
     console.error(error);
   };
@@ -266,11 +249,6 @@ class AllEmployeePositions extends React.Component {
         employee_position_document: "",
       });
       window.location.href = "/AllEmployeePositions";
-
-      // this
-      //     .props
-      //     .history
-      //     .push("/AllEmployeePositions");
     } else {
       this.validator.showMessages();
       this.forceUpdate();
@@ -287,7 +265,6 @@ class AllEmployeePositions extends React.Component {
       var ref = await firebase
         .firestore()
         .collection("employee_positions/")
-        // .where("sessionId", "==", sessionId)
         .where("businessId", "==", businessId)
         .where("employee_position", "==", e.target.value)
 
@@ -318,11 +295,7 @@ class AllEmployeePositions extends React.Component {
     }).then((willDelete) => {
       if (willDelete) {
         console.log(id);
-        var playersRef = firebase
-          .firestore()
-          .collection("/employee_positions")
-          .doc(id)
-          .delete();
+        firebase.firestore().collection("/employee_positions").doc(id).delete();
       } else {
       }
     });
@@ -339,24 +312,9 @@ class AllEmployeePositions extends React.Component {
         <div className="page-wrapper">
           <Sidebar />
 
-          {/* <!-- PAGE CONTAINER--> */}
           <div className="page-container">
             <Header />
 
-            {/* <header className="header-desktop">
-			
-			<div className="logo_hipal">
-                <a href="#">
-                    <img src="/images/icon/logo.svg" alt="Hipal Admin" />
-                </a>
-            </div>
-			
-			
-			Welcome Back Varun
-            </header> */}
-            {/* <!-- HEADER DESKTOP--> */}
-
-            {/* <!-- MAIN CONTENT--> */}
             <div className="main-content">
               <div className="section__content">
                 <div className="container-fluid">
@@ -423,18 +381,6 @@ class AllEmployeePositions extends React.Component {
                   <div className="row mt-30">
                     <div className="col-md-5 p-0">
                       <div className="overview-wrap">
-                        {/* <div className="order_btns">
-                          <button
-                            type="button"
-                            data-toggle="modal"
-                            data-target="#add_employee_position"
-                          >
-                            <span className="btn add_ord m-l-0">
-                              <img src="/images/icon/add_plus_icon_w.svg" />
-                              Add Employee Position
-                            </span>
-                          </button>
-                        </div> */}
                         <div className="order_btns">
                           <span
                             className="btn add_ord m-l-0 p_btn"
@@ -661,19 +607,6 @@ class AllEmployeePositions extends React.Component {
                         </label>
                       </div>
                       <div className="col-12 col-md-6">
-                        {/* <div className="upload_img upload_small">
-   <div className="form-group">
-      <div className="img_show product_img_small"><img id="img-upload"/></div>
-         <div className="input-group">
-              <span className="input-group-btn">
-                  <span className="btn btn-default btn-file">
-                      Upload PDF or Word File <input type="file" id="imgInp"/>
-                  </span>
-              </span>
-              <input type="text" className="form-control" readonly=""/>
-          </div>
-          
-      </div></div> */}
                         <Iframe
                           url={this.state.employee_position_document}
                           width="50%"

@@ -547,46 +547,14 @@ class EditCategoryMenu extends React.Component {
   };
 
   selectcategory = async (id, name) => {
-    // console.log(id);
-    // let arr = this.state.currentCategory;
-    // let k =1;
-    //   for (let i = 0; i < this.state.currentCategory.length; i++) {
-    //    // console.log(arr);
-    //    // console.log(arr[i]);
-    //     if (arr[i].id === id) {
-    //       arr = arr.slice(0, i);
-    //       break;
-    //     }
-    //   }
     this.setState({ parentName: name });
-    //  // console.log(arr);
 
-    //   arr.push({
-    //     id: id,
-    //     name: name,
-    //   });
-    //   await this.setState({ currentCategory: arr });
-    //  // console.log(this.state.currentCategory);
     await this.setState({
       parentId: id,
     });
   };
 
   temp = async () => {
-    // let res = await firebase
-    //   .firestore()
-    //   .collection("cities")
-    //   .where("name", "==", "Tokyo")
-    //   .where("country", "array-contains-any", ["Mumbai", "chennai"])
-    //   .get();
-
-    // if (res.docs.length > 0) {
-    //   for (const doc of res.docs) {
-    //     // console.log(doc.id, "=>", doc.data());
-    //   }
-    // } else {
-    //   // console.log("no data present");
-    // }
     for (let i = 0; i < this.state.itemMenuList.length; i++) {
       console.log(this.state.itemMenuList[i].itemmenuid);
     }
@@ -823,7 +791,7 @@ class EditCategoryMenu extends React.Component {
                             )}
                           </div>
 
-                          <div className="row form-group">
+                          {/* <div className="row form-group">
                             <div className="col col-md-4">
                               <label className="form-control-label">
                                 Add as child
@@ -841,32 +809,8 @@ class EditCategoryMenu extends React.Component {
                                 onChange={this.onSelectChange}
                                 className="form-control"
                               >
-                                {/* <option
-                                  value={this.state.isParent.toString()}
-                                  //   selected={this.state.isParent}
-                                >
-                                  {this.state.isParent}
-                                </option> */}
-                                <option
-                                  value="true"
-                                  //   selected={
-                                  //     this.state.isParent.toString() === "true"
-                                  //       ? true
-                                  //       : null
-                                  //   }
-                                >
-                                  True
-                                </option>
-                                <option
-                                  value="false"
-                                  //   selected={
-                                  //     this.state.isParent.toString() === "false"
-                                  //       ? false
-                                  //       : null
-                                  //   }
-                                >
-                                  False
-                                </option>
+                                <option value="true">True</option>
+                                <option value="false">False</option>
                               </select>
                             </div>
                             {this.validator.message(
@@ -874,45 +818,50 @@ class EditCategoryMenu extends React.Component {
                               this.state.isParent,
                               "required"
                             )}
-                          </div>
-                          {this.state.isParent === true ? (
-                            <div className="row form-group">
-                              <div className="col col-md-4">
-                                <label className=" form-control-label">
-                                  Select parent category
-                                </label>
-                              </div>
-                              <div className="col-12 col-md-8">
-                                <button
-                                  type="button"
-                                  className="btn btn-secondary mb-1"
-                                  data-toggle="modal"
-                                  data-target="#add_parent_category"
-                                >
-                                  Choose
-                                </button>
-                              </div>
-                              <div
-                                className="breadcrumbs menu_cate_links"
-                                style={{ fontSize: "15px", display: "flex" }}
-                              >
-                                {this.state.currentCategory.map((i, index) => (
-                                  <p style={{ marginLeft: "3px" }} id={i.id}>
-                                    {" "}
-                                    &gt; {i.name}{" "}
-                                  </p>
-                                ))}
-                                <p>
-                                  <p style={{ marginLeft: "3px" }}>
-                                    {" "}
-                                    &gt; {this.state.parentName}{" "}
-                                  </p>
-                                </p>
-                              </div>
-                            </div>
-                          ) : (
+                          </div> */}
+                          {/* {this.state.parentId === "" ? (
                             ""
-                          )}
+                          ) : ( */}
+                          <div className="row form-group">
+                            <div className="col col-md-4">
+                              <label className=" form-control-label">
+                                Select parent category
+                              </label>
+                            </div>
+                            <div className="col-12 col-md-8">
+                              <button
+                                type="button"
+                                className="btn btn-secondary mb-1"
+                                data-toggle="modal"
+                                data-target="#add_parent_category"
+                              >
+                                Choose
+                              </button>
+                            </div>
+                            <div
+                              className="breadcrumbs menu_cate_links"
+                              style={{ fontSize: "15px", display: "flex" }}
+                            >
+                              {this.state.currentCategory.map((i, index) => (
+                                <p style={{ marginLeft: "3px" }} id={i.id}>
+                                  {" "}
+                                  &gt; {i.name}{" "}
+                                </p>
+                              ))}
+                              <p>
+                                <p style={{ marginLeft: "3px" }}>
+                                  {" "}
+                                  &gt;
+                                  {this.state.parentName == "" ? (
+                                    <> {this.state.parentId}</>
+                                  ) : (
+                                    <> {this.state.parentName}</>
+                                  )}
+                                </p>
+                              </p>
+                            </div>
+                          </div>
+                          {/* )} */}
                         </div>
                       </div>
                     </div>
@@ -961,7 +910,6 @@ class EditCategoryMenu extends React.Component {
                                         style={{ background: this.state.color }}
                                       >
                                         <label className="color-selector">
-                                          {/* <span>{this.state.color}</span> */}
                                           <input
                                             type="color"
                                             value={this.state.color}
@@ -1026,22 +974,8 @@ class EditCategoryMenu extends React.Component {
                                               )}
                                               <img src={item.item_image} />
                                             </div>
-                                            {/* <div className="img_box">
-                                              <span className="star_yellow">
-                                                <img src="/images/icon/star_rate_ye.svg" />
-                                              </span>
-                                              <img src="/images/category_img.png" />
-                                            </div> */}
                                           </div>
                                           <div className="right">
-                                            {/* <p>
-                                              <span className="item_recipe">
-                                                <span className="dot veg"></span>
-                                              </span>
-                                              <span className="btn best_seller">
-                                                BESTSELLER
-                                              </span>
-                                            </p> */}
                                             <p>
                                               <span className="item_recipe">
                                                 {item.item_type == "Veg" ? (
@@ -1136,23 +1070,6 @@ class EditCategoryMenu extends React.Component {
                     Choose Parent Category
                   </h5>
                 </div>
-                {/* <div
-                  className='breadcrumbs'
-                  style={{ fontSize: "12px", display: "flex" }}
-                >
-                  {this.state.currentCategory.map((i, index) => (
-                    <p
-                      style={{ marginLeft: "3px" }}
-                      id={i.id}
-                      onClick={(e) => {
-                        this.explore(e, i.name);
-                      }}
-                    >
-                      {" "}
-                      &gt; {i.name}{" "}
-                    </p>
-                  ))}
-                </div> */}
 
                 <div className="modal-body product_edit">
                   <div className="col-12 w-100-row">
@@ -1241,8 +1158,6 @@ class EditCategoryMenu extends React.Component {
                                 {category.isParent === true ? (
                                   <button
                                     className="btn m-t-10 btn_explore"
-                                    // data-toggle='modal'
-                                    // data-target='#add_parent_category'
                                     id={category.categoryId}
                                     onClick={(e) => {
                                       this.explore(e, category.name);

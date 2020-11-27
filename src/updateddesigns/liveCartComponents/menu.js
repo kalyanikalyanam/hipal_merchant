@@ -1,4 +1,4 @@
-import {db} from '../../config'
+import { db } from "../../config";
 import React, { useContext, useEffect, useState } from "react";
 import MenuItem from "./menuItem";
 import CategoryItem from "./categoryItem";
@@ -64,8 +64,7 @@ const Menu = () => {
   };
   const getCategories = () => {
     var businessId = sessionStorage.getItem("businessId");
-      db 
-      .collection("categories2")
+    db.collection("categories2")
       .where("businessId", "==", businessId)
       .get()
       .then((querySnapshot) => {
@@ -94,16 +93,25 @@ const Menu = () => {
   };
 
   const handleBackClick = () => {
-    let newSelected = selected
-    newSelected.pop()
-    setSelected(newSelected)
-    if(newSelected.length !== 0){
-      let newCategories = permanentCategoryList.filter(cat => cat.parentId === newSelected[newSelected.length - 1].categoryId) 
-      let newItems = permanentItemList
-      for (var i = 0; i < newSelected.length; i++) {
-        var cat = selected[i]
-        newItems = newItems.filter(item => item.categoryId.includes(cat.categoryId))
-      }
+    let newSelected = selected;
+    newSelected.pop();
+    setSelected(newSelected);
+    if (newSelected.length !== 0) {
+      let newCategories = permanentCategoryList.filter(
+        (cat) => cat.parentId === newSelected[newSelected.length - 1].categoryId
+      );
+      let newItems = permanentItemList;
+
+      var cat = newSelected[newSelected.length - 1];
+
+      newItems = newItems.filter((item) => {
+        let flag = false;
+        item.categoryId.forEach((c) => {
+          if (c == cat.categoryId) flag = true;
+        });
+        return flag;
+      });
+
       setCategoryList(newCategories);
       setItemsList(newItems);
     } else {
@@ -115,68 +123,96 @@ const Menu = () => {
     for (var i = 0; i <= index; i++) {
       newSelected.push(selected[i]);
     }
-    let newCategories = permanentCategoryList.filter(cat => cat.parentId === newSelected[newSelected.length - 1].categoryId)
-    let newItems = permanentItemList
-    for (var i = 0; i < newSelected.length; i++) {
-      var cat = newSelected[i]
-      newItems = newItems.filter(item => item.categoryId.includes(cat.categoryId))
-    }
-    setCategoryList(newCategories)
-    setItemsList(newItems)
-    setSelected(newSelected)
-  }
+    let newCategories = permanentCategoryList.filter(
+      (cat) => cat.parentId === newSelected[newSelected.length - 1].categoryId
+    );
+    let newItems = permanentItemList;
+
+    var cat = newSelected[newSelected.length - 1];
+
+    newItems = newItems.filter((item) => {
+      let flag = false;
+      item.categoryId.forEach((c) => {
+        if (c == cat.categoryId) flag = true;
+      });
+      return flag;
+    });
+
+    setCategoryList(newCategories);
+    setItemsList(newItems);
+    setSelected(newSelected);
+  };
 
   const handleHome = () => {
-      let newCategories = permanentCategoryList.filter(category => category.parentId === "")
-      setCategoryList(newCategories)
-      let newItems = permanentItemList.filter(item => item.categoryId.length === 0)
-      setItemsList(newItems)
-      setSelected([])
-      console.log(newItems)
-      console.log(permanentItemList)
-  }
+    let newCategories = permanentCategoryList.filter(
+      (category) => category.parentId === ""
+    );
+    setCategoryList(newCategories);
+    let newItems = permanentItemList.filter(
+      (item) => item.categoryId.length === 0
+    );
+    setItemsList(newItems);
+    setSelected([]);
+    console.log(newItems);
+    console.log(permanentItemList);
+  };
   const handleCategoryClick = (category) => {
-    const id = category.categoryId
-    let newSelected = selected.concat(category)
-    setSelected(newSelected)
-    let newCategories = permanentCategoryList.filter(cat => cat.parentId === id)
-    let newItems = permanentItemList 
-    for(var i = 0; i < newSelected.length; i++){
-      var cat = newSelected[i]
-      newItems = newItems.filter(item => item.categoryId.includes(cat.categoryId))
-    }
-    setCategoryList(newCategories)
-    setItemsList(newItems)
-      console.log('click')
+    const id = category.categoryId;
+    let newSelected = selected.concat(category);
+    setSelected(newSelected);
+    let newCategories = permanentCategoryList.filter(
+      (cat) => cat.parentId === id
+    );
+    let newItems = permanentItemList;
+
+    var cat = newSelected[newSelected.length - 1];
+
+    newItems = newItems.filter((item) => {
+      let flag = false;
+      item.categoryId.forEach((c) => {
+        if (c == cat.categoryId) flag = true;
+      });
+      return flag;
+    });
+
+    setCategoryList(newCategories);
+    setItemsList(newItems);
+    console.log("click");
   };
 
   useEffect(() => {
-      handleHome()
-      console.log('UseEffect')
+    handleHome();
+    console.log("UseEffect");
   }, [permanentItemList, permanentCategoryList]);
 
   useEffect(() => {
     getItems();
     getCategories();
-      console.log('componenetDid')
-  }, [])
+    console.log("componenetDid");
+  }, []);
   return (
     <div className="row m-t-20">
       <div className="col-md-12 menu_category_block">
         <div className="category_menu_search">
-          <span className="cate_menu" >
+          <span className="cate_menu">
             <a href="#" className="current" onClick={handleHome}>
               Menu
             </a>{" "}
-            {selected.length !== 0 && selected.map((cat, index) => {
-              return(
-              < label key={index} >
-                <i className="fa fa-caret-right" aria-hidden="true"></i>
-                <a onClick={() => {handleCrumbClick(index)}}>{cat.name}{" "}</a>
-                </label>
-              )
-            })}
-
+            {selected.length !== 0 &&
+              selected.map((cat, index) => {
+                return (
+                  <label key={index}>
+                    <i className="fa fa-caret-right" aria-hidden="true"></i>
+                    <a
+                      onClick={() => {
+                        handleCrumbClick(index);
+                      }}
+                    >
+                      {cat.name}{" "}
+                    </a>
+                  </label>
+                );
+              })}
           </span>
           <span className="cate_search">
             <input type="text" id="myInput1" placeholder="Search" />

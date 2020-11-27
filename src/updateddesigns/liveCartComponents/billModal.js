@@ -114,9 +114,12 @@ const BillModal = React.forwardRef(({ data }, ref) => {
       : noItem;
   return (
     <div width="100%" ref={ref}>
-      <button onClick={handleClose}>close</button>
+      {/* <button onClick={handleClose}>close</button> */}
       <div className="modal-dialog modal-sm hipal_pop" role="document">
-        <table width="100%" style={{ display: "table" }}>
+        <table
+          width="100%"
+          style={{ display: "table", fontFamily: "Times New Roman" }}
+        >
           <tbody>
             <tr>
               <td

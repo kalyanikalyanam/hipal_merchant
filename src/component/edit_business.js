@@ -1,12 +1,13 @@
 import React from "react";
 import firebase from "../config";
-import Sidebar from "./sidebar";
+import BusinessSidebar from "./business_list_sidebar";
 import Header from "./header";
 import SimpleReactValidator from "simple-react-validator";
 import FileUploader from "react-firebase-file-uploader";
 import { Form } from "reactstrap";
 import { Link } from "react-router-dom";
 import Iframe from "react-iframe";
+import TimezoneSelect from "react-timezone-select";
 class EditBusiness extends React.Component {
   constructor(props) {
     super(props);
@@ -24,9 +25,6 @@ class EditBusiness extends React.Component {
       business_logo: "",
 
       business_currency: "",
-      // business_timezone:'',
-      business_timezone_from: "",
-      business_timezone_to: "",
 
       business_fssai_number: "",
       business_fssai_form: "",
@@ -45,7 +43,7 @@ class EditBusiness extends React.Component {
       avatarURL: "",
       filenames: [],
       uploadProgress: 0,
-
+      timezone: {},
       created_on: new Date().toLocaleString(),
     };
     this.onChange = this.onChange.bind(this);
@@ -173,7 +171,6 @@ class EditBusiness extends React.Component {
           business_name: business.business_name,
           business_legal_name: business.business_legal_name,
           business_nick_name: business.business_nick_name,
-          // business_automatic_id:business.business_automatic_id,
 
           business_email: business.business_email,
           business_secondary_email: business.business_secondary_email,
@@ -182,9 +179,7 @@ class EditBusiness extends React.Component {
           business_logo: business.business_logo,
 
           business_currency: business.business_currency,
-          // business_timezone:business.business_timezone,
-          business_timezone_from: business.business_timezone_from,
-          business_timezone_to: business.business_timezone_to,
+          timezone: business.timezone,
 
           business_fssai_number: business.business_fssai_number,
           business_fssai_form: business.business_fssai_form,
@@ -270,9 +265,7 @@ class EditBusiness extends React.Component {
           business_logo: this.state.business_logo,
 
           business_currency: this.state.business_currency,
-          // business_timezone:this.state.business_timezone,
-          business_timezone_from: this.state.business_timezone_from,
-          business_timezone_to: this.state.business_timezone_to,
+          timezone: this.state.timezone,
 
           business_fssai_number: this.state.business_fssai_number,
           business_fssai_form: this.state.business_fssai_form,
@@ -331,6 +324,11 @@ class EditBusiness extends React.Component {
         });
     }
   };
+  timezone = (data) => {
+    this.setState({
+      timezone: data,
+    });
+  };
   render() {
     var url = `https://hipal-9a554.web.app/${this.state.business_name}`;
     var qrcode =
@@ -339,27 +337,7 @@ class EditBusiness extends React.Component {
       "&chs=160x160&chld=L|0";
     return (
       <div className="page-wrapper">
-        <aside className="menu-sidebar d-none d-lg-block">
-          <div className="menu-sidebar__content js-scrollbar1">
-            <nav className="navbar-sidebar">
-              <ul className="list-unstyled navbar__list">
-                {/* <li><a href="#" className="home">Home</a></li>
-                <li><a href="/Tables" className="oders">Orders</a></li>
-                <li><a href="/AllCustomers" className="customers">Customers</a></li>
-                <li><a href="/AddItemMenu"  className="resturent">My Restaurent</a></li>
-                <li><a href="/AllEmployees"  className="employees">Employees</a></li>
-                <li><a href="/AllMessages"  className="messages">Messages</a></li>
-                <li><a href="#"  className="bills">Bills</a></li>
-                <li><a href="TablesList"  className="tabels">Tabels</a></li> */}
-                <li>
-                  <Link to="/BusinessList" className="settings">
-                    Business List
-                  </Link>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </aside>
+        <BusinessSidebar />
 
         <div className="page-container">
           <Header />
@@ -692,21 +670,6 @@ class EditBusiness extends React.Component {
                                   </label>
                                 </div>
                                 <div className="col-12 col-md-8">
-                                  {/* <div className="upload_img">
-     <div className="form-group">
-        <div className="img_show" style={{height:"200px"}}><img id="img-upload"/></div>
-           <div className="input-group">
-                <span className="input-group-btn">
-                    <span className="btn btn-default btn-file">
-                        Upload Logo <input type="file" id="imgInp"/>
-                    </span>
-                </span>
-                <input type="text" className="form-control" readonly=""/>
-            </div>
-            
-        </div>
-     </div> */}
-
                                   {this.state.business_logo && (
                                     <img src={this.state.business_logo} />
                                   )}
@@ -773,39 +736,21 @@ class EditBusiness extends React.Component {
                                       Time Zone
                                     </label>
                                   </div>
-                                  <div className="col-12 col-md-4">
-                                    <input
-                                      type="time"
-                                      id="text-input"
-                                      name="business_timezone_from"
-                                      value={this.state.business_timezone_from}
-                                      onChange={this.onChange}
-                                      placeholder=""
+
+                                  <div className="col-12 col-md-8">
+                                    <TimezoneSelect
                                       className="form-control"
+                                      style={{ width: "50px" }}
+                                      value={this.state.timezone}
+                                      onChange={this.timezone}
                                     />
                                   </div>
-                                  {this.validator.message(
-                                    "Business Time Zone From",
-                                    this.state.business_timezone_from,
-                                    "required"
-                                  )}
-                                  <div className="col-12 col-md-4">
-                                    <input
-                                      type="time"
-                                      id="text-input"
-                                      name="business_timezone_to"
-                                      value={this.state.business_timezone_to}
-                                      onChange={this.onChange}
-                                      placeholder=""
-                                      className="form-control"
-                                    />
-                                  </div>
-                                  {this.validator.message(
-                                    "Business Time Zone To",
-                                    this.state.business_timezone_to,
-                                    "required"
-                                  )}
                                 </div>
+                                {this.validator.message(
+                                  "Time Zone",
+                                  this.state.timezone,
+                                  "required"
+                                )}
                               </div>
                             </div>
                           </div>

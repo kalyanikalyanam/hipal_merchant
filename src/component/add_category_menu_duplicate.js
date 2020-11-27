@@ -37,10 +37,7 @@ class AddCategoryMenuDuplicate extends React.Component {
       itemId: [],
       loading: false,
       isLoading: null,
-      //   IsParent:true,
     };
-
-    // this.explore=this.explore.bind(this);
 
     this.selectcategory = this.selectcategory.bind(this);
     this.selectItem = this.selectItem.bind(this);
@@ -54,8 +51,6 @@ class AddCategoryMenuDuplicate extends React.Component {
             "The :attribute must be at least 6 and at most 30 with 1 numeric,1 special charac" +
             "ter and 1 alphabet.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(
                 val,
@@ -75,8 +70,6 @@ class AddCategoryMenuDuplicate extends React.Component {
         whitespace: {
           message: "The :attribute not allowed first whitespace   characters.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /[^\s\\]/) &&
               params.indexOf(val) === -1
@@ -86,8 +79,6 @@ class AddCategoryMenuDuplicate extends React.Component {
         specialChar: {
           message: "The :attribute not allowed special   characters.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^[ A-Za-z0-9_@./#&+-]*$/i) &&
               params.indexOf(val) === -1
@@ -97,8 +88,6 @@ class AddCategoryMenuDuplicate extends React.Component {
         specialCharText: {
           message: "The :attribute may only contain letters, dot and spaces.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^[ A-Za-z_@./#&+-]*$/i) &&
               params.indexOf(val) === -1
@@ -109,8 +98,6 @@ class AddCategoryMenuDuplicate extends React.Component {
         zip: {
           message: "Invalid Pin Code",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^(\d{5}(\d{4})?)?$/i) &&
               params.indexOf(val) === -1
@@ -120,8 +107,6 @@ class AddCategoryMenuDuplicate extends React.Component {
         website: {
           message: "The Url should be example.com ",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(
                 val,
@@ -187,13 +172,11 @@ class AddCategoryMenuDuplicate extends React.Component {
   }
 
   itemCategoryList = () => {
-    var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
     this.setState({ loading: true });
     firebase
       .firestore()
       .collection("categories2")
-      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .where("parentId", "==", "")
       .get()
@@ -219,7 +202,7 @@ class AddCategoryMenuDuplicate extends React.Component {
           countPage: data.length,
           loading: false,
         });
-        // console.log(CategoryList);
+
         this.setState({
           currentCategory: [
             {
@@ -229,9 +212,7 @@ class AddCategoryMenuDuplicate extends React.Component {
           ],
         });
       })
-      .catch((err) => {
-        // console.log(err);
-      });
+      .catch((err) => {});
   };
 
   explore = async (e, name) => {
@@ -242,7 +223,6 @@ class AddCategoryMenuDuplicate extends React.Component {
     firebase
       .firestore()
       .collection("categories2")
-      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .where("parentId", "==", id)
       .get()
@@ -279,18 +259,14 @@ class AddCategoryMenuDuplicate extends React.Component {
             break;
           }
         }
-        // console.log(arr);
 
         arr.push({
           id: id,
           name: name,
         });
         this.setState({ currentCategory: arr });
-        // console.log(this.state.currentCategory);
       })
-      .catch((err) => {
-        // console.log(err);
-      });
+      .catch((err) => {});
   };
 
   itemMenuList = async () => {
@@ -301,7 +277,6 @@ class AddCategoryMenuDuplicate extends React.Component {
     firebase
       .firestore()
       .collection("menuitems2")
-      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .get()
       .then((querySnapshot) => {
@@ -354,7 +329,6 @@ class AddCategoryMenuDuplicate extends React.Component {
             sessionId: childSnapShot.data().sessionId,
             businessId: childSnapShot.data().businessId,
             categoryId: childSnapShot.data().categoryId,
-            // categoryId: this.state.categoryId,
           };
 
           data.push(GSTData);
@@ -364,11 +338,8 @@ class AddCategoryMenuDuplicate extends React.Component {
           countPage: data.length,
           loading: false,
         });
-        //// console.log(itemTypeList);
       })
-      .catch((err) => {
-        // console.log(err);
-      });
+      .catch((err) => {});
   };
 
   handleUploadStart = () =>
@@ -386,7 +357,6 @@ class AddCategoryMenuDuplicate extends React.Component {
   handleUploadError = (error) => {
     this.setState({
       isUploading: false,
-      // Todo: handle error
     });
     console.error(error);
   };
@@ -422,7 +392,6 @@ class AddCategoryMenuDuplicate extends React.Component {
         sessionId: sessionId,
         username: username,
         businessId: businessId,
-        // itemId: "",
         itemId: itemArray,
       };
       console.log(data);
@@ -454,34 +423,14 @@ class AddCategoryMenuDuplicate extends React.Component {
   };
 
   selectcategory = async (id, name) => {
-    // console.log(id);
-    // let arr = this.state.currentCategory;
-    // let k =1;
-    //   for (let i = 0; i < this.state.currentCategory.length; i++) {
-    //    // console.log(arr);
-    //    // console.log(arr[i]);
-    //     if (arr[i].id === id) {
-    //       arr = arr.slice(0, i);
-    //       break;
-    //     }
-    //   }
     this.setState({ parentName: name });
-    //  // console.log(arr);
 
-    //   arr.push({
-    //     id: id,
-    //     name: name,
-    //   });
-    //   await this.setState({ currentCategory: arr });
-    //  // console.log(this.state.currentCategory);
     await this.setState({
       parentId: id,
     });
   };
   selectItem = async (id) => {
     console.log("selected id", id);
-    var sessionId = sessionStorage.getItem("RoleId");
-    var businessId = sessionStorage.getItem("businessId");
     let menu = this.state.itemMenuList;
     for (let i = 0; i < this.state.itemMenuList.length; i++) {
       if (this.state.itemMenuList[i].itemmenuid === id) {
@@ -514,20 +463,6 @@ class AddCategoryMenuDuplicate extends React.Component {
   };
 
   temp = async () => {
-    // let res = await firebase
-    //   .firestore()
-    //   .collection("cities")
-    //   .where("name", "==", "Tokyo")
-    //   .where("country", "array-contains-any", ["Mumbai", "chennai"])
-    //   .get();
-
-    // if (res.docs.length > 0) {
-    //   for (const doc of res.docs) {
-    //     // console.log(doc.id, "=>", doc.data());
-    //   }
-    // } else {
-    //   // console.log("no data present");
-    // }
     for (let i = 0; i < this.state.itemMenuList.length; i++) {
       console.log(this.state.itemMenuList[i].itemmenuid);
     }
@@ -552,7 +487,6 @@ class AddCategoryMenuDuplicate extends React.Component {
     });
   };
   categoryNameChange = async (e) => {
-    var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
 
     this.setState({ loading: true });
@@ -563,7 +497,6 @@ class AddCategoryMenuDuplicate extends React.Component {
       firebase
         .firestore()
         .collection("categories2")
-        // .where("sessionId", "==", sessionId)
         .where("businessId", "==", businessId)
         .where("name", "==", e.target.value)
 
@@ -605,7 +538,6 @@ class AddCategoryMenuDuplicate extends React.Component {
                           <div className="row">
                             <div className="col-md-6">
                               <div className="company_name_box">
-                                {/* <div className="company_iocn"></div> */}
                                 <div className="company_iocn">
                                   <img
                                     src={sessionStorage.getItem("BusinessLogo")}
@@ -629,19 +561,7 @@ class AddCategoryMenuDuplicate extends React.Component {
                                 </div>
                               </div>
                             </div>
-                            <div className="col-md-3">
-                              {/* <div className="search_top">
-                                <a href="#" className="search_icon">
-                                  <i className="fas fa-search"></i>
-                                </a>
-                                <input
-                                  className="search_input"
-                                  type="text"
-                                  name=""
-                                  placeholder="Search..."
-                                />
-                              </div> */}
-                            </div>
+                            <div className="col-md-3"></div>
                             <div className="col-md-3 ">
                               <div className="profile_user">
                                 <span className="usericon">
@@ -744,16 +664,17 @@ class AddCategoryMenuDuplicate extends React.Component {
                                 onChange={this.onSelectChange}
                                 className="form-control"
                               >
-                                <option value="select">select</option>
-                                <option value="true">True</option>
+                                {/* <option value="select">select</option> */}
+
                                 <option value="false">False</option>
+                                <option value="true">True</option>
                               </select>
                             </div>
-                            {this.validator.message(
+                            {/* {this.validator.message(
                               "IsParent  ",
                               this.state.IsParent,
                               "required"
-                            )}
+                            )} */}
                           </div>
                           {this.state.IsParent === true ? (
                             <div className="row form-group">
@@ -849,7 +770,6 @@ class AddCategoryMenuDuplicate extends React.Component {
                                         style={{ background: this.state.color }}
                                       >
                                         <label className="color-selector">
-                                          {/* <span>{this.state.color}</span> */}
                                           <input
                                             type="color"
                                             value={this.state.color}
@@ -1010,23 +930,6 @@ class AddCategoryMenuDuplicate extends React.Component {
                     Choose Parent Category
                   </h5>
                 </div>
-                {/* <div
-                  className='breadcrumbs'
-                  style={{ fontSize: "12px", display: "flex" }}
-                >
-                  {this.state.currentCategory.map((i, index) => (
-                    <p
-                      style={{ marginLeft: "3px" }}
-                      id={i.id}
-                      onClick={(e) => {
-                        this.explore(e, i.name);
-                      }}
-                    >
-                      {" "}
-                      &gt; {i.name}{" "}
-                    </p>
-                  ))}
-                </div> */}
 
                 <div className="modal-body product_edit">
                   <div className="col-12 w-100-row">
@@ -1115,8 +1018,6 @@ class AddCategoryMenuDuplicate extends React.Component {
                                 {category.isParent === true ? (
                                   <button
                                     className="btn m-t-10 btn_explore"
-                                    // data-toggle='modal'
-                                    // data-target='#add_parent_category'
                                     id={category.categoryId}
                                     onClick={(e) => {
                                       this.explore(e, category.name);
@@ -1270,13 +1171,6 @@ class AddCategoryMenuDuplicate extends React.Component {
                                         ? "Remove"
                                         : "Add"}
                                     </span>
-
-                                    {/* <span
-                                      className="btn remove_btn pull-left"
-                                      id="color"
-                                    >
-                                      Remove
-                                    </span> */}
                                   </div>
                                 </div>
                               </div>

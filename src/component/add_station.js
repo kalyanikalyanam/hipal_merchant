@@ -1,7 +1,5 @@
 import React from "react";
 import firebase from "../config";
-import Sidebar from "../component/sidebar";
-import Header from "../component/header";
 import { Form } from "reactstrap";
 import SimpleReactValidator from "simple-react-validator";
 import { Modal } from "react-responsive-modal";
@@ -30,8 +28,6 @@ class AddStation extends React.Component {
             "The :attribute must be at least 6 and at most 30 with 1 numeric,1 special charac" +
             "ter and 1 alphabet.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(
                 val,
@@ -51,8 +47,6 @@ class AddStation extends React.Component {
         whitespace: {
           message: "The :attribute not allowed first whitespace   characters.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /[^\s\\]/) &&
               params.indexOf(val) === -1
@@ -62,8 +56,6 @@ class AddStation extends React.Component {
         specialChar: {
           message: "The :attribute not allowed special   characters.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^[ A-Za-z0-9_@./#&+-]*$/i) &&
               params.indexOf(val) === -1
@@ -73,8 +65,6 @@ class AddStation extends React.Component {
         specialCharText: {
           message: "The :attribute may only contain letters, dot and spaces.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^[ A-Za-z_@./#&+-]*$/i) &&
               params.indexOf(val) === -1
@@ -85,8 +75,6 @@ class AddStation extends React.Component {
         zip: {
           message: "Invalid Pin Code",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^(\d{5}(\d{4})?)?$/i) &&
               params.indexOf(val) === -1
@@ -96,8 +84,6 @@ class AddStation extends React.Component {
         website: {
           message: "The Url should be example.com ",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(
                 val,
@@ -139,7 +125,6 @@ class AddStation extends React.Component {
     await firebase
       .firestore()
       .collection("Printers")
-      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .get()
       .then((querySnapshot) => {
@@ -223,7 +208,6 @@ class AddStation extends React.Component {
           businessId: businessId,
 
           station_name: this.state.station_name,
-          // printer_name:this.state.printer_name,
           printer_details: this.state.printer_details,
         });
       await this.props.onStationAdd({
@@ -252,7 +236,6 @@ class AddStation extends React.Component {
       var ref = firebase
         .firestore()
         .collection("settings_station/")
-        //.where("sessionId", "==", sessionId)
         .where("businessId", "==", businessId)
         .where("station_name", "==", e.target.value)
 
@@ -277,7 +260,6 @@ class AddStation extends React.Component {
     const { open } = this.state;
     return (
       <>
-        {/* <div className="modal fade" tabindex="-1" role="dialog" aria-labelledby="smallmodalLabel" aria-hidden="true"> */}
         <div className="modal-dialog modal-sm hipal_pop" role="document">
           <div className="modal-content">
             <div className="modal-header">
@@ -318,61 +300,58 @@ class AddStation extends React.Component {
                 </div>
 
                 <div className="col-12 w-100-row">
-                  {this.state.printer_details
-                    // .slice(0, this.state.desired_Machines)
-                    .map((printer_details, idx) => (
-                      <div className="row form-group" key={idx}>
-                        <div className="col col-md-4">
-                          <label className=" form-control-label">
-                            Select Printer {idx + 1} :
-                          </label>
-                        </div>
-                        <div className="col-12 col-md-6">
-                          <select
-                            className="form-control edit_product"
-                            name="printer_name"
-                            // value={printer_details.printer_name}
-                            onChange={this.handleprinterShareholderNameChange(
-                              idx
-                            )}
-                          >
-                            <option>Select Printer ID</option>
-                            {this.state.printeridList &&
-                              this.state.printeridList.map((data, index) => {
-                                return (
-                                  <option
-                                    value={data.printer_id}
-                                    id={data}
-                                    key={index}
-                                  >
-                                    {data.printer_id}
-                                  </option>
-                                );
-                              })}
-                          </select>
-                        </div>
+                  {this.state.printer_details.map((printer_details, idx) => (
+                    <div className="row form-group" key={idx}>
+                      <div className="col col-md-4">
+                        <label className=" form-control-label">
+                          Select Printer {idx + 1} :
+                        </label>
+                      </div>
+                      <div className="col-12 col-md-6">
+                        <select
+                          className="form-control edit_product"
+                          name="printer_name"
+                          onChange={this.handleprinterShareholderNameChange(
+                            idx
+                          )}
+                        >
+                          <option>Select Printer ID</option>
+                          {this.state.printeridList &&
+                            this.state.printeridList.map((data, index) => {
+                              return (
+                                <option
+                                  value={data.printer_id}
+                                  id={data}
+                                  key={index}
+                                >
+                                  {data.printer_id}
+                                </option>
+                              );
+                            })}
+                        </select>
+                      </div>
 
-                        {idx != 0 ? (
-                          <button
-                            type="button"
-                            onClick={this.handleprinterRemoveShareholder(idx)}
-                            className="btn btn-danger m-r-10"
-                          >
-                            Remove
-                          </button>
-                        ) : (
-                          ""
-                        )}
-
+                      {idx != 0 ? (
                         <button
                           type="button"
-                          onClick={this.handleprinterAddShareholder}
-                          className="btn create_add_more_btn m-r-10"
+                          onClick={this.handleprinterRemoveShareholder(idx)}
+                          className="btn btn-danger m-r-10"
                         >
-                          Add More
+                          Remove
                         </button>
-                      </div>
-                    ))}
+                      ) : (
+                        ""
+                      )}
+
+                      <button
+                        type="button"
+                        onClick={this.handleprinterAddShareholder}
+                        className="btn create_add_more_btn m-r-10"
+                      >
+                        Add More
+                      </button>
+                    </div>
+                  ))}
                 </div>
 
                 <div className="col-12 w-100-row">
@@ -383,14 +362,12 @@ class AddStation extends React.Component {
                       </label>
                     </div>
                     <div className="col-12 col-md-6">
-                      {/* <Link to="/AddPrinterId"> */}
                       <div
                         className="btn add_btn_pop_orange addmode_pad m-t-15"
                         onClick={this.onOpenModal}
                       >
                         Add Printer Id
                       </div>
-                      {/* </Link> */}
                     </div>
                   </div>
                 </div>
@@ -414,7 +391,6 @@ class AddStation extends React.Component {
         ) : (
           ""
         )}
-        {/* </div> */}
       </>
     );
   }

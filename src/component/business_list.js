@@ -1,6 +1,6 @@
 import React from "react";
 import firebase from "../config";
-import Sidebar from "./sidebar";
+import BusinessSidebar from "./business_list_sidebar";
 import Header from "./header";
 import { Link } from "react-router-dom";
 class BusinessList extends React.Component {
@@ -116,27 +116,7 @@ class BusinessList extends React.Component {
   render() {
     return (
       <div className="page-wrapper">
-        <aside className="menu-sidebar d-none d-lg-block">
-          <div className="menu-sidebar__content js-scrollbar1">
-            <nav className="navbar-sidebar">
-              <ul className="list-unstyled navbar__list">
-                {/* <li><a href="#" className="home">Home</a></li>
-                <li><a href="/Tables" className="oders">Orders</a></li>
-                <li><a href="/AllCustomers" className="customers">Customers</a></li>
-                <li><a href="/AddItemMenu"  className="resturent">My Restaurent</a></li>
-                <li><a href="/AllEmployees"  className="employees">Employees</a></li>
-                <li><a href="/AllMessages"  className="messages">Messages</a></li>
-                <li><a href="#"  className="bills">Bills</a></li>
-                <li><a href="TablesList"  className="tabels">Tabels</a></li> */}
-                <li>
-                  <Link to="/BusinessList" className="settings">
-                    Business List
-                  </Link>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </aside>
+        <BusinessSidebar />
         <div className="page-container">
           <Header />
 

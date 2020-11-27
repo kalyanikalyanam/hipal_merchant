@@ -11,7 +11,7 @@ import { Modal } from "react-responsive-modal";
 import AddItemType from "./add_item_type";
 import AddStation from "./add_station";
 import Select from "react-select";
-class AddItemMenu extends React.Component {
+class AddItemNew extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -81,6 +81,7 @@ class AddItemMenu extends React.Component {
       stationList: [],
       selectedOption1: null,
       selectedstations: [],
+      categoryitemId: [],
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -91,6 +92,8 @@ class AddItemMenu extends React.Component {
     this.updateSelectedStations = this.updateSelectedStations.bind(this);
     this.updateSelectedStations1 = this.updateSelectedStations1.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.selectCategoryList = this.selectCategoryList.bind(this);
+
     this.validator = new SimpleReactValidator({
       className: "text-danger",
       validators: {
@@ -338,7 +341,6 @@ class AddItemMenu extends React.Component {
   };
 
   itemCategoryList = () => {
-    var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
     this.setState({ loading: true });
     firebase
@@ -346,12 +348,13 @@ class AddItemMenu extends React.Component {
 
       .collection("categories2")
       .where("businessId", "==", businessId)
-      .where("parentId", "==", "")
+
       .get()
       .then((querySnapshot) => {
         var data = [];
         querySnapshot.forEach((childSnapShot) => {
           const GSTData = {
+            idSelected: false,
             categoryId: childSnapShot.id,
             name: childSnapShot.data().name,
             isParent: childSnapShot.data().isParent,
@@ -361,6 +364,7 @@ class AddItemMenu extends React.Component {
             parentId: childSnapShot.data().parentId,
             sessionId: childSnapShot.data().sessionId,
             username: childSnapShot.data().username,
+            itemId: childSnapShot.data().itemId,
           };
 
           data.push(GSTData);
@@ -370,77 +374,12 @@ class AddItemMenu extends React.Component {
           countPage: data.length,
           loading: false,
         });
-        this.setState({
-          currentCategory: [
-            {
-              id: "",
-              name: "categories2",
-            },
-          ],
-        });
       })
       .catch((err) => {
         console.log(err);
       });
   };
 
-  explore = async (e, name) => {
-    var sessionId = sessionStorage.getItem("RoleId");
-    var businessId = sessionStorage.getItem("businessId");
-    e.preventDefault();
-    let { id } = e.target;
-    firebase
-      .firestore()
-      .collection("categories2")
-      .where("businessId", "==", businessId)
-      .where("parentId", "==", id)
-      .get()
-      .then((querySnapshot) => {
-        var data = [];
-        querySnapshot.forEach((childSnapShot) => {
-          const GSTData = {
-            categoryId: childSnapShot.id,
-
-            name: childSnapShot.data().name,
-            isParent: childSnapShot.data().isParent,
-            photo: childSnapShot.data().photo,
-            color: childSnapShot.data().color,
-            created_on: childSnapShot.data().created_on,
-            parentId: childSnapShot.data().parentId,
-            sessionId: childSnapShot.data().sessionId,
-            username: childSnapShot.data().username,
-          };
-
-          data.push(GSTData);
-        });
-
-        this.setState({
-          CategoryList: data,
-          countPage: data.length,
-          loading: false,
-        });
-        let arr = this.state.currentCategory;
-        for (let i = 0; i < this.state.currentCategory.length; i++) {
-          console.log(arr);
-          console.log(arr[i]);
-          if (arr[i].id === id) {
-            arr = arr.slice(0, i);
-            break;
-          }
-        }
-        console.log(arr);
-
-        arr.push({
-          id: id,
-          name: name,
-        });
-        this.setState({ currentCategory: arr });
-        console.log(this.state.currentCategory);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
   onStationAdd = async (data) => {
     console.log(data);
     let temp = this.state.stationList;
@@ -484,18 +423,6 @@ class AddItemMenu extends React.Component {
       });
   };
 
-  selectcategory = async (id, name) => {
-    console.log(id);
-    console.log(id);
-
-    let array = [];
-    array.push(id);
-    this.setState({ parentName: name });
-
-    await this.setState({
-      parentId: array,
-    });
-  };
   onOpenModal = () => {
     this.setState({ open: true });
   };
@@ -672,6 +599,10 @@ class AddItemMenu extends React.Component {
       var key = Math.round(new Date().getTime() / 1000);
       var BusinessName = sessionStorage.getItem("BusinessName");
       var itemId = `${BusinessName}-${this.state.itemMenuListcountPage + 1}`;
+      let itemArray = [];
+      for (let i = 0; i < this.state.categoryitemId.length; i++) {
+        itemArray.push(this.state.categoryitemId[i].categoryId);
+      }
       let dbcon1 = await dbCon.add({
         item_unique_id: key,
 
@@ -714,15 +645,14 @@ class AddItemMenu extends React.Component {
         bestrecommendation: "UnSelect",
 
         businessId: businessId,
-
-        categoryId: this.state.parentId,
+        categoryId: itemArray,
       });
 
-      for (let i = 0; i < this.state.parentId.length; i++) {
+      for (let i = 0; i < itemArray.length; i++) {
         let result = await firebase
           .firestore()
           .collection("categories2")
-          .doc(this.state.parentId[i])
+          .doc(itemArray[i])
           .update({
             itemId: firebase.firestore.FieldValue.arrayUnion(dbcon1.id),
           });
@@ -817,6 +747,38 @@ class AddItemMenu extends React.Component {
     }
     console.log(arr);
     this.setState({ selectedstations: arr });
+  };
+  selectCategoryList = async (id) => {
+    console.log("selected id", id);
+    let menu = this.state.CategoryList;
+    for (let i = 0; i < this.state.CategoryList.length; i++) {
+      if (this.state.CategoryList[i].categoryId === id) {
+        menu[i].isSelected = !menu[i].isSelected;
+        break;
+      }
+    }
+    let filteredArr = this.state.CategoryList.filter(
+      (d) => d.categoryId === id
+    );
+    filteredArr = filteredArr[0];
+    let arr = this.state.categoryitemId;
+    let k = 0;
+    for (let i = 0; i < this.state.categoryitemId.length; i++) {
+      if (this.state.categoryitemId[i].categoryId === id) {
+        console.log("before", arr);
+        arr.splice(i, 1);
+        console.log("after", arr);
+        k = 1;
+        break;
+      }
+    }
+    if (k == 0) {
+      arr.push(filteredArr);
+    }
+    console.log("prev", this.state.categoryitemId);
+    console.log("new", arr);
+    await this.setState({ CategoryList: menu });
+    await this.setState({ categoryitemId: arr });
   };
 
   render() {
@@ -1356,7 +1318,7 @@ class AddItemMenu extends React.Component {
                                   </div>
                                 </div>
 
-                                <div className="row form-group">
+                                {/* <div className="row form-group">
                                   <div className="col col-md-4">
                                     <label className=" form-control-label">
                                       Add to Catagory
@@ -1408,14 +1370,63 @@ class AddItemMenu extends React.Component {
                                       "required"
                                     )}
                                   </div>
-                                </div>
+                                </div> */}
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
+                    <div className="row mt-30">
+                      <div className="col-md-12 p-0">
+                        <div className="category_upload_image">
+                          <h1>Categories</h1>
 
+                          <div className="upload_img_block addproducts">
+                            <h2>
+                              {this.state.categoryitemId &&
+                                this.state.categoryitemId.length}{" "}
+                              Categories
+                              <span className="additems btn">
+                                <button
+                                  type="button"
+                                  data-toggle="modal"
+                                  data-target="#add_categories"
+                                >
+                                  Add Category{" "}
+                                </button>
+                              </span>
+                            </h2>
+
+                            <div className="row">
+                              {this.state.categoryitemId &&
+                                this.state.categoryitemId.map(
+                                  (category, index) => {
+                                    return (
+                                      <div
+                                        className="col-md-3 mb-15 text-center"
+                                        key={index}
+                                      >
+                                        <div
+                                          className="cate_img_box  shadow_box"
+                                          style={{ background: category.color }}
+                                        >
+                                          <img
+                                            className="img_empty2"
+                                            src={category.photo}
+                                          ></img>
+
+                                          <p> {category.name}</p>
+                                        </div>
+                                      </div>
+                                    );
+                                  }
+                                )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                     <div className="row mt-30">
                       <div className="col-md-12 p-0">
                         <div className="category_upload_image">
@@ -1939,25 +1950,31 @@ class AddItemMenu extends React.Component {
 
         <div
           className="modal fade"
-          id="choose_category"
+          id="add_categories"
           tabindex="-1"
           role="dialog"
           aria-labelledby="smallmodalLabel"
           aria-hidden="true"
         >
-          <div className="modal-dialog modal-sm hipal_pop" role="document">
+          <div
+            className="modal-dialog modal-sm hipal_pop additempop"
+            role="document"
+          >
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title" id="smallmodalLabel">
-                  Choose Parent Category
+                  Add Category
                 </h5>
+                {/* <span className="black_font">12 Iteams added</span> */}
               </div>
 
               <div className="modal-body product_edit">
-                <div className="col-12 w-100-row">
+                <div className="col-12 bdr_bottom_gray pb-15 mb-15">
                   <div className="row">
-                    <div className="col col-md-5 font-18">Search by name</div>
-                    <div className="col col-md-7 bill_id_settle">
+                    {/* <div className="col col-md-5 font-18">
+                      Search by name / ID
+                    </div> */}
+                    <div className="col col-md-7 bill_id_settle pl-0">
                       <div className="form-group">
                         <span className="pull-left">
                           <input
@@ -1968,62 +1985,25 @@ class AddItemMenu extends React.Component {
                             className="form-control edit_product"
                           />
                         </span>
-                        <span className="btn pull-right add_btn_pop_orange bg_green addmode_pad">
+                        {/* <span className="btn pull-left add_btn_pop_orange bg_green addmode_pad ml-5">
                           Go
                         </span>
+                        <span className="btn pull-right pad-back">Back</span> */}
                       </div>
                     </div>
                   </div>
                 </div>
 
                 <div className="col-12 w-100-row">
-                  <div className="row">
-                    <div className="col col-md-12 font-15">
-                      Menu :{" "}
-                      <Link to="">
-                        {" "}
-                        <div
-                          className="breadcrumbs"
-                          style={{ fontSize: "15px", display: "flex" }}
-                        >
-                          {this.state.currentCategory.map((i, index) => (
-                            <p
-                              style={{ marginLeft: "3px" }}
-                              id={i.id}
-                              onClick={(e) => {
-                                this.explore(e, i.name);
-                              }}
-                            >
-                              {" "}
-                              &gt; {i.name}{" "}
-                            </p>
-                          ))}
-                        </div>
-                      </Link>
-                    </div>
-
-                    {/* <div className="col col-md-6 text-center">
-<img src="images/icon/back_arrow_left_o.svg"/>
-</div> */}
-                  </div>
-                </div>
-
-                <div className="col-12 w-100-row">
-                  <div className="row">
-                    <div className="row">
-                      {this.state.CategoryList &&
-                        this.state.CategoryList.map((category, index) => {
-                          return (
-                            <div
-                              id={category.categoryId}
-                              onClick={this.selectcategory.bind(
-                                this,
-                                category.categoryId,
-                                category.name
-                              )}
-                              className="col-md-4 mb-15 text-center"
-                              key={index}
-                            >
+                  <div className="row add-Items_scroll">
+                    {this.state.CategoryList &&
+                      this.state.CategoryList.map((category, index) => {
+                        return (
+                          <div
+                            className="col-md-4 product_box text-center"
+                            key={index}
+                          >
+                            <div className="product_box_item">
                               <button data-dismiss="modal">
                                 <div
                                   className="cate_img_box  shadow_box"
@@ -2038,21 +2018,31 @@ class AddItemMenu extends React.Component {
                                 </div>
                               </button>
 
-                              {category.isParent === true ? (
-                                <button
-                                  className="btn m-t-10 btn_explore"
-                                  id={category.categoryId}
-                                  onClick={(e) => {
-                                    this.explore(e, category.name);
-                                  }}
-                                >
-                                  Explore
-                                </button>
-                              ) : null}
+                              <div className="product_item_row">
+                                <div className="left">
+                                  <span
+                                    className={
+                                      category.isSelected === true
+                                        ? "btn remove_btn pull-left "
+                                        : "btn remove_btn pull-left bg_green"
+                                    }
+                                    id="color"
+                                    onClick={this.selectCategoryList.bind(
+                                      this,
+                                      category.categoryId,
+                                      category.name
+                                    )}
+                                  >
+                                    {category.isSelected === true
+                                      ? "Remove"
+                                      : "Add"}
+                                  </span>
+                                </div>
+                              </div>
                             </div>
-                          );
-                        })}
-                    </div>
+                          </div>
+                        );
+                      })}
                   </div>
                 </div>
               </div>
@@ -2063,7 +2053,7 @@ class AddItemMenu extends React.Component {
                   className="btn save_btn"
                   data-dismiss="modal"
                 >
-                  Add here
+                  Add Categories
                 </button>
               </div>
             </div>
@@ -2074,4 +2064,4 @@ class AddItemMenu extends React.Component {
   }
 }
 
-export default AddItemMenu;
+export default AddItemNew;

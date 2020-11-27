@@ -2,9 +2,7 @@ import React from "react";
 import firebase from "../config";
 import Sidebar from "./sidebar";
 import Header from "./header";
-import { Checkbox } from "react-icheck";
 import SimpleReactValidator from "simple-react-validator";
-import FileUploader from "react-firebase-file-uploader";
 import { Form } from "reactstrap";
 import { Link } from "react-router-dom";
 import swal from "sweetalert";
@@ -50,8 +48,6 @@ class AllEmplopyesRoles extends React.Component {
       uploadProgress: 0,
 
       employeePositionsList: [],
-
-      //    UserPermissions:[],
     };
 
     this.onChange = this.onChange.bind(this);
@@ -65,8 +61,6 @@ class AllEmplopyesRoles extends React.Component {
             "The :attribute must be at least 6 and at most 30 with 1 numeric,1 special charac" +
             "ter and 1 alphabet.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(
                 val,
@@ -86,8 +80,6 @@ class AllEmplopyesRoles extends React.Component {
         whitespace: {
           message: "The :attribute not allowed first whitespace   characters.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /[^\s\\]/) &&
               params.indexOf(val) === -1
@@ -97,8 +89,6 @@ class AllEmplopyesRoles extends React.Component {
         specialChar: {
           message: "The :attribute not allowed special   characters.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^[ A-Za-z0-9_@./#&+-]*$/i) &&
               params.indexOf(val) === -1
@@ -108,8 +98,6 @@ class AllEmplopyesRoles extends React.Component {
         specialCharText: {
           message: "The :attribute may only contain letters, dot and spaces.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^[ A-Za-z_@./#&+-]*$/i) &&
               params.indexOf(val) === -1
@@ -120,8 +108,6 @@ class AllEmplopyesRoles extends React.Component {
         zip: {
           message: "Invalid Pin Code",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^(\d{5}(\d{4})?)?$/i) &&
               params.indexOf(val) === -1
@@ -131,8 +117,6 @@ class AllEmplopyesRoles extends React.Component {
         website: {
           message: "The Url should be example.com ",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(
                 val,
@@ -199,7 +183,6 @@ class AllEmplopyesRoles extends React.Component {
   }
 
   employeePositionsList = async () => {
-    var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
 
     this.setState({ loading: true });
@@ -207,7 +190,6 @@ class AllEmplopyesRoles extends React.Component {
     await firebase
       .firestore()
       .collection("employee_positions")
-      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .get()
       .then((querySnapshot) => {
@@ -232,7 +214,6 @@ class AllEmplopyesRoles extends React.Component {
           countPage: data.length,
           loading: false,
         });
-        // console.log(itemTypeList);
       })
       .catch((err) => {
         console.log(err);
@@ -240,14 +221,12 @@ class AllEmplopyesRoles extends React.Component {
   };
 
   employeeList = async () => {
-    var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
 
     this.setState({ loading: true });
     await firebase
       .firestore()
       .collection("merchant_users")
-      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .where("role", "==", "Employee")
 
@@ -297,7 +276,6 @@ class AllEmplopyesRoles extends React.Component {
           countPage: data.length,
           loading: false,
         });
-        // console.log(itemTypeList);
       })
       .catch((err) => {
         console.log(err);
@@ -305,8 +283,6 @@ class AllEmplopyesRoles extends React.Component {
   };
 
   setMobilenumber = (e) => {
-    var sessionId = sessionStorage.getItem("RoleId");
-    var username = sessionStorage.getItem("username");
     var businessId = sessionStorage.getItem("businessId");
     console.log(e.target.value);
 
@@ -315,7 +291,6 @@ class AllEmplopyesRoles extends React.Component {
     var ref = firebase
       .firestore()
       .collection("merchant_users")
-      //   .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .where("role", "==", "Employee")
       .where("employee_name", "==", selectedEmpName)
@@ -345,12 +320,10 @@ class AllEmplopyesRoles extends React.Component {
 
   employee_userroleList = async () => {
     this.setState({ loading: true });
-    var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
     await firebase
       .firestore()
       .collection("employee_userroles")
-      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .get()
       .then((snapshot) => {
@@ -366,7 +339,6 @@ class AllEmplopyesRoles extends React.Component {
             employee_position: childSnapShot.data().employee_position,
 
             employee_mobile_number: childSnapShot.data().employee_mobile_number,
-            // UserPermissions:childSnapShot.val().UserPermissions,
 
             see_all_orders: childSnapShot.data().see_all_orders,
             generate_billing: childSnapShot.data().generate_billing,
@@ -412,7 +384,7 @@ class AllEmplopyesRoles extends React.Component {
       var sessionId = sessionStorage.getItem("RoleId");
       var username = sessionStorage.getItem("username");
       var businessId = sessionStorage.getItem("businessId");
-      let dbCon = await firebase
+      await firebase
         .firestore()
         .collection("/employee_userroles")
 
@@ -424,7 +396,6 @@ class AllEmplopyesRoles extends React.Component {
           employee_position: this.state.employee_position,
 
           employee_mobile_number: this.state.employee_mobile_number,
-          // UserPermissions:this.state.UserPermissions,
 
           see_all_orders: this.state.see_all_orders,
           generate_billing: this.state.generate_billing,
@@ -453,11 +424,6 @@ class AllEmplopyesRoles extends React.Component {
         });
 
       window.location.href = "/AllEmplopyesRoles";
-
-      // this
-      //     .props
-      //     .history
-      //     .push("/AllEmplopyesRoles");
     } else {
       this.validator.showMessages();
       this.forceUpdate();
@@ -490,51 +456,14 @@ class AllEmplopyesRoles extends React.Component {
     });
   };
 
-  // handleChange(e) {
-  //     // current array of options
-  //     const UserPermissions = this.state.UserPermissions
-  //     let index
-
-  //     // check if the check box is checked or unchecked
-  //     if (e.target.checked) {
-  //       // add the numerical value of the checkbox to options array
-  //       UserPermissions.push(+e.target.value)
-  //     } else {
-  //       // or remove the value from the unchecked checkbox from the array
-  //       index = UserPermissions.indexOf(+e.target.value)
-  //       UserPermissions.splice(index, 1)
-  //     }
-
-  //     // update the state with the new array of options
-  //     this.setState({ UserPermissions: UserPermissions })
-  //   }
-
-  // window.location.href
-
   render() {
     return (
       <>
         <div className="page-wrapper">
           <Sidebar />
 
-          {/* <!-- PAGE CONTAINER--> */}
           <div className="page-container">
             <Header />
-
-            {/* <header className="header-desktop">
-                
-                <div className="logo_hipal">
-                    <a href="#">
-                        <img src="/images/icon/logo.svg" alt="Hipal Admin" />
-                    </a>
-                </div>
-                
-                
-                Welcome Back Varun
-                </header> */}
-            {/* <!-- HEADER DESKTOP--> */}
-
-            {/* <!-- MAIN CONTENT--> */}
 
             <div className="main-content">
               <div className="section__content">
@@ -686,7 +615,7 @@ class AllEmplopyesRoles extends React.Component {
                               <td>Employee Name</td>
                               <td>Mobile Number</td>
                               <td>Position</td>
-                              {/* <td>Permissions</td>  */}
+
                               <td>Actions</td>
                             </tr>
                           </thead>
@@ -706,7 +635,7 @@ class AllEmplopyesRoles extends React.Component {
                                       <td>
                                         {employee_userrole.employee_position}
                                       </td>
-                                      {/* <td>Generate Billing</td> */}
+
                                       <td>
                                         <Link
                                           to={`/EditEmployeeRole/${employee_userrole.employeeuserroleId}`}
@@ -786,10 +715,6 @@ class AllEmplopyesRoles extends React.Component {
                           this.state.employee_name,
                           "required"
                         )}
-
-                        {/* <select name="select" id="select" className="form-control edit_product">
-<option value="0">Type to choose</option>
-</select> */}
                       </div>
                     </div>
                   </div>
@@ -824,10 +749,6 @@ class AllEmplopyesRoles extends React.Component {
                           this.state.employee_mobile_number,
                           "required"
                         )}
-
-                        {/* <select name="select" id="select" className="form-control edit_product">
-<option value="0">Choose from drop down</option>
-</select> */}
                       </div>
                     </div>
                   </div>
@@ -862,10 +783,6 @@ class AllEmplopyesRoles extends React.Component {
                           this.state.employee_position,
                           "required"
                         )}
-
-                        {/* <select name="select" id="select" className="form-control edit_product">
-<option value="0">Choose from drop down</option>
-</select> */}
                       </div>
                     </div>
                   </div>

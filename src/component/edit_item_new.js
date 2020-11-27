@@ -10,11 +10,11 @@ import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
 import AddItemType from "./add_item_type";
 import AddStation from "./add_station";
-import Select from "react-select";
-class AddItemMenu extends React.Component {
+class EditItemNew extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      categoryId: [{}],
       open: false,
       open1: false,
       created_on: new Date().toLocaleString(),
@@ -81,6 +81,7 @@ class AddItemMenu extends React.Component {
       stationList: [],
       selectedOption1: null,
       selectedstations: [],
+      categoryitemId: [],
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -91,6 +92,7 @@ class AddItemMenu extends React.Component {
     this.updateSelectedStations = this.updateSelectedStations.bind(this);
     this.updateSelectedStations1 = this.updateSelectedStations1.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.selectCategoryList = this.selectCategoryList.bind(this);
     this.validator = new SimpleReactValidator({
       className: "text-danger",
       validators: {
@@ -178,7 +180,7 @@ class AddItemMenu extends React.Component {
     });
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.setState({ loading: true });
 
     var sessionId = sessionStorage.getItem("RoleId");
@@ -217,82 +219,154 @@ class AddItemMenu extends React.Component {
 
     this.itemTypeList();
     this.stationList();
-    this.itemMenuList();
+    await this.itemMenuList();
     this.itemCategoryList();
   }
 
   itemMenuList = async () => {
-    var sessionId = sessionStorage.getItem("RoleId");
-    var businessId = sessionStorage.getItem("businessId");
-
+    const { itemmenuid } = this.props.match.params;
     this.setState({ loading: true });
-    await firebase
+    let ref = await firebase
       .firestore()
       .collection("menuitems2")
+      .doc(itemmenuid)
+      .get()
+      .then((snapshot) => {
+        var items = snapshot.data();
+
+        this.setState({
+          item_unique_id: items.item_unique_id,
+
+          item_id: items.item_id,
+          item_name: items.item_name,
+          item_description: items.item_description,
+          item_halal: items.item_halal,
+          item_image: items.item_image,
+          item_points: items.item_points,
+
+          selectedstations: items.station_name,
+
+          item_type: items.item_type,
+          item_hash_tags: items.item_hash_tags,
+          item_price: items.item_price,
+          item_tax: items.item_tax,
+
+          sessionId: items.sessionId,
+          businessId: items.businessId,
+
+          status: items.status,
+          username: items.username,
+
+          portions: items.portions,
+          portions_details: items.portions_details,
+
+          advance: items.advance,
+          carbs: items.carbs,
+          protien: items.protien,
+          fat: items.fat,
+          item_video: items.item_video,
+          item_multiple_image: items.downloadURLs,
+
+          extra: items.extra,
+          healthytag: items.healthytag,
+          bestsellertag: items.bestsellertag,
+
+          recommend: items.recommend,
+
+          recommendations: items.recommendations,
+
+          created_on: items.created_on,
+          sessionId: items.sessionId,
+          businessId: items.businessId,
+        });
+      });
+
+    var businessId = sessionStorage.getItem("businessId");
+    await firebase
+      .firestore()
+      .collection("categories2")
       .where("businessId", "==", businessId)
+      .where("itemId", "array-contains-any", [itemmenuid])
       .get()
       .then((querySnapshot) => {
         var data = [];
         querySnapshot.forEach((childSnapShot) => {
           const GSTData = {
-            itemmenuid: childSnapShot.id,
-            item_unique_id: childSnapShot.data().item_unique_id,
-
-            item_id: childSnapShot.data().item_id,
-            item_name: childSnapShot.data().item_name,
-            item_description: childSnapShot.data().item_description,
-            item_halal: childSnapShot.data().item_halal,
-            item_image: childSnapShot.data().item_image,
-            item_points: childSnapShot.data().item_points,
-
-            station_name: childSnapShot.data().station_name,
-
-            item_type: childSnapShot.data().item_type,
-            item_hash_tags: childSnapShot.data().item_hash_tags,
-            item_price: childSnapShot.data().item_price,
-            item_tax: childSnapShot.data().item_tax,
-
-            sessionId: childSnapShot.data().sessionId,
-            businessId: childSnapShot.data().businessId,
-
-            status: childSnapShot.data().status,
-            username: childSnapShot.data().username,
-
-            portions: childSnapShot.data().portions,
-            portions_details: childSnapShot.data().portions_details,
-
-            advance: childSnapShot.data().advance,
-            carbs: childSnapShot.data().carbs,
-            protien: childSnapShot.data().protien,
-            fat: childSnapShot.data().fat,
-            item_video: childSnapShot.data().item_video,
-            item_multiple_image: childSnapShot.data().downloadURLs,
-
-            extra: childSnapShot.data().extra,
-            healthytag: childSnapShot.data().healthytag,
-            bestsellertag: childSnapShot.data().bestsellertag,
-
-            recommend: childSnapShot.data().recommend,
-
-            recommendations: childSnapShot.data().recommendations,
-
+            idSelected: true,
+            categoryId: childSnapShot.id,
+            name: childSnapShot.data().name,
+            isParent: childSnapShot.data().isParent,
+            photo: childSnapShot.data().photo,
+            color: childSnapShot.data().color,
             created_on: childSnapShot.data().created_on,
+            parentId: childSnapShot.data().parentId,
             sessionId: childSnapShot.data().sessionId,
-            businessId: childSnapShot.data().businessId,
-            categoryId: childSnapShot.data().categoryId,
+            username: childSnapShot.data().username,
+            itemId: childSnapShot.data().itemId,
           };
 
           data.push(GSTData);
         });
         this.setState({
-          itemMenuList: data,
-          itemMenuListcountPage: data.length,
+          categoryitemId: data,
+          countPage: data.length,
           loading: false,
         });
-      })
-      .catch((err) => {
-        console.log(err);
+        console.log(this.state.categoryitemId);
       });
+  };
+  itemCategoryList = () => {
+    var businessId = sessionStorage.getItem("businessId");
+    this.setState({ loading: true });
+    firebase
+      .firestore()
+
+      .collection("categories2")
+      .where("businessId", "==", businessId)
+
+      .get()
+      .then((querySnapshot) => {
+        var data = [];
+        querySnapshot.forEach((childSnapShot) => {
+          const GSTData = {
+            idSelected: false,
+            categoryId: childSnapShot.id,
+            name: childSnapShot.data().name,
+            isParent: childSnapShot.data().isParent,
+            photo: childSnapShot.data().photo,
+            color: childSnapShot.data().color,
+            created_on: childSnapShot.data().created_on,
+            parentId: childSnapShot.data().parentId,
+            sessionId: childSnapShot.data().sessionId,
+            username: childSnapShot.data().username,
+            itemId: childSnapShot.data().itemId,
+          };
+
+          data.push(GSTData);
+        });
+        this.setState({
+          CategoryList: data,
+          countPage: data.length,
+          loading: false,
+        });
+
+        console.log("categoryid", this.state.categoryitemId);
+        console.log("category menu", this.state.CategoryList);
+        let id = this.state.categoryitemId;
+        let menu = this.state.CategoryList;
+        for (let i = 0; i < id.length; i++) {
+          for (let j = 0; j < menu.length; j++) {
+            if (id[i].categoryId === this.state.CategoryList[j].categoryId) {
+              menu[j].isSelected = !menu[j].isSelected;
+              console.log("hererere");
+              break;
+            }
+          }
+        }
+
+        this.setState({ CategoryList: menu });
+      })
+      .catch((err) => {});
   };
 
   onItemType = async (data) => {
@@ -303,7 +377,6 @@ class AddItemMenu extends React.Component {
     this.forceUpdate();
   };
   itemTypeList = async () => {
-    var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
 
     this.setState({ loading: true });
@@ -337,110 +410,40 @@ class AddItemMenu extends React.Component {
       });
   };
 
-  itemCategoryList = () => {
-    var sessionId = sessionStorage.getItem("RoleId");
-    var businessId = sessionStorage.getItem("businessId");
-    this.setState({ loading: true });
-    firebase
-      .firestore()
+  selectCategoryList = async (id) => {
+    console.log("selected id", id);
 
-      .collection("categories2")
-      .where("businessId", "==", businessId)
-      .where("parentId", "==", "")
-      .get()
-      .then((querySnapshot) => {
-        var data = [];
-        querySnapshot.forEach((childSnapShot) => {
-          const GSTData = {
-            categoryId: childSnapShot.id,
-            name: childSnapShot.data().name,
-            isParent: childSnapShot.data().isParent,
-            photo: childSnapShot.data().photo,
-            color: childSnapShot.data().color,
-            created_on: childSnapShot.data().created_on,
-            parentId: childSnapShot.data().parentId,
-            sessionId: childSnapShot.data().sessionId,
-            username: childSnapShot.data().username,
-          };
-
-          data.push(GSTData);
-        });
-        this.setState({
-          CategoryList: data,
-          countPage: data.length,
-          loading: false,
-        });
-        this.setState({
-          currentCategory: [
-            {
-              id: "",
-              name: "categories2",
-            },
-          ],
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    let menu = this.state.CategoryList;
+    for (let i = 0; i < this.state.CategoryList.length; i++) {
+      if (this.state.CategoryList[i].categoryId === id) {
+        menu[i].isSelected = !menu[i].isSelected;
+        break;
+      }
+    }
+    let filteredArr = this.state.CategoryList.filter(
+      (d) => d.categoryId === id
+    );
+    filteredArr = filteredArr[0];
+    let arr = this.state.categoryitemId;
+    let k = 0;
+    for (let i = 0; i < this.state.categoryitemId.length; i++) {
+      if (this.state.categoryitemId[i].categoryId === id) {
+        console.log("before", arr);
+        arr.splice(i, 1);
+        console.log("after", arr);
+        k = 1;
+        break;
+      }
+    }
+    if (k == 0) {
+      arr.push(filteredArr);
+    }
+    console.log("prev", this.state.categoryitemId);
+    console.log("new", arr);
+    await this.setState({ CategoryList: menu });
+    await this.setState({ categoryitemId: arr });
   };
 
-  explore = async (e, name) => {
-    var sessionId = sessionStorage.getItem("RoleId");
-    var businessId = sessionStorage.getItem("businessId");
-    e.preventDefault();
-    let { id } = e.target;
-    firebase
-      .firestore()
-      .collection("categories2")
-      .where("businessId", "==", businessId)
-      .where("parentId", "==", id)
-      .get()
-      .then((querySnapshot) => {
-        var data = [];
-        querySnapshot.forEach((childSnapShot) => {
-          const GSTData = {
-            categoryId: childSnapShot.id,
-
-            name: childSnapShot.data().name,
-            isParent: childSnapShot.data().isParent,
-            photo: childSnapShot.data().photo,
-            color: childSnapShot.data().color,
-            created_on: childSnapShot.data().created_on,
-            parentId: childSnapShot.data().parentId,
-            sessionId: childSnapShot.data().sessionId,
-            username: childSnapShot.data().username,
-          };
-
-          data.push(GSTData);
-        });
-
-        this.setState({
-          CategoryList: data,
-          countPage: data.length,
-          loading: false,
-        });
-        let arr = this.state.currentCategory;
-        for (let i = 0; i < this.state.currentCategory.length; i++) {
-          console.log(arr);
-          console.log(arr[i]);
-          if (arr[i].id === id) {
-            arr = arr.slice(0, i);
-            break;
-          }
-        }
-        console.log(arr);
-
-        arr.push({
-          id: id,
-          name: name,
-        });
-        this.setState({ currentCategory: arr });
-        console.log(this.state.currentCategory);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
   onStationAdd = async (data) => {
     console.log(data);
     let temp = this.state.stationList;
@@ -484,18 +487,6 @@ class AddItemMenu extends React.Component {
       });
   };
 
-  selectcategory = async (id, name) => {
-    console.log(id);
-    console.log(id);
-
-    let array = [];
-    array.push(id);
-    this.setState({ parentName: name });
-
-    await this.setState({
-      parentId: array,
-    });
-  };
   onOpenModal = () => {
     this.setState({ open: true });
   };
@@ -668,67 +659,86 @@ class AddItemMenu extends React.Component {
       var sessionId = sessionStorage.getItem("RoleId");
       var username = sessionStorage.getItem("username");
       var businessId = sessionStorage.getItem("businessId");
-      let dbCon = await firebase.firestore().collection("menuitems2");
-      var key = Math.round(new Date().getTime() / 1000);
-      var BusinessName = sessionStorage.getItem("BusinessName");
-      var itemId = `${BusinessName}-${this.state.itemMenuListcountPage + 1}`;
-      let dbcon1 = await dbCon.add({
-        item_unique_id: key,
+      const { itemmenuid } = this.props.match.params;
+      var businessId = sessionStorage.getItem("businessId");
+      let itemArray = [];
+      for (let i = 0; i < this.state.categoryitemId.length; i++) {
+        itemArray.push(this.state.categoryitemId[i].categoryId);
+      }
+      await firebase
+        .firestore()
+        .collection("menuitems2")
+        .doc(itemmenuid)
 
-        item_id: itemId,
-        item_name: this.state.item_name,
-        item_description: this.state.item_description,
-        item_halal: this.state.item_halal,
-        item_image: this.state.item_image,
-        item_points: this.state.item_points,
+        .update({
+          item_id: this.state.item_id,
+          item_name: this.state.item_name,
+          item_description: this.state.item_description,
+          item_halal: this.state.item_halal,
+          item_image: this.state.item_image,
+          item_points: this.state.item_points,
 
-        station_name: this.state.selectedstations,
+          station_name: this.state.selectedstations,
+          item_type: this.state.item_type,
+          item_hash_tags: this.state.item_hash_tags,
+          item_price: this.state.item_price,
+          item_tax: this.state.item_tax,
 
-        item_type: this.state.item_type,
-        item_hash_tags: this.state.item_hash_tags,
-        item_price: this.state.item_price,
-        item_tax: this.state.item_tax,
+          sessionId: sessionId,
+          status: this.state.status,
+          username: username,
 
-        sessionId: sessionId,
-        status: "Active",
-        username: username,
+          portions: this.state.portions,
+          portions_details: this.state.portions_details,
 
-        portions: this.state.portions,
-        portions_details: this.state.portions_details,
+          advance: this.state.advance,
+          carbs: this.state.carbs,
+          protien: this.state.protien,
+          fat: this.state.fat,
+          item_video: this.state.item_video,
+          item_multiple_image: this.state.downloadURLs,
 
-        advance: this.state.advance,
-        carbs: this.state.carbs,
-        protien: this.state.protien,
-        fat: this.state.fat,
-        item_video: this.state.item_video,
-        item_multiple_image: this.state.downloadURLs,
+          extra: this.state.extra,
+          healthytag: this.state.healthytag,
+          bestsellertag: this.state.bestsellertag,
 
-        extra: this.state.extra,
-        healthytag: this.state.healthytag,
-        bestsellertag: this.state.bestsellertag,
+          recommend: this.state.recommend,
+          recommendations: this.state.recommendations,
 
-        recommend: this.state.recommend,
-        recommendations: this.state.recommendations,
+          created_on: this.state.created_on,
+          bestrecommendation: "UnSelect",
 
-        created_on: this.state.created_on,
-        bestrecommendation: "UnSelect",
+          businessId: businessId,
 
-        businessId: businessId,
-
-        categoryId: this.state.parentId,
-      });
-
-      for (let i = 0; i < this.state.parentId.length; i++) {
-        let result = await firebase
+          categoryId: itemArray,
+        });
+      console.log(itemArray);
+      for (let i = 0; i < itemArray.length; i++) {
+        await firebase
           .firestore()
           .collection("categories2")
-          .doc(this.state.parentId[i])
-          .update({
-            itemId: firebase.firestore.FieldValue.arrayUnion(dbcon1.id),
+          .where("businessId", "==", businessId)
+          .get()
+          .then((snap) => {
+            snap.forEach((doc) => {
+              doc.ref.update({
+                itemId: firebase.firestore.FieldValue.arrayRemove(itemmenuid),
+              });
+            });
           });
       }
 
-      this.props.history.push("/ViewItemMenu");
+      for (let i = 0; i < itemArray.length; i++) {
+        await firebase
+          .firestore()
+          .collection("categories2")
+          .doc(itemArray[i])
+          .update({
+            itemId: firebase.firestore.FieldValue.arrayUnion(itemmenuid),
+          });
+      }
+
+      window.location.href = "/ViewItemMenu";
     } else {
       this.validator.showMessages();
       this.forceUpdate();
@@ -736,8 +746,6 @@ class AddItemMenu extends React.Component {
   };
 
   itemidChange = (e) => {
-    var sessionId = sessionStorage.getItem("RoleId");
-    var username = sessionStorage.getItem("username");
     var businessId = sessionStorage.getItem("businessId");
     this.setState({
       item_id: e.target.value,
@@ -776,6 +784,7 @@ class AddItemMenu extends React.Component {
       var ref = await firebase
         .firestore()
         .collection("menuitems2/")
+        // .where("sessionId", "==", sessionId)
         .where("businessId", "==", businessId)
         .where("item_name", "==", e.target.value)
 
@@ -795,7 +804,10 @@ class AddItemMenu extends React.Component {
         });
     }
   };
-
+  handleSelect1 = (selectedOption1) => {
+    this.setState({ selectedOption1 });
+    console.log(`Option selected:`, selectedOption1);
+  };
   updateSelectedStations = async (e) => {
     let val = e.target.id;
     let arr = this.state.selectedstations;
@@ -820,7 +832,7 @@ class AddItemMenu extends React.Component {
   };
 
   render() {
-    const { open, open1 } = this.state;
+    const { open, open1, selectedOption1, stationList } = this.state;
     const styles = {
       container: {
         border: "1px solid #ddd",
@@ -835,9 +847,6 @@ class AddItemMenu extends React.Component {
         fontFamily: "Helvetica, sans-serif",
       },
     };
-
-    var BusinessName = sessionStorage.getItem("BusinessName");
-    var itemId = `${BusinessName}-${this.state.itemMenuListcountPage + 1}`;
 
     return (
       <>
@@ -931,19 +940,14 @@ class AddItemMenu extends React.Component {
                       <div className="col-md-7 p-0">
                         <div className="orders_menu">
                           <ul>
+                            {/* <li>
+                              <a href="/AddItemMenu" className="activemenu">
+                                Add Items
+                              </a>
+                            </li>
                             <li>
                               <a href="/ViewItemMenu">View Items</a>
-                            </li>
-                            {sessionStorage.getItem("role") == "Merchant" ||
-                            sessionStorage.getItem("items") == "Yes" ? (
-                              <li>
-                                <a href="/AddItemMenu" className="activemenu">
-                                  Add Items
-                                </a>
-                              </li>
-                            ) : (
-                              ""
-                            )}
+                            </li> */}
                           </ul>
                         </div>
                       </div>
@@ -975,10 +979,20 @@ class AddItemMenu extends React.Component {
                                       type="text"
                                       id="text-input"
                                       name="item_id"
-                                      value={itemId}
+                                      value={this.state.item_id}
                                       placeholder="IT10002345"
+                                      // onChange={this.itemidChange}
                                       className="form-control"
                                     />
+                                    {/* {this.validator.message(
+                                      "Item Id",
+                                      this.state.item_id,
+                                      "required|whitespace|min:10|max:10"
+                                    )}
+                                    <div className="text-danger">
+                                      {" "}
+                                      {this.state.mobile_message}
+                                    </div> */}
                                   </div>
                                 </div>
 
@@ -1020,6 +1034,7 @@ class AddItemMenu extends React.Component {
                                       name="item_description"
                                       onChange={this.onChange}
                                       value={this.state.item_description}
+                                      // rows="3"
                                       placeholder="Enter text here"
                                       className="form-control"
                                     ></textarea>
@@ -1128,11 +1143,21 @@ class AddItemMenu extends React.Component {
                                     </label>
                                   </div>
                                   <div className="col-12 col-md-8">
-                                    <input
+                                    <select
                                       name="status"
-                                      value="Active"
+                                      onChange={this.onChange}
+                                      value={this.state.status}
                                       className="form-control"
-                                    />
+                                    >
+                                      <option value="select">select</option>
+                                      <option value="Active">Active</option>
+                                      <option value="InActive">InActive</option>
+                                    </select>
+                                    {this.validator.message(
+                                      "status",
+                                      this.state.status,
+                                      "required"
+                                    )}
                                   </div>
                                 </div>
                               </div>
@@ -1145,38 +1170,63 @@ class AddItemMenu extends React.Component {
                                     </label>
                                   </div>
                                   <div className="col-12 col-md-8">
+                                    {/* <Select
+                                      value={selectedOption1}
+                                      onChange={this.handleSelect1}
+                                      options={stationList}
+                                      isMulti
+                                      name="station_name"
+                                      className="basic-multi-select"
+                                      classNamePrefix="select"
+                                    />
+
+                                    <div
+                                      onClick={this.onOpenModal1}
+                                      className="btn add_btn_pop_orange addmode_pad m-t-15"
+                                    >
+                                      Add Station
+                                    </div>
+                                    {this.validator.message(
+                                      "Station Name",
+                                      this.state.selectedOption1,
+                                      "required"
+                                    )}
+                                  </div>
+                                </div> */}
+
                                     <span className="form-control pro-edt-select form-control-primary">
-                                      {this.state.selectedstations.map(
-                                        (i, index) => (
-                                          <div
-                                            style={{
-                                              padding: "5px",
-                                              margin: "5px",
-                                              color: "#000",
-                                              backgroundColor: "#e6ebe7",
-                                              borderRadius: "5px",
-                                              width: "fit-content",
-                                            }}
-                                          >
-                                            <p
+                                      {this.state.selectedstations &&
+                                        this.state.selectedstations.map(
+                                          (i, index) => (
+                                            <div
                                               style={{
-                                                float: "left",
-                                                marginRight: "10px",
+                                                padding: "5px",
+                                                margin: "5px",
+                                                color: "#000",
+                                                backgroundColor: "#e6ebe7",
+                                                borderRadius: "5px",
+                                                width: "fit-content",
                                               }}
                                             >
-                                              {i}
-                                            </p>
-                                            <p
-                                              id={i}
-                                              onClick={
-                                                this.updateSelectedStations
-                                              }
-                                            >
-                                              x
-                                            </p>
-                                          </div>
-                                        )
-                                      )}
+                                              <p
+                                                style={{
+                                                  float: "left",
+                                                  marginRight: "10px",
+                                                }}
+                                              >
+                                                {i}
+                                              </p>
+                                              <p
+                                                id={i}
+                                                onClick={
+                                                  this.updateSelectedStations
+                                                }
+                                              >
+                                                x
+                                              </p>
+                                            </div>
+                                          )
+                                        )}
                                     </span>
                                     <label>Select Station</label>
                                     <select
@@ -1242,6 +1292,10 @@ class AddItemMenu extends React.Component {
                                               <option
                                                 value={data.item_type}
                                                 key={index}
+                                                selected={
+                                                  data.item_type ==
+                                                  this.state.item_type
+                                                }
                                               >
                                                 {data.item_type}
                                               </option>
@@ -1250,6 +1304,7 @@ class AddItemMenu extends React.Component {
                                         )}
                                     </select>
 
+                                    {/* <Link to="/AddItemType"></Link> */}
                                     <div
                                       onClick={this.onOpenModal}
                                       className="btn add_btn_pop_orange addmode_pad m-t-15"
@@ -1282,6 +1337,7 @@ class AddItemMenu extends React.Component {
                                             onClick={this.handleRemoveItem(i)}
                                           >
                                             {item}
+                                            {/* (x) */}
                                           </li>
                                         )
                                       )}
@@ -1292,6 +1348,7 @@ class AddItemMenu extends React.Component {
                                         onKeyDown={this.handleInputKeyDown}
                                       />
                                     </ul>
+                                    {/* <input type="text" name="item_hash_tags" onChange={this.onChange} value={this.state.item_hash_tags} className="form-control"/> */}
 
                                     <div>
                                       Press <b>Ctrl</b> To Enter the Hash Tag
@@ -1355,67 +1412,62 @@ class AddItemMenu extends React.Component {
                                     />
                                   </div>
                                 </div>
-
-                                <div className="row form-group">
-                                  <div className="col col-md-4">
-                                    <label className=" form-control-label">
-                                      Add to Catagory
-                                    </label>
-                                  </div>
-                                  <div className="col-12 col-md-8 menu_cate_links">
-                                    <span>
-                                      <div
-                                        className="breadcrumbs"
-                                        style={{
-                                          fontSize: "12px",
-                                          display: "flex",
-                                        }}
-                                      >
-                                        {this.state.currentCategory.map(
-                                          (i, index) => (
-                                            <p
-                                              style={{ marginLeft: "3px" }}
-                                              id={i.id}
-                                            >
-                                              {" "}
-                                              &gt; {i.name}{" "}
-                                            </p>
-                                          )
-                                        )}
-                                        <p>
-                                          <p style={{ marginLeft: "3px" }}>
-                                            {" "}
-                                            &gt; {this.state.parentName}{" "}
-                                          </p>
-                                        </p>
-                                      </div>
-                                    </span>
-                                  </div>
-                                </div>
-
-                                <div className="row form-group">
-                                  <div className="col col-md-12">
-                                    <span
-                                      className="pull-right addmore_btn"
-                                      data-toggle="modal"
-                                      data-target="#choose_category"
-                                    >
-                                      Choose Catagory
-                                    </span>
-                                    {this.validator.message(
-                                      "choose Category",
-                                      this.state.parentId,
-                                      "required"
-                                    )}
-                                  </div>
-                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
+                    <div className="row mt-30">
+                      <div className="col-md-12 p-0">
+                        <div className="category_upload_image">
+                          <h1>Categories</h1>
 
+                          <div className="upload_img_block addproducts">
+                            <h2>
+                              {this.state.categoryitemId &&
+                                this.state.categoryitemId.length}{" "}
+                              Categories
+                              <span className="additems btn">
+                                <button
+                                  type="button"
+                                  data-toggle="modal"
+                                  data-target="#add_categories"
+                                >
+                                  Add Category{" "}
+                                </button>
+                              </span>
+                            </h2>
+
+                            <div className="row">
+                              {this.state.categoryitemId &&
+                                this.state.categoryitemId.map(
+                                  (category, index) => {
+                                    return (
+                                      <div
+                                        className="col-md-3 mb-15 text-center"
+                                        key={index}
+                                      >
+                                        <div
+                                          className="cate_img_box  shadow_box"
+                                          style={{ background: category.color }}
+                                        >
+                                          <img
+                                            className="img_empty2"
+                                            src={category.photo}
+                                          ></img>
+
+                                          <p> {category.name}</p>
+                                        </div>
+                                      </div>
+                                    );
+                                  }
+                                )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                     <div className="row mt-30">
                       <div className="col-md-12 p-0">
                         <div className="category_upload_image">
@@ -1444,8 +1496,9 @@ class AddItemMenu extends React.Component {
                           {this.state.portions == "Yes" ? (
                             <div className="upload_img_block add_menu">
                               {this.state.portions_details &&
-                                this.state.portions_details.map(
-                                  (portions_details, idx) => (
+                                this.state.portions_details
+                                  // .slice(0, this.state.desired_Machines)
+                                  .map((portions_details, idx) => (
                                     <div className="row m-t-20" key={idx}>
                                       <div className="col-md-3">
                                         <label className=" form-control-label">
@@ -1523,8 +1576,7 @@ class AddItemMenu extends React.Component {
                                         Add More
                                       </button>
                                     </div>
-                                  )
-                                )}
+                                  ))}
                             </div>
                           ) : (
                             ""
@@ -1939,25 +1991,31 @@ class AddItemMenu extends React.Component {
 
         <div
           className="modal fade"
-          id="choose_category"
+          id="add_categories"
           tabindex="-1"
           role="dialog"
           aria-labelledby="smallmodalLabel"
           aria-hidden="true"
         >
-          <div className="modal-dialog modal-sm hipal_pop" role="document">
+          <div
+            className="modal-dialog modal-sm hipal_pop additempop"
+            role="document"
+          >
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title" id="smallmodalLabel">
-                  Choose Parent Category
+                  Add Category
                 </h5>
+                {/* <span className="black_font">12 Iteams added</span> */}
               </div>
 
               <div className="modal-body product_edit">
-                <div className="col-12 w-100-row">
+                <div className="col-12 bdr_bottom_gray pb-15 mb-15">
                   <div className="row">
-                    <div className="col col-md-5 font-18">Search by name</div>
-                    <div className="col col-md-7 bill_id_settle">
+                    {/* <div className="col col-md-5 font-18">
+                      Search by name / ID
+                    </div> */}
+                    <div className="col col-md-7 bill_id_settle pl-0">
                       <div className="form-group">
                         <span className="pull-left">
                           <input
@@ -1968,62 +2026,25 @@ class AddItemMenu extends React.Component {
                             className="form-control edit_product"
                           />
                         </span>
-                        <span className="btn pull-right add_btn_pop_orange bg_green addmode_pad">
+                        {/* <span className="btn pull-left add_btn_pop_orange bg_green addmode_pad ml-5">
                           Go
                         </span>
+                        <span className="btn pull-right pad-back">Back</span> */}
                       </div>
                     </div>
                   </div>
                 </div>
 
                 <div className="col-12 w-100-row">
-                  <div className="row">
-                    <div className="col col-md-12 font-15">
-                      Menu :{" "}
-                      <Link to="">
-                        {" "}
-                        <div
-                          className="breadcrumbs"
-                          style={{ fontSize: "15px", display: "flex" }}
-                        >
-                          {this.state.currentCategory.map((i, index) => (
-                            <p
-                              style={{ marginLeft: "3px" }}
-                              id={i.id}
-                              onClick={(e) => {
-                                this.explore(e, i.name);
-                              }}
-                            >
-                              {" "}
-                              &gt; {i.name}{" "}
-                            </p>
-                          ))}
-                        </div>
-                      </Link>
-                    </div>
-
-                    {/* <div className="col col-md-6 text-center">
-<img src="images/icon/back_arrow_left_o.svg"/>
-</div> */}
-                  </div>
-                </div>
-
-                <div className="col-12 w-100-row">
-                  <div className="row">
-                    <div className="row">
-                      {this.state.CategoryList &&
-                        this.state.CategoryList.map((category, index) => {
-                          return (
-                            <div
-                              id={category.categoryId}
-                              onClick={this.selectcategory.bind(
-                                this,
-                                category.categoryId,
-                                category.name
-                              )}
-                              className="col-md-4 mb-15 text-center"
-                              key={index}
-                            >
+                  <div className="row add-Items_scroll">
+                    {this.state.CategoryList &&
+                      this.state.CategoryList.map((category, index) => {
+                        return (
+                          <div
+                            className="col-md-4 product_box text-center"
+                            key={index}
+                          >
+                            <div className="product_box_item">
                               <button data-dismiss="modal">
                                 <div
                                   className="cate_img_box  shadow_box"
@@ -2038,21 +2059,31 @@ class AddItemMenu extends React.Component {
                                 </div>
                               </button>
 
-                              {category.isParent === true ? (
-                                <button
-                                  className="btn m-t-10 btn_explore"
-                                  id={category.categoryId}
-                                  onClick={(e) => {
-                                    this.explore(e, category.name);
-                                  }}
-                                >
-                                  Explore
-                                </button>
-                              ) : null}
+                              <div className="product_item_row">
+                                <div className="left">
+                                  <span
+                                    className={
+                                      category.isSelected === true
+                                        ? "btn remove_btn pull-left "
+                                        : "btn remove_btn pull-left bg_green"
+                                    }
+                                    id="color"
+                                    onClick={this.selectCategoryList.bind(
+                                      this,
+                                      category.categoryId,
+                                      category.name
+                                    )}
+                                  >
+                                    {category.isSelected === true
+                                      ? "Remove"
+                                      : "Add"}
+                                  </span>
+                                </div>
+                              </div>
                             </div>
-                          );
-                        })}
-                    </div>
+                          </div>
+                        );
+                      })}
                   </div>
                 </div>
               </div>
@@ -2063,7 +2094,7 @@ class AddItemMenu extends React.Component {
                   className="btn save_btn"
                   data-dismiss="modal"
                 >
-                  Add here
+                  Add Categories
                 </button>
               </div>
             </div>
@@ -2074,4 +2105,4 @@ class AddItemMenu extends React.Component {
   }
 }
 
-export default AddItemMenu;
+export default EditItemNew;

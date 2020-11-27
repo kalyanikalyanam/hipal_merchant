@@ -10,7 +10,6 @@ import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
 import AddItemType from "./add_item_type";
 import AddStation from "./add_station";
-import Select from "react-select";
 class EditItemMenu extends React.Component {
   constructor(props) {
     super(props);
@@ -29,7 +28,6 @@ class EditItemMenu extends React.Component {
       station_name: "",
       item_restaurant_id: "",
       item_type: "",
-      // item_hash_tags:'',
 
       item_hash_tags: [],
       input: "",
@@ -79,11 +77,6 @@ class EditItemMenu extends React.Component {
         },
       ],
 
-      //     printer_details:[
-      // {
-      //     printer_name:'',
-      // }
-      //     ]
       currentCategory: [{}],
       stationList: [],
       selectedOption1: null,
@@ -106,8 +99,6 @@ class EditItemMenu extends React.Component {
             "The :attribute must be at least 6 and at most 30 with 1 numeric,1 special charac" +
             "ter and 1 alphabet.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(
                 val,
@@ -127,8 +118,6 @@ class EditItemMenu extends React.Component {
         whitespace: {
           message: "The :attribute not allowed first whitespace   characters.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /[^\s\\]/) &&
               params.indexOf(val) === -1
@@ -138,8 +127,6 @@ class EditItemMenu extends React.Component {
         specialChar: {
           message: "The :attribute not allowed special   characters.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^[ A-Za-z0-9_@./#&+-]*$/i) &&
               params.indexOf(val) === -1
@@ -149,8 +136,6 @@ class EditItemMenu extends React.Component {
         specialCharText: {
           message: "The :attribute may only contain letters, dot and spaces.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^[ A-Za-z_@./#&+-]*$/i) &&
               params.indexOf(val) === -1
@@ -161,8 +146,6 @@ class EditItemMenu extends React.Component {
         zip: {
           message: "Invalid Pin Code",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^(\d{5}(\d{4})?)?$/i) &&
               params.indexOf(val) === -1
@@ -172,8 +155,6 @@ class EditItemMenu extends React.Component {
         website: {
           message: "The Url should be example.com ",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(
                 val,
@@ -250,7 +231,7 @@ class EditItemMenu extends React.Component {
       .get()
       .then((snapshot) => {
         var items = snapshot.data();
-
+        console.log(snapshot.data());
         this.setState({
           item_unique_id: items.item_unique_id,
 
@@ -308,14 +289,12 @@ class EditItemMenu extends React.Component {
     this.forceUpdate();
   };
   itemTypeList = async () => {
-    var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
 
     this.setState({ loading: true });
     await firebase
       .firestore()
       .collection("ItemType")
-      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .get()
       .then((querySnapshot) => {
@@ -337,7 +316,6 @@ class EditItemMenu extends React.Component {
           countPage: data.length,
           loading: false,
         });
-        // console.log(itemTypeList);
       })
       .catch((err) => {
         console.log(err);
@@ -345,14 +323,12 @@ class EditItemMenu extends React.Component {
   };
 
   itemCategoryList = () => {
-    var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
     this.setState({ loading: true });
     firebase
       .firestore()
 
       .collection("categories2")
-      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .where("parentId", "==", "")
       .get()
@@ -378,7 +354,6 @@ class EditItemMenu extends React.Component {
           countPage: data.length,
           loading: false,
         });
-        // console.log(CategoryList);
         this.setState({
           currentCategory: [
             {
@@ -394,14 +369,12 @@ class EditItemMenu extends React.Component {
   };
 
   explore = async (e, name) => {
-    var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
     e.preventDefault();
     let { id } = e.target;
     firebase
       .firestore()
       .collection("categories2")
-      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .where("parentId", "==", id)
       .get()
@@ -567,7 +540,6 @@ class EditItemMenu extends React.Component {
   handleUploadError = (error) => {
     this.setState({
       isUploading: false,
-      // Todo: handle error
     });
     console.error(error);
   };
@@ -683,7 +655,7 @@ class EditItemMenu extends React.Component {
       const { itemmenuid } = this.props.match.params;
       var businessId = sessionStorage.getItem("businessId");
 
-      var dbcon = await firebase
+      await firebase
         .firestore()
         .collection("menuitems2")
         .doc(itemmenuid)
@@ -697,8 +669,6 @@ class EditItemMenu extends React.Component {
           item_points: this.state.item_points,
 
           station_name: this.state.selectedstations,
-          // station_name: this.state.station_name,
-          // item_restaurant_id:this.state.item_restaurant_id,
           item_type: this.state.item_type,
           item_hash_tags: this.state.item_hash_tags,
           item_price: this.state.item_price,
@@ -723,7 +693,6 @@ class EditItemMenu extends React.Component {
           bestsellertag: this.state.bestsellertag,
 
           recommend: this.state.recommend,
-          // recommenditem:this.state. recommenditem,
           recommendations: this.state.recommendations,
 
           created_on: this.state.created_on,
@@ -732,15 +701,12 @@ class EditItemMenu extends React.Component {
           businessId: businessId,
 
           categoryId: this.state.parentId,
-          // categoryId: this.state.CategoryList,
         });
       console.log(this.state.categoryId);
-      // let categoryId = this.state.categoryId;
       for (let i = 0; i < this.state.categoryId.length; i++) {
-        let result = await firebase
+        await firebase
           .firestore()
           .collection("categories2")
-          // .where("sessionId", "==", sessionId)
           .where("businessId", "==", businessId)
           .get()
           .then((snap) => {
@@ -753,7 +719,7 @@ class EditItemMenu extends React.Component {
       }
 
       for (let i = 0; i < this.state.categoryId.length; i++) {
-        let result = await firebase
+        await firebase
           .firestore()
           .collection("categories2")
           .doc(this.state.parentId[i])
@@ -770,8 +736,6 @@ class EditItemMenu extends React.Component {
   };
 
   itemidChange = (e) => {
-    var sessionId = sessionStorage.getItem("RoleId");
-    var username = sessionStorage.getItem("username");
     var businessId = sessionStorage.getItem("businessId");
     this.setState({
       item_id: e.target.value,
@@ -780,7 +744,6 @@ class EditItemMenu extends React.Component {
       var ref = firebase
         .firestore()
         .collection("menuitems2/")
-        // .where("sessionId", "==", sessionId)
         .where("businessId", "==", businessId)
         .where("item_id", "==", e.target.value)
 
@@ -1259,6 +1222,7 @@ class EditItemMenu extends React.Component {
                                     <select
                                       onChange={this.updateSelectedStations1}
                                     >
+                                      <option>Choose Station</option>
                                       {this.state.stationList.map(
                                         (i, index) => (
                                           <option id={i.station_name}>
@@ -1379,11 +1343,11 @@ class EditItemMenu extends React.Component {
                                     <div>
                                       Press <b>Ctrl</b> To Enter the Hash Tag
                                     </div>
-                                    {this.validator.message(
+                                    {/* {this.validator.message(
                                       "hash Tags",
                                       this.state.item_hash_tags,
                                       "required"
-                                    )}
+                                    )} */}
                                   </div>
                                 </div>
 
@@ -1439,7 +1403,7 @@ class EditItemMenu extends React.Component {
                                   </div>
                                 </div>
 
-                                <div className="row form-group">
+                                {/* <div className="row form-group">
                                   <div className="col col-md-4">
                                     <label className=" form-control-label">
                                       Add to Catagory
@@ -1447,8 +1411,6 @@ class EditItemMenu extends React.Component {
                                   </div>
                                   <div className="col-12 col-md-8 menu_cate_links">
                                     <span>
-                                      {/* <a href="#">Menu</a>/<a href="#">MainCourse</a> */}
-
                                       <div
                                         className="breadcrumbs"
                                         style={{
@@ -1470,7 +1432,8 @@ class EditItemMenu extends React.Component {
                                         <p>
                                           <p style={{ marginLeft: "3px" }}>
                                             {" "}
-                                            &gt; {this.state.parentName}{" "}
+                                            &gt;
+                                            {this.state.parentName}{" "}
                                           </p>
                                         </p>
                                       </div>
@@ -1480,9 +1443,6 @@ class EditItemMenu extends React.Component {
 
                                 <div className="row form-group">
                                   <div className="col col-md-12">
-                                    {/* <button type="button" className="btn btn-secondary mb-1" data-toggle="modal" data-target="#choose_category">
-Choose Category
-</button> */}
                                     <span
                                       className="pull-right addmore_btn"
                                       data-toggle="modal"
@@ -1491,7 +1451,7 @@ Choose Category
                                       Choose Catagory
                                     </span>
                                   </div>
-                                </div>
+                                </div> */}
                               </div>
                             </div>
                           </div>
@@ -1733,8 +1693,6 @@ Choose Category
                                         onProgress={this.handleProgress}
                                       />
                                     </div>
-
-                                    {/* {this.validator.message("Video", this.state.item_video, "required")} */}
                                   </div>
                                 </div>
 
@@ -1746,58 +1704,6 @@ Choose Category
                                       </label>
                                     </div>
                                     <div className="col-12 col-md-9">
-                                      {/* <div className="upload_img upload_small">
- <div className="form-group">
-    <div className="img_show product_img_small"><img id="img-upload"/></div>
-       <div className="input-group">
-            <span className="input-group-btn">
-                <span className="btn btn-default btn-file">
-                    Upload An Image <input type="file" id="imgInp"/>
-                </span>
-            </span>
-            <input type="text" className="form-control" readonly=""/>
-        </div>
-        
-    </div>
-    </div>
-    
-    <div className="upload_img upload_small">
- <div className="form-group">
-    <div className="img_show product_img_small"><img id="img-upload"/></div>
-       <div className="input-group">
-            <span className="input-group-btn">
-                <span className="btn btn-default btn-file">
-                    Upload An Image <input type="file" id="imgInp"/>
-                </span>
-            </span>
-            <input type="text" className="form-control" readonly=""/>
-        </div>
-        
-    </div>
-    </div>
-    
-    <div className="upload_img upload_small">
- <div className="form-group">
-    <div className="img_show product_img_small"><img id="img-upload"/></div>
-       <div className="input-group">
-            <span className="input-group-btn">
-                <span className="btn btn-default btn-file">
-                    Upload An Image <input type="file" id="imgInp"/>
-                </span>
-            </span>
-            <input type="text" className="form-control" readonly=""/>
-        </div>
-        
-    </div>
-    </div> */}
-
-                                      {/* {this.state.isUploading && (
-                                        <p>
-                                          Filenames:{" "}
-                                          {this.state.filenames.join(", ")}
-                                        </p>
-                                      )} */}
-
                                       <div>
                                         {this.state.downloadURLs &&
                                           this.state.downloadURLs.map(
@@ -1880,9 +1786,8 @@ Choose Category
                           <div className="upload_img_block add_menu">
                             <div className="row">
                               <div className="col-md-6">
-                                {this.state.recommendations
-                                  // .slice(0, this.state.desired_Machines)
-                                  .map((recommendations, idx) => (
+                                {this.state.recommendations.map(
+                                  (recommendations, idx) => (
                                     <div className="row form-group" key={idx}>
                                       <div className="col col-md-4">
                                         <label className=" form-control-label">
@@ -1890,24 +1795,6 @@ Choose Category
                                         </label>
                                       </div>
                                       <div className="col-12 col-md-8">
-                                        {/* <select
-                                                      className="form-control edit_product"
-                                                        name="printer_name"
-                                                        // value={printer_details.printer_name}
-                                                        onChange={this.handleprinterShareholderNameChange(idx)}>
-                                                        <option>Select Printer ID</option>
-                                                        {this.state.printeridList && this
-                                                            .state
-                                                            .printeridList
-                                                            .map((data, index) => {
-
-                                                                return (
-                                                                    <option value={data.printer_id}  id={data} key={index}>{data.printer_id}</option>
-                                                                )
-
-                                                            })}
-
-                                                    </select> */}
                                         <select
                                           name="recommenditem"
                                           value={recommendations.recommenditem}
@@ -1965,7 +1852,8 @@ Choose Category
                                         Add More
                                       </button>
                                     </div>
-                                  ))}
+                                  )
+                                )}
                               </div>
                             </div>
                           </div>
@@ -2107,23 +1995,6 @@ Choose Category
                   Choose Parent Category
                 </h5>
               </div>
-              {/* <div
-                  className='breadcrumbs'
-                  style={{ fontSize: "12px", display: "flex" }}
-                >
-                  {this.state.currentCategory.map((i, index) => (
-                    <p
-                      style={{ marginLeft: "3px" }}
-                      id={i.id}
-                      onClick={(e) => {
-                        this.explore(e, i.name);
-                      }}
-                    >
-                      {" "}
-                      &gt; {i.name}{" "}
-                    </p>
-                  ))}
-                </div> */}
 
               <div className="modal-body product_edit">
                 <div className="col-12 w-100-row">
@@ -2196,25 +2067,23 @@ Choose Category
                               className="col-md-4 mb-15 text-center"
                               key={index}
                             >
-                              {/* <button data-dismiss="modal"> */}
-                              <div
-                                className="cate_img_box  shadow_box"
-                                style={{ background: category.color }}
-                              >
-                                <img
-                                  className="img_empty2"
-                                  src={category.photo}
-                                ></img>
+                              <button data-dismiss="modal">
+                                <div
+                                  className="cate_img_box  shadow_box"
+                                  style={{ background: category.color }}
+                                >
+                                  <img
+                                    className="img_empty2"
+                                    src={category.photo}
+                                  ></img>
 
-                                <p> {category.name}</p>
-                              </div>
-                              {/* </button> */}
+                                  <p> {category.name}</p>
+                                </div>
+                              </button>
 
                               {category.isParent === true ? (
                                 <button
                                   className="btn m-t-10 btn_explore"
-                                  // data-toggle='modal'
-                                  // data-target='#add_parent_category'
                                   id={category.categoryId}
                                   onClick={(e) => {
                                     this.explore(e, category.name);

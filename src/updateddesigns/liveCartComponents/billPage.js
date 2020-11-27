@@ -8,6 +8,7 @@ import {
   EmployeeContext,
   tableContext,
   billPageContext,
+  orderContext,
 } from "./contexts";
 import * as actions from "./actionTypes";
 const BillPage = () => {
@@ -20,6 +21,7 @@ const BillPage = () => {
   const balance = useContext(BalanceContext);
   const bill = useContext(billContext);
   const employee = useContext(EmployeeContext);
+  const order = useContext(orderContext);
   const handleSettle = async () => {
     let newBillPage = bill;
     newBillPage.id = bill.id;
@@ -28,6 +30,20 @@ const BillPage = () => {
     newBillPage.employee = employee;
     newBillPage.gst = gst;
     newBillPage.cGst = cGst;
+    console.log(newBillPage);
+    let orderId = [];
+
+    let billItems = [];
+    newBillPage.bill.forEach((order) => {
+      orderId.push(order.id);
+      order.forEach((cart) => {
+        cart.forEach((item) => {
+          console.log(item);
+          billItems.push(item);
+        });
+      });
+    });
+
     let Bill = {
       settle_by: employee,
       billId: bill.id,
@@ -35,6 +51,8 @@ const BillPage = () => {
       billTiming: new Date().toLocaleString(),
       table: table.table_name,
       businessId: table.businessId,
+      billItems,
+      orderId,
     };
     dispatch({
       type: "billModalShow",
@@ -107,6 +125,8 @@ const BillPage = () => {
   );
 
   const handleBIllView = (data) => {
+    console.log(bill);
+    // console.log(order);
     let newBillPage = bill;
     newBillPage.id = bill.id;
     newBillPage.bill = bill;
@@ -114,6 +134,7 @@ const BillPage = () => {
     newBillPage.employee = employee;
     newBillPage.gst = gst;
     newBillPage.cGst = cGst;
+
     dispatch({
       type: "billModalShow",
       isSettle: false,

@@ -1,7 +1,5 @@
 import React from "react";
 import firebase from "../config";
-import Sidebar from "./sidebar";
-import Header from "./header";
 import { Form } from "reactstrap";
 import SimpleReactValidator from "simple-react-validator";
 class AddItemType extends React.Component {
@@ -25,8 +23,6 @@ class AddItemType extends React.Component {
             "The :attribute must be at least 6 and at most 30 with 1 numeric,1 special charac" +
             "ter and 1 alphabet.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(
                 val,
@@ -46,8 +42,6 @@ class AddItemType extends React.Component {
         whitespace: {
           message: "The :attribute not allowed first whitespace   characters.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /[^\s\\]/) &&
               params.indexOf(val) === -1
@@ -57,8 +51,6 @@ class AddItemType extends React.Component {
         specialChar: {
           message: "The :attribute not allowed special   characters.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^[ A-Za-z0-9_@./#&+-]*$/i) &&
               params.indexOf(val) === -1
@@ -68,8 +60,6 @@ class AddItemType extends React.Component {
         specialCharText: {
           message: "The :attribute may only contain letters, dot and spaces.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^[ A-Za-z_@./#&+-]*$/i) &&
               params.indexOf(val) === -1
@@ -80,8 +70,6 @@ class AddItemType extends React.Component {
         zip: {
           message: "Invalid Pin Code",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^(\d{5}(\d{4})?)?$/i) &&
               params.indexOf(val) === -1
@@ -91,8 +79,6 @@ class AddItemType extends React.Component {
         website: {
           message: "The Url should be example.com ",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(
                 val,
@@ -150,7 +136,6 @@ class AddItemType extends React.Component {
         sessionId: sessionId,
         businessId: businessId,
       });
-      // window.location.href="/AddItemMenu";
       this.props.onClose();
     } else {
       this.validator.showMessages();
@@ -170,7 +155,6 @@ class AddItemType extends React.Component {
       await firebase
         .firestore()
         .collection("ItemType")
-        // .where("sessionId", "==", sessionId)
         .where("businessId", "==", businessId)
         .where("item_type", "==", e.target.value)
 
@@ -195,7 +179,6 @@ class AddItemType extends React.Component {
   render() {
     return (
       <>
-        {/* <div className="modal fade" tabindex="-1" role="dialog" aria-labelledby="smallmodalLabel" aria-hidden="true"> */}
         <div className="modal-dialog modal-sm hipal_pop" role="document">
           <div className="modal-content">
             <div className="modal-header">
@@ -253,7 +236,6 @@ class AddItemType extends React.Component {
                                 style={{ background: this.state.color }}
                               >
                                 <label className="color-selector">
-                                  {/* <span>{this.state.color}</span> */}
                                   <input
                                     type="color"
                                     value={this.state.color}
@@ -284,7 +266,6 @@ class AddItemType extends React.Component {
             </div>
           </div>
         </div>
-        {/* </div> */}
       </>
     );
   }

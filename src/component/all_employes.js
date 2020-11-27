@@ -605,24 +605,9 @@ class AllEmployees extends React.Component {
         <div className="page-wrapper">
           <Sidebar />
 
-          {/* <!-- PAGE CONTAINER--> */}
           <div className="page-container">
             <Header />
 
-            {/* <header className="header-desktop">
-                
-                <div className="logo_hipal">
-                    <a href="#">
-                        <img src="/images/icon/logo.svg" alt="Hipal Admin" />
-                    </a>
-                </div>
-                
-                
-                Welcome Back Varun
-                </header> */}
-            {/* <!-- HEADER DESKTOP--> */}
-
-            {/* <!-- MAIN CONTENT--> */}
             <div className="main-content">
               <div className="section__content">
                 <div className="container-fluid">
@@ -961,9 +946,6 @@ class AllEmployees extends React.Component {
                           this.state.employee_position,
                           "required"
                         )}
-                        {/* <select name="select" id="select" className="form-control edit_product">
-<option value="0">Owner</option>
-</select> */}
                       </div>
                     </div>
                   </div>
@@ -1103,20 +1085,6 @@ class AllEmployees extends React.Component {
                           this.state.photo,
                           "required"
                         )}
-
-                        {/* <div className="upload_img upload_small">
- <div className="form-group">
-	<div className="img_show product_img_small"><img id="img-upload"/></div>
-       <div className="input-group">
-            <span className="input-group-btn">
-                <span className="btn btn-default btn-file">
-                    Upload Image<input type="file" id="imgInp"/>
-                </span>
-            </span>
-            <input type="text" className="form-control" readonly=""/>
-        </div>
-        
-    </div></div> */}
                       </div>
                     </div>
                   </div>
@@ -1169,25 +1137,6 @@ class AllEmployees extends React.Component {
                           this.state.employee_dateofbirth,
                           "required"
                         )}
-
-                        {/* <div className="pull-left m-r-5">
-<select name="select" id="select" className="form-control edit_product">
-<option value="0">DD</option>
-</select>
-</div>
-
-
-<div className="pull-left m-r-5">
-<select name="select" id="select" className="form-control edit_product">
-<option value="0">MM</option>
-</select>
-</div>
-
-<div className="pull-left">
-<select name="select" id="select" className="form-control edit_product">
-<option value="0">YYYY</option>
-</select>
-</div> */}
                       </div>
                     </div>
                   </div>
@@ -1452,517 +1401,630 @@ class AllEmployees extends React.Component {
                           "required"
                         )}
                       </div> */}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("viewcustomersdetails") ==
+                        "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>View Customers Details</label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="viewcustomersdetails"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={
+                                  this.state.viewcustomersdetails === "Yes"
+                                }
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="viewcustomersdetails"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={
+                                  this.state.viewcustomersdetails === "No"
+                                }
+                              />
+                              No
+                            </label>
 
-                      <div className="col col-md-6">
-                        <label>View Customers Details</label>
-                      </div>
-                      <div className="col col-md-6">
-                        <label>
-                          <input
-                            type="radio"
-                            name="viewcustomersdetails"
-                            value="Yes"
-                            onChange={this.onChange}
-                            checked={this.state.viewcustomersdetails === "Yes"}
-                          />
-                          Yes
-                        </label>
-                        <label style={{ paddingLeft: "20px" }}>
-                          <input
-                            type="radio"
-                            name="viewcustomersdetails"
-                            value="No"
-                            onChange={this.onChange}
-                            checked={this.state.viewcustomersdetails === "No"}
-                          />
-                          No
-                        </label>
+                            {this.validator.message(
+                              "View customers Details",
+                              this.state.viewcustomersdetails,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("deleteeditcustomers") == "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>Delete/Edit Customers </label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="deleteeditcustomers"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={
+                                  this.state.deleteeditcustomers === "Yes"
+                                }
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="deleteeditcustomers"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={
+                                  this.state.deleteeditcustomers === "No"
+                                }
+                              />
+                              No
+                            </label>
 
-                        {this.validator.message(
-                          "View customers Details",
-                          this.state.viewcustomersdetails,
-                          "required"
-                        )}
-                      </div>
+                            {this.validator.message(
+                              "Delete Edit Customers",
+                              this.state.deleteeditcustomers,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("chatwithcustomers") == "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>Chat With Customers </label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="chatwithcustomers"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={this.state.chatwithcustomers === "Yes"}
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="chatwithcustomers"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={this.state.chatwithcustomers === "No"}
+                              />
+                              No
+                            </label>
 
-                      <div className="col col-md-6">
-                        <label>Delete/Edit Customers </label>
-                      </div>
-                      <div className="col col-md-6">
-                        <label>
-                          <input
-                            type="radio"
-                            name="deleteeditcustomers"
-                            value="Yes"
-                            onChange={this.onChange}
-                            checked={this.state.deleteeditcustomers === "Yes"}
-                          />
-                          Yes
-                        </label>
-                        <label style={{ paddingLeft: "20px" }}>
-                          <input
-                            type="radio"
-                            name="deleteeditcustomers"
-                            value="No"
-                            onChange={this.onChange}
-                            checked={this.state.deleteeditcustomers === "No"}
-                          />
-                          No
-                        </label>
+                            {this.validator.message(
+                              "Chat With Customers",
+                              this.state.chatwithcustomers,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("addemployees") == "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>Add Employees</label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="addemployees"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={this.state.addemployees === "Yes"}
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="addemployees"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={this.state.addemployees === "No"}
+                              />
+                              No
+                            </label>
 
-                        {this.validator.message(
-                          "Delete Edit Customers",
-                          this.state.deleteeditcustomers,
-                          "required"
-                        )}
-                      </div>
-                      <div className="col col-md-6">
-                        <label>Chat With Customers </label>
-                      </div>
-                      <div className="col col-md-6">
-                        <label>
-                          <input
-                            type="radio"
-                            name="chatwithcustomers"
-                            value="Yes"
-                            onChange={this.onChange}
-                            checked={this.state.chatwithcustomers === "Yes"}
-                          />
-                          Yes
-                        </label>
-                        <label style={{ paddingLeft: "20px" }}>
-                          <input
-                            type="radio"
-                            name="chatwithcustomers"
-                            value="No"
-                            onChange={this.onChange}
-                            checked={this.state.chatwithcustomers === "No"}
-                          />
-                          No
-                        </label>
+                            {this.validator.message(
+                              "Add Employees",
+                              this.state.addemployees,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("vieweditdeleteemployees") ==
+                        "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>View/Edit/Delete Employees</label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="vieweditdeleteemployees"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={
+                                  this.state.vieweditdeleteemployees === "Yes"
+                                }
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="vieweditdeleteemployees"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={
+                                  this.state.vieweditdeleteemployees === "No"
+                                }
+                              />
+                              No
+                            </label>
 
-                        {this.validator.message(
-                          "Chat With Customers",
-                          this.state.chatwithcustomers,
-                          "required"
-                        )}
-                      </div>
+                            {this.validator.message(
+                              "View/Edit/Delete Employees",
+                              this.state.vieweditdeleteemployees,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("categories") == "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>Add/Edit/Delete Categories</label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="categories"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={this.state.categories === "Yes"}
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="categories"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={this.state.categories === "No"}
+                              />
+                              No
+                            </label>
 
-                      <div className="col col-md-6">
-                        <label>Add Employees</label>
-                      </div>
-                      <div className="col col-md-6">
-                        <label>
-                          <input
-                            type="radio"
-                            name="addemployees"
-                            value="Yes"
-                            onChange={this.onChange}
-                            checked={this.state.addemployees === "Yes"}
-                          />
-                          Yes
-                        </label>
-                        <label style={{ paddingLeft: "20px" }}>
-                          <input
-                            type="radio"
-                            name="addemployees"
-                            value="No"
-                            onChange={this.onChange}
-                            checked={this.state.addemployees === "No"}
-                          />
-                          No
-                        </label>
+                            {this.validator.message(
+                              "Categories",
+                              this.state.categories,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("items") == "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>Add/Edit/Delete Items</label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="items"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={this.state.items === "Yes"}
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="items"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={this.state.items === "No"}
+                              />
+                              No
+                            </label>
 
-                        {this.validator.message(
-                          "Add Employees",
-                          this.state.addemployees,
-                          "required"
-                        )}
-                      </div>
-                      <div className="col col-md-6">
-                        <label>View/Edit/Delete Employees</label>
-                      </div>
-                      <div className="col col-md-6">
-                        <label>
-                          <input
-                            type="radio"
-                            name="vieweditdeleteemployees"
-                            value="Yes"
-                            onChange={this.onChange}
-                            checked={
-                              this.state.vieweditdeleteemployees === "Yes"
-                            }
-                          />
-                          Yes
-                        </label>
-                        <label style={{ paddingLeft: "20px" }}>
-                          <input
-                            type="radio"
-                            name="vieweditdeleteemployees"
-                            value="No"
-                            onChange={this.onChange}
-                            checked={
-                              this.state.vieweditdeleteemployees === "No"
-                            }
-                          />
-                          No
-                        </label>
+                            {this.validator.message(
+                              "Items",
+                              this.state.items,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("addtables") == "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>Add Tables</label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="addtables"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={this.state.addtables === "Yes"}
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="addtables"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={this.state.addtables === "No"}
+                              />
+                              No
+                            </label>
 
-                        {this.validator.message(
-                          "View/Edit/Delete Employees",
-                          this.state.vieweditdeleteemployees,
-                          "required"
-                        )}
-                      </div>
+                            {this.validator.message(
+                              "Add Tables",
+                              this.state.addtables,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("editdeletetables") == "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>Edit/Delete Tables</label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="editdeletetables"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={this.state.editdeletetables === "Yes"}
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="editdeletetables"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={this.state.editdeletetables === "No"}
+                              />
+                              No
+                            </label>
 
-                      <div className="col col-md-6">
-                        <label>Add/Edit/Delete Categories</label>
-                      </div>
-                      <div className="col col-md-6">
-                        <label>
-                          <input
-                            type="radio"
-                            name="categories"
-                            value="Yes"
-                            onChange={this.onChange}
-                            checked={this.state.categories === "Yes"}
-                          />
-                          Yes
-                        </label>
-                        <label style={{ paddingLeft: "20px" }}>
-                          <input
-                            type="radio"
-                            name="categories"
-                            value="No"
-                            onChange={this.onChange}
-                            checked={this.state.categories === "No"}
-                          />
-                          No
-                        </label>
+                            {this.validator.message(
+                              "Edit/Delete Tables",
+                              this.state.editdeletetables,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("addfloors") == "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>Add Floors</label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="addfloors"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={this.state.addfloors === "Yes"}
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="addfloors"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={this.state.addfloors === "No"}
+                              />
+                              No
+                            </label>
 
-                        {this.validator.message(
-                          "Categories",
-                          this.state.categories,
-                          "required"
-                        )}
-                      </div>
+                            {this.validator.message(
+                              "Add Floors",
+                              this.state.addfloors,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("editdeletefloors") == "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>Edit/Delete Floors</label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="editdeletefloors"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={this.state.editdeletefloors === "Yes"}
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="editdeletefloors"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={this.state.editdeletefloors === "No"}
+                              />
+                              No
+                            </label>
 
-                      <div className="col col-md-6">
-                        <label>Add/Edit/Delete Items</label>
-                      </div>
-                      <div className="col col-md-6">
-                        <label>
-                          <input
-                            type="radio"
-                            name="items"
-                            value="Yes"
-                            onChange={this.onChange}
-                            checked={this.state.items === "Yes"}
-                          />
-                          Yes
-                        </label>
-                        <label style={{ paddingLeft: "20px" }}>
-                          <input
-                            type="radio"
-                            name="items"
-                            value="No"
-                            onChange={this.onChange}
-                            checked={this.state.items === "No"}
-                          />
-                          No
-                        </label>
+                            {this.validator.message(
+                              "Edit/Delete Floors",
+                              this.state.editdeletefloors,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("settings") == "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>Settings</label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="settings"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={this.state.settings === "Yes"}
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="settings"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={this.state.settings === "No"}
+                              />
+                              No
+                            </label>
 
-                        {this.validator.message(
-                          "Items",
-                          this.state.items,
-                          "required"
-                        )}
-                      </div>
+                            {this.validator.message(
+                              "Settings",
+                              this.state.settings,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("viewbill") == "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>View Bill</label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="viewbill"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={this.state.viewbill === "Yes"}
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="viewbill"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={this.state.viewbill === "No"}
+                              />
+                              No
+                            </label>
 
-                      <div className="col col-md-6">
-                        <label>Add Tables</label>
-                      </div>
-                      <div className="col col-md-6">
-                        <label>
-                          <input
-                            type="radio"
-                            name="addtables"
-                            value="Yes"
-                            onChange={this.onChange}
-                            checked={this.state.addtables === "Yes"}
-                          />
-                          Yes
-                        </label>
-                        <label style={{ paddingLeft: "20px" }}>
-                          <input
-                            type="radio"
-                            name="addtables"
-                            value="No"
-                            onChange={this.onChange}
-                            checked={this.state.addtables === "No"}
-                          />
-                          No
-                        </label>
+                            {this.validator.message(
+                              "View Bill",
+                              this.state.viewbill,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("settle") == "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>Settle</label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="settle"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={this.state.settle === "Yes"}
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="settle"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={this.state.settle === "No"}
+                              />
+                              No
+                            </label>
 
-                        {this.validator.message(
-                          "Add Tables",
-                          this.state.addtables,
-                          "required"
-                        )}
-                      </div>
-                      <div className="col col-md-6">
-                        <label>Edit/Delete Tables</label>
-                      </div>
-                      <div className="col col-md-6">
-                        <label>
-                          <input
-                            type="radio"
-                            name="editdeletetables"
-                            value="Yes"
-                            onChange={this.onChange}
-                            checked={this.state.editdeletetables === "Yes"}
-                          />
-                          Yes
-                        </label>
-                        <label style={{ paddingLeft: "20px" }}>
-                          <input
-                            type="radio"
-                            name="editdeletetables"
-                            value="No"
-                            onChange={this.onChange}
-                            checked={this.state.editdeletetables === "No"}
-                          />
-                          No
-                        </label>
+                            {this.validator.message(
+                              "Settle",
+                              this.state.settle,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("additemdiscount") == "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>Add Item Discount</label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="additemdiscount"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={this.state.additemdiscount === "Yes"}
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="additemdiscount"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={this.state.additemdiscount === "No"}
+                              />
+                              No
+                            </label>
 
-                        {this.validator.message(
-                          "Edit/Delete Tables",
-                          this.state.editdeletetables,
-                          "required"
-                        )}
-                      </div>
+                            {this.validator.message(
+                              "Add Item Discount",
+                              this.state.additemdiscount,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("deleteitemafterkot") == "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>Delete Item After KOT</label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="deleteitemafterkot"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={
+                                  this.state.deleteitemafterkot === "Yes"
+                                }
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="deleteitemafterkot"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={this.state.deleteitemafterkot === "No"}
+                              />
+                              No
+                            </label>
 
-                      <div className="col col-md-6">
-                        <label>Add Floors</label>
-                      </div>
-                      <div className="col col-md-6">
-                        <label>
-                          <input
-                            type="radio"
-                            name="addfloors"
-                            value="Yes"
-                            onChange={this.onChange}
-                            checked={this.state.addfloors === "Yes"}
-                          />
-                          Yes
-                        </label>
-                        <label style={{ paddingLeft: "20px" }}>
-                          <input
-                            type="radio"
-                            name="addfloors"
-                            value="No"
-                            onChange={this.onChange}
-                            checked={this.state.addfloors === "No"}
-                          />
-                          No
-                        </label>
-
-                        {this.validator.message(
-                          "Add Floors",
-                          this.state.addfloors,
-                          "required"
-                        )}
-                      </div>
-                      <div className="col col-md-6">
-                        <label>Edit/Delete Floors</label>
-                      </div>
-                      <div className="col col-md-6">
-                        <label>
-                          <input
-                            type="radio"
-                            name="editdeletefloors"
-                            value="Yes"
-                            onChange={this.onChange}
-                            checked={this.state.editdeletefloors === "Yes"}
-                          />
-                          Yes
-                        </label>
-                        <label style={{ paddingLeft: "20px" }}>
-                          <input
-                            type="radio"
-                            name="editdeletefloors"
-                            value="No"
-                            onChange={this.onChange}
-                            checked={this.state.editdeletefloors === "No"}
-                          />
-                          No
-                        </label>
-
-                        {this.validator.message(
-                          "Edit/Delete Floors",
-                          this.state.editdeletefloors,
-                          "required"
-                        )}
-                      </div>
-
-                      <div className="col col-md-6">
-                        <label>Settings</label>
-                      </div>
-                      <div className="col col-md-6">
-                        <label>
-                          <input
-                            type="radio"
-                            name="settings"
-                            value="Yes"
-                            onChange={this.onChange}
-                            checked={this.state.settings === "Yes"}
-                          />
-                          Yes
-                        </label>
-                        <label style={{ paddingLeft: "20px" }}>
-                          <input
-                            type="radio"
-                            name="settings"
-                            value="No"
-                            onChange={this.onChange}
-                            checked={this.state.settings === "No"}
-                          />
-                          No
-                        </label>
-
-                        {this.validator.message(
-                          "Settings",
-                          this.state.settings,
-                          "required"
-                        )}
-                      </div>
-                      <div className="col col-md-6">
-                        <label>View Bill</label>
-                      </div>
-                      <div className="col col-md-6">
-                        <label>
-                          <input
-                            type="radio"
-                            name="viewbill"
-                            value="Yes"
-                            onChange={this.onChange}
-                            checked={this.state.viewbill === "Yes"}
-                          />
-                          Yes
-                        </label>
-                        <label style={{ paddingLeft: "20px" }}>
-                          <input
-                            type="radio"
-                            name="viewbill"
-                            value="No"
-                            onChange={this.onChange}
-                            checked={this.state.viewbill === "No"}
-                          />
-                          No
-                        </label>
-
-                        {this.validator.message(
-                          "View Bill",
-                          this.state.viewbill,
-                          "required"
-                        )}
-                      </div>
-
-                      <div className="col col-md-6">
-                        <label>Settle</label>
-                      </div>
-                      <div className="col col-md-6">
-                        <label>
-                          <input
-                            type="radio"
-                            name="settle"
-                            value="Yes"
-                            onChange={this.onChange}
-                            checked={this.state.settle === "Yes"}
-                          />
-                          Yes
-                        </label>
-                        <label style={{ paddingLeft: "20px" }}>
-                          <input
-                            type="radio"
-                            name="settle"
-                            value="No"
-                            onChange={this.onChange}
-                            checked={this.state.settle === "No"}
-                          />
-                          No
-                        </label>
-
-                        {this.validator.message(
-                          "Settle",
-                          this.state.settle,
-                          "required"
-                        )}
-                      </div>
-
-                      <div className="col col-md-6">
-                        <label>Add Item Discount</label>
-                      </div>
-                      <div className="col col-md-6">
-                        <label>
-                          <input
-                            type="radio"
-                            name="additemdiscount"
-                            value="Yes"
-                            onChange={this.onChange}
-                            checked={this.state.additemdiscount === "Yes"}
-                          />
-                          Yes
-                        </label>
-                        <label style={{ paddingLeft: "20px" }}>
-                          <input
-                            type="radio"
-                            name="additemdiscount"
-                            value="No"
-                            onChange={this.onChange}
-                            checked={this.state.additemdiscount === "No"}
-                          />
-                          No
-                        </label>
-
-                        {this.validator.message(
-                          "Add Item Discount",
-                          this.state.additemdiscount,
-                          "required"
-                        )}
-                      </div>
-
-                      <div className="col col-md-6">
-                        <label>Delete Item After KOT</label>
-                      </div>
-                      <div className="col col-md-6">
-                        <label>
-                          <input
-                            type="radio"
-                            name="deleteitemafterkot"
-                            value="Yes"
-                            onChange={this.onChange}
-                            checked={this.state.deleteitemafterkot === "Yes"}
-                          />
-                          Yes
-                        </label>
-                        <label style={{ paddingLeft: "20px" }}>
-                          <input
-                            type="radio"
-                            name="deleteitemafterkot"
-                            value="No"
-                            onChange={this.onChange}
-                            checked={this.state.deleteitemafterkot === "No"}
-                          />
-                          No
-                        </label>
-
-                        {this.validator.message(
-                          "Delete Item After KOT",
-                          this.state.deleteitemafterkot,
-                          "required"
-                        )}
-                      </div>
+                            {this.validator.message(
+                              "Delete Item After KOT",
+                              this.state.deleteitemafterkot,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
                     </div>
                   </div>
                 </div>

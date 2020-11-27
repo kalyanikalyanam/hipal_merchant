@@ -39,6 +39,8 @@ import AllEmplopyesRoles from "./component/all_employee_roles";
 import EditEmployeeRole from "./component/edit_employee_role";
 
 import Bills from "./component/bills";
+import ViewBill from "./component/view_bill";
+
 import Home from "./component/home";
 
 import BillPrintPage from "./component/bill_print_page";
@@ -82,6 +84,9 @@ import SettingsAddImageMedia from "./settings/settings_add_media image";
 import SettingsEditImageMedia from "./settings/settings_edit_media_page";
 
 import Table from "./updateddesigns/tables_view_for_updated_order";
+
+import AddItemNew from "./component/add_item_new";
+import EditItemNew from "./component/edit_item_new";
 
 export const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route
@@ -149,13 +154,13 @@ class Routing extends React.Component {
           component={AddCategoryMenuDuplicate}
         />
         <PrivateRoute path="/CategoryList" component={CategoryList} />
-
         <PrivateRoute path="/AddItemMenu" component={AddItemMenu} />
         <PrivateRoute path="/ViewItemMenu" component={ViewItemMenu} />
         <PrivateRoute path="/AddItemType" component={AddItemType} />
         <PrivateRoute path="/Bills" component={Bills} />
-        <PrivateRoute path="/Home" component={Home} />
+        <PrivateRoute path="/ViewBill/:billid" component={ViewBill} />
 
+        <PrivateRoute path="/Home" component={Home} />
         <PrivateRoute path="/BillPrintPage" component={BillPrintPage} />
         <PrivateRoute path="/FloorList" component={FloorList} />
         <PrivateRoute path="/EditFloor/:floorId" component={EditFloor} />
@@ -214,11 +219,12 @@ class Routing extends React.Component {
           path="/ViewCategoryMenu/:categoryId"
           component={ViewCategoryMenu}
         />
-
         <PrivateRoute
           path="/EditItemMenu/:itemmenuid"
           component={EditItemMenu}
         />
+        <PrivateRoute path="/AddItemNew" component={AddItemNew} />
+        <PrivateRoute path="/EditItemNew/:itemmenuid" component={EditItemNew} />
       </Router>
     );
   }
