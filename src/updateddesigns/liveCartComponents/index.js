@@ -88,8 +88,8 @@ const initState = {
   kotModalData: null,
   balance: 0,
 }
-const init= localStorage.getItem(`${props.match.params.tableId}`)? updateObject( initState , {...JSON.parse(localStorage.getItem("data"))})  : initState;
 const LiveCartPage = (props) => {
+const init= localStorage.getItem(`${props.match.params.tableId}`)? updateObject( initState , {...JSON.parse(localStorage.getItem("data"))})  : initState;
   const [state, setState] = useState({});
   const [businessName, setBusinessName] = useState();
   const [reducerState, dispatch] = useReducer(reducer, init);
