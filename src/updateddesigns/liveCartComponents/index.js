@@ -1,5 +1,6 @@
-import React, { useEffect, useState, useReducer } from "react";
+import React, { useEffect, useState, useReducer, useRef } from "react";
 import Modal from "react-modal";
+import {db} from '../../config'
 
 import Header from "../../component/header";
 import Sidebar from "../../component/sidebar";
@@ -29,6 +30,7 @@ import CustomerSwapModal from "./customerSwapModal";
 import AddCutomerFormModal from "./addCustomerFormModal";
 import BillModal from "./billModal";
 import KotModal from "./kotModal";
+import * as actions from './actionTypes'
 
 Modal.setAppElement(document.getElementById("root"));
 const customStyles2 = {
@@ -74,6 +76,7 @@ const initState = {
   customerMergeModal: false,
   customerSwapModal: false,
   customerMoveModal: false,
+  occupency: 0,
   billModal: false,
   addUserModal: false,
   editMode: false,
@@ -86,22 +89,70 @@ const initState = {
 };
 
 const LiveCartPage = (props) => {
-  const [loading, setLoading] = useState(false);
   const [state, setState] = useState({});
   const [businessName, setBusinessName] = useState();
   const [reducerState, dispatch] = useReducer(reducer, initState);
+  const firstRun = useRef(true)
+  const getTableData = () => {
+    db
+      .collection("tables")
+      .doc(props.match.params.tableId)
+      .get()
+      .then((snapshot) => {
+        const tableData = snapshot.data();
+        let table = JSON.parse(JSON.stringify(tableData));
+        table.id = props.match.params.tableId;
+        setState(table);
+        const tableD= {
+          table_name: table.table_name,
+          status: table.status,
+          table_capacity: table.table_capacity,
+          id: table.id
+        }
+        dispatch({
+          type: actions.ADDTABLEDATA,
+          table: tableD,
+        });
+        console.log(localStorage.getItem("data"))
+        dispatch({
+          type: "SET",
+          orderStatus: JSON.parse(localStorage.getItem("data"))
+        })
+      });
+  }
+
   useEffect(() => {
     var businessName = sessionStorage.getItem("BusinessName");
     setBusinessName(businessName);
-    setLoading(true);
+    getTableData()
     setState({
       tableList: [],
     });
-    setLoading(false);
-    dispatch({
-      type: "RESET",
-    });
   }, []);
+
+  useEffect(() => {
+    var data
+    const updateDb = async () => {
+      data =
+      {
+        bill: reducerState.bill,
+        order: reducerState.order,
+        liveCart: reducerState.liveCart,
+        table: reducerState.table,
+        occupency: reducerState.occupency
+      }
+      await db
+        .collection("tables")
+        .doc(props.match.params.tableId)
+        .update({
+          orderStatus: JSON.parse(JSON.stringify(data)) 
+        })
+    }
+     updateDb()
+     return () => {
+       localStorage.setItem("data", JSON.stringify(data))
+     }
+  }, [reducerState.table, reducerState.order, reducerState.bill, reducerState.liveCart, reducerState.occupency])
   return (
     <dispatchContext.Provider value={dispatch}>
       <liveCartContext.Provider value={reducerState.liveCart}>
@@ -189,7 +240,7 @@ const LiveCartPage = (props) => {
                                 <div className="col-lg-7 cart_box_width_1">
                                   <div className="row">
                                     <Table
-                                      tableId={props.match.params.tableId}
+                                      table={reducerState.table}
                                     />
                                     <Info />
                                   </div>

@@ -1,12 +1,11 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useCallback } from "react";
 import firebase from "../../config";
-import { dispatchContext } from "./contexts";
+import { dispatchContext, tableContext } from "./contexts";
 import * as actions from "./actionTypes";
 
-const Table = ({ tableId }) => {
-  const [state, setState] = useState({});
+const Table = ({table}) => {
   const [employees, setEmployees] = useState([]);
-  const dispatch = useContext(dispatchContext);
+  const dispatch = useContext(dispatchContext)
   const handleAdvancedOption = () => {
     dispatch({
       type: actions.ADVACEDOPTIONSSHOW,
@@ -24,33 +23,14 @@ const Table = ({ tableId }) => {
       value: val,
     });
   };
-  const getData = () => {
-    firebase
-      .firestore()
-      .collection("tables")
-      .doc(tableId)
-      .get()
-      .then((snapshot) => {
-        const tableData = snapshot.data();
-        let table = JSON.parse(JSON.stringify(tableData));
-        table.id = tableId;
-        setState(table);
-        dispatch({
-          type: actions.ADDTABLEDATA,
-          table: table,
-        });
-      });
-  };
-  const employeeList = async () => {
-    var sessionId = sessionStorage.getItem("RoleId");
-    var businessId = sessionStorage.getItem("businessId");
 
+  const employeeList = async () => {
+    var businessId = sessionStorage.getItem("businessId");
     await firebase
       .firestore()
       .collection("merchant_users")
       // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
-      .where("role", "==", "Employee")
 
       .get()
       .then((querySnapshot) => {
@@ -100,8 +80,8 @@ const Table = ({ tableId }) => {
       });
   };
   useEffect(() => {
-    getData();
     employeeList();
+    console.log(table)
   }, []);
 
   return (
@@ -109,13 +89,13 @@ const Table = ({ tableId }) => {
       <div className="staff_box row">
         <div className="col-md-3">
           <div className="kot_box">
-            <div className="cookhead">{state ? state.status : null}</div>
+            <div className="cookhead">{table ? table.status : null}</div>
             <div className="table_small">
               <div className="people_row">
                 <span className="top fill"></span>
                 <span className="top fill"></span>
               </div>
-              <div className="table_no">{state ? state.table_name : null}</div>
+              <div className="table_no">{table? table.table_name : null}</div>
               <div className="people_row">
                 <span className="bottom nonfille"></span>
                 <span className="bottom fill"></span>

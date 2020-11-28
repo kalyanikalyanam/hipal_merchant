@@ -39,7 +39,7 @@ const AddCustomerModal = ({ tableData }) => {
       type: actions.CustomerList,
       value: customer_list,
       status: "occupied",
-      // occupency: occupency,
+      occupency: occupency,
     });
 
     db.collection("tables").doc(table.id).update({
@@ -85,6 +85,7 @@ const AddCustomerModal = ({ tableData }) => {
   };
 
   useEffect(() => {
+    console.log(CustomerList)
     if (CustomerList) {
       if (CustomerList.length === 0) {
         reset({ occupency: 0 });

@@ -1,8 +1,6 @@
-import { unstable_batchedUpdates } from "react-dom";
-import { act } from "react-dom/test-utils";
-import { CustomInput } from "reactstrap";
 import * as actions from "./actionTypes";
-import { addToarray, updateObject } from "./reducerUtils";
+import {db} from '../../config'
+import {updateObject } from "./reducerUtils";
 const initState = {
   liveCart: [],
   order: [],
@@ -35,6 +33,8 @@ const initState = {
 };
 const reducer = (state, action) => {
   switch (action.type) {
+    case "SET":
+      return updateObject(state, {orderStatus: {...action.orderStatus}})
     case "reset":
       return initState;
     case actions.ADDLIVE:
@@ -224,6 +224,26 @@ const handleAddLiveCart = (action, state) => {
   return updateObject(state, { liveCart, show: false, modalItem: null });
 };
 
+const handleToOrder = (action, state) => {
+  if (state.liveCart.length === 0) return state;
+  let id = state.liveCart.id
+  let currentOrder = state.order
+  state.liveCart.forEach(item => {
+    currentOrder.push(item) 
+  })
+  let total = 0
+  let discount = 0
+  currentOrder.forEach(orderItem => {
+    total += orderItem.price
+    discount += orderItem.discount
+  })
+  currentOrder.totalPrice = total
+  currentOrder.totalDiscount = discount
+  currentOrder.cartId = id
+  currentOrder.id = Math.floor(Math.random() * 100000000);
+  return updateObject(state, { liveCart: [], order: currentOrder });
+};
+
 const deleteLiveCartItem = (aciton, state) => {
   const itemId = aciton.itemId;
   const { liveCart } = state;
@@ -237,93 +257,57 @@ const deleteOrder = (orderId, state) => {
   return updateObject(state, { order: newOrder });
 };
 
-const handleToOrder = (action, state) => {
-  if (state.liveCart.length === 0) return state;
-  const currentCart = state.liveCart;
-  currentCart.cartId = action.cartId;
-  currentCart.cartPrice = action.cartPrice;
-  currentCart.cartDiscount = action.cartDiscount;
-  const order = addToarray(state.order, currentCart);
-  if (order.length === 1) {
-    order.id = Math.floor(Math.random() * 100000000);
-  }
-  return updateObject(state, { liveCart: [], order });
-};
-
 const handleToBill = (action, state) => {
-  let currentOrder = state.order;
-  currentOrder.id = state.order.id;
-  currentOrder.orderPrice = action.orderPrice;
-  currentOrder.orderDiscout = action.orderDiscount;
-  let currentBill = state.bill;
-  currentBill.push(currentOrder);
-  if (currentBill.length === 1)
-    currentBill.id = Math.floor(Math.random() * 1000000000);
+  if(state.order.length === 0) return state
+  let currentBill = state.bill
+  state.order.forEach(item => {
+    currentBill.push(item)
+  })
+  let total = 0
+  let discount = 0
+  currentBill.forEach(item => {
+    total += item.price
+    discount += item.discount
+  })
+  currentBill.orderId = state.order.id
+  currentBill.totalPrice = total
+  currentBill.totalDiscount = discount
+  currentBill.id = Math.floor(Math.random() * 1000000000);
   return updateObject(state, { bill: currentBill, order: [] });
 };
 
 const handleKOTcart = (action, state) => {
-  const { cart } = action;
   let currentOrder = state.order;
-  let currentBill = state.bill;
-  let updateCart;
   let items = [];
-  state.order.forEach((cart) => {
-    cart.forEach((item) => {
-      items.push(item);
-    });
-  });
-  for (var i = 0; i < currentOrder.length; i++) {
-    if (currentOrder[i].cartId === cart.cartId) {
-      updateCart = currentOrder[i];
-      currentOrder[i].forEach((item) => {
-        if (!item.kot) {
-          item.kot = true;
-        }
-        console.log(`KOT FOR ${item.item_name}`);
-      });
-      break;
+  currentOrder.forEach(orderItem => {
+    if(!orderItem.kot){
+      items.push(orderItem)
+      orderItem.kot = true
     }
-  }
+  })
   return updateObject(state, {
     order: currentOrder,
-    bill: currentBill,
     kotModal: true,
     kotModalData: items,
   });
 };
 
 const handleKOTitem = (action, state) => {
-  const { cart, item } = action;
-  let items = [];
-  state.order.forEach((cart) => {
-    cart.forEach((item) => {
-      if (item.kot) {
-        items.push(item);
-      }
-    });
-  });
+  const { item } = action;
   let currentOrder = state.order;
-  for (var i = 0; i < currentOrder.length; i++) {
-    if (currentOrder[i].cartId === cart.cartId) {
-      for (var j = 0; j < currentOrder[i].length; j++) {
-        if (currentOrder[i][j].id === item.id) {
-          currentOrder[i][j].kot = true;
-          items.push(currentOrder[i][j]);
-          console.log(`KOT FOR ${currentOrder[i][j].item_name}`);
-        }
-      }
+  currentOrder.forEach(orderItem => {
+    if(item.id === orderItem.id){
+      orderItem.kot = true
     }
-  }
+  })
   return updateObject(state, {
     order: currentOrder,
     kotModal: true,
-    kotModalData: items,
+    kotModalData: [item],
   });
 };
 
 const deleteKotItem = (action, state) => {
-  console.log(state.order);
   let newOrder = [];
   state.order.forEach((cart) => {
     let newcart = cart.filter((item) => {
@@ -372,12 +356,10 @@ const handleADDEmployee = (action, state) => {
 const handleCustomerList = (action, state) => {
   let newtable = state.table;
   newtable.status = action.status;
-  newtable.occupency = action.occupency;
   console.log(action);
-  // newtable.occupency = action.occupency;
   return updateObject(state, {
     CustomerList: action.value,
-
+    occupency: action.occupency, 
     table: newtable,
     addCustomerShow: false,
   });
