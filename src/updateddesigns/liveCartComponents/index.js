@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useReducer, useRef } from "react";
 import Modal from "react-modal";
-import {db} from '../../config'
+import { db } from "../../config";
 
 import Header from "../../component/header";
 import Sidebar from "../../component/sidebar";
@@ -30,7 +30,7 @@ import CustomerSwapModal from "./customerSwapModal";
 import AddCutomerFormModal from "./addCustomerFormModal";
 import BillModal from "./billModal";
 import KotModal from "./kotModal";
-import * as actions from './actionTypes'
+import * as actions from "./actionTypes";
 import { updateObject } from "./reducerUtils";
 
 Modal.setAppElement(document.getElementById("root"));
@@ -57,7 +57,7 @@ const customStyles = {
     minWidht: "30%",
   },
 };
-const initState = {  
+const initState = {
   liveCart: [],
   order: [],
   bill: [],
@@ -87,16 +87,18 @@ const initState = {
   kotModal: false,
   kotModalData: null,
   balance: 0,
-}
+};
 const LiveCartPage = (props) => {
-const init= localStorage.getItem(`${props.match.params.tableId}`)? updateObject( initState , {...JSON.parse(localStorage.getItem("data"))})  : initState;
+  const init = localStorage.getItem(`${props.match.params.tableId}`)
+    ? updateObject(initState, { ...JSON.parse(localStorage.getItem("data")) })
+    : initState;
+
   const [state, setState] = useState({});
   const [businessName, setBusinessName] = useState();
   const [reducerState, dispatch] = useReducer(reducer, init);
-  const firstRun = useRef(true)
+  const firstRun = useRef(true);
   const getTableData = () => {
-    db
-      .collection("tables")
+    db.collection("tables")
       .doc(props.match.params.tableId)
       .get()
       .then((snapshot) => {
@@ -104,49 +106,57 @@ const init= localStorage.getItem(`${props.match.params.tableId}`)? updateObject(
         let table = JSON.parse(JSON.stringify(tableData));
         table.id = props.match.params.tableId;
         setState(table);
-        const tableD= {
+        const tableD = {
           table_name: table.table_name,
           status: table.status,
           table_capacity: table.table_capacity,
-          id: table.id
-        }
+          id: table.id,
+        };
         dispatch({
           type: actions.ADDTABLEDATA,
           table: tableD,
         });
       });
-  }
+  };
 
   useEffect(() => {
     var businessName = sessionStorage.getItem("BusinessName");
     setBusinessName(businessName);
-    getTableData()
+    getTableData();
     setState({
       tableList: [],
     });
   }, []);
 
   useEffect(() => {
-    var data
+    var data;
     const updateDb = async () => {
-      data =
-      {
+      data = {
         bill: reducerState.bill,
         order: reducerState.order,
         liveCart: reducerState.liveCart,
         table: reducerState.table,
-        occupency: reducerState.occupency
-      }
-      localStorage.setItem(`${props.match.params.tableId}`, JSON.stringify(data))
+        occupency: reducerState.occupency,
+      };
+      localStorage.setItem(
+        `${props.match.params.tableId}`,
+        JSON.stringify(data)
+      );
       await db
         .collection("tables")
         .doc(props.match.params.tableId)
         .update({
-          orderStatus: JSON.parse(JSON.stringify(data)) 
-        })
-    }
-     updateDb()
-  }, [reducerState.table, reducerState.order, reducerState.bill, reducerState.liveCart, reducerState.occupency])
+          orderStatus: JSON.parse(JSON.stringify(data)),
+        });
+    };
+    updateDb();
+  }, [
+    reducerState.table,
+    reducerState.order,
+    reducerState.bill,
+    reducerState.liveCart,
+    reducerState.occupency,
+  ]);
   return (
     <dispatchContext.Provider value={dispatch}>
       <liveCartContext.Provider value={reducerState.liveCart}>
@@ -233,9 +243,7 @@ const init= localStorage.getItem(`${props.match.params.tableId}`)? updateObject(
                               <div className="row mt-30">
                                 <div className="col-lg-7 cart_box_width_1">
                                   <div className="row">
-                                    <Table
-                                      table={reducerState.table}
-                                    />
+                                    <Table table={reducerState.table} />
                                     <Info />
                                   </div>
 

@@ -1,19 +1,18 @@
 import React from "react";
 
-const BillItem = ({item}) => {
+const BillItem = ({ item }) => {
   return (
     <tr>
       <td style={{ textAlign: "left", padding: "3px 10px" }}>
-        {item.item_name}
+        {item && item.item_name}
       </td>
       <td style={{ textAlign: "center", padding: "3px 10px" }}>
-        {item.quantity}
+        {item && item.quantity}
       </td>
       <td style={{ textAlign: "right", padding: "3px 10px" }}>
-        {item.quantity * item.price}
+        {item && item.quantity * item.price}
       </td>
     </tr>
-
   );
 };
 

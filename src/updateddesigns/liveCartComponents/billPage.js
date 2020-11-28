@@ -11,7 +11,6 @@ import {
   orderContext,
 } from "./contexts";
 import * as actions from "./actionTypes";
-import { Toast } from "reactstrap";
 const BillPage = () => {
   const [businessLogo, setBusinessLogo] = useState();
   const [total, setTotal] = useState(0);
@@ -22,28 +21,16 @@ const BillPage = () => {
   const balance = useContext(BalanceContext);
   const bill = useContext(billContext);
   const employee = useContext(EmployeeContext);
-  const order = useContext(orderContext);
+
   const handleSettle = async () => {
     let newBillPage = bill;
     newBillPage.id = bill.id;
-    newBillPage.bill = bill;
     newBillPage.totalPrice = total;
     newBillPage.employee = employee;
     newBillPage.gst = gst;
     newBillPage.cGst = cGst;
-    console.log(newBillPage);
-    let orderId = [];
 
-    let billItems = [];
-    newBillPage.bill.forEach((order) => {
-      orderId.push(order.id);
-      order.forEach((cart) => {
-        cart.forEach((item) => {
-          console.log(item);
-          billItems.push(item);
-        });
-      });
-    });
+    console.log(newBillPage);
 
     let Bill = {
       settle_by: employee,
@@ -52,8 +39,8 @@ const BillPage = () => {
       billTiming: new Date().toLocaleString(),
       table: table.table_name,
       businessId: table.businessId,
-      billItems,
-      orderId,
+      billItems: bill,
+      order: table.order,
     };
     dispatch({
       type: "billModalShow",
@@ -86,6 +73,7 @@ const BillPage = () => {
         customers: [],
         occupency: "0",
       });
+      localStorage.setItem("data", {})
     } catch (e) {
       console.log(e);
     }
@@ -93,17 +81,18 @@ const BillPage = () => {
   useEffect(() => {
     setBusinessLogo(sessionStorage.getItem("BusinessLogo"));
     let Total = bill.totalPrice;
-    let temp = 0
-
-    Total += bill.totalPrice * gst / 100
-    temp = bill.totalPrice * cGst / 100
-    Total += temp
+    let temp = 0;
+    console.log(bill.totalPrice)
+    Total += (bill.totalPrice * gst) / 100;
+    temp = (bill.totalPrice * cGst) / 100;
+    Total += temp;
     setTotal(Total);
     dispatch({
       type: actions.SETBILLID,
       billId: bill.id,
       bill: bill,
-      total: Math.round(Total),
+      total: Math.round(bill.totalPrice),
+      balance:Total 
     });
   }, []);
   const noItem = (
@@ -127,7 +116,7 @@ const BillPage = () => {
     let newBillPage = bill;
     newBillPage.id = bill.id;
     newBillPage.bill = bill;
-    newBillPage.totalPrice = total;
+    newBillPage.totalPrice = bill.totalPrice;
     newBillPage.employee = employee;
     newBillPage.gst = gst;
     newBillPage.cGst = cGst;
@@ -151,12 +140,7 @@ const BillPage = () => {
   const billItems =
     bill && bill.length !== 0
       ? bill.map((item, index) => {
-          return (
-            <BillItem
-              item={item}
-              key={index}
-            />
-          );
+          return <BillItem item={item} key={index} />;
         })
       : noItem;
   return (
@@ -232,59 +216,122 @@ const BillPage = () => {
                         </td>
                         <td style={{ textAlign: "right", padding: "3px 10px" }}>
                           {employee}
-                        <td style={{textAlign: "left", padding:"3px 10px"}}>Order ID: {bill.orderId}</td>     </td>
+                          <td
+                            style={{ textAlign: "left", padding: "3px 10px" }}
+                          >
+                            Order ID: {bill.orderId}
+                          </td>{" "}
+                        </td>
                       </tr>
                     </tbody>
                   </table>
                 </td>
               </tr>
               <tr>
-                <td style={{ textAlign: "center", padding: "10px", color: "#000000", borderBottom: "1px dashed rgba(0, 0,0, 0.5)" }}>
+                <td
+                  style={{
+                    textAlign: "center",
+                    padding: "10px",
+                    color: "#000000",
+                    borderBottom: "1px dashed rgba(0, 0,0, 0.5)",
+                  }}
+                >
                   <table width="100%">
                     <tbody>
                       <tr>
-                        <td style={{ textAlign: 'left', padding: '5px 10px 10px 10px' }}><b>Item</b></td>
-                        <td style={{ textAlign: 'center', padding: '5px 10px 10px 10px' }}><b>Qty</b></td>
-                        <td style={{ textAlign: 'right', padding: '5px 10px 10px 10px' }}><b>Price</b></td>
-                        <td>
+                        <td
+                          style={{
+                            textAlign: "left",
+                            padding: "5px 10px 10px 10px",
+                          }}
+                        >
+                          <b>Item</b>
                         </td>
+                        <td
+                          style={{
+                            textAlign: "center",
+                            padding: "5px 10px 10px 10px",
+                          }}
+                        >
+                          <b>Qty</b>
+                        </td>
+                        <td
+                          style={{
+                            textAlign: "right",
+                            padding: "5px 10px 10px 10px",
+                          }}
+                        >
+                          <b>Price</b>
+                        </td>
+                        <td></td>
                       </tr>
                       {billItems}
                     </tbody>
                   </table>
                 </td>
               </tr>
-              <tr >
-                  <td style={{textAlign: "center", padding:"10px", color: "#000000", bottomBorder: "1px dashed rgba(0, 0, 0, 0.5)"}}>
+              <tr>
+                <td
+                  style={{
+                    textAlign: "center",
+                    padding: "10px",
+                    color: "#000000",
+                    bottomBorder: "1px dashed rgba(0, 0, 0, 0.5)",
+                  }}
+                >
                   <table width="100%">
                     <tbody>
                       <tr>
-                        <td style={{ textAlign: 'left', padding: '3px 10px' }}>Subtotal</td>
-                        <td style={{ textAlign: 'right', padding: '3px 10px' }}>₹ {bill.totalPrice}</td>
+                        <td style={{ textAlign: "left", padding: "3px 10px" }}>
+                          Subtotal
+                        </td>
+                        <td style={{ textAlign: "right", padding: "3px 10px" }}>
+                          ₹ {bill.totalPrice}
+                        </td>
                       </tr>
                       <tr>
-                        <td style={{ textAlign: 'left', padding: '3px 10px' }}>Offer</td>
-                        <td style={{ textAlign: 'right', padding: '3px 10px' }}>-{bill.totalDiscount}</td>
+                        <td style={{ textAlign: "left", padding: "3px 10px" }}>
+                          Offer
+                        </td>
+                        <td style={{ textAlign: "right", padding: "3px 10px" }}>
+                          -{bill.totalDiscount}
+                        </td>
                       </tr>
                       <tr>
-                        <td style={{ textAlign: 'left', padding: '3px 10px' }}>Extra charges</td>
-                        <td style={{ textAlign: 'right', padding: '3px 10px' }}>-</td>
+                        <td style={{ textAlign: "left", padding: "3px 10px" }}>
+                          Extra charges
+                        </td>
+                        <td style={{ textAlign: "right", padding: "3px 10px" }}>
+                          -
+                        </td>
                       </tr>
                       <tr>
-                        <td style={{ textAlign: 'left', padding: '3px 10px' }}>Packaging charges</td>
-                        <td style={{ textAlign: 'right', padding: '3px 10px' }}>-</td>
+                        <td style={{ textAlign: "left", padding: "3px 10px" }}>
+                          Packaging charges
+                        </td>
+                        <td style={{ textAlign: "right", padding: "3px 10px" }}>
+                          -
+                        </td>
                       </tr>
                       <tr>
-                        <td style={{ textAlign: 'left', padding: '3px 10px' }}>GST</td>
-                        <td style={{ textAlign: 'right', padding: '5px 10px' }}>8.75</td>
+                        <td style={{ textAlign: "left", padding: "3px 10px" }}>
+                          GST
+                        </td>
+                        <td style={{ textAlign: "right", padding: "5px 10px" }}>
+                          8.75
+                        </td>
                       </tr>
                       <tr>
-                        <td style={{ textAlign: 'left', padding: '3px 10px' }}>CGST</td>
-                        <td style={{ textAlign: 'right', padding: '3px 10px' }}>8.75</td>
+                        <td style={{ textAlign: "left", padding: "3px 10px" }}>
+                          CGST
+                        </td>
+                        <td style={{ textAlign: "right", padding: "3px 10px" }}>
+                          8.75
+                        </td>
                       </tr>
                     </tbody>
                   </table>
-                  </td>
+                </td>
               </tr>
               <tr>
                 <td

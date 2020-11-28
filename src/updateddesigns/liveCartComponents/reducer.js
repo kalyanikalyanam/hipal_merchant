@@ -175,8 +175,9 @@ const handleSetBillId = (action, state) => {
   let billPage = state.billPage;
   billPage.billId = action.billId;
   billPage.totalPrice = action.total;
+  console.log(action)
   billPage.bill = action.bill;
-  return updateObject(state, { billPage, balance: Math.round(action.total) });
+  return updateObject(state, { billPage, balance: Math.round(action.balance) });
 };
 
 const handleAddLiveCart = (action, state) => {
