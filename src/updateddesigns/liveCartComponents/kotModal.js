@@ -19,14 +19,28 @@ const KotModal = React.forwardRef((props, ref) => {
     data.map((item, index) => {
       return (
         <tr key={`${index}`}>
-          <td style={{ textAlign: "left", padding: "3px 10px" }}>
-            {item.item_name}
+          <td
+            style={{ textAlign: "left", padding: "3px 10px", fontSize: "35px" }}
+          >
+            <b>{item.item_name}</b>
           </td>
-          <td style={{ textAlign: "center", padding: "3px 10px" }}>
-            {item.quantity}
+          <td
+            style={{
+              textAlign: "center",
+              padding: "3px 10px",
+              fontSize: "30px",
+            }}
+          >
+            <b> {item.quantity}</b>
           </td>
-          <td style={{ textAlign: "right", padding: "3px 10px" }}>
-            {item.quantity * item.price}
+          <td
+            style={{
+              textAlign: "right",
+              padding: "3px 10px",
+              fontSize: "30px",
+            }}
+          >
+            <b> {item.quantity * item.price}</b>
           </td>
         </tr>
       );
@@ -38,7 +52,11 @@ const KotModal = React.forwardRef((props, ref) => {
           <div>
             <table
               width="100%"
-              style={{ display: "table", fontFamily: "Times New Roman" }}
+              style={{
+                display: "table",
+                fontFamily: "Times New Roman",
+                fontSize: "30px",
+              }}
             >
               {/* <tr>
                 <td style={{ textAlign: "center", padding: "10px" }}>
@@ -67,9 +85,10 @@ const KotModal = React.forwardRef((props, ref) => {
                     textAlign: "center",
                     padding: "10px",
                     color: "#000000",
+                    fontSize: "30px",
                   }}
                 >
-                  <b>DINE IN</b>
+                  <b style={{ fontSize: "30px" }}>DINE IN</b>
                 </td>
               </tr>
 
@@ -79,30 +98,62 @@ const KotModal = React.forwardRef((props, ref) => {
                     textAlign: "center",
                     padding: "10px",
                     color: "#000000",
+                    fontSize: "30px",
                     borderBottom: "1px dashed rgba(0, 0, 0, 0.5)",
                   }}
                 >
                   <table width="100%">
                     <tr>
-                      <td style={{ textAlign: "left", padding: "3px 30px" }}>
-                        {moment(new Date().toLocaleString())
-                          .locale("en")
-                          .format("DD-MM-YYYY")}
+                      <td
+                        style={{
+                          textAlign: "left",
+                          padding: "3px 30px",
+                          fontSize: "30px",
+                        }}
+                      >
+                        <b style={{ fontSize: "30px" }}>
+                          {" "}
+                          {moment(new Date().toLocaleString())
+                            .locale("en")
+                            .format("DD-MM-YYYY")}
+                        </b>
                       </td>
-                      <td style={{ textAlign: "right", padding: "3px 30px" }}>
-                        {tableData.table_name}
+                      <td
+                        style={{
+                          textAlign: "right",
+                          padding: "3px 30px",
+                          fontSize: "30px",
+                        }}
+                      >
+                        <b style={{ fontSize: "30px" }}>
+                          {tableData.table_name}
+                        </b>
                       </td>
                     </tr>
 
                     <tr>
-                      <td style={{ textAlign: "left", padding: "3px 30px" }}>
-                        {moment(new Date().toLocaleString())
-                          .locale("en")
-                          .locale("en")
-                          .format("HH:mm:ss")}
+                      <td
+                        style={{
+                          textAlign: "left",
+                          padding: "3px 30px",
+                          fontSize: "30px",
+                        }}
+                      >
+                        <b style={{ fontSize: "30px" }}>
+                          {moment(new Date().toLocaleString())
+                            .locale("en")
+                            .locale("en")
+                            .format("HH:mm:ss")}
+                        </b>
                       </td>
-                      <td style={{ textAlign: "right", padding: "3px 30px" }}>
-                        {employee}
+                      <td
+                        style={{
+                          textAlign: "right",
+                          padding: "3px 30px",
+                          fontSize: "30px",
+                        }}
+                      >
+                        <b style={{ fontSize: "30px" }}> {employee}</b>
                       </td>
                     </tr>
 
@@ -121,6 +172,7 @@ const KotModal = React.forwardRef((props, ref) => {
                     textAlign: "center",
                     padding: "10px",
                     color: "#000000",
+                    fontSize: "30px",
                     borderBottom: " 1px dashed rgba(0, 0, 0, 0.5)",
                   }}
                 >
@@ -132,23 +184,25 @@ const KotModal = React.forwardRef((props, ref) => {
                           padding: "5px 30px 10px 30px",
                         }}
                       >
-                        <b>Item</b>
+                        <b style={{ fontSize: "30px" }}>Item</b>
                       </td>
                       <td
                         style={{
                           textAlign: "center",
                           padding: "5px 30px 10px 30px",
+                          fontSize: "30px",
                         }}
                       >
-                        <b>Qty</b>
+                        <b style={{ fontSize: "30px" }}>Qty</b>
                       </td>
                       <td
                         style={{
                           textAlign: "right",
                           padding: "5px 30px 10px 30px",
+                          fontSize: "30px",
                         }}
                       >
-                        <b>Price</b>
+                        <b style={{ fontSize: "30px" }}>Price</b>
                       </td>
                     </tr>
                     {items}
@@ -208,6 +262,7 @@ const Print = ({ data }) => {
           color: "#000000",
           backgroundColor: "#06c00e",
           borderRadius: "25px",
+          fontSize: "30px",
         }}
       >
         Print this
@@ -221,6 +276,7 @@ const Print = ({ data }) => {
           color: "#000000",
           backgroundColor: "#ff3b3b",
           borderRadius: "25px",
+          fontSize: "30px",
         }}
       >
         close
