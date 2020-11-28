@@ -183,8 +183,7 @@ const BillRight = () => {
             </div>
             <div className="col-12 w-100-row bill_price balance text-center">
               Balance ({balance ? balance : 0})
-              <div className="modal-footer">
-              </div>
+              <div className="modal-footer"></div>
             </div>
           </div>
         </div>

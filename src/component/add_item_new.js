@@ -2023,8 +2023,8 @@ class AddItemNew extends React.Component {
                                   <span
                                     className={
                                       category.isSelected === true
-                                        ? "btn remove_btn pull-left "
-                                        : "btn remove_btn pull-left bg_green"
+                                        ? "btn remove_btn"
+                                        : "btn remove_btn  bg_green"
                                     }
                                     id="color"
                                     onClick={this.selectCategoryList.bind(
