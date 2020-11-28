@@ -37,9 +37,7 @@ const LiveCartPage = () => {
     } else {
       dispatch({
         type: actions.SENDTOORDER,
-        cartId: cartList.id,
-        cartDiscount: totalDiscount.current,
-        cartPrice: totalPrice.current,
+        edit: false
       });
     }
   };

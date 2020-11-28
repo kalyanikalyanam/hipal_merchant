@@ -31,20 +31,14 @@ const Select = ({ item, deleteItem }) => {
   );
 };
 
-const OrderItem = ({ item, cart, index }) => {
+const OrderItem = ({ item,cart, index }) => {
   const dispatch = useContext(dispatchContext);
   const [kotNum, setKotNum] = useState(0);
   const [carts, setCarts] = useState();
   const [, updateState] = useState();
   useEffect(() => {
-    setCarts(cart);
+    console.log(item)
   }, [cart]);
-  const handleKOTCart = () => {
-    dispatch({
-      type: actions.KOTCART,
-      cart,
-    });
-  };
   const handleEdit = (item) => {
     dispatch({
       type: actions.OPENMODEL,
@@ -69,98 +63,70 @@ const OrderItem = ({ item, cart, index }) => {
     });
   };
 
-  useEffect(() => {
-    var i = 0;
-    cart.forEach((item) => {
-      console.log(item);
-      if (item.kot) {
-        i += 1;
-      }
-    });
-    setKotNum(i);
-  }, [carts]);
 
   return (
-    <div className="cart2_box col-md-12 m-t-20">
-      <span className="ribbon_cart">
-        {kotNum}/{cart && cart.length}
-      </span>
-      <div className="cart2_row">
-        <div className="cart_head">
-          Cart {index + 1} ID:{cart.cartId}
-        </div>
-        <div className="kot_box" onClick={handleKOTCart}>
-          <span className="btn kot">KOT</span>
-        </div>
-      </div>
-      <div className="cart_scroll no_hieght">
-        {cart &&
-          cart.map((item, index) => {
-            return (
-              <div className="cart2_row" key={index}>
-                <div className="box_1 new_size">
-                  <p>
-                    {index + 1}. {item.item_name}
-                  </p>
-                  <div className="w-100-row m-b-10">
-                    {!item.kot ? (
-                      <>
-                        <div
-                          className="kot"
-                          onClick={() => {
-                            handleKOTItem(item);
-                          }}
-                        >
-                          KOT
+    <div className="cart_scroll no_hieght">
+      <div className="cart2_row" key={index}>
+        <div className="box_1 new_size">
+          <p>
+            {index + 1}. {item.item_name}
+          </p>
+          <div className="w-100-row m-b-10">
+            {!item.kot ? (
+              <>
+                <div
+                  className="kot"
+                  onClick={() => {
+                    handleKOTItem(item);
+                  }}
+                >
+                  KOT
                         </div>
-                        <div
-                          className="edit"
-                          data-toggle="modal"
-                          data-target="#edit_product"
-                          onClick={() => {
-                            handleEdit(item);
-                          }}
-                        >
-                          Edit
+                <div
+                  className="edit"
+                  data-toggle="modal"
+                  data-target="#edit_product"
+                  onClick={() => {
+                    handleEdit(item);
+                  }}
+                >
+                  Edit
                         </div>
 
-                        <div
-                          className="edit"
-                          data-toggle="modal"
-                          data-target="#edit_product"
-                          onClick={() => {
-                            deleteItem(item);
-                          }}
-                        >
-                          Delete
+                <div
+                  className="edit"
+                  data-toggle="modal"
+                  data-target="#edit_product"
+                  onClick={() => {
+                    deleteItem(item);
+                  }}
+                >
+                  Delete
                         </div>
-                      </>
-                    ) : (
-                      <Select item={item} deleteItem={deleteItem} />
-                    )}
-                  </div>
+              </>
+            ) : (
+                <Select item={item} deleteItem={deleteItem} />
+              )}
+          </div>
 
-                  {item.discount != 0 && (
-                    <p className="offer_applied">{`${item.discount}% off Applied`}</p>
-                  )}
-                </div>
-                <div className="box_2">
-                  <span>x{item.quantity}</span>
-                </div>
-                <div className="box_3">
-                  <span>
-                    {item.price * item.quantity - item.discount * item.quantity}
-                  </span>
-                  <span>
-                    00:03 min <br />
+          {item.discount != 0 && (
+            <p className="offer_applied">{`${item.discount}% off Applied`}</p>
+          )}
+        </div>
+        <div className="box_2">
+          <span>x{item.quantity}</span>
+        </div>
+        <div className="box_3">
+          <span>
+            {item.price * item.quantity - item.discount * item.quantity}
+          </span>
+          <span>
+            00:03 min <br />
                     last update
                   </span>
-                </div>
-              </div>
-            );
-          })}
+        </div>
       </div>
-    </div>
+     </div>
   );
 };
 

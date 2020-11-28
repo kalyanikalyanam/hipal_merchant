@@ -1,15 +1,17 @@
 import { db } from "../../config";
 import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { dispatchContext } from "./contexts";
+import { dispatchContext, CustomerListContext } from "./contexts";
 
 const AddCustomerForm = ({ data }) => {
   const { handleSubmit, register, reset, errors } = useForm({
     mode: "onBlur",
   });
   const dispatch = useContext(dispatchContext);
+  const customerList = useContext(CustomerListContext)
   const [update, setUpdate] = useState();
   useEffect(() => {
+    console.log(customerList)
     setUpdate(data.update);
     reset({
       customer_name: data.name,

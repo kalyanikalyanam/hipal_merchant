@@ -11,6 +11,7 @@ import {
   orderContext,
 } from "./contexts";
 import * as actions from "./actionTypes";
+import { Toast } from "reactstrap";
 const BillPage = () => {
   const [businessLogo, setBusinessLogo] = useState();
   const [total, setTotal] = useState(0);
@@ -91,21 +92,18 @@ const BillPage = () => {
   };
   useEffect(() => {
     setBusinessLogo(sessionStorage.getItem("BusinessLogo"));
-    let Total = 0;
-    for (var i = 0; i < bill.length; i++) {
-      var order = bill[i];
-      var orderP = order.orderPrice - order.orderDiscout;
-      var temp = orderP;
-      orderP += (order.orderPrice * gst) / 100;
-      orderP += (temp * cGst) / 100;
-      Total += orderP;
-    }
+    let Total = bill.totalPrice;
+    let temp = 0
+
+    Total += bill.totalPrice * gst / 100
+    temp = bill.totalPrice * cGst / 100
+    Total += temp
     setTotal(Total);
     dispatch({
       type: actions.SETBILLID,
       billId: bill.id,
       bill: bill,
-      total: Total,
+      total: Math.round(Total),
     });
   }, []);
   const noItem = (
@@ -126,7 +124,6 @@ const BillPage = () => {
 
   const handleBIllView = (data) => {
     console.log(bill);
-    // console.log(order);
     let newBillPage = bill;
     newBillPage.id = bill.id;
     newBillPage.bill = bill;
@@ -153,17 +150,10 @@ const BillPage = () => {
   };
   const billItems =
     bill && bill.length !== 0
-      ? bill.map((order, index) => {
-          var orderP = order.orderPrice - order.orderDiscout;
-          var discount = order.orderDiscout;
-          var temp = orderP;
-          orderP += (order.orderPrice * gst) / 100;
-          orderP += (temp * cGst) / 100;
+      ? bill.map((item, index) => {
           return (
             <BillItem
-              order={order}
-              orderPrice={orderP}
-              discount={discount}
+              item={item}
               key={index}
             />
           );
@@ -242,13 +232,60 @@ const BillPage = () => {
                         </td>
                         <td style={{ textAlign: "right", padding: "3px 10px" }}>
                           {employee}
-                        </td>
+                        <td style={{textAlign: "left", padding:"3px 10px"}}>Order ID: {bill.orderId}</td>     </td>
                       </tr>
                     </tbody>
                   </table>
                 </td>
               </tr>
-              {billItems}
+              <tr>
+                <td style={{ textAlign: "center", padding: "10px", color: "#000000", borderBottom: "1px dashed rgba(0, 0,0, 0.5)" }}>
+                  <table width="100%">
+                    <tbody>
+                      <tr>
+                        <td style={{ textAlign: 'left', padding: '5px 10px 10px 10px' }}><b>Item</b></td>
+                        <td style={{ textAlign: 'center', padding: '5px 10px 10px 10px' }}><b>Qty</b></td>
+                        <td style={{ textAlign: 'right', padding: '5px 10px 10px 10px' }}><b>Price</b></td>
+                        <td>
+                        </td>
+                      </tr>
+                      {billItems}
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+              <tr >
+                  <td style={{textAlign: "center", padding:"10px", color: "#000000", bottomBorder: "1px dashed rgba(0, 0, 0, 0.5)"}}>
+                  <table width="100%">
+                    <tbody>
+                      <tr>
+                        <td style={{ textAlign: 'left', padding: '3px 10px' }}>Subtotal</td>
+                        <td style={{ textAlign: 'right', padding: '3px 10px' }}>₹ {bill.totalPrice}</td>
+                      </tr>
+                      <tr>
+                        <td style={{ textAlign: 'left', padding: '3px 10px' }}>Offer</td>
+                        <td style={{ textAlign: 'right', padding: '3px 10px' }}>-{bill.totalDiscount}</td>
+                      </tr>
+                      <tr>
+                        <td style={{ textAlign: 'left', padding: '3px 10px' }}>Extra charges</td>
+                        <td style={{ textAlign: 'right', padding: '3px 10px' }}>-</td>
+                      </tr>
+                      <tr>
+                        <td style={{ textAlign: 'left', padding: '3px 10px' }}>Packaging charges</td>
+                        <td style={{ textAlign: 'right', padding: '3px 10px' }}>-</td>
+                      </tr>
+                      <tr>
+                        <td style={{ textAlign: 'left', padding: '3px 10px' }}>GST</td>
+                        <td style={{ textAlign: 'right', padding: '5px 10px' }}>8.75</td>
+                      </tr>
+                      <tr>
+                        <td style={{ textAlign: 'left', padding: '3px 10px' }}>CGST</td>
+                        <td style={{ textAlign: 'right', padding: '3px 10px' }}>8.75</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  </td>
+              </tr>
               <tr>
                 <td
                   style={{

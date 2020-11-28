@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import OrderItem from "./orderItem";
 import { dispatchContext, orderContext, tableContext } from "./contexts";
 import * as actions from "./actionTypes";
@@ -7,22 +7,35 @@ import { db } from "../../config";
 const Orders = () => {
   const orderList = useContext(orderContext);
   const dispatch = useContext(dispatchContext);
+  const [total, setTotal] = useState(0)
+  const [discount, setDiscount] = useState(0)
+  const [kotNum, setKotNum] = useState(0);
   const table = useContext(tableContext);
-  const orderId = useRef();
-
-  const totalPrice = useRef();
-  const totalDiscount = useRef();
   const handleKOT = () => {
     dispatch({
-      type: actions.KOTORDER,
+      type: actions.KOTCART
     });
   };
+  const handleKOTCart = () => {
+    dispatch({
+      type: actions.KOTCART
+    });
+  };
+
+  useEffect(() => {
+    console.log(orderList)
+    setTotal(orderList.totalPrice)
+    setDiscount(orderList.totalDiscount)
+    let kotTotal = 0
+    orderList.forEach(item => {
+      if(item.kot) kotTotal++
+    })
+    setKotNum(kotTotal)
+  }, [orderList])
   const check = () => {
     let flag = true;
-    orderList.forEach((cart) => {
-      cart.forEach((item) => {
-        if (!item.kot) flag = false;
-      });
+    orderList.forEach((item) => {
+      if (!item.kot) flag = false;
     });
     return flag;
   };
@@ -30,43 +43,38 @@ const Orders = () => {
     if (check()) {
       dispatch({
         type: actions.SENDTOBILL,
-        id: orderList.id,
-        orderDiscount: totalDiscount.current,
-        orderPrice: totalPrice.current,
       });
-      let orders = {
-        orderTiming: new Date().toLocaleString(),
-        orderId: orderList.id,
-        orderDiscount: totalDiscount.current,
-        orderPrice: totalPrice.current,
-        tableName: table.table_name,
-        businessId: table.businessId,
-      };
-      const res = db.collection("orders").add(orders);
     } else {
-      alert("All items must be KOT or removed from the order");
+      alert(" Allitems must be KOT or removed from the order");
     }
   };
-  totalDiscount.current = 0;
-  totalPrice.current = 0;
-  orderId.current = Math.round(new Date().getTime() / 10000);
   return (
     <div className="order_id_cart_box col-md-12 m-t-20">
       <p className="order_id_cart">Order ID {orderList.id} </p>
       <div className="cart_scroll_box">
-        {orderList &&
-          orderList.map((cart, index) => {
-            totalDiscount.current += cart.cartDiscount;
-            totalPrice.current += cart.cartPrice;
-            return (
-              <OrderItem
-                cart={cart}
-                key={index}
-                cartNo={index + 1}
-                index={index}
-              />
-            );
-          })}
+        <div className="cart2_box col-md-12 m-t-20">
+          <span className="ribbon_cart">
+            {kotNum}/{orderList && orderList.length}
+          </span>
+          <div className="cart2_row">
+            <div className="cart_head">
+              Cart {1} ID:{orderList.cartId}
+            </div>
+            <div className="kot_box" onClick={handleKOTCart}>
+              <span className="btn kot">KOT</span>
+            </div>
+          </div>
+          {orderList &&
+            orderList.map((item, index) => {
+              return (
+                <OrderItem
+                  item={item}
+                  key={index}
+                  index={index}
+                />
+              );
+            })}
+        </div>
       </div>
       <div className="cart1_box col-md-12">
         <div className="expand_menu_cart">
@@ -90,16 +98,13 @@ const Orders = () => {
             </p>
             <p>
               <span className="left discount">Discount (free delivery)</span>{" "}
-              <span className="right discount">₹ {totalDiscount.current}</span>
+              <span className="right discount">₹ {parseFloat(discount).toFixed(2)}</span>
             </p>
             <p className="m-t-15">
               <span className="left grandtotal_font">Grand Total</span>{" "}
               <span className="right grand_font">
                 {" "}
-                ₹
-                {parseFloat(totalPrice.current - totalDiscount.current).toFixed(
-                  2
-                )}
+                ₹{parseFloat(total - discount).toFixed(2)}
               </span>
             </p>
           </div>
