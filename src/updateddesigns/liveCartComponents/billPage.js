@@ -150,17 +150,10 @@ const BillPage = () => {
   };
   const billItems =
     bill && bill.length !== 0
-      ? bill.map((order, index) => {
-          var orderP = order.orderPrice - order.orderDiscout;
-          var discount = order.orderDiscout;
-          var temp = orderP;
-          orderP += (order.orderPrice * gst) / 100;
-          orderP += (temp * cGst) / 100;
+      ? bill.map((item, index) => {
           return (
             <BillItem
-              order={order}
-              orderPrice={orderP}
-              discount={discount}
+              item={item}
               key={index}
             />
           );
@@ -239,14 +232,11 @@ const BillPage = () => {
                         </td>
                         <td style={{ textAlign: "right", padding: "3px 10px" }}>
                           {employee}
-                        </td>
+                        <td style={{textAlign: "left", padding:"3px 10px"}}>Order ID: {bill.orderId}</td>     </td>
                       </tr>
                     </tbody>
                   </table>
                 </td>
-              </tr>
-              <tr style={{textAlign: "center", padding: "10px", color: "#000000", borderBottom: "1px rgba(0, 0, 0, 0,5)",}}>
-                  <td style={{textAlign: "center", padding:"3px 10px"}}>{bill.orderId}</td>
               </tr>
               <tr>
                 <td style={{ textAlign: "center", padding: "10px", color: "#000000", borderBottom: "1px dashed rgba(0, 0,0, 0.5)" }}>
@@ -259,7 +249,7 @@ const BillPage = () => {
                         <td>
                         </td>
                       </tr>
-                      {/* {billItems} */}
+                      {billItems}
                     </tbody>
                   </table>
                 </td>
