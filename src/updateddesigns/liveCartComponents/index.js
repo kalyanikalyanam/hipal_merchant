@@ -88,7 +88,7 @@ const initState = {
   kotModalData: null,
   balance: 0,
 }
-const init= localStorage.getItem("data") ? updateObject( initState , {...JSON.parse(localStorage.getItem("data"))})  : initState;
+const init= localStorage.getItem(`${props.match.params.tableId}`)? updateObject( initState , {...JSON.parse(localStorage.getItem("data"))})  : initState;
 const LiveCartPage = (props) => {
   const [state, setState] = useState({});
   const [businessName, setBusinessName] = useState();
@@ -137,7 +137,7 @@ const LiveCartPage = (props) => {
         table: reducerState.table,
         occupency: reducerState.occupency
       }
-      localStorage.setItem("data", JSON.stringify(data))
+      localStorage.setItem(`${props.match.params.tableId}`, JSON.stringify(data))
       await db
         .collection("tables")
         .doc(props.match.params.tableId)
