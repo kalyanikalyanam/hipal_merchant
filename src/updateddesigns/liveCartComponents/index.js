@@ -31,6 +31,7 @@ import AddCutomerFormModal from "./addCustomerFormModal";
 import BillModal from "./billModal";
 import KotModal from "./kotModal";
 import * as actions from './actionTypes'
+import { updateObject } from "./reducerUtils";
 
 Modal.setAppElement(document.getElementById("root"));
 const customStyles2 = {
@@ -56,7 +57,7 @@ const customStyles = {
     minWidht: "30%",
   },
 };
-const initState = {
+const initState = {  
   liveCart: [],
   order: [],
   bill: [],
@@ -86,12 +87,12 @@ const initState = {
   kotModal: false,
   kotModalData: null,
   balance: 0,
-};
-
+}
+const init= localStorage.getItem("data") ? updateObject( initState , {...JSON.parse(localStorage.getItem("data"))})  : initState;
 const LiveCartPage = (props) => {
   const [state, setState] = useState({});
   const [businessName, setBusinessName] = useState();
-  const [reducerState, dispatch] = useReducer(reducer, initState);
+  const [reducerState, dispatch] = useReducer(reducer, init);
   const firstRun = useRef(true)
   const getTableData = () => {
     db
@@ -113,11 +114,6 @@ const LiveCartPage = (props) => {
           type: actions.ADDTABLEDATA,
           table: tableD,
         });
-        console.log(localStorage.getItem("data"))
-        dispatch({
-          type: "SET",
-          orderStatus: JSON.parse(localStorage.getItem("data"))
-        })
       });
   }
 
@@ -141,6 +137,7 @@ const LiveCartPage = (props) => {
         table: reducerState.table,
         occupency: reducerState.occupency
       }
+      localStorage.setItem("data", JSON.stringify(data))
       await db
         .collection("tables")
         .doc(props.match.params.tableId)
@@ -149,9 +146,6 @@ const LiveCartPage = (props) => {
         })
     }
      updateDb()
-     return () => {
-       localStorage.setItem("data", JSON.stringify(data))
-     }
   }, [reducerState.table, reducerState.order, reducerState.bill, reducerState.liveCart, reducerState.occupency])
   return (
     <dispatchContext.Provider value={dispatch}>
