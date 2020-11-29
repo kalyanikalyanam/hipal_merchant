@@ -5,6 +5,7 @@ import PaymentMethod from './paymentMethods'
 
 const BillBottom = () => {
     const balance = useContext(balanceContext)
+    const [localBalance, setLocalBalance] = useState(balance)
     const dbRef = useContext(tableContext)
     const dispatch = useContext(dispatchContext)
     const [total, setTotal] = useState()
@@ -12,6 +13,7 @@ const BillBottom = () => {
     const [state, setState] = useState()
     useEffect(() => {
         setTotal(balance)
+        setLocalBalance(balance)
     }, [])
     useEffect(() => {
         let unsubscribe
@@ -27,7 +29,7 @@ const BillBottom = () => {
     }, [dbRef])
      
     useEffect(() => {
-        if(table){
+        if(table && table.bill){
             let total = 0
             table.bill.forEach(item => {
                 total += item.price * item.quantity
@@ -43,6 +45,7 @@ const BillBottom = () => {
 
     const onValue = (data) => {
         setState({ ...state, ...data });
+        
     };
 
     useEffect(() => {
@@ -52,11 +55,11 @@ const BillBottom = () => {
                 temp += parseInt(state[key]);
             }
         }
+        var newBalance = parseInt(total- temp);
         dispatch({
             type: "PaymentDetails",
             details: state
         })
-        var newBalance = parseInt(balance - temp, 10);
         dispatch({
             type: "SetBalance",
             balance: newBalance,

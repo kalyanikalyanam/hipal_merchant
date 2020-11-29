@@ -28,28 +28,18 @@ const Table = ()=> {
   }, []);
 
   useEffect(() => {
-    let unsubscribe
     const tableData = async () => {
       if(dbRef){
-        const table = await dbRef.get()
-        setTable({
-          table_name: table.data().table_name,
-          status: table.data().status
-        })
-        reset({employee: table.data().currentEmployee || ""})
-        unsubscribe = dbRef.onSnapshot(table=> {
-          setTable({
-            table_name: table.data().table_name,
-            status: table.data().status
-          })
-        })
+        const Table = await dbRef.get()
+        setTable(Table.data())
+        reset({employee: Table.data().currentEmployee})
       }
     }
     tableData()
-    return unsubscribe
   }, [dbRef])
 
   const onChange = (data) => {
+    console.log(data)
     try{
       dbRef.update({
       currentEmployee: data.employee 

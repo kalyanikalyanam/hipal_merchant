@@ -1,3 +1,4 @@
+import {db} from '../../config'
 import React, { useContext, useEffect, useState } from "react";
 import BillItem from "./billItem";
 import {
@@ -42,8 +43,9 @@ const BillPage = () => {
   }, [dbRef])
   useEffect(() => {
     if(table){
-      const bill = table.bill
+      let bill = table.bill
       let subTotal = 0, discount = 0, tax = 0
+      if(!bill) bill =[]
       bill.forEach(item => {
         subTotal += item.price * item.quantity
         discount += item.price * item.discount / 100 * item.quantity
@@ -83,7 +85,7 @@ const BillPage = () => {
       </td>
     </tr>
   );
-  const handleSettle = () => {
+  const handleSettle = async () => {
     if(balance != 0){
       alert('Balance Must be 0 before Settling')
     }
@@ -92,8 +94,13 @@ const BillPage = () => {
         bill: table.bill,
         employee: table.currentEmployee,
         date: Date.now(),
-        PaymentDetails: state.details
+        PaymentDetails: state.details,
+        billId: table.billId,
+        orderId: table.orderId,
+        customers: table.customers
       }
+      console.log(bill)
+      await db.collection("bills").add(bill)
       dispatch({
         type: "BillViewModalShow",
         data: {
@@ -104,6 +111,18 @@ const BillPage = () => {
           discount,
         isSettle: true
         },
+      })
+      await dbRef.update({
+        bill: [],
+        liveCart: [],
+        order: [],
+        customers: [],
+        status: "Vacant",
+        occupency: 0,
+        currentEmployee: "",
+        billId: null,
+        orderId: null,
+        liveCartId: null
       })
     }
   }
