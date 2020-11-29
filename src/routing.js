@@ -87,6 +87,7 @@ import Table from "./updateddesigns/tables_view_for_updated_order";
 
 import AddItemNew from "./component/add_item_new";
 import EditItemNew from "./component/edit_item_new";
+import MainPage from './updateddesigns/LiveCart/index'
 
 export const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route
@@ -180,7 +181,7 @@ class Routing extends React.Component {
         <PrivateRoute path="/Settings" component={Settings} />
         <PrivateRoute path="/AllMessages" component={AllMessages} />
         <PrivateRoute path="/Order" component={Order} />
-        <PrivateRoute path="/LiveCart/:tableId" component={LiveCart} />
+        <PrivateRoute path="/LiveCart/:tableId" component={MainPage} />
         <PrivateRoute path="/Bill" component={Bill} />
         <PrivateRoute path="/CategorySettings" component={CategorySettings} />
         <PrivateRoute path="/Settele" component={Settele} />

@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import Autosuggest from "react-autosuggest";
-import { dispatchContext } from "./contexts";
+import { dispatchContext } from "../contexts";
 
 function escapeRegexCharacters(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -113,9 +113,8 @@ const InputField = ({ customers, i, update, register }) => {
     setName(suggestion.name);
   };
   const handleAdd = () => {
-    console.log(update);
     dispatch({
-      type: "addUserModal",
+      type: "AddUserModalShow",
       info: {
         name,
         number,
