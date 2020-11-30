@@ -10,6 +10,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
     setBusinessLogo(sessionStorage.getItem("BusinessLogo"));
   }, []);
   const handleClose = () => {
+    console.log("here")
     dispatch({
       type: "BillViewModalHide",
     });
