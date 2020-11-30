@@ -99,7 +99,6 @@ const BillPage = () => {
         customers: table.customers,
         businessId: businessId,
       };
-      console.log(bill);
       await db.collection("bills").add(bill);
       dispatch({
         type: "BillViewModalShow",
@@ -141,6 +140,8 @@ const BillPage = () => {
         subTotal,
         discount,
         tax,
+        gst,
+        cGst,
         isSettle: false,
       },
     });

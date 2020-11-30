@@ -34,7 +34,7 @@ const LiveCartPage = () => {
             let total = 0, discount = 0,tax = 0
             items.forEach(item => {
                 total += item.price * item.quantity
-                discount += item.price * item.discount / 100 
+                discount += item.price * item.discount / 100 *item.quantity 
                 tax += item.tax * item.price / 100
                 
             })
