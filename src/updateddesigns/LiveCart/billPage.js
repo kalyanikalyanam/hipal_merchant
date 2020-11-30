@@ -1,76 +1,75 @@
-import {db} from '../../config'
+import { db } from "../../config";
 import React, { useContext, useEffect, useState } from "react";
 import BillItem from "./billItem";
 import {
   dispatchContext,
   tableContext,
   balanceContext,
-  stateContext
+  stateContext,
 } from "./contexts";
 const BillPage = () => {
   const [businessLogo, setBusinessLogo] = useState();
   const [businessId, setBusinessId] = useState();
   const [total, setTotal] = useState(0);
-  const [subTotal, setSubTotal] = useState(0)
-  const [tax, setTax] = useState(0)
-  const [discount, setDiscount] = useState(0)
-  const [table, setTable] = useState()
-  const [gst] = useState(8.75);
-  const [cGst] = useState(8.75);
+  const [subTotal, setSubTotal] = useState(0);
+  const [tax, setTax] = useState(0);
+  const [discount, setDiscount] = useState(0);
+  const [table, setTable] = useState();
+  const [gst] = useState(2.5);
+  const [cGst] = useState(2.5);
 
-
-  const balance= useContext(balanceContext)
+  const balance = useContext(balanceContext);
   const dispatch = useContext(dispatchContext);
   const dbRef = useContext(tableContext);
-  const state = useContext(stateContext)
-  
+  const state = useContext(stateContext);
 
   useEffect(() => {
     setBusinessLogo(sessionStorage.getItem("BusinessLogo"));
-    setBusinessId(sessionStorage.getItem("businessId"))
+    setBusinessId(sessionStorage.getItem("businessId"));
   }, []);
 
-  useEffect(() =>{
-    let unsubscribe
+  useEffect(() => {
+    let unsubscribe;
     const getTable = async () => {
-      const table = await dbRef.get()
-      setTable(table.data())
-      
-      unsubscribe = dbRef.onSnapshot(table => {
-        setTable(table.data())
-      })
-    }
-    getTable()
-    return unsubscribe
-  }, [dbRef])
-  useEffect(() => {
-    if(table){
-      let bill = table.bill
-      let subTotal = 0, discount = 0, tax = 0
-      if(!bill) bill =[]
-      bill.forEach(item => {
-        subTotal += item.price * item.quantity
-        discount += item.price * item.discount / 100 * item.quantity
-        tax += item.price * item.tax / 100 * item.quantity
+      const table = await dbRef.get();
+      setTable(table.data());
+
+      unsubscribe = dbRef.onSnapshot((table) => {
+        setTable(table.data());
       });
-      setSubTotal(subTotal)
-      setTax(tax)
-      setDiscount(discount)
-
+    };
+    getTable();
+    return unsubscribe;
+  }, [dbRef]);
+  useEffect(() => {
+    if (table) {
+      let bill = table.bill;
+      let subTotal = 0,
+        discount = 0,
+        tax = 0;
+      if (!bill) bill = [];
+      bill.forEach((item) => {
+        subTotal += item.price * item.quantity;
+        discount += ((item.price * item.discount) / 100) * item.quantity;
+        tax += ((item.price * item.tax) / 100) * item.quantity;
+      });
+      setSubTotal(subTotal);
+      setTax(tax);
+      setDiscount(discount);
     }
-  }, [table])
+  }, [table]);
 
   useEffect(() => {
-    let total = subTotal + tax - discount
-    let temp = total
-    total += total *gst / 100
-    total += temp *cGst / 100
-    setTotal(total)
+    let total = subTotal + tax - discount;
+    let temp = total;
+    total += (total * gst) / 100;
+    total += (temp * cGst) / 100;
+    setTotal(total);
     dispatch({
       type: "SetBalance",
-      balance: Math.round(total)
-    })
-  }, [subTotal])
+      balance: Math.round(total),
+    });
+  }, [subTotal]);
   const noItem = (
     <tr>
       <td
@@ -87,10 +86,9 @@ const BillPage = () => {
     </tr>
   );
   const handleSettle = async () => {
-    if(balance != 0){
-      alert('Balance Must be 0 before Settling')
-    }
-    else {
+    if (balance != 0) {
+      alert("Balance Must be 0 before Settling");
+    } else {
       const bill = {
         bill: table.bill,
         employee: table.currentEmployee,
@@ -99,10 +97,10 @@ const BillPage = () => {
         billId: table.billId,
         orderId: table.orderId,
         customers: table.customers,
-        businessId: businessId 
-      }
-      console.log(bill)
-      await db.collection("bills").add(bill)
+        businessId: businessId,
+      };
+      console.log(bill);
+      await db.collection("bills").add(bill);
       dispatch({
         type: "BillViewModalShow",
         data: {
@@ -111,9 +109,9 @@ const BillPage = () => {
           total,
           subTotal,
           discount,
-        isSettle: true
+          isSettle: true,
         },
-      })
+      });
       await dbRef.update({
         bill: [],
         liveCart: [],
@@ -124,14 +122,14 @@ const BillPage = () => {
         currentEmployee: "",
         billId: null,
         orderId: null,
-        liveCartId: null
-      })
+        liveCartId: null,
+      });
       dispatch({
         type: "setBillPage",
-        select: 1
-      })
+        select: 1,
+      });
     }
-  }
+  };
 
   const handleBIllView = () => {
     dispatch({
@@ -143,9 +141,9 @@ const BillPage = () => {
         subTotal,
         discount,
         tax,
-        isSettle: false 
+        isSettle: false,
       },
-    })
+    });
   };
   const date = () => {
     let today = new Date(Date.now());
@@ -184,7 +182,10 @@ const BillPage = () => {
               </tr>
               <tr>
                 <td style={{ textAlign: "center", padding: "10px" }}>
-                  <img src={businessLogo && businessLogo} style={{ maxWidth: "150px" }} />
+                  <img
+                    src={businessLogo && businessLogo}
+                    style={{ maxWidth: "150px" }}
+                  />
                 </td>
               </tr>
               <tr>
@@ -199,7 +200,14 @@ const BillPage = () => {
                   <br /> Secunderabad, Telangana 500094
                 </td>
               </tr>
-              <tr style={{textAlign: "center",padding:"10px", color: "#000000", borderBottom: "1px solid rgba(0, 0, 0, 0.5)"}}>
+              <tr
+                style={{
+                  textAlign: "center",
+                  padding: "10px",
+                  color: "#000000",
+                  borderBottom: "1px solid rgba(0, 0, 0, 0.5)",
+                }}
+              >
                 <td
                   style={{
                     textAlign: "center",
@@ -238,17 +246,24 @@ const BillPage = () => {
                           {table && table.currentEmployee}
                         </td>
                       </tr>
-                          <td
-                            style={{ textAlign: "left", padding: "3px 10px" }}
-                          >
-                           Copy : 1 
-                          </td>{" "}
+                      <td style={{ textAlign: "left", padding: "3px 10px" }}>
+                        Copy : 1
+                      </td>{" "}
                     </tbody>
                   </table>
                 </td>
               </tr>
-              <tr style = {{textAlign: "center",padding:"10px", color: "#000000", borderBottom: "1px rgba(0, 0, 0, 0.5)"}}>
-                  <td style ={{textAlign: "left", padding: "3px 10px"}}>Order ID : {table && table.orderId}</td>
+              <tr
+                style={{
+                  textAlign: "center",
+                  padding: "10px",
+                  color: "#000000",
+                  borderBottom: "1px rgba(0, 0, 0, 0.5)",
+                }}
+              >
+                <td style={{ textAlign: "left", padding: "3px 10px" }}>
+                  Order ID : {table && table.orderId}
+                </td>
               </tr>
               <tr>
                 <td
@@ -309,7 +324,7 @@ const BillPage = () => {
                           Subtotal
                         </td>
                         <td style={{ textAlign: "right", padding: "3px 10px" }}>
-                          ₹ {subTotal && subTotal }
+                          ₹ {subTotal && subTotal}
                         </td>
                       </tr>
                       <tr>
@@ -341,7 +356,7 @@ const BillPage = () => {
                           GST
                         </td>
                         <td style={{ textAlign: "right", padding: "5px 10px" }}>
-                          8.75
+                          2.5
                         </td>
                       </tr>
                       <tr>
@@ -349,7 +364,7 @@ const BillPage = () => {
                           CGST
                         </td>
                         <td style={{ textAlign: "right", padding: "3px 10px" }}>
-                          8.75
+                          2.5
                         </td>
                       </tr>
                     </tbody>
