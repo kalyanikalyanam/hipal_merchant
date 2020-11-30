@@ -194,10 +194,11 @@ class Bills extends React.Component {
                                     <tr>
                                       <td>S.no</td>
                                       <td>BILL ID</td>
+                                      <td>Order Id</td>
                                       <td>Date</td>
                                       <td>Settled By</td>
-                                      <td>Amount</td>
-                                      <td>Order Id</td>
+                                      {/* <td>Amount</td> */}
+
                                       <td>Timing</td>
                                       {/* <td>Photo</td> */}
 
@@ -217,26 +218,29 @@ class Bills extends React.Component {
                                         (bill, index) => {
                                           let total = 0;
 
-                                          bill.bill.forEach(
-                                            (item) => (total += item.price)
-                                          );
+                                          bill.bill.forEach((item) => {
+                                            total += item.price;
+                                          });
+
+                                          console.log(total);
 
                                           return (
                                             <tr key={index}>
                                               <td>{index + 1}</td>
                                               <td>{bill.billId}</td>
+                                              <td>{bill.orderId}</td>
                                               <td className="bill_date">
                                                 {moment(bill.billTiming)
                                                   .locale("en")
                                                   .format("DD-MM-YYYY")}{" "}
                                               </td>
                                               <td>{bill.employee}</td>
-                                              <td>Rs {total}</td>
-                                              <td>{bill.orderId}</td>
+                                              {/* <td>Rs {total}</td> */}
+
                                               <td>
                                                 {moment(bill.billTiming)
                                                   .locale("en")
-                                                  .format("HH:mm")}
+                                                  .format("HH:mm:ss")}
                                               </td>
                                               {/* <td>
                                             <img

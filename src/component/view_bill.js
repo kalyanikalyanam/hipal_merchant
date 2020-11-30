@@ -317,7 +317,7 @@ class ViewBill extends React.Component {
                       GST
                     </td>
                     <td style={{ textAlign: "right", padding: "5px 30px" }}>
-                      8.75
+                      2.5
                     </td>
                   </tr>
                   <tr>
@@ -325,7 +325,7 @@ class ViewBill extends React.Component {
                       CGST
                     </td>
                     <td style={{ textAlign: "right", padding: "3px 30px" }}>
-                      8.75
+                      2.5
                     </td>
                   </tr>
                 </table>
