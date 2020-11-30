@@ -223,7 +223,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                           GST
                         </td>
                         <td style={{ textAlign: "right", padding: "5px 10px" }}>
-                          8.75
+                        {data && data.gst}
                         </td>
                       </tr>
                       <tr>
@@ -231,7 +231,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                           CGST
                         </td>
                         <td style={{ textAlign: "right", padding: "3px 10px" }}>
-                          8.75
+                        {data && data.cGst}
                         </td>
                       </tr>
                     </tbody>

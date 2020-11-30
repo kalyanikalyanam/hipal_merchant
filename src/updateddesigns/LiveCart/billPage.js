@@ -99,9 +99,8 @@ const BillPage = () => {
         billId: table.billId,
         orderId: table.orderId,
         customers: table.customers,
-        businessId: businessId 
+        businessId: businessId,
       }
-      console.log(bill)
       await db.collection("bills").add(bill)
       dispatch({
         type: "BillViewModalShow",
@@ -143,6 +142,8 @@ const BillPage = () => {
         subTotal,
         discount,
         tax,
+        gst,
+        cGst,
         isSettle: false 
       },
     })

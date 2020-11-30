@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { dispatchContext, stateContext } from '../LiveCart/contexts'
 import BillPage from './billPage'
 import LiveCartPage from './LiveCartPage'
@@ -6,6 +6,9 @@ import OrderPage from './orderPage'
 
 const RightSideBar = () => {
     const dispatch = useContext(dispatchContext)
+    useEffect(()=>{
+
+    }, [])
     const state = useContext(stateContext)
     const billSelect = (num) => {
         dispatch({

@@ -12,7 +12,7 @@ const EditModal = ({item, dbRef, edit}) => {
       quantity: item.quantity, 
       status: item.status,
       portion: item.portion,
-      discount: item.discount,
+      discount:`${item.discount}`,
     });
   }, []);
   const onClose = () => {
