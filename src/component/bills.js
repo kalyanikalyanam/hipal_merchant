@@ -58,7 +58,7 @@ class Bills extends React.Component {
       .firestore()
       .collection("bills")
 
-      // .where("businessId", "==", businessId)
+      .where("businessId", "==", businessId)
       .get()
       .then((querySnapshot) => {
         var data = [];
@@ -68,6 +68,8 @@ class Bills extends React.Component {
             // billAmount: childSnapShot.data().billAmount,
             billId: childSnapShot.data().billId,
             billTiming: childSnapShot.data().billTiming,
+            bill: childSnapShot.data().bill,
+
             paymentMethod: childSnapShot.data().paymentMethod,
             orderId: childSnapShot.data().orderId,
             employee: childSnapShot.data().employee,
@@ -194,7 +196,7 @@ class Bills extends React.Component {
                                       <td>BILL ID</td>
                                       <td>Date</td>
                                       <td>Settled By</td>
-                                      {/* <td>Amount</td> */}
+                                      <td>Amount</td>
                                       <td>Order Id</td>
                                       <td>Timing</td>
                                       {/* <td>Photo</td> */}
@@ -213,6 +215,12 @@ class Bills extends React.Component {
                                     {this.state.billsList &&
                                       this.state.billsList.map(
                                         (bill, index) => {
+                                          let total = 0;
+
+                                          bill.bill.forEach(
+                                            (item) => (total += item.price)
+                                          );
+
                                           return (
                                             <tr key={index}>
                                               <td>{index + 1}</td>
@@ -223,7 +231,7 @@ class Bills extends React.Component {
                                                   .format("DD-MM-YYYY")}{" "}
                                               </td>
                                               <td>{bill.employee}</td>
-                                              {/* <td>Rs {bill.billAmount}</td> */}
+                                              <td>Rs {total}</td>
                                               <td>{bill.orderId}</td>
                                               <td>
                                                 {moment(bill.billTiming)

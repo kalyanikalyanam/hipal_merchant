@@ -21299,7 +21299,7 @@ font-weight:600;
     font-size: 12px;
     left: 0px;
     top: -16px;
-    z-index: 100000000;
+    /* z-index: 100000000; */
 }
 
 .livecart_box{

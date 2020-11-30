@@ -219,6 +219,9 @@ class ViewBill extends React.Component {
                   </tr>
                   {this.state.billItems &&
                     this.state.billItems.map((item, index) => {
+                      var totalAmount = 0;
+                      let total = item.price * item.quantity;
+                      totalAmount += total;
                       return (
                         <tr key={index}>
                           <td
@@ -234,7 +237,7 @@ class ViewBill extends React.Component {
                           <td
                             style={{ textAlign: "right", padding: "3px 30px" }}
                           >
-                            {item.price}.00
+                            {parseFloat(total).toFixed(2)}
                           </td>
                         </tr>
                       );
@@ -344,7 +347,7 @@ class ViewBill extends React.Component {
                       <b>Total</b>
                     </td>
                     <td style={{ textalign: "right", padding: "5px 30px" }}>
-                      <b>₹ {this.state.billAmount}</b>
+                      <b>₹ {this.state.bill}</b>
                     </td>
                   </tr>
                   <tr>
