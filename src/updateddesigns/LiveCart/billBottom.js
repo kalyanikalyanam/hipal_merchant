@@ -37,8 +37,8 @@ const BillBottom = () => {
                 total -= item.price * item.discount / 100 * item.quantity
             })
             let temp = total
-            total += total * 8.75 / 100
-            total += temp * 8.75 / 100
+            total += total * balance.gst/ 100
+            total += temp * balance.gst / 100
             setTotal(Math.round(total))
         }
     }, [table])
@@ -62,7 +62,11 @@ const BillBottom = () => {
         })
         dispatch({
             type: "SetBalance",
-            balance: newBalance,
+            balance: {
+                gst: balance.gst,
+                cGst:balance.cGst,
+                balance: newBalance
+            },
         });
     }, [state]);
     const paymentMethods = [
@@ -138,7 +142,7 @@ const BillBottom = () => {
                             </div>
                         </div>
                         <div className="col-12 w-100-row bill_price balance text-center">
-                            Balance ({balance ? balance : 0})
+                            Balance ({balance ? balance.balance : 0})
               <div className="modal-footer"></div>
                         </div>
                     </div>

@@ -15,7 +15,6 @@ const RightSideBar = () => {
                 setItems(table.data().liveCart.length)
                 dbRef.onSnapshot(table => {
                     setItems(table.data().liveCart.length)
-                    console.log("here")
                 })
             }
             getData()

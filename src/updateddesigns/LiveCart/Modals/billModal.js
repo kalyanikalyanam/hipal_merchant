@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { dispatchContext } from "../contexts";
 import BillItem from "../billItem";
-import ReactToPrint, { useReactToPrint } from "react-to-print";
+import { useReactToPrint } from "react-to-print";
 
 const BillModal = React.forwardRef(({ data }, ref) => {
   const dispatch = useContext(dispatchContext);

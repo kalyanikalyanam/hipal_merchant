@@ -67,7 +67,11 @@ const BillPage = () => {
     setTotal(total);
     dispatch({
       type: "SetBalance",
-      balance: Math.round(total),
+      balance:{
+        balance: Math.round(total),
+        gst,
+        cGst
+      } 
     });
   }, [subTotal]);
   const noItem = (
@@ -86,7 +90,7 @@ const BillPage = () => {
     </tr>
   );
   const handleSettle = async () => {
-    if (balance != 0) {
+    if (balance.balance != 0) {
       alert("Balance Must be 0 before Settling");
     } else {
       const bill = {
