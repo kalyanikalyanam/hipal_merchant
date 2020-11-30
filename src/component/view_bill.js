@@ -69,9 +69,9 @@ class ViewBill extends React.Component {
           billTiming: userData.billTiming,
           paymentMethod: userData.paymentMethod,
 
-          settle_by: userData.settle_by,
+          settle_by: userData.employee,
           table: userData.table,
-          billItems: userData.billItems,
+          billItems: userData.bill,
           orderId: userData.orderId,
           businessId: userData.businessId,
           sessionId: userData.sessionId,
@@ -219,12 +219,15 @@ class ViewBill extends React.Component {
                   </tr>
                   {this.state.billItems &&
                     this.state.billItems.map((item, index) => {
+                      var totalAmount = 0;
+                      let total = item.price * item.quantity;
+                      totalAmount += total;
                       return (
                         <tr key={index}>
                           <td
                             style={{ textAlign: "left", padding: "3px 30px" }}
                           >
-                            {item.item_name}
+                            {item.name}
                           </td>
                           <td
                             style={{ textAlign: "center", padding: "3px 30px" }}
@@ -234,7 +237,7 @@ class ViewBill extends React.Component {
                           <td
                             style={{ textAlign: "right", padding: "3px 30px" }}
                           >
-                            {item.item_price}.00
+                            {parseFloat(total).toFixed(2)}
                           </td>
                         </tr>
                       );
@@ -344,7 +347,7 @@ class ViewBill extends React.Component {
                       <b>Total</b>
                     </td>
                     <td style={{ textalign: "right", padding: "5px 30px" }}>
-                      <b>₹ {this.state.billAmount}</b>
+                      <b>₹ {this.state.bill}</b>
                     </td>
                   </tr>
                   <tr>

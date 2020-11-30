@@ -65,12 +65,14 @@ class Bills extends React.Component {
         querySnapshot.forEach((childSnapShot) => {
           const GSTData = {
             billid: childSnapShot.id,
-            billAmount: childSnapShot.data().billAmount,
+            // billAmount: childSnapShot.data().billAmount,
             billId: childSnapShot.data().billId,
             billTiming: childSnapShot.data().billTiming,
-            paymentMethod: childSnapShot.data().paymentMethod,
+            bill: childSnapShot.data().bill,
 
-            settle_by: childSnapShot.data().settle_by,
+            paymentMethod: childSnapShot.data().paymentMethod,
+            orderId: childSnapShot.data().orderId,
+            employee: childSnapShot.data().employee,
             table: childSnapShot.data().table,
 
             businessId: childSnapShot.data().businessId,
@@ -79,6 +81,7 @@ class Bills extends React.Component {
 
           data.push(GSTData);
         });
+        console.log(data);
         this.setState({
           billsList: data,
           countPage: data.length,
@@ -194,7 +197,7 @@ class Bills extends React.Component {
                                       <td>Date</td>
                                       <td>Settled By</td>
                                       <td>Amount</td>
-                                      {/* <td>Order Id</td> */}
+                                      <td>Order Id</td>
                                       <td>Timing</td>
                                       {/* <td>Photo</td> */}
 
@@ -212,7 +215,12 @@ class Bills extends React.Component {
                                     {this.state.billsList &&
                                       this.state.billsList.map(
                                         (bill, index) => {
-                                          console.log(bill)
+                                          let total = 0;
+
+                                          bill.bill.forEach(
+                                            (item) => (total += item.price)
+                                          );
+
                                           return (
                                             <tr key={index}>
                                               <td>{index + 1}</td>
@@ -222,9 +230,9 @@ class Bills extends React.Component {
                                                   .locale("en")
                                                   .format("DD-MM-YYYY")}{" "}
                                               </td>
-                                              <td>{bill.settle_by}</td>
-                                              <td>Rs {bill.billAmount}</td>
-                                              {/* <td>{bill.order}</td> */}
+                                              <td>{bill.employee}</td>
+                                              <td>Rs {total}</td>
+                                              <td>{bill.orderId}</td>
                                               <td>
                                                 {moment(bill.billTiming)
                                                   .locale("en")
