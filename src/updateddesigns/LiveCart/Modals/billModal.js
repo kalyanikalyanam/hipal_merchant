@@ -1,32 +1,19 @@
-import { db } from "../../config";
 import React, { useEffect, useState, useRef, useContext } from "react";
-import { tableContext, dispatchContext, billPageContext } from "./contexts";
-import BillItem from "./billItem";
+import { dispatchContext,} from "../contexts";
+import BillItem from "../billItem";
 import { useReactToPrint } from "react-to-print";
 
 const BillModal = React.forwardRef(({ data }, ref) => {
+  const dispatch = useContext(dispatchContext)
   const [businessLogo, setBusinessLogo] = useState();
-  const [bill, setBill] = useState();
-  const [total, setTotal] = useState(0);
-  const [gst, setGst] = useState(8.75);
-  const [cGst, setCgst] = useState(8.75);
-  const dispatch = useContext(dispatchContext);
-  const billPage = useContext(billPageContext);
-  const tableData = useContext(tableContext);
-  const [employee, setEmployee] = useState();
-  const table = useContext(tableContext);
-  console.log(data)
   useEffect(() => {
-    setBill(data.bill)
-    setBusinessLogo(sessionStorage.getItem("BusinessLogo"));
-    let Total = data.bill.totalPrice;
-    let temp = 0;
-
-    Total += (data.bill.totalPrice * gst) / 100;
-    temp = (data.bill.totalPrice * cGst) / 100;
-    Total += temp;
-    setTotal(Total);
-  }, []);
+    setBusinessLogo(sessionStorage.getItem("BusinessLogo"))
+  }, [])
+  const handleClose = () => {
+    dispatch({
+      type: "BillViewModalHide",
+    });
+  };
   const date = () => {
     let today = new Date(Date.now());
     let options = {
@@ -52,62 +39,16 @@ const BillModal = React.forwardRef(({ data }, ref) => {
       </td>
     </tr>
   );
-  const handleClose = () => {
-    dispatch({
-      type: "billModalHide",
-    });
-  };
-  const handleSettle = async () => {
-    let bill = {
-      settle_by: employee,
-      billId: billPage.billId,
-      billAmount: billPage.totalPrice,
-      billTiming: new Date().toLocaleString(),
-      table: tableData.table_name,
-      businessId: tableData.businessId,
-    };
-    try {
-      const temp = tableData.status.split(" ");
-      var Table2;
-      console.log(temp);
-      if (temp[0] === "Table") {
-        Table2 = temp[4];
-        db.collection("tables")
-          .where("businessId", "==", tableData.businessId)
-          .where("table_name", "==", Table2)
-          .limit(1)
-          .get()
-          .then((query) => {
-            const thing = query.docs[0];
-
-            thing.ref.update({
-              status: "Vacant",
-              customers: [],
-            });
-          });
-      }
-      const res = await db.collection("bills").add(bill);
-      db.collection("tables").doc(tableData.id).update({
-        status: "Vacant",
-        customers: [],
-        occupency: "0",
-      });
-
-      console.log(res);
-    } catch (e) {
-      console.log(e);
-    }
-  };
   const billItems =
-    bill && bill.length !== 0
-      ? bill.map((item, index) => {
+    data && data.table && data.table.bill && data.table.bill.length !== 0
+      ? data.table.bill.map((item, index) => {
           return <BillItem item={item} key={index} />;
         })
       : noItem;
   return (
     <div width="100%" ref={ref}>
-      <button onClick={handleClose}>close</button>
       <div className="modal-dialog modal-sm hipal_pop" role="document">
+      <button onClick={handleClose}>Close</button>
         <table width="100%" style={{ display: "table" }}>
             <tbody>
               <tr>
@@ -120,7 +61,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                   }}
                 >
                   <b style={{ paddingRight: "10px" }}>BILL ID</b>{" "}
-                  {bill && bill.id}
+                  {data && data.table && data.table.bill.billId }
                 </td>
               </tr>
               <tr>
@@ -158,7 +99,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                     padding: "10px",
                     paddingBottom: "0px",
                     color: "#000000",
-                    borderBottom: "1px rgba(0, 0, 0, 0.5)",
+                    borderBottom: "1px dashed rgba(0, 0, 0, 0.5)",
                   }}
                 >
                   <table width="100%">
@@ -168,7 +109,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                           {date()}
                         </td>
                         <td style={{ textAlign: "right", padding: "3px 10px" }}>
-                          {table ? table.table_name : null}
+                          {data && data.table ? data.table.table_name : null}
                         </td>
                       </tr>
                       <tr>
@@ -176,17 +117,20 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                           09:23:45 AM
                         </td>
                         <td style={{ textAlign: "right", padding: "3px 10px" }}>
-                          {employee}
+                          {data && data.employee}
+                        </td>
+                      </tr>
                           <td
                             style={{ textAlign: "left", padding: "3px 10px" }}
                           >
-                            Order ID: 
+                           Copy : 1 
                           </td>{" "}
-                        </td>
-                      </tr>
                     </tbody>
                   </table>
                 </td>
+              </tr>
+              <tr style = {{textAlign: "center",padding:"10px", color: "#000000", borderBottom: "1px rgba(0, 0, 0, 0.5)"}}>
+                  <td style ={{textAlign: "left", padding: "3px 10px"}}>Order ID : {data && data.table && data.table.orderId}</td>
               </tr>
               <tr>
                 <td
@@ -247,7 +191,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                           Subtotal
                         </td>
                         <td style={{ textAlign: "right", padding: "3px 10px" }}>
-                          ₹ {bill && bill.totalPrice}
+                          ₹ {data && data.subTotal}
                         </td>
                       </tr>
                       <tr>
@@ -255,7 +199,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                           Offer
                         </td>
                         <td style={{ textAlign: "right", padding: "3px 10px" }}>
-                          -{bill && bill.totalDiscount}
+                          -{data && data.totalDiscount}
                         </td>
                       </tr>
                       <tr>
@@ -311,7 +255,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                           <b>Grand Total</b>
                         </td>
                         <td style={{ textAlign: "right", padding: "5px 10px" }}>
-                          <b>₹ {parseFloat(total).toFixed(2)}</b>
+                          <b>₹ {data && parseFloat(data.total).toFixed(2)}</b>
                         </td>
                       </tr>
                       <tr>
@@ -319,7 +263,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                           <b>Payable</b>
                         </td>
                         <td style={{ textAlign: "right", padding: "5px 10px" }}>
-                          <b>₹ {Math.round(total)}</b>
+                          <b>₹ {data && Math.round(data.total)}</b>
                         </td>
                       </tr>
                     </tbody>
@@ -361,18 +305,18 @@ const Print = ({ data }) => {
   const dispatch = useContext(dispatchContext);
   useEffect(() => {
     setIsSettle(data.isSettle);
-    console.log(data)
   }, []);
+  const handleClose = () => {
+    dispatch({
+      type: "BillViewModalHide",
+    });
+  };
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
-  const handleClose = () => {
-    dispatch({
-      type: "billModalHide",
-    });
-  };
   return (
     <>
+    <div onClick={handleClose}>
       <BillModal data={data} ref={componentRef} />
       {isSettle && (
         <div className="w-100-row kotsettle_btn">
@@ -386,6 +330,7 @@ const Print = ({ data }) => {
           </span>
         </div>
       )}
+      </div>
     </>
   );
 };

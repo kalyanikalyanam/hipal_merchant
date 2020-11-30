@@ -123,7 +123,7 @@ const Table = ({table}) => {
         <div className="col-md-4">
           <div className="chooseemp_dropdown">
             <select className="form-control" onClick={onChange}>
-              {/* <option>Choose Employee</option> */}
+              <option value={null}>Choose Employee</option>
               {employees &&
                 employees.map((data, index) => {
                   return (

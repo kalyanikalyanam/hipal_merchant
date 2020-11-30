@@ -11,7 +11,6 @@ import {
   orderContext,
 } from "./contexts";
 import * as actions from "./actionTypes";
-import { Toast } from "reactstrap";
 const BillPage = () => {
   const [businessLogo, setBusinessLogo] = useState();
   const [total, setTotal] = useState(0);
@@ -22,30 +21,16 @@ const BillPage = () => {
   const balance = useContext(BalanceContext);
   const bill = useContext(billContext);
   const employee = useContext(EmployeeContext);
-  const order = useContext(orderContext);
+
   const handleSettle = async () => {
     let newBillPage = bill;
     newBillPage.id = bill.id;
-    newBillPage.bill = bill;
     newBillPage.totalPrice = total;
     newBillPage.employee = employee;
     newBillPage.gst = gst;
     newBillPage.cGst = cGst;
-    newBillPage.order = order;
 
     console.log(newBillPage);
-    // let orderId = [];
-
-    let billItems = [];
-    newBillPage.bill.forEach((item) => {
-      // orderId.push(order.id);
-      // order.forEach((cart) => {
-      //   cart.forEach((item) => {
-      console.log(item);
-      billItems.push(item);
-      //   });
-      // });
-    });
 
     let Bill = {
       settle_by: employee,
@@ -54,9 +39,8 @@ const BillPage = () => {
       billTiming: new Date().toLocaleString(),
       table: table.table_name,
       businessId: table.businessId,
-      billItems,
+      billItems: bill,
       order: table.order,
-      // orderId,
     };
     dispatch({
       type: "billModalShow",
@@ -89,6 +73,7 @@ const BillPage = () => {
         customers: [],
         occupency: "0",
       });
+      localStorage.setItem("data", {})
     } catch (e) {
       console.log(e);
     }
@@ -97,7 +82,7 @@ const BillPage = () => {
     setBusinessLogo(sessionStorage.getItem("BusinessLogo"));
     let Total = bill.totalPrice;
     let temp = 0;
-
+    console.log(bill.totalPrice)
     Total += (bill.totalPrice * gst) / 100;
     temp = (bill.totalPrice * cGst) / 100;
     Total += temp;
@@ -106,7 +91,8 @@ const BillPage = () => {
       type: actions.SETBILLID,
       billId: bill.id,
       bill: bill,
-      total: Math.round(Total),
+      total: Math.round(bill.totalPrice),
+      balance:Total 
     });
   }, []);
   const noItem = (
@@ -130,7 +116,7 @@ const BillPage = () => {
     let newBillPage = bill;
     newBillPage.id = bill.id;
     newBillPage.bill = bill;
-    newBillPage.totalPrice = total;
+    newBillPage.totalPrice = bill.totalPrice;
     newBillPage.employee = employee;
     newBillPage.gst = gst;
     newBillPage.cGst = cGst;

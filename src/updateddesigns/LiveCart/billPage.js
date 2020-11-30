@@ -1,42 +1,75 @@
-import { db } from "../../config";
-import React, { useEffect, useState, useRef, useContext } from "react";
-import { tableContext, dispatchContext, billPageContext } from "./contexts";
+import {db} from '../../config'
+import React, { useContext, useEffect, useState } from "react";
 import BillItem from "./billItem";
-import { useReactToPrint } from "react-to-print";
-
-const BillModal = React.forwardRef(({ data }, ref) => {
+import {
+  dispatchContext,
+  tableContext,
+  balanceContext,
+  stateContext
+} from "./contexts";
+const BillPage = () => {
   const [businessLogo, setBusinessLogo] = useState();
-  const [bill, setBill] = useState();
   const [total, setTotal] = useState(0);
-  const [gst, setGst] = useState(8.75);
-  const [cGst, setCgst] = useState(8.75);
-  const dispatch = useContext(dispatchContext);
-  const billPage = useContext(billPageContext);
-  const tableData = useContext(tableContext);
-  const [employee, setEmployee] = useState();
-  const table = useContext(tableContext);
-  console.log(data)
-  useEffect(() => {
-    setBill(data.bill)
-    setBusinessLogo(sessionStorage.getItem("BusinessLogo"));
-    let Total = data.bill.totalPrice;
-    let temp = 0;
+  const [subTotal, setSubTotal] = useState(0)
+  const [tax, setTax] = useState(0)
+  const [discount, setDiscount] = useState(0)
+  const [table, setTable] = useState()
+  const [gst] = useState(8.75);
+  const [cGst] = useState(8.75);
 
-    Total += (data.bill.totalPrice * gst) / 100;
-    temp = (data.bill.totalPrice * cGst) / 100;
-    Total += temp;
-    setTotal(Total);
+
+  const balance= useContext(balanceContext)
+  const dispatch = useContext(dispatchContext);
+  const dbRef = useContext(tableContext);
+  const state = useContext(stateContext)
+  
+
+  useEffect(() => {
+    setBusinessLogo(sessionStorage.getItem("BusinessLogo"));
   }, []);
-  const date = () => {
-    let today = new Date(Date.now());
-    let options = {
-      weekday: "short",
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    };
-    return today.toLocaleDateString("en-US", options).toString();
-  };
+
+  useEffect(() =>{
+    let unsubscribe
+    const getTable = async () => {
+      const table = await dbRef.get()
+      setTable(table.data())
+      
+      unsubscribe = dbRef.onSnapshot(table => {
+        setTable(table.data())
+      })
+    }
+    getTable()
+    return unsubscribe
+  }, [dbRef])
+  useEffect(() => {
+    if(table){
+      let bill = table.bill
+      let subTotal = 0, discount = 0, tax = 0
+      if(!bill) bill =[]
+      bill.forEach(item => {
+        subTotal += item.price * item.quantity
+        discount += item.price * item.discount / 100 * item.quantity
+        tax += item.price * item.tax / 100 * item.quantity
+      });
+      setSubTotal(subTotal)
+      setTax(tax)
+      setDiscount(discount)
+
+    }
+  }, [table])
+
+  useEffect(() => {
+    let total = subTotal + tax - discount
+    let temp = total
+
+    total += total *gst / 100
+    total += temp *cGst / 100
+    setTotal(total)
+    dispatch({
+      type: "SetBalance",
+      balance: Math.round(total)
+    })
+  }, [subTotal])
   const noItem = (
     <tr>
       <td
@@ -52,63 +85,82 @@ const BillModal = React.forwardRef(({ data }, ref) => {
       </td>
     </tr>
   );
-  const handleClose = () => {
-    dispatch({
-      type: "billModalHide",
-    });
-  };
   const handleSettle = async () => {
-    let bill = {
-      settle_by: employee,
-      billId: billPage.billId,
-      billAmount: billPage.totalPrice,
-      billTiming: new Date().toLocaleString(),
-      table: tableData.table_name,
-      businessId: tableData.businessId,
-    };
-    try {
-      const temp = tableData.status.split(" ");
-      var Table2;
-      console.log(temp);
-      if (temp[0] === "Table") {
-        Table2 = temp[4];
-        db.collection("tables")
-          .where("businessId", "==", tableData.businessId)
-          .where("table_name", "==", Table2)
-          .limit(1)
-          .get()
-          .then((query) => {
-            const thing = query.docs[0];
-
-            thing.ref.update({
-              status: "Vacant",
-              customers: [],
-            });
-          });
-      }
-      const res = await db.collection("bills").add(bill);
-      db.collection("tables").doc(tableData.id).update({
-        status: "Vacant",
-        customers: [],
-        occupency: "0",
-      });
-
-      console.log(res);
-    } catch (e) {
-      console.log(e);
+    if(balance != 0){
+      alert('Balance Must be 0 before Settling')
     }
+    else {
+      const bill = {
+        bill: table.bill,
+        employee: table.currentEmployee,
+        date: Date.now(),
+        PaymentDetails: state.details,
+        billId: table.billId,
+        orderId: table.orderId,
+        customers: table.customers
+      }
+      console.log(bill)
+      await db.collection("bills").add(bill)
+      dispatch({
+        type: "BillViewModalShow",
+        data: {
+          table: table,
+          employee: table.currentEmployee,
+          total,
+          subTotal,
+          discount,
+        isSettle: true
+        },
+      })
+      await dbRef.update({
+        bill: [],
+        liveCart: [],
+        order: [],
+        customers: [],
+        status: "Vacant",
+        occupency: 0,
+        currentEmployee: "",
+        billId: null,
+        orderId: null,
+        liveCartId: null
+      })
+    }
+  }
+
+  const handleBIllView = () => {
+    dispatch({
+      type: "BillViewModalShow",
+      data: {
+        table: table,
+        employee: table.currentEmployee,
+        total,
+        subTotal,
+        discount,
+        isSettle: false 
+      },
+    })
+  };
+  const date = () => {
+    let today = new Date(Date.now());
+    let options = {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    };
+    return today.toLocaleDateString("en-US", options).toString();
   };
   const billItems =
-    bill && bill.length !== 0
-      ? bill.map((item, index) => {
+    table && table.bill && table.bill.length !== 0
+      ? table.bill.map((item, index) => {
           return <BillItem item={item} key={index} />;
         })
       : noItem;
   return (
-    <div width="100%" ref={ref}>
-      <button onClick={handleClose}>close</button>
-      <div className="modal-dialog modal-sm hipal_pop" role="document">
-        <table width="100%" style={{ display: "table" }}>
+    <>
+      <div className="order_id_cart_box col-md-12 m-t-20 bg-w m-b-20">
+        <div className="width-100 bill_scroll">
+          <table width="100%" style={{ display: "table" }}>
             <tbody>
               <tr>
                 <td
@@ -120,12 +172,12 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                   }}
                 >
                   <b style={{ paddingRight: "10px" }}>BILL ID</b>{" "}
-                  {bill && bill.id}
+                  {table && table.billId}
                 </td>
               </tr>
               <tr>
                 <td style={{ textAlign: "center", padding: "10px" }}>
-                  <img src={businessLogo} style={{ maxWidth: "150px" }} />
+                  <img src={businessLogo && businessLogo} style={{ maxWidth: "150px" }} />
                 </td>
               </tr>
               <tr>
@@ -140,7 +192,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                   <br /> Secunderabad, Telangana 500094
                 </td>
               </tr>
-              <tr>
+              <tr style={{textAlign: "center",padding:"10px", color: "#000000", borderBottom: "1px solid rgba(0, 0, 0, 0.5)"}}>
                 <td
                   style={{
                     textAlign: "center",
@@ -158,7 +210,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                     padding: "10px",
                     paddingBottom: "0px",
                     color: "#000000",
-                    borderBottom: "1px rgba(0, 0, 0, 0.5)",
+                    borderBottom: "1px dashed rgba(0, 0, 0, 0.5)",
                   }}
                 >
                   <table width="100%">
@@ -176,17 +228,20 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                           09:23:45 AM
                         </td>
                         <td style={{ textAlign: "right", padding: "3px 10px" }}>
-                          {employee}
+                          {table && table.currentEmployee}
+                        </td>
+                      </tr>
                           <td
                             style={{ textAlign: "left", padding: "3px 10px" }}
                           >
-                            Order ID: 
+                           Copy : 1 
                           </td>{" "}
-                        </td>
-                      </tr>
                     </tbody>
                   </table>
                 </td>
+              </tr>
+              <tr style = {{textAlign: "center",padding:"10px", color: "#000000", borderBottom: "1px rgba(0, 0, 0, 0.5)"}}>
+                  <td style ={{textAlign: "left", padding: "3px 10px"}}>Order ID : {table && table.orderId}</td>
               </tr>
               <tr>
                 <td
@@ -247,7 +302,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                           Subtotal
                         </td>
                         <td style={{ textAlign: "right", padding: "3px 10px" }}>
-                          ₹ {bill && bill.totalPrice}
+                          ₹ {subTotal && tax && subTotal + tax}
                         </td>
                       </tr>
                       <tr>
@@ -255,7 +310,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                           Offer
                         </td>
                         <td style={{ textAlign: "right", padding: "3px 10px" }}>
-                          -{bill && bill.totalDiscount}
+                          -{discount && discount}
                         </td>
                       </tr>
                       <tr>
@@ -350,44 +405,24 @@ const BillModal = React.forwardRef(({ data }, ref) => {
               </tr>
             </tbody>
           </table>
-      </div>{" "}
-    </div>
-  );
-});
-
-const Print = ({ data }) => {
-  const componentRef = useRef();
-  const [isSettle, setIsSettle] = useState(false);
-  const dispatch = useContext(dispatchContext);
-  useEffect(() => {
-    setIsSettle(data.isSettle);
-    console.log(data)
-  }, []);
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-  });
-  const handleClose = () => {
-    dispatch({
-      type: "billModalHide",
-    });
-  };
-  return (
-    <>
-      <BillModal data={data} ref={componentRef} />
-      {isSettle && (
+        </div>
         <div className="w-100-row kotsettle_btn">
-          <span className="btn add_ord" onClick={handlePrint}>
-            <a href="#" data-toggle="modal" data-target="#add_edit_position">
-              Print Bill
+          <span className="btn add_ord ">
+            <a
+              href="#"
+              type="button"
+              data-dismiss="modal"
+              onClick={handleBIllView}
+            >
+              Bill View
             </a>
           </span>
-          <span className="btn view_ord" onClick={handleClose}>
-            Cancel
+          <span className="btn view_ord" onClick={handleSettle}>
+            <a href="#">Settle</a>
           </span>
         </div>
-      )}
+      </div>
     </>
   );
 };
-
-export default Print;
+export default BillPage;

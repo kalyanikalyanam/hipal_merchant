@@ -29,7 +29,7 @@ const BillRight = () => {
         temp += parseInt(state[key]);
       }
     }
-    var newBalance = parseInt(billPage.totalPrice - temp, 10);
+    var newBalance = parseInt(balance - temp, 10);
     dispatch({
       type: "balance",
       balance: newBalance,
