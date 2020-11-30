@@ -135,7 +135,7 @@ const OrderItem = ({ item, index, dbRef}) => {
         </div>
         <div className="box_3">
           <span>
-            {item.price * item.quantity - item.discount * item.quantity}
+            {item.price * item.quantity}
           </span>
           <span>
             00:03 min <br />

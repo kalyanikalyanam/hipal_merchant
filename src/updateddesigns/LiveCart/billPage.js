@@ -9,6 +9,7 @@ import {
 } from "./contexts";
 const BillPage = () => {
   const [businessLogo, setBusinessLogo] = useState();
+  const [businessId, setBusinessId] = useState();
   const [total, setTotal] = useState(0);
   const [subTotal, setSubTotal] = useState(0)
   const [tax, setTax] = useState(0)
@@ -26,6 +27,7 @@ const BillPage = () => {
 
   useEffect(() => {
     setBusinessLogo(sessionStorage.getItem("BusinessLogo"));
+    setBusinessId(sessionStorage.getItem("businessId"))
   }, []);
 
   useEffect(() =>{
@@ -97,7 +99,7 @@ const BillPage = () => {
         billId: table.billId,
         orderId: table.orderId,
         customers: table.customers,
-        businessId: sessionStorage.getItem("BusinessId")
+        businessId: businessId 
       }
       console.log(bill)
       await db.collection("bills").add(bill)
@@ -123,6 +125,10 @@ const BillPage = () => {
         billId: null,
         orderId: null,
         liveCartId: null
+      })
+      dispatch({
+        type: "setBillPage",
+        select: 1
       })
     }
   }

@@ -30,16 +30,18 @@ const Table = ()=> {
   useEffect(() => {
     const tableData = async () => {
       if(dbRef){
-        const Table = await dbRef.get()
-        setTable(Table.data())
-        reset({employee: Table.data().currentEmployee})
+        const table = await dbRef.get()
+        setTable(table.data())
+        reset({employee: table.data().currentEmployee})
+        dbRef.onSnapshot(table => {
+          setTable(table.data())
+        })
       }
     }
     tableData()
   }, [dbRef])
 
   const onChange = (data) => {
-    console.log(data)
     try{
       dbRef.update({
       currentEmployee: data.employee 

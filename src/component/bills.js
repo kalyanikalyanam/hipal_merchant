@@ -212,6 +212,7 @@ class Bills extends React.Component {
                                     {this.state.billsList &&
                                       this.state.billsList.map(
                                         (bill, index) => {
+                                          console.log(bill)
                                           return (
                                             <tr key={index}>
                                               <td>{index + 1}</td>

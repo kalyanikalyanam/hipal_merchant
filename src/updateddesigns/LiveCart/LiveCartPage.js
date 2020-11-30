@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { tableContext } from './contexts'
+import { dispatchContext, tableContext } from './contexts'
 import LiveCartItem from './LiveCartItem'
 import firebase from "../../config";
 
 const LiveCartPage = () => {
     const dbRef = useContext(tableContext)
+    const dispatch  = useContext(dispatchContext)
     const [items, setItems] = useState([])
     const [total, setTotal] = useState(0)
     const [id, setId] = useState()
@@ -57,8 +58,8 @@ const LiveCartPage = () => {
         else {
             let liveCartItems = table.data().liveCart
             let orders = table.data().orders
-            if(!orders)  orders = []
-            if(orders.length === 0){
+            if (!orders) orders = []
+            if (orders.length === 0) {
                 var id = Math.floor(Math.random() * 100000000)
                 dbRef.update({
                     orderId: id
@@ -66,8 +67,12 @@ const LiveCartPage = () => {
             }
             orders.push(...liveCartItems)
             dbRef.update({
-                orders, 
+                orders,
                 liveCart: []
+            })
+            dispatch({
+                type: "setBillPage",
+                select: 2 
             })
         }
     }

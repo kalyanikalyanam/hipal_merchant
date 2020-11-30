@@ -97,6 +97,10 @@ const Orders = () => {
         orders: [],
         bill: billItem
       })
+      dispatch({
+        type: "setBillPage",
+        select: 3 
+      })
     }
   }
 
