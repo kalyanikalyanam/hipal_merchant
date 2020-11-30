@@ -61,7 +61,6 @@ const BillPage = () => {
   useEffect(() => {
     let total = subTotal + tax - discount
     let temp = total
-
     total += total *gst / 100
     total += temp *cGst / 100
     setTotal(total)
@@ -97,7 +96,8 @@ const BillPage = () => {
         PaymentDetails: state.details,
         billId: table.billId,
         orderId: table.orderId,
-        customers: table.customers
+        customers: table.customers,
+        businessId: sessionStorage.getItem("BusinessId")
       }
       console.log(bill)
       await db.collection("bills").add(bill)
@@ -136,6 +136,7 @@ const BillPage = () => {
         total,
         subTotal,
         discount,
+        tax,
         isSettle: false 
       },
     })
@@ -302,7 +303,7 @@ const BillPage = () => {
                           Subtotal
                         </td>
                         <td style={{ textAlign: "right", padding: "3px 10px" }}>
-                          ₹ {subTotal && tax && subTotal + tax}
+                          ₹ {subTotal && subTotal }
                         </td>
                       </tr>
                       <tr>
@@ -310,7 +311,7 @@ const BillPage = () => {
                           Offer
                         </td>
                         <td style={{ textAlign: "right", padding: "3px 10px" }}>
-                          -{discount && discount}
+                          {discount ? discount : `-`}
                         </td>
                       </tr>
                       <tr>
@@ -318,7 +319,7 @@ const BillPage = () => {
                           Extra charges
                         </td>
                         <td style={{ textAlign: "right", padding: "3px 10px" }}>
-                          -
+                          {tax ? tax : `-`}
                         </td>
                       </tr>
                       <tr>

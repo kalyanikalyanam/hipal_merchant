@@ -112,7 +112,7 @@ const LiveCartPage = () => {
                             <span className="right grand_font">
                                 {" "}
                 ₹
-                {total ? total : "0"}
+                {total ? total - discount : "0"}
                             </span>
                         </p>
                     </div>

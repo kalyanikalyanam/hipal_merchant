@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { dispatchContext,} from "../contexts";
 import BillItem from "../billItem";
-import { useReactToPrint } from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 
 const BillModal = React.forwardRef(({ data }, ref) => {
   const dispatch = useContext(dispatchContext)
@@ -199,7 +199,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                           Offer
                         </td>
                         <td style={{ textAlign: "right", padding: "3px 10px" }}>
-                          -{data && data.totalDiscount}
+                          -{data ? data.discount : `-` }
                         </td>
                       </tr>
                       <tr>
@@ -207,7 +207,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                           Extra charges
                         </td>
                         <td style={{ textAlign: "right", padding: "3px 10px" }}>
-                          -
+                          -{data ? data.tax : `-`}
                         </td>
                       </tr>
                       <tr>
@@ -306,17 +306,16 @@ const Print = ({ data }) => {
   useEffect(() => {
     setIsSettle(data.isSettle);
   }, []);
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
   const handleClose = () => {
     dispatch({
       type: "BillViewModalHide",
     });
   };
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-  });
   return (
     <>
-    <div onClick={handleClose}>
       <BillModal data={data} ref={componentRef} />
       {isSettle && (
         <div className="w-100-row kotsettle_btn">
@@ -330,7 +329,6 @@ const Print = ({ data }) => {
           </span>
         </div>
       )}
-      </div>
     </>
   );
 };

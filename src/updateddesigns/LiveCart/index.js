@@ -131,7 +131,7 @@ const MainPage = (props) => {
                     <AdvancedOptions />
                 </Modal>
                 <Modal isOpen={reducerState.editModal} style={customStyles}>
-                    <EditModal item={reducerState.editModalItem} dbRef={dbRef} />
+                    <EditModal item={reducerState.editModalItem} dbRef={dbRef}  edit={reducerState.edit} />
                 </Modal>
                 <Modal isOpen={reducerState.customerToTableModal} style={customStyles}>
                     <AddCustomerModal dbRef={dbRef} />
