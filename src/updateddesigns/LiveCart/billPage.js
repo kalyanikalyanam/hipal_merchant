@@ -61,7 +61,6 @@ const BillPage = () => {
   useEffect(() => {
     let total = subTotal + tax - discount
     let temp = total
-
     total += total *gst / 100
     total += temp *cGst / 100
     setTotal(total)
