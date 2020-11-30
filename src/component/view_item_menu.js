@@ -122,6 +122,7 @@ class ViewItemMenu extends React.Component {
     }
 
     this.itemMenuList();
+    this.itemMenuList1();
   }
 
   itemMenuList = async () => {
@@ -190,6 +191,82 @@ class ViewItemMenu extends React.Component {
         });
         this.setState({
           itemMenuList: data,
+          countPage: data.length,
+          loading: false,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  itemMenuList1 = async () => {
+    var sessionId = sessionStorage.getItem("RoleId");
+    var businessId = sessionStorage.getItem("businessId");
+
+    this.setState({ loading: true });
+    await firebase
+      .firestore()
+      .collection("menuitems2")
+      // .where("sessionId", "==", sessionId)
+      .where("businessId", "==", businessId)
+      .limit(5)
+      .get()
+      .then((querySnapshot) => {
+        var data = [];
+        querySnapshot.forEach((childSnapShot) => {
+          const GSTData = {
+            itemmenuid: childSnapShot.id,
+            item_unique_id: childSnapShot.data().item_unique_id,
+
+            item_id: childSnapShot.data().item_id,
+            item_name: childSnapShot.data().item_name,
+            item_description: childSnapShot.data().item_description,
+            item_halal: childSnapShot.data().item_halal,
+            item_image: childSnapShot.data().item_image,
+            item_points: childSnapShot.data().item_points,
+
+            station_name: childSnapShot.data().station_name,
+
+            item_type: childSnapShot.data().item_type,
+            item_hash_tags: childSnapShot.data().item_hash_tags,
+            item_price: childSnapShot.data().item_price,
+            item_tax: childSnapShot.data().item_tax,
+
+            sessionId: childSnapShot.data().sessionId,
+            businessId: childSnapShot.data().businessId,
+
+            status: childSnapShot.data().status,
+            username: childSnapShot.data().username,
+
+            portions: childSnapShot.data().portions,
+            portions_details: childSnapShot.data().portions_details,
+
+            advance: childSnapShot.data().advance,
+            carbs: childSnapShot.data().carbs,
+            protien: childSnapShot.data().protien,
+            fat: childSnapShot.data().fat,
+            item_video: childSnapShot.data().item_video,
+            item_multiple_image: childSnapShot.data().downloadURLs,
+
+            extra: childSnapShot.data().extra,
+            healthytag: childSnapShot.data().healthytag,
+            bestsellertag: childSnapShot.data().bestsellertag,
+
+            recommend: childSnapShot.data().recommend,
+
+            recommendations: childSnapShot.data().recommendations,
+
+            created_on: childSnapShot.data().created_on,
+            sessionId: childSnapShot.data().sessionId,
+            businessId: childSnapShot.data().businessId,
+            categoryId: childSnapShot.data().categoryId,
+          };
+
+          data.push(GSTData);
+        });
+        this.setState({
+          itemMenuList1: data,
           countPage: data.length,
           loading: false,
         });
@@ -401,171 +478,13 @@ class ViewItemMenu extends React.Component {
                           </div>
                         </div>
                       </div>
-
-                      {/* <div className="col-md-12 mt-30 p-0">
-                        <div className="category_menu_search">
-                          <span className="cate_menu">
-                            <a href="view_table.html" className="current">
-                              Menu
-                            </a>{" "}
-                            /<a href="view_table_1.html">Pizza</a> /
-                            <a href="view_table_2.html">Chicken Pizza</a>
-                          </span>
-                          <span className="cate_search">
-                            <input type="text" placeholder="Search" />
-                            <a href="#" className="search_icon">
-                              <i className="fas fa-search"></i>
-                            </a>
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="m-t-20 row">
-                        <div className="col-md-12 product_box  mb-0">
-                          <div className="product_box_item p-30">
-                            <div className="product_item_row sub_cate_product">
-                              <div className="left">
-                                <div className="img_box">
-                                  <span className="star_yellow">
-                                    <img src="images/icon/star_rate_ye.svg" />
-                                  </span>
-                                  <img src="images/category_img.png" />
-                                </div>
-                              </div>
-                              <div className="right">
-                                <p>
-                                  <span className="item_recipe">
-                                    <span className="dot veg"></span>
-                                  </span>
-                                  <span className="btn best_seller">
-                                    BESTSELLER
-                                  </span>{" "}
-                                  <span className="btn pull-right outer_edit_btn fill">
-                                    Edit
-                                  </span>
-                                </p>
-                                <p className="item_name pl-0">Caesar Salad</p>
-                                <p className="price  pl-0">₹ 220.00</p>
-                                <p className="small_font-1 mb-0">
-                                  Item-sub category 1, Item-sub category 2
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="m-t-20 row">
-                        <div className="col-md-12 product_box mb-0">
-                          <div className="product_box_item p-30">
-                            <div className="product_item_row sub_cate_product">
-                              <div className="left">
-                                <div className="img_box">
-                                  <span className="star_yellow">
-                                    <img src="images/icon/star_rate_ye.svg" />
-                                  </span>
-                                  <img src="images/category_img.png" />
-                                </div>
-                              </div>
-                              <div className="right">
-                                <p>
-                                  <span className="item_recipe">
-                                    <span className="dot veg"></span>
-                                  </span>
-                                  <span className="btn best_seller">
-                                    BESTSELLER
-                                  </span>{" "}
-                                  <span className="btn pull-right outer_edit_btn fill">
-                                    Edit
-                                  </span>
-                                </p>
-                                <p className="item_name pl-0">Caesar Salad</p>
-                                <p className="price  pl-0">₹ 220.00</p>
-                                <p className="small_font-1 mb-0">
-                                  Item-sub category 1, Item-sub category 2
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="m-t-20 row">
-                        <div className="col-md-12 product_box  mb-0">
-                          <div className="product_box_item p-30">
-                            <div className="product_item_row sub_cate_product">
-                              <div className="left">
-                                <div className="img_box">
-                                  <span className="star_yellow">
-                                    <img src="images/icon/star_rate_ye.svg" />
-                                  </span>
-                                  <img src="images/category_img.png" />
-                                </div>
-                              </div>
-                              <div className="right">
-                                <p>
-                                  <span className="item_recipe">
-                                    <span className="dot veg"></span>
-                                  </span>
-                                  <span className="btn best_seller">
-                                    BESTSELLER
-                                  </span>{" "}
-                                  <span className="btn pull-right outer_edit_btn fill">
-                                    Edit
-                                  </span>
-                                </p>
-                                <p className="item_name pl-0">Caesar Salad</p>
-                                <p className="price  pl-0">₹ 220.00</p>
-                                <p className="small_font-1 mb-0">
-                                  Item-sub category 1, Item-sub category 2
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="m-t-20 row  mb-0">
-                        <div className="col-md-12 product_box mb-0">
-                          <div className="product_box_item p-30">
-                            <div className="product_item_row sub_cate_product">
-                              <div className="left">
-                                <div className="img_box">
-                                  <span className="star_yellow">
-                                    <img src="images/icon/star_rate_ye.svg" />
-                                  </span>
-                                  <img src="images/category_img.png" />
-                                </div>
-                              </div>
-                              <div className="right">
-                                <p>
-                                  <span className="item_recipe">
-                                    <span className="dot veg"></span>
-                                  </span>
-                                  <span className="btn best_seller">
-                                    BESTSELLER
-                                  </span>{" "}
-                                  <span className="btn pull-right outer_edit_btn fill">
-                                    Edit
-                                  </span>
-                                </p>
-                                <p className="item_name pl-0">Caesar Salad</p>
-                                <p className="price  pl-0">₹ 220.00</p>
-                                <p className="small_font-1 mb-0">
-                                  Item-sub category 1, Item-sub category 2
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div> */}
                     </div>
 
                     <div className="col-lg-5">
                       <div className="recent_itemas_box">
                         <h1>Recent Items</h1>
-                        {this.state.itemMenuList &&
-                          this.state.itemMenuList.map((item, index) => {
+                        {this.state.itemMenuList1 &&
+                          this.state.itemMenuList1.map((item, index) => {
                             return (
                               <div className="m-t-20 row  mb-0" key={index}>
                                 <div className="col-md-12 product_box mb-0">
@@ -592,12 +511,6 @@ class ViewItemMenu extends React.Component {
                                               <span className="dot non-veg"></span>
                                             )}
                                           </span>
-                                          {/* <span className="item_recipe">
-                                            <span className="dot veg"></span>
-                                          </span> */}
-                                          {/* <span className="btn best_seller">
-                                            BESTSELLER
-                                          </span> */}
                                           {item.extra == "Yes" ? (
                                             <>
                                               {item.bestsellertag == "Yes" ? (
