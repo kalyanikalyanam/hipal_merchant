@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { dispatchContext} from "../contexts";
 import LoginForm from "./login";
 
-const EditModal = ({item, dbRef}) => {
+const EditModal = ({item, dbRef, edit}) => {
   const { register, handleSubmit, errors, reset, setValue} = useForm();
   const dispatch = useContext(dispatchContext);
   const [authenticated, setAuthenticated] = useState(false);
@@ -25,22 +25,57 @@ const EditModal = ({item, dbRef}) => {
       alert("Login to add discount");
       return;
     }
-    
-    item.quantity = data.quantity
-    item.discount = data.item_discount
-    item.instructions = data.instructions || ""
-    var temp    
-    if(data.portion){
-        item.portions_details.forEach(portion => {
-            if(portion.name === data.portion){
+    let table = await dbRef.get()
+    if(edit === 'liveCart'){
+      let liveCart = table.data().liveCart
+      for (var i = 0; i < liveCart.length; i++) {
+        let newItem = liveCart[i]
+        if (newItem.id === item.id && item.price === newItem.price) {
+          newItem.quantity = data.quantity
+          newItem.discount = data.item_discount
+          newItem.instructions = data.instructions || ""
+          if (data.portion) {
+            var temp
+            newItem.portions_details.forEach(portion => {
+              if (portion.name === data.portion) {
                 temp = portion.price
-            }
-        })
-        item.price = temp
+              }
+            })
+            newItem.price = temp
+          }
+          await dbRef.update({
+            liveCart
+          })
+          break;
+        }
+      }
     }
-    await dbRef.set({
-        liveCart: [item]
-    }, {merge: true})
+    else if(edit === 'order'){
+      console.log("here")
+      let order = table.data().orders
+      for (var i = 0; i < order.length; i++) {
+        let newItem = order[i]
+        
+        if (newItem.id === item.id && item.price === newItem.price) {
+          newItem.quantity = data.quantity
+          newItem.discount = data.item_discount
+          newItem.instructions = data.instructions || ""
+          if (data.portion) {
+            var temp
+            newItem.portions_details.forEach(portion => {
+              if (portion.name === data.portion) {
+                temp = portion.price
+              }
+            })
+            newItem.price = temp
+          }
+          await dbRef.update({
+            orders: order
+          })
+          break;
+        }
+      }
+    }
     onClose()
   };
   const portions =

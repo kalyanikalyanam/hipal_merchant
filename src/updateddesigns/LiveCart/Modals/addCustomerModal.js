@@ -102,6 +102,7 @@ const forceUpdate = React.useCallback(() => updateState({}), []);
     getTable(unsubscribe)
     return unsubscribe
   }, []);
+
   useEffect(() => {
     console.log(occupency)
     let newFields = [];
@@ -129,6 +130,7 @@ const forceUpdate = React.useCallback(() => updateState({}), []);
       setCustomernamenumber({ ...customers });
     }
   }, [fields.current]);
+
   useEffect(() => {
     Object.keys(customernamenumber).forEach((key) => {
       setValue(key, customernamenumber[key]);

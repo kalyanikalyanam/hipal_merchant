@@ -52,7 +52,8 @@ const OrderItem = ({ item, index, dbRef}) => {
   const handleEdit = (item) => {
     dispatch({
       type: "EditModalShow",
-      item: item
+      item: item,
+      edit: 'order'
     }) 
   };
   const handleKOTItem = async () => {

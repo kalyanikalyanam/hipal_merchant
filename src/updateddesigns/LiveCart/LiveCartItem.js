@@ -43,7 +43,8 @@ const LiveCartItem = ({ item, index, dbRef}) => {
   const handleEdit = () => {
     dispatch({
       type: "EditModalShow",
-      item: item
+      item: item,
+      edit: `liveCart`
     }) 
   };
   return (

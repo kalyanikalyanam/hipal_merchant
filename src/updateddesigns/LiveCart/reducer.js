@@ -22,9 +22,9 @@ export const initState = {
 export const reducer = (state, action) => {
     switch(action.type){
         case "EditModalShow":
-            return updateObject(state, {editModal: true, editModalItem: action.item})
+            return updateObject(state, {editModal: true, editModalItem: action.item, edit: action.edit})
         case "EditModalHide":
-            return updateObject(state, {editModal: false, editModalItem: null})
+            return updateObject(state, {editModal: false, editModalItem: null, edit: action.edit})
 
         case "KOTModalShow":
             return updateObject(state, {kotModal: true, kotItems: action.items})
