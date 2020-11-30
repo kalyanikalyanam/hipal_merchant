@@ -1,13 +1,25 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { dispatchContext, stateContext } from '../LiveCart/contexts'
+import { dispatchContext, stateContext, tableContext } from '../LiveCart/contexts'
 import BillPage from './billPage'
 import LiveCartPage from './LiveCartPage'
 import OrderPage from './orderPage'
 
 const RightSideBar = () => {
+    const dbRef = useContext(tableContext)
     const dispatch = useContext(dispatchContext)
-    useEffect(()=>{
-
+    const [items,setItems] = useState(0)
+    useEffect(() => {
+        if (dbRef) {
+            const getData = async () => {
+                const table = await dbRef.get()
+                setItems(table.data().liveCart.length)
+                dbRef.onSnapshot(table => {
+                    setItems(table.data().liveCart.length)
+                    console.log("here")
+                })
+            }
+            getData()
+        }
     }, [])
     const state = useContext(stateContext)
     const billSelect = (num) => {
@@ -26,7 +38,7 @@ const RightSideBar = () => {
         <div className="col-lg-5 righ_pangap cart_box_width_2">
             <div className="btns_livecart col-md-12">
                 <span className="width" onClick={(e) => { billSelect(1) }} >
-                    <span className="activedot red">{0}</span>
+                    <span className="activedot red">{items && items}</span>
                     <a href="#" className={activeClass(1)}>Live Cart</a>
                 </span>
                 <span className="width" onClick={(e) => { billSelect(2) }}>
