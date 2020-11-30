@@ -69,9 +69,9 @@ class ViewBill extends React.Component {
           billTiming: userData.billTiming,
           paymentMethod: userData.paymentMethod,
 
-          settle_by: userData.settle_by,
+          settle_by: userData.employee,
           table: userData.table,
-          billItems: userData.billItems,
+          billItems: userData.bill,
           orderId: userData.orderId,
           businessId: userData.businessId,
           sessionId: userData.sessionId,
@@ -224,7 +224,7 @@ class ViewBill extends React.Component {
                           <td
                             style={{ textAlign: "left", padding: "3px 30px" }}
                           >
-                            {item.item_name}
+                            {item.name}
                           </td>
                           <td
                             style={{ textAlign: "center", padding: "3px 30px" }}
@@ -234,7 +234,7 @@ class ViewBill extends React.Component {
                           <td
                             style={{ textAlign: "right", padding: "3px 30px" }}
                           >
-                            {item.item_price}.00
+                            {item.price}.00
                           </td>
                         </tr>
                       );

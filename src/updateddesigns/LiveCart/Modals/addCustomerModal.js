@@ -1,4 +1,4 @@
-import {db} from '../../../config'
+import { db } from "../../../config";
 import React, {
   useContext,
   useDebugValue,
@@ -13,16 +13,16 @@ import InputField from "./inputField";
 const AddCustomerModal = ({ dbRef }) => {
   const [occupency, setOccupancy] = useState(0);
   const [customers, setCustomers] = useState([]);
-  const [table, setTable] = useState()
+  const [table, setTable] = useState();
   const [customernamenumber, setCustomernamenumber] = useState({});
   const dispatch = useContext(dispatchContext);
-  const [CustomerList, setCustomerList] = useState([])
+  const [CustomerList, setCustomerList] = useState([]);
   const fields = useRef();
   const { handleSubmit, register, reset, setValue } = useForm({
     mode: "onChange",
   });
-const [, updateState] = React.useState();
-const forceUpdate = React.useCallback(() => updateState({}), []);
+  const [, updateState] = React.useState();
+  const forceUpdate = React.useCallback(() => updateState({}), []);
   const onSubmit = (data) => {
     let customer_list = [];
     for (var key in data) {
@@ -34,14 +34,14 @@ const forceUpdate = React.useCallback(() => updateState({}), []);
         });
       }
     }
-   dbRef.update({
+    dbRef.update({
       status: "occupied",
       customers: customer_list,
       occupency: occupency,
     });
     dispatch({
-      type: "CustomerToTableModalHide"
-    })
+      type: "CustomerToTableModalHide",
+    });
   };
   const onChange = (data) => {
     setOccupancy(parseInt(data.occupency));
@@ -81,9 +81,9 @@ const forceUpdate = React.useCallback(() => updateState({}), []);
 
   const getTable = async (a) => {
     if (dbRef) {
-      let table = await dbRef.get()
-      setCustomerList(table.data().customers)
-      setTable(table.data())
+      let table = await dbRef.get();
+      setCustomerList(table.data().customers);
+      setTable(table.data());
       if (table.data().customers.length === 0) {
         reset({ occupency: 0 });
         setOccupancy(0);
@@ -91,19 +91,19 @@ const forceUpdate = React.useCallback(() => updateState({}), []);
         reset({ occupency: table.data().customers.length });
         setOccupancy(parseInt(table.data().customers.length));
       }
-      a = dbRef.onSnapshot(table => {
-        forceUpdate()
-      })
+      a = dbRef.onSnapshot((table) => {
+        forceUpdate();
+      });
     }
-  }
+  };
   useEffect(() => {
-    var unsubscribe
+    var unsubscribe;
     getCustomers();
-    getTable(unsubscribe)
-    return unsubscribe
+    getTable(unsubscribe);
+    return unsubscribe;
   }, []);
   useEffect(() => {
-    console.log(occupency)
+    console.log(occupency);
     let newFields = [];
     for (var i = 0; i < occupency; i++) {
       const field = (
@@ -116,7 +116,7 @@ const forceUpdate = React.useCallback(() => updateState({}), []);
 
   useEffect(() => {
     if (CustomerList && CustomerList.length !== 0) {
-      console.log(CustomerList)
+      console.log(CustomerList);
       let customers = {};
       for (var i = 0; i < CustomerList.length; i++) {
         let newcustomers = {
@@ -138,7 +138,7 @@ const forceUpdate = React.useCallback(() => updateState({}), []);
 
   const close = () => {
     dispatch({
-      type: "CustomerToTableModalHide"
+      type: "CustomerToTableModalHide",
     });
   };
   return (
@@ -150,7 +150,7 @@ const forceUpdate = React.useCallback(() => updateState({}), []);
       <div className="modal-content">
         <div className="modal-header">
           <h5 className="modal-title">
-            Add table to Table {table&& table.table_name}
+            Add table to Table {table && table.table_name}
           </h5>
         </div>
         <div className="modal-body">
@@ -162,7 +162,7 @@ const forceUpdate = React.useCallback(() => updateState({}), []);
                 type="number"
                 name="occupency"
                 min="0"
-                max={table&& table.table_capacity.split(" ")[0]}
+                max={table && table.table_capacity.split(" ")[0]}
                 ref={register}
                 onChange={handleSubmit(onChange)}
               />
