@@ -12,8 +12,8 @@ const BillBottom = () => {
     const [table, setTable] = useState()
     const [state, setState] = useState()
     useEffect(() => {
-        setTotal(balance)
-        setLocalBalance(balance)
+        setTotal(balance.balance)
+        setLocalBalance(balance.balance)
     }, [])
     useEffect(() => {
         let unsubscribe

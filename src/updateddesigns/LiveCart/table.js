@@ -29,13 +29,10 @@ const Table = ()=> {
 
   useEffect(() => {
     const tableData = async () => {
-      if(dbRef){
+      if (dbRef) {
         const table = await dbRef.get()
         setTable(table.data())
-        reset({employee: table.data().currentEmployee})
-        dbRef.onSnapshot(table => {
-          setTable(table.data())
-        })
+        reset({ employee: table.data().currentEmployee })
       }
     }
     tableData()

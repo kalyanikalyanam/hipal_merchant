@@ -6,6 +6,7 @@ import {reducer, initState} from './reducer'
 import  Table from './table' 
 import {tableContext, dispatchContext, stateContext, balanceContext} from './contexts'
 import Modal from 'react-modal'
+import {Modal as BootstrapModal} from 'react-bootstrap'
 import AdvancedOptions from './Modals/advancedOptions'
 import RightSideBar from './rightSidebar'
 import BottomComp from './bottomComp'
@@ -136,15 +137,15 @@ const MainPage = (props) => {
                 <Modal isOpen={reducerState.customerToTableModal} style={customStyles}>
                     <AddCustomerModal dbRef={dbRef} />
                 </Modal>
-                <Modal isOpen={reducerState.addUserModal} style={customStyles}>
+                <BootstrapModal show={reducerState.addUserModal}>
                     <AddCustomerForm />
-                </Modal>
+                </BootstrapModal>
                 <Modal isOpen={reducerState.kotModal} style={customStyles}>
                     <KotModal data={reducerState.kotItems} />
                 </Modal>
-                <Modal isOpen={reducerState.billViewModal} sytle={{...customStyles, maxHieght: "80%"}}>
+                <BootstrapModal show={reducerState.billViewModal}>
                     <BillModal data={reducerState.billData} />
-                </Modal>
+                </BootstrapModal>
             </balanceContext.Provider>
             </tableContext.Provider></stateContext.Provider></dispatchContext.Provider>
     )

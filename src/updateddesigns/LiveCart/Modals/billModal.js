@@ -48,8 +48,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
       : noItem;
   return (
     <div width="100%" ref={ref}>
-      <div className="modal-dialog modal-sm hipal_pop" role="document">
-        <button onClick={handleClose}>Close</button>
+     
         <table width="100%" style={{ display: "table" }}>
           <tbody>
             <tr>
@@ -302,7 +301,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
             </tr>
           </tbody>
         </table>
-      </div>{" "}
+      {" "}
     </div>
   );
 });
@@ -318,12 +317,18 @@ const Print = ({ data }) => {
     content: () => componentRef.current,
   });
   const handleClose = () => {
+    console.log("here")
     dispatch({
       type: "BillViewModalHide",
     });
   };
   return (
     <>
+      <span onClick={handleClose}>
+        <button>
+          close
+        </button>
+      </span>
       <BillModal data={data} ref={componentRef} />
       {isSettle && (
         <div className="w-100-row kotsettle_btn">
@@ -337,7 +342,7 @@ const Print = ({ data }) => {
           </span>
         </div>
       )}
-    </>
+      </>
   );
 };
 

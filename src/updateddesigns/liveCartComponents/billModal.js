@@ -57,6 +57,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
       type: "billModalHide",
     });
   };
+
   const handleSettle = async () => {
     let bill = {
       settle_by: employee,
@@ -92,8 +93,6 @@ const BillModal = React.forwardRef(({ data }, ref) => {
         customers: [],
         occupency: "0",
       });
-
-      console.log(res);
     } catch (e) {
       console.log(e);
     }

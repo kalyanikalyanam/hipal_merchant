@@ -147,6 +147,7 @@ const BillPage = () => {
         gst,
         cGst,
         isSettle: false,
+        occupency: 0
       },
     });
   };
