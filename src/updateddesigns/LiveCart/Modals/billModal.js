@@ -58,15 +58,27 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                   padding: "10px",
                   color: "#000000",
                   borderBottom: "1px solid rgba(0, 0, 0, 0.5)",
+                  fontSize: "30px",
                 }}
               >
-                <b style={{ paddingRight: "10px" }}>BILL ID</b>{" "}
+                <b style={{ paddingRight: "10px", fontSize: "30px" }}>
+                  BILL ID
+                </b>{" "}
                 {data && data.table && data.table.bill.billId}
               </td>
             </tr>
             <tr>
-              <td style={{ textAlign: "center", padding: "10px" }}>
-                <img src={businessLogo} style={{ maxWidth: "150px" }} />
+              <td
+                style={{
+                  textAlign: "center",
+                  padding: "10px",
+                  fontSize: "30px",
+                }}
+              >
+                <img
+                  src={businessLogo}
+                  style={{ maxWidth: "150px", fontSize: "30px" }}
+                />
               </td>
             </tr>
             <tr>
@@ -75,10 +87,14 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                   textAlign: "center",
                   padding: "10px",
                   color: "#000000",
+                  fontSize: "30px",
                 }}
               >
-                12, Sainikpuri, Kapra,
-                <br /> Secunderabad, Telangana 500094
+                <b>
+                  {" "}
+                  12, Sainikpuri, Kapra,
+                  <br /> Secunderabad, Telangana 500094
+                </b>
               </td>
             </tr>
             <tr>
@@ -87,12 +103,13 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                   textAlign: "center",
                   padding: "10px",
                   color: "#000000",
+                  fontSize: "30px",
                 }}
               >
-                <b>DINE IN</b>
+                <b style={{ fontSize: "30px" }}>DINE IN</b>
               </td>
             </tr>
-            <tr style={{ padding: "0px" }}>
+            <tr style={{ padding: "0px", fontSize: "30px" }}>
               <td
                 style={{
                   textAlign: "center",
@@ -100,29 +117,63 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                   paddingBottom: "0px",
                   color: "#000000",
                   borderBottom: "1px dashed rgba(0, 0, 0, 0.5)",
+                  fontSize: "30px",
                 }}
               >
                 <table width="100%">
                   <tbody>
                     <tr>
-                      <td style={{ textAlign: "left", padding: "3px 10px" }}>
-                        {date()}
+                      <td
+                        style={{
+                          textAlign: "left",
+                          padding: "3px 10px",
+                          fontSize: "30px",
+                        }}
+                      >
+                        <b style={{ fontSize: "30px" }}> {date()}</b>
                       </td>
-                      <td style={{ textAlign: "right", padding: "3px 10px" }}>
-                        {data && data.table ? data.table.table_name : null}
+                      <td
+                        style={{
+                          textAlign: "right",
+                          padding: "3px 10px",
+                          fontSize: "30px",
+                        }}
+                      >
+                        <b style={{ fontSize: "30px" }}>
+                          {" "}
+                          {data && data.table ? data.table.table_name : null}
+                        </b>
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ textAlign: "left", padding: "3px 10px" }}>
+                      <td
+                        style={{
+                          textAlign: "left",
+                          padding: "3px 10px",
+                          fontSize: "30px",
+                        }}
+                      >
                         09:23:45 AM
                       </td>
-                      <td style={{ textAlign: "right", padding: "3px 10px" }}>
+                      <td
+                        style={{
+                          textAlign: "right",
+                          padding: "3px 10px",
+                          fontSize: "30px",
+                        }}
+                      >
                         {data && data.employee}
                       </td>
                     </tr>
-                    <td style={{ textAlign: "left", padding: "3px 10px" }}>
+                    {/* <td
+                      style={{
+                        textAlign: "left",
+                        padding: "3px 10px",
+                        fontSize: "30px",
+                      }}
+                    >
                       Copy : 1
-                    </td>{" "}
+                    </td>{" "} */}
                   </tbody>
                 </table>
               </td>
@@ -133,10 +184,19 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                 padding: "10px",
                 color: "#000000",
                 borderBottom: "1px rgba(0, 0, 0, 0.5)",
+                fontSize: "30px",
               }}
             >
-              <td style={{ textAlign: "left", padding: "3px 10px" }}>
-                Order ID : {data && data.table && data.table.orderId}
+              <td
+                style={{
+                  textAlign: "left",
+                  padding: "3px 10px",
+                  fontSize: "30px",
+                }}
+              >
+                <b style={{ fontSize: "30px" }}>
+                  Order ID : {data && data.table && data.table.orderId}
+                </b>
               </td>
             </tr>
             <tr>
@@ -146,6 +206,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                   padding: "10px",
                   color: "#000000",
                   borderBottom: "1px dashed rgba(0, 0,0, 0.5)",
+                  fontSize: "30px",
                 }}
               >
                 <table width="100%">
@@ -155,25 +216,28 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                         style={{
                           textAlign: "left",
                           padding: "5px 10px 10px 10px",
+                          fontSize: "30px",
                         }}
                       >
-                        <b>Item</b>
+                        <b style={{ fontSize: "30px" }}>Item</b>
                       </td>
                       <td
                         style={{
                           textAlign: "center",
                           padding: "5px 10px 10px 10px",
+                          fontSize: "30px",
                         }}
                       >
-                        <b>Qty</b>
+                        <b style={{ fontSize: "30px" }}>Qty</b>
                       </td>
                       <td
                         style={{
                           textAlign: "right",
                           padding: "5px 10px 10px 10px",
+                          fontSize: "30px",
                         }}
                       >
-                        <b>Price</b>
+                        <b style={{ fontSize: "30px" }}>Price</b>
                       </td>
                       <td></td>
                     </tr>
@@ -189,56 +253,135 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                   padding: "10px",
                   color: "#000000",
                   bottomBorder: "1px dashed rgba(0, 0, 0, 0.5)",
+                  fontSize: "30px",
                 }}
               >
                 <table width="100%">
                   <tbody>
                     <tr>
-                      <td style={{ textAlign: "left", padding: "3px 10px" }}>
-                        Subtotal
+                      <td
+                        style={{
+                          textAlign: "left",
+                          padding: "3px 10px",
+                          fontSize: "30px",
+                        }}
+                      >
+                        <b style={{ fontSize: "30px" }}>Subtotal</b>
                       </td>
-                      <td style={{ textAlign: "right", padding: "3px 10px" }}>
-                        ₹ {data && data.subTotal}
+                      <td
+                        style={{
+                          textAlign: "right",
+                          padding: "3px 10px",
+                          fontSize: "30px",
+                        }}
+                      >
+                        <b style={{ fontSize: "30px" }}>
+                          {" "}
+                          ₹ {data && data.subTotal}
+                        </b>
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ textAlign: "left", padding: "3px 10px" }}>
-                        Offer
+                      <td
+                        style={{
+                          textAlign: "left",
+                          padding: "3px 10px",
+                          fontSize: "30px",
+                        }}
+                      >
+                        <b style={{ fontSize: "30px" }}>Offer</b>
                       </td>
-                      <td style={{ textAlign: "right", padding: "3px 10px" }}>
-                        -{data ? data.discount : `-`}
+                      <td
+                        style={{
+                          textAlign: "right",
+                          padding: "3px 10px",
+                          fontSize: "30px",
+                        }}
+                      >
+                        <b style={{ fontSize: "30px" }}>
+                          {" "}
+                          -{data ? data.discount : `-`}
+                        </b>
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ textAlign: "left", padding: "3px 10px" }}>
-                        Extra charges
+                      <td
+                        style={{
+                          textAlign: "left",
+                          padding: "3px 10px",
+                          fontSize: "30px",
+                        }}
+                      >
+                        <b style={{ fontSize: "30px" }}> Extra charges</b>
                       </td>
-                      <td style={{ textAlign: "right", padding: "3px 10px" }}>
+                      <td
+                        style={{
+                          textAlign: "right",
+                          padding: "3px 10px",
+                          fontSize: "30px",
+                        }}
+                      >
                         -{data ? data.tax : `-`}
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ textAlign: "left", padding: "3px 10px" }}>
-                        Packaging charges
+                      <td
+                        style={{
+                          textAlign: "left",
+                          padding: "3px 10px",
+                          fontSize: "30px",
+                        }}
+                      >
+                        <b style={{ fontSize: "30px" }}>Packaging charges</b>
                       </td>
-                      <td style={{ textAlign: "right", padding: "3px 10px" }}>
+                      <td
+                        style={{
+                          textAlign: "right",
+                          padding: "3px 10px",
+                          fontSize: "30px",
+                        }}
+                      >
                         -
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ textAlign: "left", padding: "3px 10px" }}>
-                        GST
+                      <td
+                        style={{
+                          textAlign: "left",
+                          padding: "3px 10px",
+                          fontSize: "30px",
+                        }}
+                      >
+                        <b style={{ fontSize: "30px" }}> GST</b>
                       </td>
-                      <td style={{ textAlign: "right", padding: "5px 10px" }}>
-                        {data && data.gst}
+                      <td
+                        style={{
+                          textAlign: "right",
+                          padding: "5px 10px",
+                          fontSize: "30px",
+                        }}
+                      >
+                        <b style={{ fontSize: "30px" }}>{data && data.gst}</b>
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ textAlign: "left", padding: "3px 10px" }}>
-                        CGST
+                      <td
+                        style={{
+                          textAlign: "left",
+                          padding: "3px 10px",
+                          fontSize: "30px",
+                        }}
+                      >
+                        <b style={{ fontSize: "30px" }}> CGST</b>
                       </td>
-                      <td style={{ textAlign: "right", padding: "3px 10px" }}>
-                        {data && data.cGst}
+                      <td
+                        style={{
+                          textAlign: "right",
+                          padding: "3px 10px",
+                          fontSize: "30px",
+                        }}
+                      >
+                        <b style={{ fontSize: "30px" }}> {data && data.cGst}</b>
                       </td>
                     </tr>
                   </tbody>
@@ -253,24 +396,53 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                   paddingTop: "0px",
                   color: "#000000",
                   borderBottom: "1px dashed rgba(0, 0, 0, 0.5)",
+                  fontSize: "30px",
                 }}
               >
                 <table width="100%">
                   <tbody>
                     <tr>
-                      <td style={{ textAlign: "left", padding: "5px 10px" }}>
-                        <b>Grand Total</b>
+                      <td
+                        style={{
+                          textAlign: "left",
+                          padding: "5px 10px",
+                          fontSize: "30px",
+                        }}
+                      >
+                        <b style={{ fontSize: "30px" }}>Grand Total</b>
                       </td>
-                      <td style={{ textAlign: "right", padding: "5px 10px" }}>
-                        <b>₹ {data && parseFloat(data.total).toFixed(2)}</b>
+                      <td
+                        style={{
+                          textAlign: "right",
+                          padding: "5px 10px",
+                          fontSize: "30px",
+                        }}
+                      >
+                        <b style={{ fontSize: "30px" }}>
+                          ₹ {data && parseFloat(data.total).toFixed(2)}
+                        </b>
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ textAlign: "left", padding: "5px 10px" }}>
-                        <b>Payable</b>
+                      <td
+                        style={{
+                          textAlign: "left",
+                          padding: "5px 10px",
+                          fontSize: "30px",
+                        }}
+                      >
+                        <b style={{ fontSize: "30px" }}>Payable</b>
                       </td>
-                      <td style={{ textAlign: "right", padding: "5px 10px" }}>
-                        <b>₹ {data && Math.round(data.total)}</b>
+                      <td
+                        style={{
+                          textAlign: "right",
+                          padding: "5px 10px",
+                          fontSize: "30px",
+                        }}
+                      >
+                        <b style={{ fontSize: "30px" }}>
+                          ₹ {data && Math.round(data.total)}
+                        </b>
                       </td>
                     </tr>
                   </tbody>
@@ -283,9 +455,10 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                   textAlign: "center",
                   padding: "10px",
                   color: "#000000",
+                  fontSize: "30px",
                 }}
               >
-                - Thank you! -
+                <b style={{ fontSize: "30px" }}>- Thank you! -</b>
               </td>
             </tr>
             <tr>
@@ -294,9 +467,10 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                   textAlign: "center",
                   padding: "10px",
                   color: "#000000",
+                  fontSize: "30px",
                 }}
               >
-                GSTIN - 456AEW453462
+                <b style={{ fontSize: "30px" }}>GSTIN - 456AEW453462</b>
               </td>
             </tr>
           </tbody>

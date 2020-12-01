@@ -5,18 +5,18 @@ import * as moment from "moment";
 
 const KotModal = React.forwardRef((props, ref) => {
   const { data } = props;
-  const [table, setTable] = useState()
-  const dbRef = useContext(tableContext)
+  const [table, setTable] = useState();
+  const dbRef = useContext(tableContext);
   useEffect(() => {
     const tabledata = async () => {
-      console.log(data)
-      if(dbRef){
-        let table = await dbRef.get()
-        setTable(table.data())
+      console.log(data);
+      if (dbRef) {
+        let table = await dbRef.get();
+        setTable(table.data());
       }
-    }
-    tabledata()
-  }, [])
+    };
+    tabledata();
+  }, []);
   const items =
     data &&
     data.map((item, index) => {
@@ -61,7 +61,6 @@ const KotModal = React.forwardRef((props, ref) => {
                 fontSize: "30px",
               }}
             >
-
               <tr>
                 <td
                   style={{
@@ -136,10 +135,12 @@ const KotModal = React.forwardRef((props, ref) => {
                           fontSize: "30px",
                         }}
                       >
-                        <b style={{ fontSize: "30px" }}> {table && table.currentEmployee}</b>
+                        <b style={{ fontSize: "30px" }}>
+                          {" "}
+                          {table && table.currentEmployee}
+                        </b>
                       </td>
                     </tr>
-
                   </table>
                 </td>
               </tr>
@@ -164,7 +165,7 @@ const KotModal = React.forwardRef((props, ref) => {
                       >
                         <b style={{ fontSize: "30px" }}>Item</b>
                       </td>
-                      
+
                       <td
                         style={{
                           textAlign: "center",
