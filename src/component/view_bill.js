@@ -64,7 +64,7 @@ class ViewBill extends React.Component {
           billId: userData.billId,
           PaymentDetails: userData.PaymentDetails,
 
-          created_on: userData.created_on,
+          date: userData.date,
           settle_by: userData.employee,
           tablename: userData.tablename,
           billItems: userData.bill,
@@ -161,7 +161,7 @@ class ViewBill extends React.Component {
                 <table width="100%">
                   <tr>
                     <td style={{ textAlign: "left", padding: "3px 30px" }}>
-                      {moment(this.state.created_on)
+                      {moment(this.state.date)
                         .locale("en")
                         .format("DD-MM-YYYY")}
                     </td>
@@ -172,9 +172,7 @@ class ViewBill extends React.Component {
 
                   <tr>
                     <td style={{ textAlign: "left", padding: "3px 30px" }}>
-                      {moment(this.state.created_on)
-                        .locale("en")
-                        .format("HH:mm:ss")}
+                      {moment(this.state.date).locale("en").format("HH:mm:ss")}
                     </td>
                     <td style={{ textAlign: "right", padding: "3px 30px" }}>
                       {this.state.settle_by}

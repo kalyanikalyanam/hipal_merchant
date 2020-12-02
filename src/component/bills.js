@@ -59,17 +59,20 @@ class Bills extends React.Component {
       .collection("bills")
 
       .where("businessId", "==", businessId)
+      // .where("date", "<=", Date.parse("December 2, 2020"))
       .get()
       .then((querySnapshot) => {
         var data = [];
         querySnapshot.forEach((childSnapShot) => {
+          console.log(childSnapShot.data().date);
           const GSTData = {
             billid: childSnapShot.id,
 
             billId: childSnapShot.data().billId,
 
             bill: childSnapShot.data().bill,
-            created_on: childSnapShot.data().created_on,
+            // created_on: childSnapShot.data().created_on,
+            date: childSnapShot.data().date,
 
             PaymentDetails: childSnapShot.data().PaymentDetails,
             orderId: childSnapShot.data().orderId,
@@ -214,25 +217,41 @@ class Bills extends React.Component {
                                   </thead>
                                   <tbody>
                                     {this.state.billsList &&
-                                      this.state.billsList.map(
-                                        (bill, index) => {
+                                      this.state.billsList
+                                        // .filter((bill) => {
+                                        //   console.log(bill.date);
+                                        //   console.log(
+                                        //     Date.parse("December 2, 2020")
+                                        //   );
+                                        //   if (!bill.date) return false;
+                                        //   return (
+                                        //     bill.date <=
+                                        //       Date.parse("December 2, 2020") &&
+                                        //     bill.date >=
+                                        //       Date.parse("December 1, 2020")
+                                        //   );
+                                        // })
+                                        .map((bill, index) => {
+                                          console.log(new Date(bill.date));
                                           let subTotal = 0,
                                             discount = 0,
                                             tax = 0;
-                                          bill.bill.forEach((item) => {
-                                            subTotal += parseFloat(
-                                              item.price * item.quantity
-                                            );
-                                            discount += parseFloat(
-                                              ((item.price * item.discount) /
-                                                100) *
-                                                item.quantity
-                                            );
-                                            tax += parseFloat(
-                                              ((item.price * item.tax) / 100) *
-                                                item.quantity
-                                            );
-                                          });
+                                          bill.bill &&
+                                            bill.bill.forEach((item) => {
+                                              subTotal += parseFloat(
+                                                item.price * item.quantity
+                                              );
+                                              discount += parseFloat(
+                                                ((item.price * item.discount) /
+                                                  100) *
+                                                  item.quantity
+                                              );
+                                              tax += parseFloat(
+                                                ((item.price * item.tax) /
+                                                  100) *
+                                                  item.quantity
+                                              );
+                                            });
 
                                           let total = subTotal + tax - discount;
                                           let temp = total;
@@ -248,13 +267,13 @@ class Bills extends React.Component {
                                               <td>{bill.employee}</td>
                                               <td>Rs {Math.round(total)}</td>
                                               <td className="bill_date">
-                                                {moment(bill.created_on)
+                                                {moment(bill.date)
                                                   .locale("en")
                                                   .format("DD-MM-YYYY")}
                                               </td>
                                               <td>
                                                 {" "}
-                                                {moment(bill.created_on)
+                                                {moment(bill.date)
                                                   .locale("en")
                                                   .format("HH:mm:ss")}
                                               </td>
@@ -278,8 +297,7 @@ class Bills extends React.Component {
                                               )}
                                             </tr>
                                           );
-                                        }
-                                      )}
+                                        })}
                                   </tbody>
                                 </table>
                               </div>

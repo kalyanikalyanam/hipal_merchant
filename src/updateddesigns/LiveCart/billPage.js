@@ -103,7 +103,7 @@ const BillPage = () => {
         customers: table.customers,
         tablename: table.table_name,
         businessId: businessId,
-        created_on: new Date().toLocaleString(),
+        date: Date.now(),
       };
       await db.collection("bills").add(bill);
 
