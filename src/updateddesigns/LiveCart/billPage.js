@@ -115,6 +115,9 @@ const BillPage = () => {
           total,
           subTotal,
           discount,
+          tax,
+          gst,
+          cGst,
           isSettle: true,
         },
       });
@@ -138,6 +141,7 @@ const BillPage = () => {
   };
 
   const handleBIllView = () => {
+    console.log(tax);
     dispatch({
       type: "BillViewModalShow",
       data: {
@@ -381,7 +385,7 @@ const BillPage = () => {
                           GST
                         </td>
                         <td style={{ textAlign: "right", padding: "5px 10px" }}>
-                          2.5
+                          {gst && gst}
                         </td>
                       </tr>
                       <tr>
@@ -389,7 +393,7 @@ const BillPage = () => {
                           CGST
                         </td>
                         <td style={{ textAlign: "right", padding: "3px 10px" }}>
-                          2.5
+                          {cGst && cGst}
                         </td>
                       </tr>
                     </tbody>
