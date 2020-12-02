@@ -93,6 +93,7 @@ const BillPage = () => {
     if (balance.balance != 0) {
       alert("Balance Must be 0 before Settling");
     } else {
+      console.log(table);
       const bill = {
         bill: table.bill,
         employee: table.currentEmployee,
@@ -100,15 +101,15 @@ const BillPage = () => {
         billId: table.billId,
         orderId: table.orderId,
         customers: table.customers,
+        tablename: table.table_name,
         businessId: businessId,
-        payable: payable,
-        date: presentDate,
-        time: presentTime,
-        grandTotal: grandTotal,
+        created_on: new Date().toLocaleString(),
       };
       await db.collection("bills").add(bill);
+
       dispatch({
         type: "BillViewModalShow",
+
         data: {
           table: table,
           employee: table.currentEmployee,
@@ -179,10 +180,6 @@ const BillPage = () => {
     var strTime = hours + ":" + minutes + " " + AmPm;
     return strTime;
   };
-  var presentTime = formatAMPM(new Date());
-  var presentDate = date();
-  var payable = Math.round(total);
-  var grandTotal = parseFloat(total).toFixed(2);
 
   const billItems =
     table && table.bill && table.bill.length !== 0

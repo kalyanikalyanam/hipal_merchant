@@ -59,6 +59,9 @@ const BillModal = React.forwardRef(({ data }, ref) => {
       : noItem;
   return (
     <div width="100%" ref={ref}>
+      <span className="btn view_ord" onClick={handleClose}>
+        <b>X</b>
+      </span>
       <table width="100%" style={{ display: "table" }}>
         <tbody>
           <tr>
@@ -72,7 +75,8 @@ const BillModal = React.forwardRef(({ data }, ref) => {
               }}
             >
               <b style={{ paddingRight: "10px", fontSize: "30px" }}>BILL ID</b>{" "}
-              {data && data.table && data.table.bill.billId}
+              {/* {data && data.billId} */}
+              {data && data.table && data.table.billId}
             </td>
           </tr>
           <tr>
@@ -310,7 +314,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                     >
                       <b style={{ fontSize: "30px" }}>
                         {" "}
-                        -{data ? data.discount : `-`}
+                        {data ? data.discount : `-`}
                       </b>
                     </td>
                   </tr>
@@ -331,7 +335,9 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                         fontSize: "30px",
                       }}
                     >
-                      -{data ? data.tax : `-`}
+                      <b style={{ fontSize: "30px" }}>
+                        {data ? data.tax : `-`}
+                      </b>
                     </td>
                   </tr>
                   <tr>

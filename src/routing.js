@@ -87,7 +87,7 @@ import Table from "./updateddesigns/tables_view_for_updated_order";
 
 import AddItemNew from "./component/add_item_new";
 import EditItemNew from "./component/edit_item_new";
-import MainPage from './updateddesigns/LiveCart/index'
+import MainPage from "./updateddesigns/LiveCart/index";
 
 export const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route

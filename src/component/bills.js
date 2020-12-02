@@ -69,13 +69,12 @@ class Bills extends React.Component {
             billId: childSnapShot.data().billId,
 
             bill: childSnapShot.data().bill,
-            date: childSnapShot.data().date,
-            time: childSnapShot.data().time,
+            created_on: childSnapShot.data().created_on,
+
             PaymentDetails: childSnapShot.data().PaymentDetails,
             orderId: childSnapShot.data().orderId,
             employee: childSnapShot.data().employee,
-            table: childSnapShot.data().table,
-            payable: childSnapShot.data().payable,
+            tablename: childSnapShot.data().tablename,
 
             businessId: childSnapShot.data().businessId,
             sessionId: childSnapShot.data().sessionId,
@@ -217,13 +216,28 @@ class Bills extends React.Component {
                                     {this.state.billsList &&
                                       this.state.billsList.map(
                                         (bill, index) => {
-                                          let total = 0;
-
+                                          let subTotal = 0,
+                                            discount = 0,
+                                            tax = 0;
                                           bill.bill.forEach((item) => {
-                                            total += item.price;
+                                            subTotal += parseFloat(
+                                              item.price * item.quantity
+                                            );
+                                            discount += parseFloat(
+                                              ((item.price * item.discount) /
+                                                100) *
+                                                item.quantity
+                                            );
+                                            tax += parseFloat(
+                                              ((item.price * item.tax) / 100) *
+                                                item.quantity
+                                            );
                                           });
 
-                                          console.log(total);
+                                          let total = subTotal + tax - discount;
+                                          let temp = total;
+                                          total += (total * 2.5) / 100;
+                                          total += (temp * 2.5) / 100;
 
                                           return (
                                             <tr key={index}>
@@ -232,11 +246,18 @@ class Bills extends React.Component {
                                               <td>{bill.orderId}</td>
 
                                               <td>{bill.employee}</td>
-                                              <td>Rs {bill.payable}</td>
+                                              <td>Rs {Math.round(total)}</td>
                                               <td className="bill_date">
-                                                {bill.date}
+                                                {moment(bill.created_on)
+                                                  .locale("en")
+                                                  .format("DD-MM-YYYY")}
                                               </td>
-                                              <td>{bill.time}</td>
+                                              <td>
+                                                {" "}
+                                                {moment(bill.created_on)
+                                                  .locale("en")
+                                                  .format("HH:mm:ss")}
+                                              </td>
 
                                               {sessionStorage.getItem("role") ==
                                                 "Merchant" ||
@@ -271,172 +292,6 @@ class Bills extends React.Component {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div
-          className="modal fade"
-          id="view_bill"
-          tabIndex="-1"
-          role="dialog"
-          aria-labelledby="smallmodalLabel"
-          aria-hidden="true"
-        >
-          <div className="modal-dialog modal-sm hipal_pop" role="document">
-            <table width="100%" style={{ display: "table" }}>
-              <tbody>
-                <tr>
-                  <td
-                    style={{
-                      textAlign: "center",
-                      padding: "10px",
-                      color: "#000000",
-                      borderBottom: "1px solid rgba(0, 0, 0, 0.5)",
-                    }}
-                  >
-                    <b style={{ paddingRight: "10px" }}>BILL ID</b>{" "}
-                    {this.state.billId}
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{ textAlign: "center", padding: "10px" }}>
-                    <img
-                      src={sessionStorage.getItem("BusinessLogo")}
-                      style={{ maxWidth: "150px" }}
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td
-                    style={{
-                      textAlign: "center",
-                      padding: "10px",
-                      color: "#000000",
-                    }}
-                  >
-                    12, Sainikpuri, Kapra,
-                    <br /> Secunderabad, Telangana 500094
-                  </td>
-                </tr>
-                <tr>
-                  <td
-                    style={{
-                      textAlign: "center",
-                      padding: "10px",
-                      color: "#000000",
-                    }}
-                  >
-                    <b>DINE IN</b>
-                  </td>
-                </tr>
-                <tr style={{ padding: "0px" }}>
-                  <td
-                    style={{
-                      textAlign: "center",
-                      padding: "10px",
-                      paddingBottom: "0px",
-                      color: "#000000",
-                      borderBottom: "1px rgba(0, 0, 0, 0.5)",
-                    }}
-                  >
-                    <table width="100%">
-                      <tbody>
-                        <tr>
-                          <td
-                            style={{ textAlign: "left", padding: "3px 10px" }}
-                          >
-                            {}
-                          </td>
-                          <td
-                            style={{ textAlign: "right", padding: "3px 10px" }}
-                          >
-                            {this.state.table_name}
-                          </td>
-                        </tr>
-                        <tr>
-                          <td
-                            style={{ textAlign: "left", padding: "3px 10px" }}
-                          >
-                            09:23:45 AM
-                          </td>
-                          <td
-                            style={{ textAlign: "right", padding: "3px 10px" }}
-                          >
-                            {this.state.settle_by}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </td>
-                </tr>
-                {this.state.settle_by}
-                <tr>
-                  <td
-                    style={{
-                      textAlign: "center",
-                      padding: "10px",
-                      paddingTop: "0px",
-                      color: "#000000",
-                      borderBottom: "1px dashed rgba(0, 0, 0, 0.5)",
-                    }}
-                  >
-                    <table width="100%">
-                      <tbody>
-                        <tr>
-                          <td
-                            style={{ textAlign: "left", padding: "5px 10px" }}
-                          >
-                            <b>Grand Total</b>
-                          </td>
-                          <td
-                            style={{ textAlign: "right", padding: "5px 10px" }}
-                          >
-                            <b>₹ {this.state.billAmount}</b>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td
-                            style={{ textAlign: "left", padding: "5px 10px" }}
-                          >
-                            <b>Payable</b>
-                          </td>
-                          <td
-                            style={{ textAlign: "right", padding: "5px 10px" }}
-                          >
-                            <b>
-                              ₹{" "}
-                              {this.state.billAmount &&
-                                Math.round(this.state.billAmount)}
-                            </b>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </td>
-                </tr>
-                <tr>
-                  <td
-                    style={{
-                      textAlign: "center",
-                      padding: "10px",
-                      color: "#000000",
-                    }}
-                  >
-                    - Thank you! -
-                  </td>
-                </tr>
-                <tr>
-                  <td
-                    style={{
-                      textAlign: "center",
-                      padding: "10px",
-                      color: "#000000",
-                    }}
-                  >
-                    GSTIN - 456AEW453462
-                  </td>
-                </tr>
-              </tbody>
-            </table>
           </div>
         </div>
       </>

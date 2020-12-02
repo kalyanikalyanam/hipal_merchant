@@ -1,10 +1,7 @@
 import React from "react";
 import firebase from "../config";
-import Sidebar from "./sidebar";
-import Header from "./header";
-import swal from "sweetalert";
-import * as moment from "moment";
 import { Link } from "react-router-dom";
+import * as moment from "moment";
 class ViewBill extends React.Component {
   constructor(props) {
     super(props);
@@ -66,10 +63,10 @@ class ViewBill extends React.Component {
         this.setState({
           billId: userData.billId,
           PaymentDetails: userData.PaymentDetails,
-          date: userData.date,
-          time: userData.time,
+
+          created_on: userData.created_on,
           settle_by: userData.employee,
-          table: userData.table,
+          tablename: userData.tablename,
           billItems: userData.bill,
           orderId: userData.orderId,
           businessId: userData.businessId,
@@ -79,6 +76,24 @@ class ViewBill extends React.Component {
           grandTotal: userData.grandTotal,
         });
         console.log(this.state.billItems);
+        let subTotal = 0,
+          discount = 0,
+          tax = 0;
+        userData.bill.forEach((item) => {
+          subTotal += item.price * item.quantity;
+          discount += ((item.price * item.discount) / 100) * item.quantity;
+          tax += ((item.price * item.tax) / 100) * item.quantity;
+        });
+        let total = subTotal + tax - discount;
+        let temp = total;
+        total += (total * 2.5) / 100;
+        total += (temp * 2.5) / 100;
+        this.setState({
+          total,
+          subTotal,
+          discount,
+          tax,
+        });
       });
   };
 
@@ -146,16 +161,20 @@ class ViewBill extends React.Component {
                 <table width="100%">
                   <tr>
                     <td style={{ textAlign: "left", padding: "3px 30px" }}>
-                      {this.state.date}
+                      {moment(this.state.created_on)
+                        .locale("en")
+                        .format("DD-MM-YYYY")}
                     </td>
                     <td style={{ textAlign: "right", padding: "3px 30px" }}>
-                      {this.state.table}
+                      {this.state.tablename}
                     </td>
                   </tr>
 
                   <tr>
                     <td style={{ textAlign: "left", padding: "3px 30px" }}>
-                      {this.state.time}
+                      {moment(this.state.created_on)
+                        .locale("en")
+                        .format("HH:mm:ss")}
                     </td>
                     <td style={{ textAlign: "right", padding: "3px 30px" }}>
                       {this.state.settle_by}
@@ -165,9 +184,6 @@ class ViewBill extends React.Component {
                   <tr>
                     <td style={{ textAlign: "left", padding: "3px 30px" }}>
                       Order ID :{this.state.orderId}
-                    </td>
-                    <td style={{ textAlign: "right", padding: "3px 30px" }}>
-                      Copy : 1
                     </td>
                   </tr>
                 </table>
@@ -212,17 +228,7 @@ class ViewBill extends React.Component {
                   </tr>
                   {this.state.billItems &&
                     this.state.billItems.map((item, index) => {
-                      var totalAmount = 0;
-                      let total = item.price * item.quantity;
-                      totalAmount += total;
-                      var totalTax = 0;
-                      let totaltax =
-                        ((item.tax * item.price) / 100) * item.quantity;
-                      totalTax += totaltax;
-                      var totalOffer = 0;
-                      let totaloffer =
-                        ((item.price * item.discount) / 100) * item.quantity;
-                      totalOffer += totaloffer;
+                      console.log(item);
 
                       return (
                         <tr key={index}>
@@ -239,7 +245,7 @@ class ViewBill extends React.Component {
                           <td
                             style={{ textAlign: "right", padding: "3px 30px" }}
                           >
-                            {parseFloat(total).toFixed(2)}
+                            {parseFloat(item.price * item.quantity).toFixed(2)}
                           </td>
                         </tr>
                       );
@@ -263,7 +269,7 @@ class ViewBill extends React.Component {
                       Subtotal
                     </td>
                     <td style={{ textAlign: "right", padding: "3px 30px" }}>
-                      ₹ {this.state.billAmount}
+                      ₹ {this.state.subTotal}
                     </td>
                   </tr>
                   <tr>
@@ -271,7 +277,7 @@ class ViewBill extends React.Component {
                       Offer
                     </td>
                     <td style={{ textAlign: "right", padding: "3px 30px" }}>
-                      {/* {parseFloat(totalOffer).toFixed(2)} */}
+                      {this.state.discount}
                     </td>
                   </tr>
                   <tr>
@@ -279,7 +285,7 @@ class ViewBill extends React.Component {
                       Extra charges
                     </td>
                     <td style={{ textAlign: "right", padding: "3px 30px" }}>
-                      {/* {parseFloat(totalTax).toFixed(2)} */}
+                      {this.state.tax}
                     </td>
                   </tr>
                   <tr>
@@ -325,7 +331,7 @@ class ViewBill extends React.Component {
                       <b>Total</b>
                     </td>
                     <td style={{ textalign: "right", padding: "5px 30px" }}>
-                      <b>₹ {this.state.grandTotal}</b>
+                      <b>₹ {parseFloat(this.state.total).toFixed(2)}</b>
                     </td>
                   </tr>
                   <tr>
@@ -333,7 +339,7 @@ class ViewBill extends React.Component {
                       <b>Payable</b>
                     </td>
                     <td style={{ textalign: "right", padding: "5px 30px" }}>
-                      <b>₹ {this.state.payable}</b>
+                      <b>₹ {Math.round(this.state.total)}</b>
                     </td>
                   </tr>
                 </table>
@@ -370,8 +376,8 @@ class ViewBill extends React.Component {
             <Link to="/Bills">
               <button className="btn save_button mr-ml-5 bg_red">Close</button>
             </Link>
-            {/* <button className="btn save_button mr-ml-5">Print Copy</button>
-            <button className="btn save_button mr-ml-5">Save</button> */}
+            {/* <button className="btn save_button mr-ml-5">Print Copy</button> */}
+            {/*  <button className="btn save_button mr-ml-5">Save</button> */}
           </div>
         </div>
       </>
