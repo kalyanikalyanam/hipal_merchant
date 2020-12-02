@@ -64,21 +64,24 @@ class ViewBill extends React.Component {
         var userData = snapshot.data();
         console.log(userData);
         this.setState({
-          billAmount: userData.billAmount,
           billId: userData.billId,
-          billTiming: userData.billTiming,
-          paymentMethod: userData.paymentMethod,
-
+          PaymentDetails: userData.PaymentDetails,
+          date: userData.date,
+          time: userData.time,
           settle_by: userData.employee,
           table: userData.table,
           billItems: userData.bill,
           orderId: userData.orderId,
           businessId: userData.businessId,
           sessionId: userData.sessionId,
+          payable: userData.payable,
+
+          grandTotal: userData.grandTotal,
         });
         console.log(this.state.billItems);
       });
   };
+
   render() {
     return (
       <>
@@ -143,10 +146,7 @@ class ViewBill extends React.Component {
                 <table width="100%">
                   <tr>
                     <td style={{ textAlign: "left", padding: "3px 30px" }}>
-                      {moment(this.state.billTiming)
-                        .locale("en")
-                        .format("DD-MM-YYYY")}
-                      {/* Wed, May 27, 2020 */}
+                      {this.state.date}
                     </td>
                     <td style={{ textAlign: "right", padding: "3px 30px" }}>
                       {this.state.table}
@@ -155,10 +155,7 @@ class ViewBill extends React.Component {
 
                   <tr>
                     <td style={{ textAlign: "left", padding: "3px 30px" }}>
-                      {moment(this.state.billTiming)
-                        .locale("en")
-                        .format("HH:mm:ss")}
-                      {/* 09:23:45 AM */}
+                      {this.state.time}
                     </td>
                     <td style={{ textAlign: "right", padding: "3px 30px" }}>
                       {this.state.settle_by}
@@ -168,10 +165,6 @@ class ViewBill extends React.Component {
                   <tr>
                     <td style={{ textAlign: "left", padding: "3px 30px" }}>
                       Order ID :{this.state.orderId}
-                      {/* {this.state.orderId &&
-                        this.state.orderId.map((order, index) => {
-                          return <span>{order.orderId}</span>;
-                        })} */}
                     </td>
                     <td style={{ textAlign: "right", padding: "3px 30px" }}>
                       Copy : 1
@@ -222,6 +215,15 @@ class ViewBill extends React.Component {
                       var totalAmount = 0;
                       let total = item.price * item.quantity;
                       totalAmount += total;
+                      var totalTax = 0;
+                      let totaltax =
+                        ((item.tax * item.price) / 100) * item.quantity;
+                      totalTax += totaltax;
+                      var totalOffer = 0;
+                      let totaloffer =
+                        ((item.price * item.discount) / 100) * item.quantity;
+                      totalOffer += totaloffer;
+
                       return (
                         <tr key={index}>
                           <td
@@ -242,30 +244,6 @@ class ViewBill extends React.Component {
                         </tr>
                       );
                     })}
-
-                  {/* <tr>
-                    <td style={{ textAlign: "left", padding: "3px 30px" }}>
-                      Item 2
-                    </td>
-                    <td style={{ textAlign: "center", padding: "3px 30px" }}>
-                      1
-                    </td>
-                    <td style={{ textAlign: "right", padding: "3px 30px" }}>
-                      499.00
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td style={{ textAlign: "left", padding: "3px 30px" }}>
-                      Item 1
-                    </td>
-                    <td style={{ textAlign: "center", padding: "3px 30px" }}>
-                      1
-                    </td>
-                    <td style={{ textAlign: "right", padding: "3px 30px" }}>
-                      599.00
-                    </td>
-                  </tr> */}
                 </table>
               </td>
             </tr>
@@ -293,7 +271,7 @@ class ViewBill extends React.Component {
                       Offer
                     </td>
                     <td style={{ textAlign: "right", padding: "3px 30px" }}>
-                      -
+                      {/* {parseFloat(totalOffer).toFixed(2)} */}
                     </td>
                   </tr>
                   <tr>
@@ -301,7 +279,7 @@ class ViewBill extends React.Component {
                       Extra charges
                     </td>
                     <td style={{ textAlign: "right", padding: "3px 30px" }}>
-                      -
+                      {/* {parseFloat(totalTax).toFixed(2)} */}
                     </td>
                   </tr>
                   <tr>
@@ -347,15 +325,15 @@ class ViewBill extends React.Component {
                       <b>Total</b>
                     </td>
                     <td style={{ textalign: "right", padding: "5px 30px" }}>
-                      <b>₹ {this.state.bill}</b>
+                      <b>₹ {this.state.grandTotal}</b>
                     </td>
                   </tr>
                   <tr>
                     <td style={{ textalign: "left", padding: "5px 30px" }}>
-                      <b>Grand Total</b>
+                      <b>Payable</b>
                     </td>
                     <td style={{ textalign: "right", padding: "5px 30px" }}>
-                      <b>₹ {this.state.billAmount}</b>
+                      <b>₹ {this.state.payable}</b>
                     </td>
                   </tr>
                 </table>

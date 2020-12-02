@@ -67,11 +67,11 @@ const BillPage = () => {
     setTotal(total);
     dispatch({
       type: "SetBalance",
-      balance:{
+      balance: {
         balance: Math.round(total),
         gst,
-        cGst
-      } 
+        cGst,
+      },
     });
   }, [subTotal]);
   const noItem = (
@@ -96,12 +96,15 @@ const BillPage = () => {
       const bill = {
         bill: table.bill,
         employee: table.currentEmployee,
-        date: Date.now(),
         PaymentDetails: state.details,
         billId: table.billId,
         orderId: table.orderId,
         customers: table.customers,
         businessId: businessId,
+        payable: payable,
+        date: presentDate,
+        time: presentTime,
+        grandTotal: grandTotal,
       };
       await db.collection("bills").add(bill);
       dispatch({
@@ -147,7 +150,7 @@ const BillPage = () => {
         gst,
         cGst,
         isSettle: false,
-        occupency: 0
+        occupency: 0,
       },
     });
   };
@@ -161,6 +164,22 @@ const BillPage = () => {
     };
     return today.toLocaleDateString("en-US", options).toString();
   };
+
+  const formatAMPM = (date) => {
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var AmPm = hours >= 12 ? "Pm" : "Am";
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    var strTime = hours + ":" + minutes + " " + AmPm;
+    return strTime;
+  };
+  var presentTime = formatAMPM(new Date());
+  var presentDate = date();
+  var payable = Math.round(total);
+  var grandTotal = parseFloat(total).toFixed(2);
+
   const billItems =
     table && table.bill && table.bill.length !== 0
       ? table.bill.map((item, index) => {
@@ -246,15 +265,15 @@ const BillPage = () => {
                       </tr>
                       <tr>
                         <td style={{ textAlign: "left", padding: "3px 10px" }}>
-                          09:23:45 AM
+                          {formatAMPM(new Date())}
                         </td>
                         <td style={{ textAlign: "right", padding: "3px 10px" }}>
                           {table && table.currentEmployee}
                         </td>
                       </tr>
-                      <td style={{ textAlign: "left", padding: "3px 10px" }}>
+                      {/* <td style={{ textAlign: "left", padding: "3px 10px" }}>
                         Copy : 1
-                      </td>{" "}
+                      </td>{" "} */}
                     </tbody>
                   </table>
                 </td>

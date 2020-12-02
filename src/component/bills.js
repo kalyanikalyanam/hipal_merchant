@@ -65,15 +65,17 @@ class Bills extends React.Component {
         querySnapshot.forEach((childSnapShot) => {
           const GSTData = {
             billid: childSnapShot.id,
-            // billAmount: childSnapShot.data().billAmount,
-            billId: childSnapShot.data().billId,
-            billTiming: childSnapShot.data().billTiming,
-            bill: childSnapShot.data().bill,
 
-            paymentMethod: childSnapShot.data().paymentMethod,
+            billId: childSnapShot.data().billId,
+
+            bill: childSnapShot.data().bill,
+            date: childSnapShot.data().date,
+            time: childSnapShot.data().time,
+            PaymentDetails: childSnapShot.data().PaymentDetails,
             orderId: childSnapShot.data().orderId,
             employee: childSnapShot.data().employee,
             table: childSnapShot.data().table,
+            payable: childSnapShot.data().payable,
 
             businessId: childSnapShot.data().businessId,
             sessionId: childSnapShot.data().sessionId,
@@ -195,12 +197,11 @@ class Bills extends React.Component {
                                       <td>S.no</td>
                                       <td>BILL ID</td>
                                       <td>Order Id</td>
-                                      <td>Date</td>
-                                      <td>Settled By</td>
-                                      {/* <td>Amount</td> */}
 
+                                      <td>Settled By</td>
+                                      <td>Amount</td>
+                                      <td>Date</td>
                                       <td>Timing</td>
-                                      {/* <td>Photo</td> */}
 
                                       {sessionStorage.getItem("role") ==
                                         "Merchant" ||
@@ -229,41 +230,14 @@ class Bills extends React.Component {
                                               <td>{index + 1}</td>
                                               <td>{bill.billId}</td>
                                               <td>{bill.orderId}</td>
-                                              <td className="bill_date">
-                                                {moment(bill.billTiming)
-                                                  .locale("en")
-                                                  .format("DD-MM-YYYY")}{" "}
-                                              </td>
+
                                               <td>{bill.employee}</td>
-                                              {/* <td>Rs {total}</td> */}
-
-                                              <td>
-                                                {moment(bill.billTiming)
-                                                  .locale("en")
-                                                  .format("HH:mm:ss")}
+                                              <td>Rs {bill.payable}</td>
+                                              <td className="bill_date">
+                                                {bill.date}
                                               </td>
-                                              {/* <td>
-                                            <img
-                                              src="/images/bill_image.png"
-                                              className="bill_img"
-                                            />
-                                          </td> */}
+                                              <td>{bill.time}</td>
 
-                                              {/* <button
-                                                  type="button"
-                                                  data-toggle="modal"
-                                                  data-target="#view_bill"
-                                                >
-                                                  <span
-                                                    className="btn view_order_btn_td"
-                                                    // onClick={this.viewBill.bind(
-                                                    //   this,
-                                                    //   bill.billid
-                                                    // )}
-                                                  >
-                                                    View Bill
-                                                  </span>
-                                                </button> */}
                                               {sessionStorage.getItem("role") ==
                                                 "Merchant" ||
                                               sessionStorage.getItem(
@@ -281,18 +255,6 @@ class Bills extends React.Component {
                                               ) : (
                                                 ""
                                               )}
-                                              {/* <img
-                                              src="/images/icon/edit_icon_blue.svg"
-                                              className="edit_delete"
-                                            /> */}
-                                              {/* <img
-                                              onClick={this.deleteItem.bind(
-                                                this,
-                                                bill.billid
-                                              )}
-                                              src="/images/icon/delete_cross.svg"
-                                              className="edit_delete"
-                                            /> */}
                                             </tr>
                                           );
                                         }
