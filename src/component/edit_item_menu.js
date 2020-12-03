@@ -32,9 +32,8 @@ class EditItemMenu extends React.Component {
       item_hash_tags: [],
       input: "",
       bestrecommendation: "UnSelect",
-
-      item_price: "",
-      item_tax: "",
+      item_price:0,
+      item_tax: 0,
 
       category: "",
       sub_category: "",
