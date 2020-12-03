@@ -5,11 +5,54 @@ import Header from "./header";
 import swal from "sweetalert";
 import * as moment from "moment";
 import { Link } from "react-router-dom";
+import SimpleReactValidator from "simple-react-validator";
 class Bills extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      BillDateList: [],
+      employer_sevice_message: "",
+    };
+
     this.deleteItem = this.deleteItem.bind(this);
+    this.validator = new SimpleReactValidator({
+      className: "text-danger",
+      validators: {
+        whitespace: {
+          message: "The :attribute not allowed first whitespace   characters.",
+          rule: function (val, params, validator) {
+            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
+            // params.indexOf(val) === -1
+            return (
+              validator.helpers.testRegex(val, /[^\s\\]/) &&
+              params.indexOf(val) === -1
+            );
+          },
+        },
+        specialChar: {
+          message: "The :attribute not allowed special   characters.",
+          rule: function (val, params, validator) {
+            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
+            // params.indexOf(val) === -1
+            return (
+              validator.helpers.testRegex(val, /^[ A-Za-z0-9_@./#&+-]*$/i) &&
+              params.indexOf(val) === -1
+            );
+          },
+        },
+        specialCharText: {
+          message: "The :attribute may only contain letters, dot and spaces.",
+          rule: function (val, params, validator) {
+            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
+            // params.indexOf(val) === -1
+            return (
+              validator.helpers.testRegex(val, /^[ A-Za-z_@./#&+-]*$/i) &&
+              params.indexOf(val) === -1
+            );
+          },
+        },
+      },
+    });
   }
   componentDidMount() {
     this.setState({ loading: true });
@@ -96,6 +139,64 @@ class Bills extends React.Component {
         console.log(err);
       });
   };
+  handleSubmit = async (event) => {
+    var businessId = sessionStorage.getItem("businessId");
+    event.preventDefault();
+    if (this.validator.allValid()) {
+      var validFrom = new Date(this.state.validFrom);
+      var validTo = new Date(this.state.validTo);
+
+      var ref = await firebase
+        .firestore()
+        .collection("bills")
+
+        .where("businessId", "==", businessId)
+        .where("date", "<=", validFrom)
+        .where("date", ">=", validTo)
+        .get()
+        .then((snapshot) => {
+          if (snapshot.val() == null || snapshot.val() == "") {
+            this.setState({ employer_sevice_message: "No records are found" });
+          } else {
+            const data = [];
+
+            var i = 1;
+            snapshot.forEach((childSnapShot) => {
+              const Bills = {
+                Sno: i++,
+                billid: childSnapShot.id,
+
+                billId: childSnapShot.data().billId,
+
+                bill: childSnapShot.data().bill,
+
+                date: childSnapShot.data().date,
+
+                PaymentDetails: childSnapShot.data().PaymentDetails,
+                orderId: childSnapShot.data().orderId,
+                employee: childSnapShot.data().employee,
+                tablename: childSnapShot.data().tablename,
+
+                businessId: childSnapShot.data().businessId,
+                sessionId: childSnapShot.data().sessionId,
+              };
+
+              data.push(Bills);
+            });
+
+            this.setState({
+              BillDateList: data,
+              loading: false,
+              validFrom: "",
+              validTo: "",
+            });
+          }
+        });
+    } else {
+      this.validator.showMessages();
+      this.forceUpdate();
+    }
+  };
   deleteItem = (id) => {
     swal({
       title: "Are you sure?",
@@ -112,7 +213,11 @@ class Bills extends React.Component {
       }
     });
   };
-
+  dateChange = (event) => {
+    this.setState({
+      [event.target.name]: event.target.value,
+    });
+  };
   render() {
     return (
       <>
@@ -189,6 +294,14 @@ class Bills extends React.Component {
                     <div className="col-md-12 p-0">
                       <div className="category_upload_image">
                         <h1>Bill View</h1>
+                        <button
+                          type="button"
+                          class="btn btn-secondary mb-1"
+                          data-toggle="modal"
+                          data-target="#filters"
+                        >
+                          Filters
+                        </button>
                         <div className="upload_img_block add_menu">
                           <div className="row">
                             <div className="col-md-12 p-0 bills_table">
@@ -316,6 +429,237 @@ class Bills extends React.Component {
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          className="modal fade"
+          id="filters"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="smallmodalLabel"
+          aria-hidden="true"
+        >
+          <div className="modal-dialog modal-sm hipal_pop" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="smallmodalLabel">
+                  Filters
+                </h5>
+
+                <span>
+                  <button className="color_red">Reset filters</button>
+                </span>
+              </div>
+
+              <div className="modal-body product_edit">
+                <div className="col-12 w-100-row p-30_filter">Search by </div>
+
+                {/* <div className="col-12 w-100-row">
+                  <div className="row form-group">
+                    <div className="col col-md-4">
+                      <label className=" form-control-label">Bill ID</label>
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <input
+                        type="text"
+                        id="text-input"
+                        name="text-input"
+                        placeholder=""
+                        className="form-control edit_product"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-12 w-100-row">
+                  <div className="row form-group">
+                    <div className="col col-md-4">
+                      <label className=" form-control-label">Order ID</label>
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <input
+                        type="text"
+                        id="text-input"
+                        name="text-input"
+                        placeholder=""
+                        className="form-control edit_product"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-12 w-100-row">
+                  <div className="row form-group">
+                    <div className="col col-md-4">
+                      <label className=" form-control-label">Cart ID</label>
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <input
+                        type="text"
+                        id="text-input"
+                        name="text-input"
+                        placeholder=""
+                        className="form-control edit_product"
+                      />
+                    </div>
+                  </div>
+                </div> */}
+
+                {/* <div className="col-12 w-100-row">
+                  <hr></hr>
+                </div> */}
+
+                {/* <div className="col-12 w-100-row p-30_filter">
+                  Advanced filter
+                </div> */}
+
+                {/* <div className="col-12 w-100-row">
+                  <div className="row form-group">
+                    <div className="col col-md-4">
+                      <label className=" form-control-label">Date</label>
+                    </div>
+
+                    <div className="col-12 col-md-6">
+                      <input
+                        type="text"
+                        id="text-input"
+                        name="text-input"
+                        placeholder="DD/MM/YYYY"
+                        className="form-control edit_product"
+                      />
+                    </div>
+                  </div>
+                </div> */}
+
+                <div className="col-12 w-100-row">
+                  <div className="row form-group">
+                    <div className="col col-md-4">
+                      <label className=" form-control-label">Date</label>
+                    </div>
+                    <div className="col-12 col-md-7">
+                      <div className="row">
+                        <div className="col-md-6">
+                          <label className=" form-control-label pull-left">
+                            From
+                          </label>
+                          <span className=" pull-left small_filed">
+                            <input
+                              name="validFrom"
+                              id="validFrom"
+                              min={moment().format("2019-06-01")}
+                              max={moment(new Date()).format("YYYY-MM-DD")}
+                              type="date"
+                              onChange={this.dateChange}
+                              value={this.state.validFrom}
+                              className="form-control edit_product"
+                            />
+                          </span>
+                          {this.validator.message(
+                            "Valid From",
+                            this.state.validFrom,
+                            "required"
+                          )}
+                        </div>
+                        <div className="col-md-6">
+                          <label className=" form-control-label  pull-left">
+                            To
+                          </label>
+                          <span className="small_filed  pull-left">
+                            <input
+                              name="validTo"
+                              id="validTo"
+                              className="form-control edit_product"
+                              max={moment(new Date()).format("YYYY-MM-DD")}
+                              type="date"
+                              min={moment(this.state.validFrom).format(
+                                "YYYY-MM-DD"
+                              )}
+                              onChange={this.dateChange}
+                              value={this.state.validTo}
+                            />
+                          </span>
+                          {this.validator.message(
+                            "Valid To",
+                            this.state.validTo,
+                            "required"
+                          )}
+                        </div>
+                        {this.state.employer_sevice_message ? (
+                          <div className="alert alert-warning" role="alert">
+                            {this.state.employer_sevice_message}
+                          </div>
+                        ) : (
+                          ""
+                        )}{" "}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* <div className="col-12 w-100-row">
+                  <div className="row form-group">
+                    <div className="col col-md-4">
+                      <label className=" form-control-label">Day</label>
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <select
+                        name="select"
+                        id="select"
+                        className="form-control edit_product"
+                      >
+                        <option value="0">Drop Down</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-12 w-100-row">
+                  <div className="row form-group">
+                    <div className="col col-md-4">
+                      <label className=" form-control-label">Amount</label>
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <input
+                        type="text"
+                        id="text-input"
+                        name="text-input"
+                        placeholder=""
+                        className="form-control edit_product"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-12 w-100-row">
+                  <div className="row form-group">
+                    <div className="col col-md-4">
+                      <label className=" form-control-label">
+                        Customer name
+                      </label>
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <input
+                        type="text"
+                        id="text-input"
+                        name="text-input"
+                        placeholder=""
+                        className="form-control edit_product"
+                      />
+                    </div>
+                  </div>
+                </div> */}
+              </div>
+
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn save_btn"
+                  onClick={this.handleSubmit}
+                >
+                  Save
+                </button>
               </div>
             </div>
           </div>
