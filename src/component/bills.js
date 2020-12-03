@@ -291,6 +291,14 @@ class Bills extends React.Component {
                                                       View Bill
                                                     </span>
                                                   </Link>
+                                                  {/* <img
+                                                    src="/images/icon/delete_cross.svg"
+                                                    onClick={this.deleteItem.bind(
+                                                      this,
+                                                      bill.billid
+                                                    )}
+                                                    className="edit_delete"
+                                                  /> */}
                                                 </td>
                                               ) : (
                                                 ""

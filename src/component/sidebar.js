@@ -119,7 +119,7 @@ class Sidebar extends React.Component {
               </li>
               <li>
                 <Link to="/TablesList" className="tabels">
-                  Tabels
+                  Tables
                 </Link>
               </li>
               {sessionStorage.getItem("role") == "Merchant" ||

@@ -295,6 +295,17 @@ class EditTable extends React.Component {
           sessionId: sessionId,
           username: username,
           businessId: businessId,
+
+          // bill: [],
+          // liveCart: [],
+          // order: [],
+          // customers: [],
+          // status: "Vacant",
+          // occupency: 0,
+          // currentEmployee: "",
+          // billId: null,
+          // orderId: null,
+          // liveCartId: null,
         });
       window.location.href = "/TablesList";
       // this

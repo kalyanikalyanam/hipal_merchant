@@ -333,7 +333,6 @@ class TablesList extends React.Component {
 
           table_icon: this.state.table_icon,
           table_notes: this.state.table_notes,
-          status: "Vacant",
 
           table_qrcode:
             "https://chart.googleapis.com/chart?cht=qr&chl=" +
@@ -343,6 +342,16 @@ class TablesList extends React.Component {
           sessionId: sessionId,
           username: username,
           businessId: businessId,
+          bill: [],
+          liveCart: [],
+          order: [],
+          customers: [],
+          status: "Vacant",
+          occupency: 0,
+          currentEmployee: "",
+          billId: null,
+          orderId: null,
+          liveCartId: null,
         });
 
       window.location.href = "/TablesList";
