@@ -38,7 +38,7 @@ import EditEmployeePosition from "./component/edit_employee_position";
 import AllEmplopyesRoles from "./component/all_employee_roles";
 import EditEmployeeRole from "./component/edit_employee_role";
 
-import Bills from "./component/bills";
+// import Bills from "./component/bills";
 import Bills2 from "./component/bills2";
 import ViewBill from "./component/view_bill";
 
@@ -163,8 +163,8 @@ class Routing extends React.Component {
         <PrivateRoute path="/AddItemMenu" component={AddItemMenu} />
         <PrivateRoute path="/ViewItemMenu" component={ViewItemMenu} />
         <PrivateRoute path="/AddItemType" component={AddItemType} />
-        <PrivateRoute path="/Bills" component={Bills} />
-        <PrivateRoute path="/Test" component={Bills2} />
+        {/* <PrivateRoute path="/Bills" component={Bills} /> */}
+        <PrivateRoute path="/Bills" component={Bills2} />
         <PrivateRoute path="/ViewBill/:billid" component={ViewBill} />
         <PrivateRoute path="/Home" component={Home} />
         <PrivateRoute path="/BillPrintPage" component={BillPrintPage} />
