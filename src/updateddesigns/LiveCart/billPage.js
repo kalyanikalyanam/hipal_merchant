@@ -222,8 +222,8 @@ const BillPage = () => {
                     color: "#000000",
                   }}
                 >
-                  12, Sainikpuri, Kapra,
-                  <br /> Secunderabad, Telangana 500094
+                  The Coffee Cup Pizzeria E-89,
+                  <br /> Sainikpuri, Telangana 500094
                 </td>
               </tr>
               <tr
