@@ -36,7 +36,7 @@ const KotModal = React.forwardRef((props, ref) => {
           >
             <b> {item.quantity}</b>
           </td>
-          <td
+          {/* <td
             style={{
               textAlign: "right",
               padding: "3px 10px",
@@ -44,7 +44,7 @@ const KotModal = React.forwardRef((props, ref) => {
             }}
           >
             <b> {item.quantity * item.price}</b>
-          </td>
+          </td> */}
         </tr>
       );
     });
@@ -175,7 +175,7 @@ const KotModal = React.forwardRef((props, ref) => {
                       >
                         <b style={{ fontSize: "30px" }}>Qty</b>
                       </td>
-                      <td
+                      {/* <td
                         style={{
                           textAlign: "right",
                           padding: "5px 30px 10px 30px",
@@ -183,7 +183,7 @@ const KotModal = React.forwardRef((props, ref) => {
                         }}
                       >
                         <b style={{ fontSize: "30px" }}>Price</b>
-                      </td>
+                      </td> */}
                     </tr>
                     {items}
                   </table>

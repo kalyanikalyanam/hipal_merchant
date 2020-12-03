@@ -89,6 +89,10 @@ import AddItemNew from "./component/add_item_new";
 import EditItemNew from "./component/edit_item_new";
 import MainPage from "./updateddesigns/LiveCart/index";
 
+import KOTTableDataCartView from "./component/kot_table_data_cartview";
+import KOTTableDataHistory from "./component/kot_table_data_history";
+import KOTTableDataTableView from "./component/kot_table_data_tableview";
+
 export const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
@@ -160,7 +164,6 @@ class Routing extends React.Component {
         <PrivateRoute path="/AddItemType" component={AddItemType} />
         <PrivateRoute path="/Bills" component={Bills} />
         <PrivateRoute path="/ViewBill/:billid" component={ViewBill} />
-
         <PrivateRoute path="/Home" component={Home} />
         <PrivateRoute path="/BillPrintPage" component={BillPrintPage} />
         <PrivateRoute path="/FloorList" component={FloorList} />
@@ -226,6 +229,18 @@ class Routing extends React.Component {
         />
         <PrivateRoute path="/AddItemNew" component={AddItemNew} />
         <PrivateRoute path="/EditItemNew/:itemmenuid" component={EditItemNew} />
+        <PrivateRoute
+          path="/KOTTableDataCartView"
+          component={KOTTableDataCartView}
+        />
+        <PrivateRoute
+          path="/KOTTableDataHistory"
+          component={KOTTableDataHistory}
+        />
+        <PrivateRoute
+          path="/KOTTableDataTableView"
+          component={KOTTableDataTableView}
+        />
       </Router>
     );
   }
