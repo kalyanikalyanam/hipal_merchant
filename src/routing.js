@@ -39,6 +39,7 @@ import AllEmplopyesRoles from "./component/all_employee_roles";
 import EditEmployeeRole from "./component/edit_employee_role";
 
 import Bills from "./component/bills";
+import Bills2 from "./component/bills2";
 import ViewBill from "./component/view_bill";
 
 import Home from "./component/home";
@@ -159,6 +160,7 @@ class Routing extends React.Component {
         <PrivateRoute path="/ViewItemMenu" component={ViewItemMenu} />
         <PrivateRoute path="/AddItemType" component={AddItemType} />
         <PrivateRoute path="/Bills" component={Bills} />
+        <PrivateRoute path="/Test" component={Bills2} />
         <PrivateRoute path="/ViewBill/:billid" component={ViewBill} />
 
         <PrivateRoute path="/Home" component={Home} />

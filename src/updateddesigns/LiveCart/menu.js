@@ -196,11 +196,6 @@ const Menu = () => {
   useEffect(() => {
     getItems();
     getCategories();
-    let unsubsribe = dbRef && dbRef.onSnapshot(table => {
-      console.log("here")
-      setItems(table.data().liveCart.length)
-    })
-    return unsubsribe
   }, []);
   return (
     <div className="row m-t-20">
