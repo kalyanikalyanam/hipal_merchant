@@ -1,5 +1,5 @@
 import React from "react";
-import firebase from "../config";
+import {db} from "../config";
 import Sidebar from "./sidebar";
 import Header from "./header";
 import swal from "sweetalert";
@@ -61,8 +61,7 @@ class Bills extends React.Component {
     if (sessionId) {
       console.log(sessionId);
 
-      firebase
-        .firestore()
+      db
         .collection("/merchant_users")
         .doc(sessionId)
         .get()
@@ -78,8 +77,7 @@ class Bills extends React.Component {
           });
         });
       var businessId = sessionStorage.getItem("businessId");
-      firebase
-        .firestore()
+      db
         .collection("/businessdetails")
         .doc(businessId)
         .get()
@@ -97,8 +95,7 @@ class Bills extends React.Component {
     var businessId = sessionStorage.getItem("businessId");
 
     this.setState({ loading: true });
-    firebase
-      .firestore()
+    db
       .collection("bills")
 
       .where("businessId", "==", businessId)
@@ -146,10 +143,7 @@ class Bills extends React.Component {
       var validFrom = new Date(this.state.validFrom);
       var validTo = new Date(this.state.validTo);
 
-      var ref = await firebase
-        .firestore()
-        .collection("bills")
-
+      var ref = await db.collection("bills")
         .where("businessId", "==", businessId)
         .where("date", "<=", validFrom)
         .where("date", ">=", validTo)
@@ -207,7 +201,7 @@ class Bills extends React.Component {
     }).then((willDelete) => {
       if (willDelete) {
         console.log(id);
-        var playersRef = firebase.firestore().collection("/bills").doc(id);
+        var playersRef = db.collection("/bills").doc(id);
         playersRef.delete();
       } else {
       }

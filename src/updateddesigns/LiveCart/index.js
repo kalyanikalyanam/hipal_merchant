@@ -15,6 +15,7 @@ import AddCustomerModal from './Modals/addCustomerModal'
 import AddCustomerForm from './Modals/addCustomerFormModal'
 import KotModal from './Modals/kotModal'
 import BillModal from './Modals/billModal'
+import Loader from '../../component/Loader'
 const customStyles = {
   content: {
     top: "50%",
@@ -31,8 +32,10 @@ const MainPage = (props) => {
     const [reducerState, dispatch] = useReducer(reducer, initState)
     const [userData, setUserData] = useState("")
     const [dbRef, setDbRef] = useState(null)
+    const [loading, setLoading] = useState(false)
     
     useEffect(() => {
+        setLoading(true)
         const dbr= db.collection("tables").doc(props.match.params.tableId)
         const userData = {
             businessLogo: sessionStorage.getItem("BusinessLogo"),
@@ -42,8 +45,10 @@ const MainPage = (props) => {
         }
         setDbRef(dbr)
         setUserData(userData)
+        setLoading(false)
     }, [])
-    return (
+
+    return (<>{!loading ? 
         <dispatchContext.Provider value={dispatch}><stateContext.Provider value={reducerState}>
             <tableContext.Provider value={dbRef}><balanceContext.Provider value={reducerState.balance}>
                 <div className="page-wrapper">
@@ -116,7 +121,7 @@ const MainPage = (props) => {
                                 <div className="row mt-30">
                                     <div className="col-lg-7 cart_box_width_1">
                                         <div className="row">
-                                            <Table tableId={props.match.params.tableId} />
+                                            <Table tableId={props.match.params.tableId} dbRef={dbRef} />
                                             {/* <Info /> */}
                                         </div>
 
@@ -148,6 +153,8 @@ const MainPage = (props) => {
                 </BootstrapModal>
             </balanceContext.Provider>
             </tableContext.Provider></stateContext.Provider></dispatchContext.Provider>
+        : <Loader /> }
+        </>
     )
 }
 
