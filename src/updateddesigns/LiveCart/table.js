@@ -3,10 +3,9 @@ import { useForm } from "react-hook-form";
 import {db} from "../../config";
 import { tableContext, dispatchContext } from "../LiveCart/contexts";
 
-const Table = ()=> {
+const Table = ({dbRef})=> {
   const [employees, setEmployees] = useState([]);
   const [table, setTable] = useState(null)
-  const dbRef = useContext(tableContext)
   const dispatch = useContext(dispatchContext)
 
   const {handleSubmit, reset, register} = useForm()

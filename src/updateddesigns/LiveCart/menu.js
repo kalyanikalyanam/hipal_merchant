@@ -1,7 +1,9 @@
 import { db } from "../../config";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import MenuItem from "./menuItem";
 import CategoryItem from "./categoryItem";
+import { tableContext } from "./contexts";
+
 
 const Menu = () => {
   const [itemList, setItemsList] = useState([]);
@@ -9,6 +11,8 @@ const Menu = () => {
   const [permanentCategoryList, setPermanentCategoryList] = useState([]);
   const [permanentItemList, setPermanentItemList] = useState([]);
   const [selected, setSelected] = useState([]);
+  const [items, setItems] = useState(0)
+  const dbRef = useContext(tableContext)
   const getItems = async () => {
     var businessId = sessionStorage.getItem("businessId");
     await db
@@ -60,6 +64,16 @@ const Menu = () => {
         setPermanentItemList(data);
       });
   };
+  const getTableData = async () => {
+    if(dbRef){
+      const table = await dbRef.get()
+      setItems(table.data().liveCart.length)
+    }   
+    let unsubsribe = dbRef && dbRef.onSnapshot(table => {
+      setItems(table.data().liveCart.length)
+    })
+    return unsubsribe
+  }
   const getCategories = () => {
     var businessId = sessionStorage.getItem("businessId");
     db.collection("categories2")
@@ -182,6 +196,11 @@ const Menu = () => {
   useEffect(() => {
     getItems();
     getCategories();
+    let unsubsribe = dbRef && dbRef.onSnapshot(table => {
+      console.log("here")
+      setItems(table.data().liveCart.length)
+    })
+    return unsubsribe
   }, []);
   return (
     <div className="row m-t-20">
@@ -214,7 +233,7 @@ const Menu = () => {
             </a>
           </span>
           <span className="livecart_box">
-            Items in Live Cart <span className="number">{0}</span>
+            Items in Live Cart <span className="number">{items ? items : "0"}</span>
           </span>
           <span className="pull-right m-r-5 m-t-5" onClick={handleBackClick}>
             <img src="/images/icon/back_arrow_orange.png" width="30" />
