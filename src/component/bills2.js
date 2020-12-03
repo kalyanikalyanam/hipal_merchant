@@ -4,6 +4,7 @@ import { db } from "../config";
 import { Modal } from "react-bootstrap";
 import Sidebar from "./sidebar";
 import Header from "./header";
+import * as moment from "moment";
 import FilterModal from "./filterModal";
 
 const Bills = () => {
@@ -32,25 +33,19 @@ const Bills = () => {
 
   useEffect(() => {
     let today = new Date();
-    let tommorow = new Date() 
+    let tommorow = new Date();
 
-    today.setHours(0, 0, 0, 0)
-    tommorow.setHours(23, 59,59, 999)
+    today.setHours(0, 0, 0, 0);
+    tommorow.setHours(23, 59, 59, 999);
 
-    const bills = permanentBills
-      .filter((bill) => {
-        console.log(bill.date);
-        console.log(
-          Date.parse("December 2, 2020")
-        );
-        if (!bill.date) return false;
-        return (
-          bill.date <=
-          Date.parse(tommorow) &&
-          bill.date >=
-          Date.parse(today)
-        );
-      })
+    const bills = permanentBills.filter((bill) => {
+      console.log(bill.date);
+      console.log(Date.parse("December 2, 2020"));
+      if (!bill.date) return false;
+      return (
+        bill.date <= Date.parse(tommorow) && bill.date >= Date.parse(today)
+      );
+    });
     setBills(bills);
   }, [permanentBills]);
 
@@ -309,9 +304,17 @@ const Bills = () => {
                                             <td>{bill.employee}</td>
                                             <td>Rs {Math.round(total)}</td>
                                             <td className="bill_date">
-                                              {date}
+                                              {/* {date} */}
+                                              {moment(bill.date)
+                                                .locale("en")
+                                                .format("DD-MM-YYYY")}
                                             </td>
-                                            <td>{time} </td>
+                                            <td>
+                                              {/* {time} */}
+                                              {moment(bill.date)
+                                                .locale("en")
+                                                .format("HH:mm:ss")}
+                                            </td>
 
                                             {sessionStorage.getItem("role") ==
                                               "Merchant" ||
