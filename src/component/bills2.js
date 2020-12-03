@@ -31,7 +31,27 @@ const Bills = () => {
   }, []);
 
   useEffect(() => {
-    setBills(permanentBills);
+    let today = new Date();
+    let tommorow = new Date() 
+
+    today.setHours(0, 0, 0, 0)
+    tommorow.setHours(23, 59,59, 999)
+
+    const bills = permanentBills
+      .filter((bill) => {
+        console.log(bill.date);
+        console.log(
+          Date.parse("December 2, 2020")
+        );
+        if (!bill.date) return false;
+        return (
+          bill.date <=
+          Date.parse(tommorow) &&
+          bill.date >=
+          Date.parse(today)
+        );
+      })
+    setBills(bills);
   }, [permanentBills]);
 
   useEffect(() => {
