@@ -17,11 +17,11 @@ const PaymentDetails = {
   Cash: 0,
   Pending: 0,
   Card: 0,
-  HipalCredits: 0
-}
+  HipalCredits: 0,
+};
 const Bills = () => {
-  const [paymentDetailsShow, setPaymentDetailsShow] = useState(false)
-  const [details, setDetails] = useState([])
+  const [paymentDetailsShow, setPaymentDetailsShow] = useState(false);
+  const [details, setDetails] = useState([]);
   const [loading, setLoading] = useState(false);
   const [bills, setBills] = useState([]);
   const [permanentBills, setPermanentBills] = useState([]);
@@ -94,27 +94,35 @@ const Bills = () => {
       Cash: 0,
       Pending: 0,
       Card: 0,
-      HipalCredits: 0
-    }
-    bills && bills.map(bill => {
-      Object.keys(bill.PaymentDetails).forEach(key => {
-        if (key !== `Hipal Credits`)
-          PaymentDetails[key] += parseInt(bill.PaymentDetails[key])
-      })
-    })
-    console.log(
-)
-    setPaymentDetails({...paymentDetails, ...PaymentDetails})
+      HipalCredits: 0,
+    };
+    bills &&
+      bills.map((bill) => {
+        Object.keys(bill.PaymentDetails).forEach((key) => {
+          if (key !== `Hipal Credits`)
+            PaymentDetails[key] += parseInt(bill.PaymentDetails[key]);
+        });
+      });
+    console.log();
+    setPaymentDetails({ ...paymentDetails, ...PaymentDetails });
     setGrandTotal(grandTotal);
   }, [bills]);
 
   useEffect(() => {
-    const details = []
-              { paymentDetails && Object.keys(paymentDetails).forEach(key => {
-              details.push(<div><b>{key}</b>{`: ₹${paymentDetails[key]}`}</div>)
-          })}
-    setDetails(details)
-  }, [paymentDetails])
+    const details = [];
+    {
+      paymentDetails &&
+        Object.keys(paymentDetails).forEach((key) => {
+          details.push(
+            <div>
+              <b>{key}</b>
+              {`: ₹${paymentDetails[key]}`}
+            </div>
+          );
+        });
+    }
+    setDetails(details);
+  }, [paymentDetails]);
 
   const dateString = (date) => {
     let year = date.getFullYear();
@@ -152,7 +160,6 @@ const Bills = () => {
         bill.date <= Date.parse(tommorow) && bill.date >= Date.parse(today)
       );
     });
-;
     setSearch(value);
     if (value !== "") {
       const val = escapeRegexCharacters(value.trim());
@@ -288,7 +295,13 @@ const Bills = () => {
                           </div>
                           <div className="col-md-3 filterkalyani">
                             <b>Total Amount : Rs</b> {grandTotal && grandTotal}
-                            <button onClick={() => {setPaymentDetailsShow(true)}}>PaymentDetails</button>
+                            <button
+                              onClick={() => {
+                                setPaymentDetailsShow(true);
+                              }}
+                            >
+                              PaymentDetails
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -371,16 +384,16 @@ const Bills = () => {
                                             <td>{bill.employee}</td>
                                             <td>Rs {Math.round(total)}</td>
                                             <td className="bill_date">
-                                              {/* {date} */}
-                                              {moment(bill.date)
+                                              {date}
+                                              {/* {moment(bill.date)
                                                 .locale("en")
-                                                .format("DD-MM-YYYY")}
+                                                .format("DD-MM-YYYY")} */}
                                             </td>
                                             <td>
-                                              {/* {time} */}
-                                              {moment(bill.date)
+                                              {time}
+                                              {/* {moment(bill.date)
                                                 .locale("en")
-                                                .format("HH:mm:ss")}
+                                                .format("HH:mm:ss")} */}
                                             </td>
 
                                             {sessionStorage.getItem("role") ==
@@ -425,9 +438,14 @@ const Bills = () => {
           </div>
         </div>
       </div>
-      <Modal show={paymentDetailsShow} onHide={() => {setPaymentDetailsShow(false)}}>
+      <Modal
+        show={paymentDetailsShow}
+        onHide={() => {
+          setPaymentDetailsShow(false);
+        }}
+      >
         <div className="modal-dialog modal-sm hipal_pop" role="document">
-        {details && details}
+          {details && details}
         </div>
       </Modal>
       <Modal
