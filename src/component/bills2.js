@@ -40,8 +40,8 @@ const Bills = () => {
     tommorow.setHours(23, 59, 59, 999);
 
     const bills = permanentBills.filter((bill) => {
-      // console.log(bill.date);
-      // console.log(Date.parse("December 2, 2020"));
+      console.log(bill.date);
+      console.log(Date.parse("12/2/2020, 5:19:41 PM"));
       if (!bill.date) return false;
       return (
         bill.date <= Date.parse(tommorow) && bill.date >= Date.parse(today)
@@ -350,16 +350,16 @@ const Bills = () => {
                                             <td>{bill.employee}</td>
                                             <td>Rs {Math.round(total)}</td>
                                             <td className="bill_date">
-                                              {/* {date} */}
-                                              {moment(bill.date)
+                                              {date}
+                                              {/* {moment(bill.date)
                                                 .locale("en")
-                                                .format("DD-MM-YYYY")}
+                                                .format("DD-MM-YYYY")} */}
                                             </td>
                                             <td>
-                                              {/* {time} */}
-                                              {moment(bill.date)
+                                              {time}
+                                              {/* {moment(bill.date)
                                                 .locale("en")
-                                                .format("HH:mm:ss")}
+                                                .format("HH:mm:ss")} */}
                                             </td>
 
                                             {sessionStorage.getItem("role") ==
