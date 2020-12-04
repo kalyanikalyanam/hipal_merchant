@@ -4,7 +4,6 @@ import Sidebar from "./sidebar";
 import Header from "./header";
 import SimpleReactValidator from "simple-react-validator";
 import { Form } from "reactstrap";
-import { Link } from "react-router-dom";
 import swal from "sweetalert";
 import {Modal} from 'react-bootstrap'
 
@@ -230,8 +229,6 @@ class AllCustomers extends React.Component {
   };
 
   customeremailchange = (e) => {
-    var sessionId = sessionStorage.getItem("RoleId");
-    var username = sessionStorage.getItem("username");
     var businessId = sessionStorage.getItem("businessId");
     this.setState({
       customer_email: e.target.value,
@@ -804,7 +801,6 @@ class AllCustomers extends React.Component {
               </div>
 
               <div className="modal-footer">
-                <Link to="/AllCustomers">
                   <button
                     type="button"
                     className="btn close_btn"
@@ -813,7 +809,6 @@ class AllCustomers extends React.Component {
                   >
                     Close{" "}
                   </button>
-                </Link>
               </div>
             </div>
           </div>
