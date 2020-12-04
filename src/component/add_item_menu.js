@@ -33,7 +33,8 @@ class AddItemMenu extends React.Component {
       input: "",
       bestrecommendation: "UnSelect",
 
-      item_price:0, item_tax: 0,
+      item_price: 0,
+      item_tax: 0,
 
       category: "",
       sub_category: "",

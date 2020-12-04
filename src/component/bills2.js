@@ -11,6 +11,7 @@ const Bills = () => {
   const [loading, setLoading] = useState(false);
   const [bills, setBills] = useState([]);
   const [permanentBills, setPermanentBills] = useState([]);
+  const [paymentDetails, setPaymentDetails] = useState([{}]);
   const [show, setShow] = useState(false);
   const [grandTotal, setGrandTotal] = useState(0);
   const [search, setSearch] = useState("");
@@ -39,8 +40,8 @@ const Bills = () => {
     tommorow.setHours(23, 59, 59, 999);
 
     const bills = permanentBills.filter((bill) => {
-      console.log(bill.date);
-      console.log(Date.parse("December 2, 2020"));
+      // console.log(bill.date);
+      // console.log(Date.parse("December 2, 2020"));
       if (!bill.date) return false;
       return (
         bill.date <= Date.parse(tommorow) && bill.date >= Date.parse(today)
@@ -70,7 +71,52 @@ const Bills = () => {
         total += (temp * 2.5) / 100;
         grandTotal += Math.round(total);
       });
+
+    bills &&
+      bills.map((bill) => {
+        const PaymentDetailsList = Object.entries(bill.PaymentDetails);
+
+        PaymentDetailsList.forEach(([key, value]) => {
+          console.log(key);
+          console.log(value);
+        });
+        const paymentMethods = [
+          "Cash",
+          "Card",
+          "Hipal Credits",
+          "Employee",
+          "Cheque",
+          "UPI",
+          "Pending",
+          "Tip",
+        ];
+
+        let myArray = [];
+        myArray.push(bill.PaymentDetails);
+        console.log(bill.PaymentDetails);
+        console.log(myArray);
+
+        const mergePaymentDetails = (data) => {
+          const result = {};
+
+          data.forEach((list) => {
+            for (let [key, value] of Object.entries(list)) {
+              if (result[key]) {
+                result[key] += value;
+              } else {
+                result[key] = value;
+              }
+            }
+          });
+          return result;
+        };
+        const paymentDetails = mergePaymentDetails(myArray);
+
+        console.log(paymentDetails);
+      });
+
     setGrandTotal(grandTotal);
+    console.log(grandTotal);
   }, [bills]);
 
   const dateString = (date) => {
