@@ -73,6 +73,22 @@ export const reducer = (state, action) => {
             return updateObject(state, {balance: action.balance})
         case "PaymentDetails":
             return updateObject(state, {details: action.details})
+
+        case "MergeModalShow":
+            return updateObject(state, {mergeModal: true})
+        case "MergeModalHide":
+            return updateObject(state, {mergeModal: false})
+
+        case "MoveModalShow":
+            return updateObject(state, {moveModal: true})
+        case "MoveModalHide":
+            return updateObject(state, {moveModal: false})
+
+        case "SwapModalShow":
+            return updateObject(state, {swapModal: true})
+        case "SwapModalHide":
+            return updateObject(state, {swapModal: false})
+
         default: return state
     }
 }
