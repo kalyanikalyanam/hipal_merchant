@@ -72,7 +72,7 @@ const BillBottom = () => {
     const paymentMethods = [
         "Cash",
         "Card",
-        "Hipal Credits",
+        "HipalCredits",
         "Employee",
         "Cheque",
         "UPI",
@@ -149,7 +149,6 @@ const BillBottom = () => {
                 </div>
             </div>
         </div>
-
     )
 }
 

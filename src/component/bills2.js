@@ -7,11 +7,25 @@ import Header from "./header";
 import * as moment from "moment";
 import FilterModal from "./filterModal";
 
+const PaymentDetails = {
+  Card: 0,
+  Cash: 0,
+  Tip: 0,
+  Employee: 0,
+  Cheque: 0,
+  UPI: 0,
+  Cash: 0,
+  Pending: 0,
+  Card: 0,
+  HipalCredits: 0,
+};
 const Bills = () => {
+  const [paymentDetailsShow, setPaymentDetailsShow] = useState(false);
+  const [details, setDetails] = useState([]);
   const [loading, setLoading] = useState(false);
   const [bills, setBills] = useState([]);
   const [permanentBills, setPermanentBills] = useState([]);
-  const [paymentDetails, setPaymentDetails] = useState([{}]);
+  const [paymentDetails, setPaymentDetails] = useState(PaymentDetails);
   const [show, setShow] = useState(false);
   const [grandTotal, setGrandTotal] = useState(0);
   const [search, setSearch] = useState("");
@@ -40,8 +54,6 @@ const Bills = () => {
     tommorow.setHours(23, 59, 59, 999);
 
     const bills = permanentBills.filter((bill) => {
-      console.log(bill.date);
-      console.log(Date.parse("12/2/2020, 5:19:41 PM"));
       if (!bill.date) return false;
       return (
         bill.date <= Date.parse(tommorow) && bill.date >= Date.parse(today)
@@ -72,52 +84,45 @@ const Bills = () => {
         grandTotal += Math.round(total);
       });
 
+    const PaymentDetails = {
+      Card: 0,
+      Cash: 0,
+      Tip: 0,
+      Employee: 0,
+      Cheque: 0,
+      UPI: 0,
+      Cash: 0,
+      Pending: 0,
+      Card: 0,
+      HipalCredits: 0,
+    };
     bills &&
       bills.map((bill) => {
-        const PaymentDetailsList = Object.entries(bill.PaymentDetails);
-
-        PaymentDetailsList.forEach(([key, value]) => {
-          console.log(key);
-          console.log(value);
+        Object.keys(bill.PaymentDetails).forEach((key) => {
+          if (key !== `Hipal Credits`)
+            PaymentDetails[key] += parseInt(bill.PaymentDetails[key]);
         });
-        const paymentMethods = [
-          "Cash",
-          "Card",
-          "Hipal Credits",
-          "Employee",
-          "Cheque",
-          "UPI",
-          "Pending",
-          "Tip",
-        ];
-
-        let myArray = [];
-        myArray.push(bill.PaymentDetails);
-        console.log(bill.PaymentDetails);
-        console.log(myArray);
-
-        const mergePaymentDetails = (data) => {
-          const result = {};
-
-          data.forEach((list) => {
-            for (let [key, value] of Object.entries(list)) {
-              if (result[key]) {
-                result[key] += value;
-              } else {
-                result[key] = value;
-              }
-            }
-          });
-          return result;
-        };
-        const paymentDetails = mergePaymentDetails(myArray);
-
-        console.log(paymentDetails);
       });
-
+    console.log();
+    setPaymentDetails({ ...paymentDetails, ...PaymentDetails });
     setGrandTotal(grandTotal);
-    console.log(grandTotal);
   }, [bills]);
+
+  useEffect(() => {
+    const details = [];
+    {
+      paymentDetails &&
+        Object.keys(paymentDetails).forEach((key) => {
+          details.push(
+            <div>
+              <b>{key}</b>
+              {`: ₹${paymentDetails[key]}`}
+            </div>
+          );
+        });
+    }
+    setDetails(details);
+  }, [paymentDetails]);
 
   const dateString = (date) => {
     let year = date.getFullYear();
@@ -143,8 +148,18 @@ const Bills = () => {
   }
 
   const handleSearch = (e) => {
+    let today = new Date();
+    let tommorow = new Date();
+
+    today.setHours(0, 0, 0, 0);
+    tommorow.setHours(23, 59, 59, 999);
     const { value } = e.target;
-    let newBills = permanentBills;
+    let newBills = permanentBills.filter((bill) => {
+      if (!bill.date) return false;
+      return (
+        bill.date <= Date.parse(tommorow) && bill.date >= Date.parse(today)
+      );
+    });
     setSearch(value);
     if (value !== "") {
       const val = escapeRegexCharacters(value.trim());
@@ -167,7 +182,19 @@ const Bills = () => {
   };
 
   const reset = () => {
-    setBills(permanentBills);
+    let today = new Date();
+    let tommorow = new Date();
+
+    today.setHours(0, 0, 0, 0);
+    tommorow.setHours(23, 59, 59, 999);
+
+    const bills = permanentBills.filter((bill) => {
+      if (!bill.date) return false;
+      return (
+        bill.date <= Date.parse(tommorow) && bill.date >= Date.parse(today)
+      );
+    });
+    setBills(bills);
   };
   return (
     <>
@@ -250,7 +277,7 @@ const Bills = () => {
                           <div className="col-md-3 filterkalyani">
                             <button
                               type="button"
-                              class="btn btn-secondary mb-1"
+                              className="btn btn-secondary mb-1"
                               onClick={() => {
                                 setShow(true);
                               }}
@@ -268,6 +295,13 @@ const Bills = () => {
                           </div>
                           <div className="col-md-3 filterkalyani">
                             <b>Total Amount : Rs</b> {grandTotal && grandTotal}
+                            <button
+                              onClick={() => {
+                                setPaymentDetailsShow(true);
+                              }}
+                            >
+                              PaymentDetails
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -404,6 +438,16 @@ const Bills = () => {
           </div>
         </div>
       </div>
+      <Modal
+        show={paymentDetailsShow}
+        onHide={() => {
+          setPaymentDetailsShow(false);
+        }}
+      >
+        <div className="modal-dialog modal-sm hipal_pop" role="document">
+          {details && details}
+        </div>
+      </Modal>
       <Modal
         show={show}
         onHide={() => {
