@@ -133,21 +133,21 @@ const MainPage = (props) => {
                         </div>
                     </div>
                 </div>
-                <Modal isOpen={reducerState.advacedOptionModal} sytle={customStyles}>
+                <BootstrapModal show={reducerState.advacedOptionModal} sytle={customStyles}>
                     <AdvancedOptions />
-                </Modal>
-                <Modal isOpen={reducerState.editModal} style={customStyles}>
+                </BootstrapModal>
+                <BootstrapModal show={reducerState.editModal} style={customStyles}>
                     <EditModal item={reducerState.editModalItem} dbRef={dbRef}  edit={reducerState.edit} />
-                </Modal>
-                <Modal isOpen={reducerState.customerToTableModal} style={customStyles}>
+                </BootstrapModal>
+                <BootstrapModal show={reducerState.customerToTableModal} style={customStyles}>
                     <AddCustomerModal dbRef={dbRef} />
-                </Modal>
+                </BootstrapModal>
                 <BootstrapModal show={reducerState.addUserModal}>
                     <AddCustomerForm />
                 </BootstrapModal>
-                <Modal isOpen={reducerState.kotModal} style={customStyles}>
+                <BootstrapModal show={reducerState.kotModal} style={customStyles}>
                     <KotModal data={reducerState.kotItems} />
-                </Modal>
+                </BootstrapModal>
                 <BootstrapModal show={reducerState.billViewModal}>
                     <BillModal data={reducerState.billData} />
                 </BootstrapModal>
