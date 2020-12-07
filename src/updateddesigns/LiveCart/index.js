@@ -5,7 +5,6 @@ import { db } from '../../config'
 import {reducer, initState} from './reducer'
 import  Table from './table' 
 import {tableContext, dispatchContext, stateContext, balanceContext} from './contexts'
-import Modal from 'react-modal'
 import {Modal as BootstrapModal} from 'react-bootstrap'
 import AdvancedOptions from './Modals/advancedOptions'
 import RightSideBar from './rightSidebar'
@@ -16,17 +15,6 @@ import AddCustomerForm from './Modals/addCustomerFormModal'
 import KotModal from './Modals/kotModal'
 import BillModal from './Modals/billModal'
 import Loader from '../../component/Loader'
-const customStyles = {
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-    minWidht: "30%",
-  },
-};
 
 const MainPage = (props) => {
     const [reducerState, dispatch] = useReducer(reducer, initState)
@@ -133,23 +121,91 @@ const MainPage = (props) => {
                         </div>
                     </div>
                 </div>
-                <BootstrapModal show={reducerState.advacedOptionModal} sytle={customStyles}>
+
+                {/* Modals */}
+                <BootstrapModal 
+                    show={reducerState.advacedOptionModal}
+                    onHide={() => {
+                        dispatch({
+                            type: 'AdvanceOptionsModalHide'
+                        })
+                    }}
+                >
                     <AdvancedOptions />
                 </BootstrapModal>
-                <BootstrapModal show={reducerState.editModal} style={customStyles}>
+                <BootstrapModal 
+                    show={reducerState.editModal}
+                    onHide={() => {
+                        dispatch({
+                            type: 'EditModalHide'
+                        })
+                    }}
+                >
                     <EditModal item={reducerState.editModalItem} dbRef={dbRef}  edit={reducerState.edit} />
                 </BootstrapModal>
-                <BootstrapModal show={reducerState.customerToTableModal} style={customStyles}>
+                <BootstrapModal 
+                    show={reducerState.customerToTableModal}
+                    onHide={() => {
+                        dispatch({
+                            type: 'CustomerToTableModalHide'
+                        })
+                    }}
+
+                >
                     <AddCustomerModal dbRef={dbRef} />
                 </BootstrapModal>
                 <BootstrapModal show={reducerState.addUserModal}>
                     <AddCustomerForm />
                 </BootstrapModal>
-                <BootstrapModal show={reducerState.kotModal} style={customStyles}>
+                <BootstrapModal 
+                    show={reducerState.kotModal} 
+                    onHide={() => {
+                        dispatch({
+                            type: 'KOTModalHide'
+                        })
+                    }}
+                >
                     <KotModal data={reducerState.kotItems} />
                 </BootstrapModal>
-                <BootstrapModal show={reducerState.billViewModal}>
+                <BootstrapModal 
+                    show={reducerState.billViewModal}
+                    onHide={() => {
+                        dispatch({
+                            type: 'BillViewModalHide'
+                        })
+                    }}
+                >
                     <BillModal data={reducerState.billData} />
+                </BootstrapModal>
+                <BootstrapModal 
+                    show={reducerState.moveModal}
+                    onHide={() => {
+                        dispatch({
+                            type: 'MoveModalHide'
+                        })
+                    }}
+                >
+                <div>MoveModal</div>
+                </BootstrapModal>
+                <BootstrapModal 
+                    show={reducerState.mergeModal}
+                    onHide={() => {
+                        dispatch({
+                            type: 'MergeModalHide'
+                        })
+                    }}
+                >
+                    <div>MergeModal</div>
+                </BootstrapModal>
+                <BootstrapModal 
+                    show={reducerState.swapModal}
+                    onHide={() => {
+                        dispatch({
+                            type: 'SwapModalHide'
+                        })
+                    }}
+                >
+                    <div>SwapModal</div>
                 </BootstrapModal>
             </balanceContext.Provider>
             </tableContext.Provider></stateContext.Provider></dispatchContext.Provider>

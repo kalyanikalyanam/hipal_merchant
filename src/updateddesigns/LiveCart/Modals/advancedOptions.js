@@ -19,7 +19,6 @@ const AdvancedOptions = () => {
         })
     }
     const handleClose = () => {
-        console.log("here")
         dispatch({
             type: "AdvanceOptionsModalHide"
         })
