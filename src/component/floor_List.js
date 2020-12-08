@@ -2,22 +2,28 @@ import React from "react";
 import firebase from "../config";
 import Sidebar from "./sidebar";
 import Header from "./header";
+import { db } from "../config";
 import SimpleReactValidator from "simple-react-validator";
-import FileUploader from "react-firebase-file-uploader";
 import { Form } from "reactstrap";
-import { Link } from "react-router-dom";
 import swal from "sweetalert";
+import { Modal } from "react-bootstrap";
 class FloorList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       created_on: new Date().toLocaleString(),
       mobile_message: "",
+
+      show: false,
+      viewFloor: false,
+      EditFloor: false,
     };
 
     this.onChange = this.onChange.bind(this);
 
     this.deleteItem = this.deleteItem.bind(this);
+    this.onEditSubmit = this.onEditSubmit.bind(this);
+    this.editFloor = this.editFloor.bind(this);
 
     this.viewFloor = this.viewFloor.bind(this);
 
@@ -29,8 +35,6 @@ class FloorList extends React.Component {
             "The :attribute must be at least 6 and at most 30 with 1 numeric,1 special charac" +
             "ter and 1 alphabet.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(
                 val,
@@ -50,8 +54,6 @@ class FloorList extends React.Component {
         whitespace: {
           message: "The :attribute not allowed first whitespace   characters.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /[^\s\\]/) &&
               params.indexOf(val) === -1
@@ -61,8 +63,6 @@ class FloorList extends React.Component {
         specialChar: {
           message: "The :attribute not allowed special   characters.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^[ A-Za-z0-9_@./#&+-]*$/i) &&
               params.indexOf(val) === -1
@@ -72,8 +72,6 @@ class FloorList extends React.Component {
         specialCharText: {
           message: "The :attribute may only contain letters, dot and spaces.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^[ A-Za-z_@./#&+-]*$/i) &&
               params.indexOf(val) === -1
@@ -84,8 +82,6 @@ class FloorList extends React.Component {
         zip: {
           message: "Invalid Pin Code",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^(\d{5}(\d{4})?)?$/i) &&
               params.indexOf(val) === -1
@@ -95,8 +91,6 @@ class FloorList extends React.Component {
         website: {
           message: "The Url should be example.com ",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(
                 val,
@@ -127,9 +121,7 @@ class FloorList extends React.Component {
     if (sessionId) {
       console.log(sessionId);
 
-      firebase
-        .firestore()
-        .collection("/merchant_users")
+      db.collection("/merchant_users")
         .doc(sessionId)
         .get()
         .then((snapshot) => {
@@ -144,9 +136,7 @@ class FloorList extends React.Component {
           });
         });
       var businessId = sessionStorage.getItem("businessId");
-      firebase
-        .firestore()
-        .collection("/businessdetails")
+      db.collection("/businessdetails")
         .doc(businessId)
         .get()
         .then((snapshot) => {
@@ -159,31 +149,18 @@ class FloorList extends React.Component {
 
     this.floorsList();
   }
+
   floorsList = async () => {
-    var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
 
     this.setState({ loading: true });
-    await firebase
-      .firestore()
-      .collection("floors")
-      // .where("sessionId", "==", sessionId)
+    db.collection("floors")
       .where("businessId", "==", businessId)
       .get()
       .then((querySnapshot) => {
         var data = [];
         querySnapshot.forEach((childSnapShot) => {
-          const GSTData = {
-            floorId: childSnapShot.id,
-
-            floor_capacity: childSnapShot.data().floor_capacity,
-            floor_name: childSnapShot.data().floor_name,
-            floor_notes: childSnapShot.data().floor_notes,
-            businessId: childSnapShot.data().businessId,
-            sessionId: childSnapShot.data().sessionId,
-          };
-
-          data.push(GSTData);
+          data.push({ ...childSnapShot.data(), floorId: childSnapShot.id });
         });
         this.setState({
           floorsList: data,
@@ -194,29 +171,19 @@ class FloorList extends React.Component {
       .catch((err) => {
         console.log(err);
       });
-  };
-
-  viewFloor = async (id) => {
-    const { floorTd } = this.props.match.params;
-    console.log(floorTd);
-
-    var ref = await firebase
-      .firestore()
+    this.unsubscribe = db
       .collection("floors")
-      .doc(id)
-      .get()
-
-      .then((snapshot) => {
-        var userData = snapshot.data();
-        console.log(userData);
-        this.setState({
-          floor_capacity: userData.floor_capacity,
-          floor_name: userData.floor_name,
-          floor_notes: userData.floor_notes,
-          sessionId: userData.sessionId,
-          businessId: userData.businessId,
+      .where("businessId", "==", businessId)
+      .onSnapshot((querySnapshot) => {
+        var data = [];
+        querySnapshot.forEach((childSnapShot) => {
+          data.push({ ...childSnapShot.data(), floorId: childSnapShot.id });
         });
-        //console.log(this.state.pageTitle);
+        this.setState({
+          floorsList: data,
+          countPage: data.length,
+          loading: false,
+        });
       });
   };
 
@@ -252,49 +219,106 @@ class FloorList extends React.Component {
       .getDownloadURL()
       .then((url) => this.setState({ employee_adharcard: url }));
   };
-
   handleSubmit = async (event) => {
     event.preventDefault();
     if (this.validator.allValid()) {
       var sessionId = sessionStorage.getItem("RoleId");
       var username = sessionStorage.getItem("username");
       var businessId = sessionStorage.getItem("businessId");
-      var key = Math.round(new Date().getTime() / 1000);
-      let dbCon = await firebase.firestore().collection("/floors").add({
-        created_on: this.state.created_on,
+      await db
+        .collection("/floors")
 
-        floor_capacity: this.state.floor_capacity,
-        floor_name: this.state.floor_name,
-        floor_notes: this.state.floor_notes,
+        .add({
+          created_on: this.state.created_on,
 
-        sessionId: sessionId,
-        username: username,
-        businessId: businessId,
+          floor_capacity: this.state.floor_capacity,
+          floor_name: this.state.floor_name,
+          floor_notes: this.state.floor_notes,
+
+          sessionId: sessionId,
+          username: username,
+          businessId: businessId,
+        });
+
+      this.setState({
+        employer_sevice_message: "Data Added",
+
+        floor_capacity: "",
+        floor_name: "",
+        floor_notes: "",
+        show: false,
       });
-
-      window.location.href = "/FloorList";
-      // this
-      //     .props
-      //     .history
-      //     .push("/AllEmployees");
     } else {
       this.validator.showMessages();
       this.forceUpdate();
     }
   };
 
-  floornameChange = (e) => {
+  viewFloor = (id) => {
+    this.setState({ viewFloor: true });
+
+    var floor;
+    for (var i = 0; i < this.state.floorsList.length; i++) {
+      if (this.state.floorsList[i].floorId === id) {
+        floor = this.state.floorsList[i];
+        break;
+      }
+    }
+    this.setState({
+      floor_capacity: floor.floor_capacity,
+      floor_name: floor.floor_name,
+      floor_notes: floor.floor_notes,
+      floorId: id,
+    });
+  };
+
+  editFloor = (id) => {
+    this.setState({ editFloor: true });
+    var floor;
+    for (var i = 0; i < this.state.floorsList.length; i++) {
+      if (this.state.floorsList[i].floorId === id) {
+        floor = this.state.floorsList[i];
+        break;
+      }
+    }
+    console.log(floor);
+    this.setState({
+      floor_capacity: floor.floor_capacity,
+      floor_name: floor.floor_name,
+      floor_notes: floor.floor_notes,
+      floorId: id,
+    });
+  };
+  onEditSubmit = async (e) => {
     var sessionId = sessionStorage.getItem("RoleId");
     var username = sessionStorage.getItem("username");
+    var businessId = sessionStorage.getItem("businessId");
+    e.preventDefault();
+    await db.collection("floors").doc(this.state.floorId).update({
+      floor_capacity: this.state.floor_capacity,
+      floor_name: this.state.floor_name,
+      floor_notes: this.state.floor_notes,
+
+      sessionId: sessionId,
+      username: username,
+      businessId: businessId,
+    });
+    this.setState({
+      editFloor: false,
+      floor_capacity: "",
+      floor_name: "",
+      floor_notes: "",
+      floorId: "",
+    });
+  };
+
+  floornameChange = (e) => {
     var businessId = sessionStorage.getItem("businessId");
     this.setState({
       floor_name: e.target.value,
     });
     if (this.state.validError != true) {
-      var ref = firebase
-        .firestore()
-        .collection("floors")
-        // .where("sessionId", "==", sessionId)
+      db.collection("floors")
         .where("businessId", "==", businessId)
         .where("floor_name", "==", e.target.value)
         .get()
@@ -325,7 +349,7 @@ class FloorList extends React.Component {
     }).then((willDelete) => {
       if (willDelete) {
         console.log(id);
-        var playersRef = firebase.firestore().collection("/floors").doc(id);
+        var playersRef = db.collection("/floors").doc(id);
         playersRef.delete();
       } else {
       }
@@ -344,24 +368,9 @@ class FloorList extends React.Component {
         <div className="page-wrapper">
           <Sidebar />
 
-          {/* <!-- PAGE CONTAINER--> */}
           <div className="page-container">
             <Header />
 
-            {/* <header className="header-desktop">
-                
-                <div className="logo_hipal">
-                    <a href="#">
-                        <img src="/images/icon/logo.svg" alt="Hipal Admin" />
-                    </a>
-                </div>
-                
-                
-                Welcome Back Varun
-                </header> */}
-            {/* <!-- HEADER DESKTOP--> */}
-
-            {/* <!-- MAIN CONTENT--> */}
             <div className="main-content">
               <div className="section__content">
                 <div className="container-fluid">
@@ -428,25 +437,14 @@ class FloorList extends React.Component {
                   <div className="row mt-30">
                     <div className="col-md-5 p-0">
                       <div className="overview-wrap">
-                        {/* <div className="order_btns">
-                          <button
-                            type="button"
-                            data-toggle="modal"
-                            data-target="#add_floor"
-                          >
-                            <span className="btn add_ord m-l-0">
-                              <img src="/images/icon/add_plus_icon_w.svg" />
-                              ADD Floors
-                            </span>
-                          </button>
-                        </div> */}
                         {sessionStorage.getItem("role") == "Merchant" ||
                         sessionStorage.getItem("addfloors") == "Yes" ? (
                           <div className="order_btns">
                             <span
                               className="btn add_ord m-l-0 p_btn"
-                              data-toggle="modal"
-                              data-target="#add_floor"
+                              onClick={() => {
+                                this.setState({ show: true });
+                              }}
                             >
                               <img src="/images/icon/add_plus_icon_w.svg" />
                               Add Floors
@@ -532,14 +530,13 @@ class FloorList extends React.Component {
                                         "editdeletefloors"
                                       ) == "Yes" ? (
                                         <>
-                                          <Link
-                                            to={`/EditFloor/${floor.floorId}`}
-                                          >
-                                            <img
-                                              src="images/icon/edit_icon_blue.svg"
-                                              className="edit_delete"
-                                            />
-                                          </Link>
+                                          <img
+                                            src="images/icon/edit_icon_blue.svg"
+                                            className="edit_delete"
+                                            onClick={() => {
+                                              this.editFloor(floor.floorId);
+                                            }}
+                                          />
 
                                           <img
                                             src="images/icon/delete_cross.svg"
@@ -553,11 +550,7 @@ class FloorList extends React.Component {
                                       ) : (
                                         ""
                                       )}
-                                      <button
-                                        type="button"
-                                        data-toggle="modal"
-                                        data-target="#view_floor"
-                                      >
+                                      <button type="button">
                                         <span
                                           className="btn view_order_btn_td"
                                           onClick={this.viewFloor.bind(
@@ -583,13 +576,11 @@ class FloorList extends React.Component {
           </div>
         </div>
 
-        <div
-          className="modal fade"
-          id="add_floor"
-          tabindex="-1"
-          role="dialog"
-          aria-labelledby="smallmodalLabel"
-          aria-hidden="true"
+        <Modal
+          show={this.state.show}
+          onHide={() => {
+            this.setState({ show: false });
+          }}
         >
           <div className="modal-dialog modal-sm hipal_pop" role="document">
             <div className="modal-content">
@@ -637,18 +628,6 @@ class FloorList extends React.Component {
                         <label className=" form-control-label">Capacity</label>
                       </div>
                       <div className="col-12 col-md-6">
-                        {/* <select
-                          name="floor_capacity"
-                          value={this.state.floor_capacity}
-                          onChange={this.onChange}
-                          id="select"
-                          className="form-control edit_product"
-                        >
-                          <option value="0">Select Capacity</option>
-                          <option value="60 Members">60 Members</option>
-                          <option value="80 Members">80 Members</option>
-                          <option value="100 Members">100 Members</option>
-                        </select> */}
                         <input
                           type="number"
                           id="text-input"
@@ -697,7 +676,15 @@ class FloorList extends React.Component {
                   <button
                     type="button"
                     className="btn close_btn"
-                    data-dismiss="modal"
+                    onClick={() =>
+                      this.setState({
+                        show: false,
+                        floor_capacity: "",
+                        floor_name: "",
+                        floor_notes: "",
+                        floorId: "",
+                      })
+                    }
                   >
                     Close
                   </button>
@@ -708,15 +695,10 @@ class FloorList extends React.Component {
               </Form>
             </div>
           </div>
-        </div>
-
-        <div
-          className="modal fade"
-          id="view_floor"
-          tabindex="-1"
-          role="dialog"
-          aria-labelledby="smallmodalLabel"
-          aria-hidden="true"
+        </Modal>
+        <Modal
+          show={this.state.viewFloor}
+          onHide={() => this.setState({ viewFloor: false })}
         >
           <div className="modal-dialog modal-sm hipal_pop" role="document">
             <div className="modal-content">
@@ -765,14 +747,141 @@ class FloorList extends React.Component {
                 <button
                   type="button"
                   className="btn close_btn"
-                  data-dismiss="modal"
+                  onClick={() => {
+                    this.setState({
+                      viewFloor: false,
+                      floor_capacity: "",
+                      floor_name: "",
+                      floor_notes: "",
+                      floorId: "",
+                    });
+                  }}
                 >
                   Close
                 </button>
               </div>
             </div>
           </div>
-        </div>
+        </Modal>
+        <Modal
+          show={this.state.editFloor}
+          onHide={() => this.setState({ editFloor: false })}
+        >
+          <div className="modal-dialog modal-sm hipal_pop" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="smallmodalLabel">
+                  Edit Floor
+                </h5>
+              </div>
+
+              <Form onSubmit={this.onEditSubmit}>
+                <div className="modal-body product_edit">
+                  <div className="col-12 w-100-row">
+                    <div className="row form-group">
+                      <div className="col col-md-4">
+                        <label className=" form-control-label">
+                          Floor Name
+                        </label>
+                      </div>
+                      <div className="col-12 col-md-6">
+                        <input
+                          type="text"
+                          id="text-input"
+                          name="floor_name"
+                          value={this.state.floor_name}
+                          onChange={this.floornameChange}
+                          placeholder="First Floor"
+                          className="form-control edit_product"
+                        />
+                        <div className="text-danger">
+                          {" "}
+                          {this.state.mobile_message}
+                        </div>
+                      </div>
+                      {this.validator.message(
+                        "Floor Name",
+                        this.state.floor_name,
+                        "required|whitespace|min:2|max:70"
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="col-12 w-100-row">
+                    <div className="row form-group">
+                      <div className="col col-md-4">
+                        <label className=" form-control-label">Capacity</label>
+                      </div>
+                      <div className="col-12 col-md-6">
+                        <input
+                          type="number"
+                          id="text-input"
+                          name="floor_capacity"
+                          value={this.state.floor_capacity}
+                          onChange={this.onChange}
+                          placeholder=""
+                          className="form-control edit_product"
+                        />
+                      </div>
+                      {this.validator.message(
+                        "Capacity",
+                        this.state.floor_capacity,
+                        "required"
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="col-12 w-100-row">
+                    <div className="row form-group">
+                      <div className="col col-md-4">
+                        <label className=" form-control-label">Notes</label>
+                      </div>
+                      <div className="col-12 col-md-6">
+                        <textarea
+                          name="floor_notes"
+                          value={this.state.floor_notes}
+                          onChange={this.onChange}
+                          id="textarea-input"
+                          rows="3"
+                          placeholder="Table on first floor with window view"
+                          className="form-control edit_product"
+                        ></textarea>
+                      </div>
+
+                      {this.validator.message(
+                        "Floor Name",
+                        this.state.floor_notes,
+                        "required|whitespace|min:2|max:150"
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn close_btn"
+                    onClick={() => {
+                      this.setState({
+                        editFloor: false,
+                        floor_capacity: "",
+                        floor_name: "",
+                        floor_notes: "",
+                        floorId: "",
+                      });
+                    }}
+                  >
+                    Close
+                  </button>
+
+                  <button type="submit" className="btn save_btn">
+                    Save
+                  </button>
+                </div>
+              </Form>
+            </div>
+          </div>
+        </Modal>
       </>
     );
   }

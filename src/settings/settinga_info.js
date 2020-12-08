@@ -1,32 +1,22 @@
 import React from "react";
 import firebase from "../config";
-import Sidebar from "../component/sidebar";
-import Header from "../component/header";
 import SimpleReactValidator from "simple-react-validator";
-
 import { Form } from "reactstrap";
-import { Link } from "react-router-dom";
-import swal from "sweetalert";
 import { Alert } from "reactstrap";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 class SettingsInfo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      employer_sevice_message: "",
-      email_message: "",
-      mobile_message: "",
-
-      customer_name: "",
-      customer_email: "",
-      customer_phonenumber: "",
-      customer_notes: "",
-
       easy_location_guide: "",
       average_price: "",
       help_line_number: "",
       cusine: "",
+      address: "",
+      theme: "snow",
     };
-
+    this.handleChange1 = this.handleChange1.bind(this);
     this.onChange = this.onChange.bind(this);
 
     this.validator = new SimpleReactValidator({
@@ -127,6 +117,56 @@ class SettingsInfo extends React.Component {
       },
     });
   }
+  modules = {
+    toolbar: [
+      [
+        {
+          header: [1, 2, 3, 4, 5, 6, false],
+        },
+      ],
+      ["bold", "italic", "underline", "strike", "blockquote"],
+      [
+        {
+          list: "ordered",
+        },
+        {
+          list: "bullet",
+        },
+        {
+          indent: "-1",
+        },
+        {
+          indent: "+1",
+        },
+      ],
+      ["link", "image"],
+      ["clean"],
+      [
+        {
+          color: [],
+        },
+        {
+          background: [],
+        },
+      ],
+    ],
+  };
+
+  formats = [
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "blockquote",
+    "list",
+    "bullet",
+    "indent",
+    "link",
+    "image",
+    "color",
+    "background",
+  ];
 
   componentDidMount() {
     this.setState({ loading: true });
@@ -193,7 +233,7 @@ class SettingsInfo extends React.Component {
               easy_location_guide: info.easy_location_guide,
               average_price: info.average_price,
               help_line_number: info.help_line_number,
-
+              address: info.address,
               cusine: info.cusine,
               businessId: info.businessId,
               sessionId: info.sessionId,
@@ -221,6 +261,7 @@ class SettingsInfo extends React.Component {
           help_line_number: this.state.help_line_number,
 
           cusine: this.state.cusine,
+          address: this.state.address,
 
           sessionId: sessionId,
           username: username,
@@ -242,13 +283,18 @@ class SettingsInfo extends React.Component {
       this.forceUpdate();
     }
   };
-
+  handleChange1 = (value) => {
+    this.setState({ address: value });
+  };
   onChange = (event) => {
     this.setState({
       [event.target.name]: event.target.value,
     });
   };
   render() {
+    const divStyle = {
+      height: "50px",
+    };
     return (
       <>
         <div className="text-danger"> {this.state.employer_sevice_message}</div>
@@ -357,6 +403,36 @@ class SettingsInfo extends React.Component {
                   this.state.cusine,
                   "required|whitespace|min:2|max:70"
                 )}
+              </div>
+            </div>
+
+            <div className="col-md-6">
+              <div className="row form-group">
+                <div className="col col-md-4">
+                  <label className=" form-control-label">Address</label>
+                </div>
+                <div className="col-12 col-md-8">
+                  {/* <textarea
+                    name="address"
+                    onChange={this.onChange}
+                    value={this.state.address}
+                    placeholder="Enter text here"
+                    className="form-control"
+                  ></textarea> */}
+                  <ReactQuill
+                    theme={this.state.theme}
+                    value={this.state.address}
+                    placeholder="Enter Description"
+                    onChange={this.handleChange1}
+                    className="add-new-post__editor mb-1"
+                    style={divStyle}
+                  />
+                  {this.validator.message(
+                    "address",
+                    this.state.address,
+                    "required|whitespace|min:2|max:500"
+                  )}
+                </div>
               </div>
             </div>
 

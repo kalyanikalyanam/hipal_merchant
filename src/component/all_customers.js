@@ -1,17 +1,17 @@
 import React from "react";
-import {db} from "../config";
+import { db } from "../config";
 import Sidebar from "./sidebar";
 import Header from "./header";
 import SimpleReactValidator from "simple-react-validator";
 import { Form } from "reactstrap";
 import swal from "sweetalert";
-import {Modal} from 'react-bootstrap'
+import { Modal } from "react-bootstrap";
 
 class AllCustomers extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      created_on: new Date().toLocaleString(),
+      created_on: Date.now(),
       employer_sevice_message: "",
       email_message: "",
       mobile_message: "",
@@ -23,11 +23,11 @@ class AllCustomers extends React.Component {
       customer_notes: "",
       show: false,
       viewCustomer: false,
-      editCustomer: false
+      editCustomer: false,
     };
 
-    this.onEditSubmit = this.onEditSubmit.bind(this)
-    this.editCustomer = this.editCustomer.bind(this)
+    this.onEditSubmit = this.onEditSubmit.bind(this);
+    this.editCustomer = this.editCustomer.bind(this);
     this.onChange = this.onChange.bind(this);
     this.viewCustomer = this.viewCustomer.bind(this);
     this.deleteItem = this.deleteItem.bind(this);
@@ -125,8 +125,7 @@ class AllCustomers extends React.Component {
     if (sessionId) {
       console.log(sessionId);
 
-      db
-        .collection("/merchant_users")
+      db.collection("/merchant_users")
         .doc(sessionId)
         .get()
         .then((snapshot) => {
@@ -141,8 +140,7 @@ class AllCustomers extends React.Component {
           });
         });
       var businessId = sessionStorage.getItem("businessId");
-      db
-        .collection("/businessdetails")
+      db.collection("/businessdetails")
         .doc(businessId)
         .get()
         .then((snapshot) => {
@@ -156,12 +154,10 @@ class AllCustomers extends React.Component {
     this.customersList();
   }
   customersList = async () => {
-    var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
 
     this.setState({ loading: true });
-    db
-      .collection("customers")
+    db.collection("customers")
       .where("businessId", "==", businessId)
       .get()
       .then((querySnapshot) => {
@@ -191,7 +187,7 @@ class AllCustomers extends React.Component {
           countPage: data.length,
           loading: false,
         });
-      })
+      });
   };
 
   handleSubmit = async (event) => {
@@ -220,7 +216,7 @@ class AllCustomers extends React.Component {
         customer_email: "",
         customer_phonenumber: "",
         customer_notes: "",
-        show: false
+        show: false,
       });
     } else {
       this.validator.showMessages();
@@ -234,8 +230,7 @@ class AllCustomers extends React.Component {
       customer_email: e.target.value,
     });
     if (this.state.validError != true) {
-      db
-        .collection("customers")
+      db.collection("customers")
         .where("businessId", "==", businessId)
         .where("customer_email", "==", e.target.value)
         .get()
@@ -261,7 +256,7 @@ class AllCustomers extends React.Component {
       customer_phonenumber: e.target.value,
     });
     if (this.state.validError != true) {
-      var ref = db 
+      var ref = db
         .collection("customers")
         .where("businessId", "==", businessId)
         .where("customer_phonenumber", "==", e.target.value)
@@ -305,13 +300,13 @@ class AllCustomers extends React.Component {
     });
   };
   viewCustomer = (id) => {
-    this.setState({viewCustomer: true})
+    this.setState({ viewCustomer: true });
 
-    var customer
-    for(var i = 0; i < this.state.customersList.length; i++){
-      if(this.state.customersList[i].customerId === id){
-        customer = this.state.customersList[i]
-        break
+    var customer;
+    for (var i = 0; i < this.state.customersList.length; i++) {
+      if (this.state.customersList[i].customerId === id) {
+        customer = this.state.customersList[i];
+        break;
       }
     }
     this.setState({
@@ -319,46 +314,45 @@ class AllCustomers extends React.Component {
       customer_email: customer.customer_email,
       customer_phonenumber: customer.customer_phonenumber,
       customer_notes: customer.customer_notes,
-      customerId: id
+      customerId: id,
     });
   };
 
   editCustomer = (id) => {
-    this.setState({editCustomer: true})
-    var customer
-    for(var i = 0; i < this.state.customersList.length; i++){
-      if(this.state.customersList[i].customerId === id){
-        customer = this.state.customersList[i]
-        break
+    this.setState({ editCustomer: true });
+    var customer;
+    for (var i = 0; i < this.state.customersList.length; i++) {
+      if (this.state.customersList[i].customerId === id) {
+        customer = this.state.customersList[i];
+        break;
       }
     }
-    console.log(customer)
+    console.log(customer);
     this.setState({
       customer_name: customer.customer_name,
       customer_email: customer.customer_email,
       customer_phonenumber: customer.customer_phonenumber,
       customer_notes: customer.customer_notes,
-      customerId: id
+      customerId: id,
     });
-
-  }
+  };
   onEditSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     await db.collection("customers").doc(this.state.customerId).update({
-          customer_name: this.state.customer_name,
-          customer_email: this.state.customer_email,
-          customer_phonenumber: this.state.customer_phonenumber,
-          customer_notes: this.state.customer_notes,
-    })
+      customer_name: this.state.customer_name,
+      customer_email: this.state.customer_email,
+      customer_phonenumber: this.state.customer_phonenumber,
+      customer_notes: this.state.customer_notes,
+    });
     this.setState({
       editCustomer: false,
-      customer_name:"", 
-      customer_email:"", 
-      customer_phonenumber:"", 
-      customer_notes:"",
-      customerId: ""
-    })
-  }
+      customer_name: "",
+      customer_email: "",
+      customer_phonenumber: "",
+      customer_notes: "",
+      customerId: "",
+    });
+  };
   render() {
     return (
       <>
@@ -398,8 +392,7 @@ class AllCustomers extends React.Component {
                               </div>
                             </div>
                           </div>
-                          <div className="col-md-3">
-                          </div>
+                          <div className="col-md-3"></div>
                           <div className="col-md-3 ">
                             <div className="profile_user">
                               <span className="usericon">
@@ -424,7 +417,9 @@ class AllCustomers extends React.Component {
                         <div className="order_btns">
                           <span
                             className="btn add_ord m-l-0 p_btn"
-                            onClick={() => {this.setState({show: true})}}
+                            onClick={() => {
+                              this.setState({ show: true });
+                            }}
                           >
                             <img src="/images/icon/add_plus_icon_w.svg" />
                             Add Customers
@@ -481,14 +476,15 @@ class AllCustomers extends React.Component {
                                                   "role"
                                                 ) == "Merchant" ? (
                                                   <>
-                                                   
-                                                      <img
-                                                        src="images/icon/edit_icon_blue.svg"
-                                                        className="edit_delete"
-                                                        onClick={() => {
-                                                          this.editCustomer(customer.customerId)
-                                                        }}
-                                                      />
+                                                    <img
+                                                      src="images/icon/edit_icon_blue.svg"
+                                                      className="edit_delete"
+                                                      onClick={() => {
+                                                        this.editCustomer(
+                                                          customer.customerId
+                                                        );
+                                                      }}
+                                                    />
                                                     <img
                                                       src="images/icon/delete_cross.svg"
                                                       onClick={this.deleteItem.bind(
@@ -521,14 +517,16 @@ class AllCustomers extends React.Component {
                                                   "deleteeditcustomers"
                                                 ) == "Yes" ? (
                                                   <>
-                                                      <img
-                                                        src="images/icon/edit_icon_blue.svg"
-                                                        className="edit_delete"
-                                                        onClick={() => {this.editCustomer.bind(
+                                                    <img
+                                                      src="images/icon/edit_icon_blue.svg"
+                                                      className="edit_delete"
+                                                      onClick={() => {
+                                                        this.editCustomer.bind(
                                                           this,
                                                           customer.customerId
-                                                        )}}
-                                                      />
+                                                        );
+                                                      }}
+                                                    />
                                                     <img
                                                       src="images/icon/delete_cross.svg"
                                                       onClick={this.deleteItem.bind(
@@ -584,7 +582,12 @@ class AllCustomers extends React.Component {
           </div>
         </div>
 
-        <Modal show={this.state.show} onHide={() => {this.setState({show: false})}}>
+        <Modal
+          show={this.state.show}
+          onHide={() => {
+            this.setState({ show: false });
+          }}
+        >
           <div className="modal-dialog modal-sm hipal_pop" role="document">
             <div className="modal-content">
               <div className="modal-header">
@@ -705,13 +708,21 @@ class AllCustomers extends React.Component {
                 </div>
 
                 <div className="modal-footer">
-                    <button
-                      type="button"
-                      className="btn close_btn"
-                      onClick={() => this.setState({show: false})}
-                    >
-                      Close{" "}
-                    </button>
+                  <button
+                    type="button"
+                    className="btn close_btn"
+                    onClick={() =>
+                      this.setState({
+                        show: false,
+                        customer_name: "",
+                        customer_email: "",
+                        customer_phonenumber: "",
+                        customer_notes: "",
+                      })
+                    }
+                  >
+                    Close{" "}
+                  </button>
                   <button type="submit" className="btn save_btn">
                     Save
                   </button>
@@ -720,7 +731,10 @@ class AllCustomers extends React.Component {
             </div>
           </div>
         </Modal>
-        <Modal show={this.state.viewCustomer} onHide ={() => this.setState({viewCustomer: false})}>
+        <Modal
+          show={this.state.viewCustomer}
+          onHide={() => this.setState({ viewCustomer: false })}
+        >
           <div className="modal-dialog modal-sm hipal_pop" role="document">
             <div className="modal-content">
               <div className="modal-header">
@@ -801,24 +815,35 @@ class AllCustomers extends React.Component {
               </div>
 
               <div className="modal-footer">
-                  <button
-                    type="button"
-                    className="btn close_btn"
-                    onClick={() => {this.setState({viewCustomer: false})}}
-                   
-                  >
-                    Close{" "}
-                  </button>
+                <button
+                  type="button"
+                  className="btn close_btn"
+                  onClick={() => {
+                    this.setState({
+                      viewCustomer: false,
+                      customer_name: "",
+                      customer_email: "",
+                      customer_phonenumber: "",
+                      customer_notes: "",
+                      customerId: "",
+                    });
+                  }}
+                >
+                  Close{" "}
+                </button>
               </div>
             </div>
           </div>
         </Modal>
-        <Modal show={this.state.editCustomer} onHide={() => this.setState({editCustomer: false})}>
+        <Modal
+          show={this.state.editCustomer}
+          onHide={() => this.setState({ editCustomer: false })}
+        >
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="smallmodalLabel">
                 Edit Customer
-            </h5>
+              </h5>
             </div>
 
             <Form onSubmit={this.onEditSubmit}>
@@ -826,7 +851,9 @@ class AllCustomers extends React.Component {
                 <div className="col-12 w-100-row">
                   <div className="row form-group">
                     <div className="col col-md-4">
-                      <label className=" form-control-label">Customer Name</label>
+                      <label className=" form-control-label">
+                        Customer Name
+                      </label>
                     </div>
                     <div className="col-12 col-md-6">
                       <input
@@ -850,7 +877,9 @@ class AllCustomers extends React.Component {
                 <div className="col-12 w-100-row">
                   <div className="row form-group">
                     <div className="col col-md-4">
-                      <label className=" form-control-label">Email Address</label>
+                      <label className=" form-control-label">
+                        Email Address
+                      </label>
                     </div>
                     <div className="col-12 col-md-6">
                       <input
@@ -929,16 +958,25 @@ class AllCustomers extends React.Component {
               </div>
 
               <div className="modal-footer">
-                  <button
-                    type="button"
-                    className="btn close_btn"
-                    onClick={() => {this.setState({editCustomer: false})}}
-                  >
-                    Close{" "}
-                  </button>
+                <button
+                  type="button"
+                  className="btn close_btn"
+                  onClick={() => {
+                    this.setState({
+                      editCustomer: false,
+                      customer_name: "",
+                      customer_email: "",
+                      customer_phonenumber: "",
+                      customer_notes: "",
+                      customerId: "",
+                    });
+                  }}
+                >
+                  Close{" "}
+                </button>
                 <button type="submit" className="btn save_btn">
                   Save
-              </button>
+                </button>
               </div>
             </Form>
           </div>

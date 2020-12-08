@@ -1,4 +1,5 @@
 import React from "react";
+import { db } from "../config";
 import firebase from "../config";
 import Sidebar from "./sidebar";
 import Header from "./header";
@@ -8,6 +9,7 @@ import { Form } from "reactstrap";
 import { Link } from "react-router-dom";
 import swal from "sweetalert";
 import Iframe from "react-iframe";
+import { Modal } from "react-bootstrap";
 class AllEmployeePositions extends React.Component {
   constructor(props) {
     super(props);
@@ -27,9 +29,15 @@ class AllEmployeePositions extends React.Component {
       filenames: [],
       uploadProgress: 0,
       employeePositionsList: [],
-    };
 
+      show: false,
+      viewEmployeePosition: false,
+      editEmployeePosition: false,
+    };
+    this.onEditSubmit = this.onEditSubmit.bind(this);
+    this.editEmployeePosition = this.editEmployeePosition.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.viewEmployeePosition = this.viewEmployeePosition.bind(this);
 
     this.deleteItem = this.deleteItem.bind(this);
     this.validator = new SimpleReactValidator({
@@ -126,9 +134,7 @@ class AllEmployeePositions extends React.Component {
     if (sessionId) {
       console.log(sessionId);
 
-      firebase
-        .firestore()
-        .collection("/merchant_users")
+      db.collection("/merchant_users")
         .doc(sessionId)
         .get()
         .then((snapshot) => {
@@ -143,9 +149,7 @@ class AllEmployeePositions extends React.Component {
           });
         });
       var businessId = sessionStorage.getItem("businessId");
-      firebase
-        .firestore()
-        .collection("/businessdetails")
+      db.collection("/businessdetails")
         .doc(businessId)
         .get()
         .then((snapshot) => {
@@ -163,27 +167,16 @@ class AllEmployeePositions extends React.Component {
     var businessId = sessionStorage.getItem("businessId");
 
     this.setState({ loading: true });
-    await firebase
-      .firestore()
-      .collection("employee_positions")
+    db.collection("employee_positions")
       .where("businessId", "==", businessId)
       .get()
       .then((querySnapshot) => {
         var data = [];
         querySnapshot.forEach((childSnapShot) => {
-          const GSTData = {
+          data.push({
+            ...childSnapShot.data(),
             employeePositionId: childSnapShot.id,
-
-            employee_position: childSnapShot.data().employee_position,
-            employee_details: childSnapShot.data().employee_details,
-            employee_task_list: childSnapShot.data().employee_task_list,
-            employee_position_document: childSnapShot.data()
-              .iteemployee_position_documentm_image,
-            sessionId: childSnapShot.data().sessionId,
-            businessId: childSnapShot.data().businessId,
-          };
-
-          data.push(GSTData);
+          });
         });
         this.setState({
           employeePositionsList: data,
@@ -193,6 +186,23 @@ class AllEmployeePositions extends React.Component {
       })
       .catch((err) => {
         console.log(err);
+      });
+    this.unsubscribe = db
+      .collection("employee_positions")
+      .where("businessId", "==", businessId)
+      .onSnapshot((querySnapshot) => {
+        var data = [];
+        querySnapshot.forEach((childSnapShot) => {
+          data.push({
+            ...childSnapShot.data(),
+            employeePositionId: childSnapShot.id,
+          });
+        });
+        this.setState({
+          employeePositionsList: data,
+          countPage: data.length,
+          loading: false,
+        });
       });
   };
 
@@ -225,8 +235,7 @@ class AllEmployeePositions extends React.Component {
       var sessionId = sessionStorage.getItem("RoleId");
       var username = sessionStorage.getItem("username");
       var businessId = sessionStorage.getItem("businessId");
-      let dbCon = await firebase
-        .firestore()
+      await db
         .collection("/employee_positions")
 
         .add({
@@ -234,21 +243,19 @@ class AllEmployeePositions extends React.Component {
           employee_position: this.state.employee_position,
           employee_details: this.state.employee_details,
           employee_task_list: this.state.employee_task_list,
-
           employee_position_document: this.state.employee_position_document,
-
           sessionId: sessionId,
           username: username,
           businessId: businessId,
         });
+
       this.setState({
-        employer_sevice_message: "Data Added",
         employee_position: "",
         employee_details: "",
         employee_task_list: "",
         employee_position_document: "",
+        show: false,
       });
-      window.location.href = "/AllEmployeePositions";
     } else {
       this.validator.showMessages();
       this.forceUpdate();
@@ -256,14 +263,12 @@ class AllEmployeePositions extends React.Component {
   };
 
   employeePositionChange = async (e) => {
-    var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
     this.setState({
       employee_position: e.target.value,
     });
     if (this.state.validError != true) {
-      var ref = await firebase
-        .firestore()
+      await db
         .collection("employee_positions/")
         .where("businessId", "==", businessId)
         .where("employee_position", "==", e.target.value)
@@ -295,7 +300,7 @@ class AllEmployeePositions extends React.Component {
     }).then((willDelete) => {
       if (willDelete) {
         console.log(id);
-        firebase.firestore().collection("/employee_positions").doc(id).delete();
+        db.collection("/employee_positions").doc(id).delete();
       } else {
       }
     });
@@ -306,6 +311,65 @@ class AllEmployeePositions extends React.Component {
       [event.target.name]: event.target.value,
     });
   };
+
+  viewEmployeePosition = (id) => {
+    this.setState({ viewEmployeePosition: true });
+
+    var employeeposition;
+    for (var i = 0; i < this.state.employeePositionsList.length; i++) {
+      if (this.state.employeePositionsList[i].employeePositionId === id) {
+        employeeposition = this.state.employeePositionsList[i];
+        break;
+      }
+    }
+    this.setState({
+      employee_position: employeeposition.employee_position,
+      employee_details: employeeposition.employee_details,
+      employee_task_list: employeeposition.employee_task_list,
+      employee_position_document: employeeposition.employee_position_document,
+      employeePositionId: id,
+    });
+  };
+
+  editEmployeePosition = (id) => {
+    this.setState({ editEmployeePosition: true });
+    var employeeposition;
+    for (var i = 0; i < this.state.employeePositionsList.length; i++) {
+      if (this.state.employeePositionsList[i].employeePositionId === id) {
+        employeeposition = this.state.employeePositionsList[i];
+        break;
+      }
+    }
+    console.log(employeeposition);
+    this.setState({
+      employee_position: employeeposition.employee_position,
+      employee_details: employeeposition.employee_details,
+      employee_task_list: employeeposition.employee_task_list,
+      employee_position_document: employeeposition.employee_position_document,
+      employeePositionId: id,
+    });
+  };
+  onEditSubmit = async (e) => {
+    e.preventDefault();
+    await db
+      .collection("employee_positions")
+      .doc(this.state.employeePositionId)
+      .update({
+        employee_position: this.state.employee_position,
+        employee_details: this.state.employee_details,
+        employee_task_list: this.state.employee_task_list,
+        employee_position_document: this.state.employee_position_document,
+      });
+    this.setState({
+      editEmployeePosition: false,
+      employee_position: "",
+      employee_details: "",
+      employee_task_list: "",
+      employee_position_document: "",
+      employeePositionId: "",
+    });
+  };
+
   render() {
     return (
       <>
@@ -384,8 +448,9 @@ class AllEmployeePositions extends React.Component {
                         <div className="order_btns">
                           <span
                             className="btn add_ord m-l-0 p_btn"
-                            data-toggle="modal"
-                            data-target="#add_employee_position"
+                            onClick={() => {
+                              this.setState({ show: true });
+                            }}
                           >
                             <img src="/images/icon/add_plus_icon_w.svg" />
                             Add Employee Position
@@ -393,32 +458,6 @@ class AllEmployeePositions extends React.Component {
                         </div>
                       </div>
                     </div>
-
-                    {/* <div className="col-md-7 p-0">
-                      <div className="track_box">
-                        <div className="track_ord_block">
-                          <div className="track_bg">
-                            <div className="track-50">
-                              <form>
-                                <div className="input-group">
-                                  <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="Track here"
-                                  />
-                                </div>
-                              </form>
-                            </div>
-                            <div className="track-50 line-tack">
-                              <span>
-                                <img src="/images/icon/green_order_prepare.svg" />
-                              </span>
-                              Order is being prepared
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div> */}
                   </div>
 
                   <div className="row mt-30">
@@ -472,14 +511,15 @@ class AllEmployeePositions extends React.Component {
                                         {employee_position.employee_details}
                                       </td>
                                       <td>
-                                        <Link
-                                          to={`/EditEmployeePosition/${employee_position.employeePositionId}`}
-                                        >
-                                          <img
-                                            src="/images/icon/edit_icon_blue.svg"
-                                            className="edit_delete"
-                                          />
-                                        </Link>
+                                        <img
+                                          src="/images/icon/edit_icon_blue.svg"
+                                          className="edit_delete"
+                                          onClick={() => {
+                                            this.editEmployeePosition(
+                                              employee_position.employeePositionId
+                                            );
+                                          }}
+                                        />
 
                                         <img
                                           src="/images/icon/delete_cross.svg"
@@ -489,6 +529,17 @@ class AllEmployeePositions extends React.Component {
                                           )}
                                           className="edit_delete"
                                         />
+                                        <button type="button">
+                                          <span
+                                            className="btn view_order_btn_td"
+                                            onClick={this.viewEmployeePosition.bind(
+                                              this,
+                                              employee_position.employeePositionId
+                                            )}
+                                          >
+                                            View Position
+                                          </span>
+                                        </button>
                                       </td>
                                     </tr>
                                   );
@@ -504,13 +555,11 @@ class AllEmployeePositions extends React.Component {
             </div>
           </div>
         </div>
-        <div
-          className="modal fade"
-          id="add_employee_position"
-          tabindex="-1"
-          role="dialog"
-          aria-labelledby="smallmodalLabel"
-          aria-hidden="true"
+        <Modal
+          show={this.state.show}
+          onHide={() => {
+            this.setState({ show: false });
+          }}
         >
           <div className="modal-dialog modal-sm hipal_pop" role="document">
             <div className="modal-content">
@@ -636,11 +685,273 @@ class AllEmployeePositions extends React.Component {
                   </div>
                 </div>
                 <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn close_btn"
+                    onClick={() =>
+                      this.setState({
+                        employee_position: "",
+                        employee_details: "",
+                        employee_task_list: "",
+                        employee_position_document: "",
+                        show: false,
+                      })
+                    }
+                  >
+                    Cancel
+                  </button>
+
+                  <button type="submit" className="btn save_btn">
+                    Save
+                  </button>
+                </div>
+              </Form>
+            </div>
+          </div>
+        </Modal>
+        <Modal
+          show={this.state.viewEmployeePosition}
+          onHide={() => this.setState({ viewEmployeePosition: false })}
+        >
+          <div className="modal-dialog modal-sm hipal_pop" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="smallmodalLabel">
+                  View Employee Position
+                </h5>
+              </div>{" "}
+              {this.state.employer_sevice_message}
+              <div className="modal-body product_edit">
+                <div className="col-12 w-100-row">
+                  <div className="row form-group">
+                    <div className="col col-md-4">
+                      <label className=" form-control-label">Position</label>
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <input
+                        value={this.state.employee_position}
+                        readOnly
+                        className="form-control edit_product"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-12 w-100-row">
+                  <div className="row form-group">
+                    <div className="col col-md-4">
+                      <label className=" form-control-label">Details</label>
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <textarea
+                        value={this.state.employee_details}
+                        rows="3"
+                        readOnly
+                        className="form-control edit_product"
+                      ></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-12 w-100-row">
+                  <div className="row form-group">
+                    <div className="col col-md-4">
+                      <label className=" form-control-label">Task List</label>
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <textarea
+                        value={this.state.employee_task_list}
+                        rows="3"
+                        readOnly
+                        className="form-control edit_product"
+                      ></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-12 w-100-row">
+                  <div className="row form-group">
+                    <div className="col col-md-4">
+                      <label className=" form-control-label">
+                        Documentation
+                      </label>
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <Iframe
+                        url={this.state.employee_position_document}
+                        width="50%"
+                        height="50%"
+                        id="myId"
+                        className="myClassname"
+                        display="initial"
+                        position="relative"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn close_btn"
+                  onClick={() =>
+                    this.setState({
+                      employee_position: "",
+                      employee_details: "",
+                      employee_task_list: "",
+                      employee_position_document: "",
+                      viewEmployeePosition: false,
+                    })
+                  }
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </Modal>
+
+        <Modal
+          show={this.state.editEmployeePosition}
+          onHide={() => this.setState({ editEmployeePosition: false })}
+        >
+          <div className="modal-dialog modal-sm hipal_pop" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="smallmodalLabel">
+                  Edit Employee Position
+                </h5>
+              </div>
+              <Form onSubmit={this.onEditSubmit}>
+                {" "}
+                {this.state.employer_sevice_message}
+                <div className="modal-body product_edit">
+                  <div className="col-12 w-100-row">
+                    <div className="row form-group">
+                      <div className="col col-md-4">
+                        <label className=" form-control-label">Position</label>
+                      </div>
+                      <div className="col-12 col-md-6">
+                        <input
+                          type="text"
+                          id="text-input"
+                          name="employee_position"
+                          value={this.state.employee_position}
+                          onChange={this.employeePositionChange}
+                          placeholder="Accounts"
+                          className="form-control edit_product"
+                        />
+                        {this.validator.message(
+                          "Position",
+                          this.state.employee_position,
+                          "required|whitespace|min:2|max:70"
+                        )}
+                        <div className="text-danger">
+                          {" "}
+                          {this.state.mobile_message}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-12 w-100-row">
+                    <div className="row form-group">
+                      <div className="col col-md-4">
+                        <label className=" form-control-label">Details</label>
+                      </div>
+                      <div className="col-12 col-md-6">
+                        <textarea
+                          name="employee_details"
+                          value={this.state.employee_details}
+                          onChange={this.onChange}
+                          id="textarea-input"
+                          rows="3"
+                          placeholder="Does the accounting work"
+                          className="form-control edit_product"
+                        ></textarea>
+                        {this.validator.message(
+                          "Details",
+                          this.state.employee_details,
+                          "required|whitespace|min:2|max:70"
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-12 w-100-row">
+                    <div className="row form-group">
+                      <div className="col col-md-4">
+                        <label className=" form-control-label">Task List</label>
+                      </div>
+                      <div className="col-12 col-md-6">
+                        <textarea
+                          name="employee_task_list"
+                          value={this.state.employee_task_list}
+                          onChange={this.onChange}
+                          id="textarea-input"
+                          rows="3"
+                          placeholder="Detailed Task List "
+                          className="form-control edit_product"
+                        ></textarea>
+                        {this.validator.message(
+                          "Task List",
+                          this.state.employee_task_list,
+                          "required|whitespace|min:2|max:70"
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-12 w-100-row">
+                    <div className="row form-group">
+                      <div className="col col-md-4">
+                        <label className=" form-control-label">
+                          Documentation
+                        </label>
+                      </div>
+                      <div className="col-12 col-md-6">
+                        <Iframe
+                          url={this.state.employee_position_document}
+                          width="50%"
+                          height="50%"
+                          id="myId"
+                          className="myClassname"
+                          display="initial"
+                          position="relative"
+                        />
+                        <FileUploader
+                          accept="files/*"
+                          name="employee_position_document"
+                          randomizeFilename
+                          storageRef={firebase.storage().ref("images")}
+                          onUploadStart={this.handleFrontImageUploadStart}
+                          onUploadError={this.handleUploadError}
+                          onUploadSuccess={this.handleItemPhotoSuccess}
+                          onProgress={this.handleProgress}
+                        />
+                        {this.validator.message(
+                          "Document",
+                          this.state.employee_position_document,
+                          "required"
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="modal-footer">
                   <Link to="/AllEmployeePositions">
                     <button
                       type="button"
                       className="btn close_btn"
-                      data-dismiss="modal"
+                      onClick={() =>
+                        this.setState({
+                          employee_position: "",
+                          employee_details: "",
+                          employee_task_list: "",
+                          employee_position_document: "",
+                          editEmployeePosition: false,
+                        })
+                      }
                     >
                       Cancel
                     </button>
@@ -652,7 +963,7 @@ class AllEmployeePositions extends React.Component {
               </Form>
             </div>
           </div>
-        </div>
+        </Modal>
       </>
     );
   }
