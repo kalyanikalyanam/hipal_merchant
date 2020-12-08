@@ -31,16 +31,25 @@ const BillPage = () => {
   }, []);
 
   useEffect(() => {
+    var unsubscribe
     const getGST = async () => {
-     const data = await db.collection("settings_gst_info").where("businessId",  "==", businessId).limit(1).get()
-     data.forEach(querySnapshot => {
-       setCgst(querySnapshot.data().cgst_value)
-       setGst(querySnapshot.data().gst_value)
-       setGstNum(querySnapshot.data().gst_number)
-     })
+      const data = await db.collection("settings_gst_info").where("businessId", "==", businessId).limit(1).get()
+      data.forEach(querySnapshot => {
+        setCgst(querySnapshot.data().cgst_value)
+        setGst(querySnapshot.data().gst_value)
+        setGstNum(querySnapshot.data().gst_number)
+      })
+      unsubscribe = db.collection("settings_gst_info").where("businessId", "==", businessId).onSnapshot(data => {
+        data.forEach(querySnapshot => {
+          setCgst(querySnapshot.data().cgst_value)
+          setGst(querySnapshot.data().gst_value)
+          setGstNum(querySnapshot.data().gst_number)
+        })
+      })
     }
     if(businessId)
       getGST()
+  return unsubscribe
   }, [businessId])
   useEffect(() => {
     let unsubscribe;
@@ -76,6 +85,7 @@ const BillPage = () => {
   useEffect(() => {
     let total = subTotal + tax - discount;
     let temp = total;
+    console.log(gst)
     total += (total * gst) / 100;
     total += (temp * cGst) / 100;
     setTotal(total);
@@ -87,7 +97,7 @@ const BillPage = () => {
         cGst,
       },
     });
-  }, [subTotal]);
+  }, [subTotal, tax, discount, gst, cGst]);
   const noItem = (
     <tr>
       <td
