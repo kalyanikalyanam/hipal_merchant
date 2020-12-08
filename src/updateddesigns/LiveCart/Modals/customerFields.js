@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import AutoSuggest from 'react-autosuggest'
 
-const CustomerFields = ({index, register, inputProps, customers}) => {
+const CustomerFields = ({index, register, customers}) => {
     const [nameSuggestions, setNameSuggestion] = useState([])
     const [numberSuggestions, setNumberSuggestion] = useState([])
     const [name, setName] = useState("")
@@ -55,7 +55,6 @@ const CustomerFields = ({index, register, inputProps, customers}) => {
 
 
     const nameProps = {
-        ...inputProps,
         autoComplete: "none",
         placeholder: "Name",
         value: name,
@@ -65,7 +64,6 @@ const CustomerFields = ({index, register, inputProps, customers}) => {
         ref: register
     }
     const numberProps = {
-        ...inputProps,
         autoComplete: "none",
         placeholder: "Number",
         value: number,

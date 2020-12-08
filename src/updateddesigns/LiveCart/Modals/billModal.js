@@ -486,7 +486,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                 fontSize: "30px",
               }}
             >
-              <b style={{ fontSize: "30px" }}>GSTIN - 456AEW453462</b>
+              <b style={{ fontSize: "30px" }}>{data && data.gstNum}</b>
             </td>
           </tr>
         </tbody>

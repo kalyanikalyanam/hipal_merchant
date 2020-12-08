@@ -15,6 +15,8 @@ import AddCustomerForm from './Modals/addCustomerFormModal'
 import KotModal from './Modals/kotModal'
 import BillModal from './Modals/billModal'
 import Loader from '../../component/Loader'
+import {ToastContainer} from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 
 const MainPage = (props) => {
     const [reducerState, dispatch] = useReducer(reducer, initState)
@@ -37,6 +39,9 @@ const MainPage = (props) => {
     }, [])
 
     return (<>{!loading ? 
+        <>
+            <ToastContainer limit={5}
+            />
         <dispatchContext.Provider value={dispatch}><stateContext.Provider value={reducerState}>
             <tableContext.Provider value={dbRef}><balanceContext.Provider value={reducerState.balance}>
                 <div className="page-wrapper">
@@ -208,7 +213,7 @@ const MainPage = (props) => {
                     <div>SwapModal</div>
                 </BootstrapModal>
             </balanceContext.Provider>
-            </tableContext.Provider></stateContext.Provider></dispatchContext.Provider>
+            </tableContext.Provider></stateContext.Provider></dispatchContext.Provider></>
         : <Loader /> }
         </>
     )

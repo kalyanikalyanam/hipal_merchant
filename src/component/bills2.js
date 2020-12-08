@@ -385,15 +385,9 @@ const Bills = () => {
                                             <td>Rs {Math.round(total)}</td>
                                             <td className="bill_date">
                                               {date}
-                                              {/* {moment(bill.date)
-                                                .locale("en")
-                                                .format("DD-MM-YYYY")} */}
                                             </td>
                                             <td>
                                               {time}
-                                              {/* {moment(bill.date)
-                                                .locale("en")
-                                                .format("HH:mm:ss")} */}
                                             </td>
 
                                             {sessionStorage.getItem("role") ==

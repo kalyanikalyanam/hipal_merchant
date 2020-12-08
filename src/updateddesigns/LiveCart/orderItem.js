@@ -125,10 +125,12 @@ const OrderItem = ({ item, index, dbRef}) => {
                 <Select item={item} deleteItem={deleteItem} dbRef={dbRef}/>
               )}
           </div>
-
-          {item.discount != 0 && (
-            <p className="offer_applied">{`${item.discount}% off Applied`}</p>
-          )}
+          {item.discount > 0  ? (
+            <>
+              <p className="offer_applied">{`${item.discount}% off Applied`}</p>
+              <p className="offer_applied">{`₹ ${parseFloat(item.price * item.discount / 100 * item.quantity).toFixed(2)}`}</p>
+            </>
+          ) : null}
         </div>
         <div className="box_2">
           <span>x{item.quantity}</span>

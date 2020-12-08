@@ -1,18 +1,19 @@
 import { db } from "../../config";
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef} from "react";
 import MenuItem from "./menuItem";
 import CategoryItem from "./categoryItem";
 import { tableContext } from "./contexts";
 
 
 const Menu = () => {
+  const dbRef = useContext(tableContext)
+  const unsubscribe = useRef()
   const [itemList, setItemsList] = useState([]);
   const [categoryList, setCategoryList] = useState([]);
   const [permanentCategoryList, setPermanentCategoryList] = useState([]);
   const [permanentItemList, setPermanentItemList] = useState([]);
   const [selected, setSelected] = useState([]);
-  const [items, setItems] = useState(0)
-  const dbRef = useContext(tableContext)
+  const [table, setTable] = useState()
   const getItems = async () => {
     var businessId = sessionStorage.getItem("businessId");
     await db
@@ -64,16 +65,6 @@ const Menu = () => {
         setPermanentItemList(data);
       });
   };
-  const getTableData = async () => {
-    if(dbRef){
-      const table = await dbRef.get()
-      setItems(table.data().liveCart.length)
-    }   
-    let unsubsribe = dbRef && dbRef.onSnapshot(table => {
-      setItems(table.data().liveCart.length)
-    })
-    return unsubsribe
-  }
   const getCategories = () => {
     var businessId = sessionStorage.getItem("businessId");
     db.collection("categories2")
@@ -104,6 +95,25 @@ const Menu = () => {
       });
   };
 
+  function escapeRegexCharacters(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  const handleSearch = (e) => {
+    const {value} = e.target
+    let newCategories = permanentCategoryList.filter(
+      (category) => category.parentId === ""
+    );
+    let newItems = []
+    if(value !== ""){
+      const val = escapeRegexCharacters(value.trim())
+      const regex = new RegExp("^" + val, "i")
+      newCategories = permanentCategoryList.filter(category => regex.test(category.name))
+      newItems = permanentItemList.filter(item => regex.test(item.item_name))
+    }
+    setCategoryList(newCategories)
+    setItemsList(newItems)
+  }
   const handleBackClick = () => {
     let newSelected = selected;
     newSelected.pop();
@@ -197,6 +207,22 @@ const Menu = () => {
     getItems();
     getCategories();
   }, []);
+
+  useEffect(() => {
+    const getData = async () => {
+      if (dbRef) {
+        const table = await dbRef.get()
+        setTable(table.data().liveCart.length)
+      }
+    }
+    getData()
+    if(dbRef){
+      unsubscribe.current = dbRef.onSnapshot(table => {
+        setTable(table.data().liveCart.length)
+      })
+    }
+    return unsubscribe.current   
+  }, [dbRef])
   return (
     <div className="row m-t-20">
       <div className="col-md-12 menu_category_block">
@@ -222,13 +248,13 @@ const Menu = () => {
               })}
           </span>
           <span className="cate_search">
-            <input type="text" id="myInput1" placeholder="Search" />
+            <input type="text" id="myInput1" placeholder="Search" onChange={handleSearch}/>
             <a href="#" className="search_icon">
               <i className="fas fa-search"></i>
             </a>
           </span>
           <span className="livecart_box">
-            Items in Live Cart <span className="number">{items ? items : "0"}</span>
+            Items in Live Cart <span className="number">{table ? table: "0"}</span>
           </span>
           <span className="pull-right m-r-5 m-t-5" onClick={handleBackClick}>
             <img src="/images/icon/back_arrow_orange.png" width="30" />

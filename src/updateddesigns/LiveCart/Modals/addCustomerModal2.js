@@ -81,7 +81,7 @@ const CustomerModal = () => {
                     <CustomerFields
                         index={i}
                         register={register}
-                        cutomers ={customers}
+                        customers ={customers}
                     />
                 </div>
             )

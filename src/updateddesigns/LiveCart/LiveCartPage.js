@@ -1,7 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { dispatchContext, tableContext } from './contexts'
 import LiveCartItem from './LiveCartItem'
-import firebase from "../../config";
 
 const LiveCartPage = () => {
     const dbRef = useContext(tableContext)
@@ -11,22 +10,22 @@ const LiveCartPage = () => {
     const [id, setId] = useState()
     const [discount, setDiscount] = useState(0)
     const [tax, setTax] = useState(0)
+    const unsubscribe = useRef()
     useEffect(() => {
-        let unsubscribe
         const getData = async () => {
             if (dbRef) {
                 const table = await dbRef.get()
                 const items = table.data().liveCart
                 setId(table.data().liveCartId)
                 setItems(items)
-                unsubscribe = dbRef.onSnapshot(table => {
+                unsubscribe.current = dbRef.onSnapshot(table => {
                     setItems(table.data().liveCart)
                     setId(table.data().liveCartId)
                 })
             }
         }
         getData()
-        return unsubscribe
+        return unsubscribe.current
     }, [dbRef])
 
     useEffect(() => {

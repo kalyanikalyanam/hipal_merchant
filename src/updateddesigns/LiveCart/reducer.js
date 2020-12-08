@@ -1,4 +1,3 @@
-import { act } from "react-dom/test-utils"
 
 const updateObject = (state, updatedProps) => {
     return {...state ,... updatedProps}
@@ -16,6 +15,7 @@ export const initState = {
     billViewModal: false,
     setBillPage: 1,
     kotItems: [],
+    liveCartNotification: false,
     balance: 0
 }
 

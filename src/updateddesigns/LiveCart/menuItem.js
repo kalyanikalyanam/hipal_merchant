@@ -1,17 +1,33 @@
 import React, { useContext, useEffect } from "react";
 import { tableContext } from "./contexts";
 import firebase from '../../config'
-
+import {toast} from 'react-toastify'
+import useSound from 'use-sound'
+import notification from '../../iphone_notification.mp3'
 
 const MenuItem = ({ item }) => {
   const dbRef = useContext(tableContext) 
+  const [play] = useSound(notification, {
+    interrupt: true,
+    volume: 0.4
+  })
   const handleClick = async () => {
     let table = await dbRef.get()
+    play()
+    toast.success('Item was added to LiveCart!', {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      draggable: true,
+      pauseOnHover: false,
+    });
+
     let liveCart = table.data().liveCart
     if (!liveCart) {
       liveCart = []
     }
-    if(liveCart.length === 0){
+    if (liveCart.length === 0) {
       var id = Math.floor(Math.random() * 100000000)
       dbRef.update({
         liveCartId: id

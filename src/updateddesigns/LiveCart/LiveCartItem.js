@@ -87,7 +87,12 @@ const LiveCartItem = ({ item, index, dbRef}) => {
         <div className="box_3 cart_tab_price">
           <span> {parseFloat(item.quantity * item.price).toFixed(2)}</span>
           {item.discount > 0  ? (
-            <p className="offer_applied">{`${item.discount}% off Applied`}</p>
+            <>
+              <p className="offer_applied">{`${item.discount}% off Applied`}</p>
+              <p className="offer_applied">{`₹ ${item.discount * item.price / 100  * item.quantity}`}</p>
+
+
+            </>
           ) : null}
         </div>
       </div>
