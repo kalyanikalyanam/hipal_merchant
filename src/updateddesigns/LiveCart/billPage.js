@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import {db} from '../../config'
+import { db } from "../../config";
 import BillItem from "./billItem";
 import {
   dispatchContext,
@@ -17,7 +17,7 @@ const BillPage = () => {
   const [table, setTable] = useState();
   const [gst, setGst] = useState(0);
   const [cGst, setCgst] = useState(0);
-  const [gstNum, setGstNum] = useState(0)
+  const [gstNum, setGstNum] = useState(0);
 
   const balance = useContext(balanceContext);
   const dispatch = useContext(dispatchContext);
@@ -25,23 +25,26 @@ const BillPage = () => {
   const state = useContext(stateContext);
 
   useEffect(() => {
-    const businessId = sessionStorage.getItem("businessId")
+    const businessId = sessionStorage.getItem("businessId");
     setBusinessLogo(sessionStorage.getItem("BusinessLogo"));
     setBusinessId(businessId);
   }, []);
 
   useEffect(() => {
     const getGST = async () => {
-     const data = await db.collection("settings_gst_info").where("businessId",  "==", businessId).limit(1).get()
-     data.forEach(querySnapshot => {
-       setCgst(querySnapshot.data().cgst_value)
-       setGst(querySnapshot.data().gst_value)
-       setGstNum(querySnapshot.data().gst_number)
-     })
-    }
-    if(businessId)
-      getGST()
-  }, [businessId])
+      const data = await db
+        .collection("settings_gst_info")
+        .where("businessId", "==", businessId)
+        .limit(1)
+        .get();
+      data.forEach((querySnapshot) => {
+        setCgst(querySnapshot.data().cgst_value);
+        setGst(querySnapshot.data().gst_value);
+        setGstNum(querySnapshot.data().gst_number);
+      });
+    };
+    if (businessId) getGST();
+  }, [businessId]);
   useEffect(() => {
     let unsubscribe;
     const getTable = async () => {
@@ -133,7 +136,7 @@ const BillPage = () => {
           gst,
           cGst,
           isSettle: true,
-          gstNum
+          gstNum,
         },
       });
       await dbRef.update({
@@ -462,7 +465,7 @@ const BillPage = () => {
                     color: "#000000",
                   }}
                 >
-                {gstNum}
+                  {gstNum}
                 </td>
               </tr>
             </tbody>

@@ -2,6 +2,7 @@ import React from "react";
 import firebase from "../config";
 import { Link } from "react-router-dom";
 import * as moment from "moment";
+import renderHTML from "react-render-html";
 class ViewBill extends React.Component {
   constructor(props) {
     super(props);
@@ -41,6 +42,13 @@ class ViewBill extends React.Component {
           console.log(business);
           sessionStorage.setItem("BusinessName", business.business_name);
           sessionStorage.setItem("BusinessLogo", business.business_logo);
+          sessionStorage.setItem("BusinessAddress", business.business_address);
+          sessionStorage.setItem("BusinessGST", business.business_gst_value);
+          sessionStorage.setItem("BusinessCGST", business.business_cgst_value);
+          sessionStorage.setItem(
+            "BusinessGSTNumber",
+            business.business_gst_number
+          );
         });
     }
     document.body.style.backgroundColor = "#ccc";
@@ -48,6 +56,9 @@ class ViewBill extends React.Component {
   }
 
   viewBill = async () => {
+    var BusinessGST = sessionStorage.getItem("BusinessGST");
+    var BusinessCGST = sessionStorage.getItem("BusinessCGST");
+
     const { billid } = this.props.match.params;
     console.log(billid);
 
@@ -86,8 +97,8 @@ class ViewBill extends React.Component {
         });
         let total = subTotal + tax - discount;
         let temp = total;
-        total += (total * 2.5) / 100;
-        total += (temp * 2.5) / 100;
+        total += (total * BusinessGST) / 100;
+        total += (temp * BusinessCGST) / 100;
         this.setState({
           total,
           subTotal,
@@ -98,6 +109,9 @@ class ViewBill extends React.Component {
   };
 
   render() {
+    var address = sessionStorage.getItem("BusinessAddress");
+    var BusinessGST = sessionStorage.getItem("BusinessGST");
+    var BusinessCGST = sessionStorage.getItem("BusinessCGST");
     return (
       <>
         <div className="print_bill">
@@ -133,8 +147,7 @@ class ViewBill extends React.Component {
                   color: "#000000",
                 }}
               >
-                The Coffee Cup Pizzeria E-89,
-                <br /> Sainikpuri, Telangana 500094
+                {renderHTML(address)}
               </td>
             </tr>
 
@@ -300,7 +313,7 @@ class ViewBill extends React.Component {
                       GST
                     </td>
                     <td style={{ textAlign: "right", padding: "5px 30px" }}>
-                      2.5
+                      {sessionStorage.getItem("BusinessGST")}
                     </td>
                   </tr>
                   <tr>
@@ -308,7 +321,7 @@ class ViewBill extends React.Component {
                       CGST
                     </td>
                     <td style={{ textAlign: "right", padding: "3px 30px" }}>
-                      2.5
+                      {sessionStorage.getItem("BusinessCGST")}
                     </td>
                   </tr>
                 </table>
@@ -365,7 +378,7 @@ class ViewBill extends React.Component {
                   color: "#000000",
                 }}
               >
-                GSTIN - 456AEW453462
+                {sessionStorage.getItem("BusinessGSTNumber")}
               </td>
             </tr>
           </table>
