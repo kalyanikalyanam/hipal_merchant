@@ -13,15 +13,6 @@ class SettingsGstInfo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      employer_sevice_message: "",
-      email_message: "",
-      mobile_message: "",
-
-      customer_name: "",
-      customer_email: "",
-      customer_phonenumber: "",
-      customer_notes: "",
-
       gst_number: "",
       gst_registration_form: "",
 
@@ -31,6 +22,8 @@ class SettingsGstInfo extends React.Component {
       avatarURL: "",
       filenames: [],
       uploadProgress: 0,
+      gst_value: 0,
+      cgst_value: 0,
     };
 
     this.onChange = this.onChange.bind(this);
@@ -192,17 +185,16 @@ class SettingsGstInfo extends React.Component {
           .get()
           .then((snapshot) => {
             var info = snapshot.data();
-            // if (snapshot.numChildren > 0) {
             console.log(info);
             this.setState({
               gst_number: info.gst_number,
               gst_registration_form: info.gst_registration_form,
+              gst_value: info.gst_value,
+              cgst_value: info.cgst_value,
               businessId: info.businessId,
               sessionId: info.sessionId,
             });
             console.log(this.state.gst_registration_form);
-            // } else {
-            // }
           });
       } else {
       }
@@ -248,6 +240,8 @@ class SettingsGstInfo extends React.Component {
         .set({
           gst_number: this.state.gst_number,
           gst_registration_form: this.state.gst_registration_form,
+          gst_value: this.state.gst_value,
+          cgst_value: this.state.cgst_value,
 
           businessId: businessId,
           sessionId: sessionId,
@@ -263,7 +257,7 @@ class SettingsGstInfo extends React.Component {
       // this
       //     .props
       //     .history
-      //     .push("/AllCustomers");
+      //     .push("/Settings");
     } else {
       this.validator.showMessages();
       this.forceUpdate();
@@ -309,21 +303,61 @@ class SettingsGstInfo extends React.Component {
               <div className="col-md-12">
                 <div className="row form-group">
                   <div className="col col-md-4">
+                    <label className=" form-control-label">GST Value</label>
+                  </div>
+                  <div className="col-12 col-md-8">
+                    <input
+                      type="number"
+                      id="text-input"
+                      name="gst_value"
+                      onChange={this.onChange}
+                      value={this.state.gst_value}
+                      placeholder="In %"
+                      pattern="\d+"
+                      className="form-control"
+                    />
+                  </div>
+                  {this.validator.message(
+                    "Gst Value",
+                    this.state.gst_value,
+                    "required"
+                  )}
+                </div>
+              </div>
+
+              <div className="col-md-12">
+                <div className="row form-group">
+                  <div className="col col-md-4">
+                    <label className=" form-control-label">CGST Value</label>
+                  </div>
+                  <div className="col-12 col-md-8">
+                    <input
+                      type="number"
+                      id="text-input"
+                      name="cgst_value"
+                      onChange={this.onChange}
+                      value={this.state.cgst_value}
+                      placeholder="In %"
+                      pattern="\d+"
+                      className="form-control"
+                    />
+                  </div>
+                  {this.validator.message(
+                    "CGst Value",
+                    this.state.cgst_value,
+                    "required"
+                  )}
+                </div>
+              </div>
+
+              <div className="col-md-12">
+                <div className="row form-group">
+                  <div className="col col-md-4">
                     <label className=" form-control-label">
                       GST registration form
                     </label>
                   </div>
                   <div className="col-12 col-md-8">
-                    {/* <input type="file" id="text-input" name="text-input" placeholder="Text here" className="form-control"/> */}
-                    {/* <iframe
-  type="application/pdf"
-    src={this.state.gst_registration_form}
-    frameBorder="0"
-    scrolling="auto"
-    height="50%"
-    width="50%"
-></iframe> */}
-
                     <Iframe
                       url={this.state.gst_registration_form}
                       width="50%"

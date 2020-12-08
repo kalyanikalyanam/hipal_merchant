@@ -19,7 +19,6 @@ import Register from "./component/register";
 
 import Orders from "./component/orders";
 
-import AddCategoryMenu from "./component/add_category_menu";
 import AddCategoryMenuDuplicate from "./component/add_category_menu_duplicate";
 import EditCategoryMenu from "./component/edit_category_menu";
 import ViewCategoryMenu from "./component/view_category_menu";
@@ -30,15 +29,12 @@ import ViewItemMenu from "./component/view_item_menu";
 import AddItemType from "./component/add_item_type";
 
 import AllEmployees from "./component/all_employes";
-import EditEmployee from "./component/edit_employee";
-
 import AllEmployeePositions from "./component/all_employee_positions";
-import EditEmployeePosition from "./component/edit_employee_position";
-
 import AllEmplopyesRoles from "./component/all_employee_roles";
 import EditEmployeeRole from "./component/edit_employee_role";
 
-// import Bills from "./component/bills";
+import AllCustomers from "./component/all_customers";
+
 import Bills2 from "./component/bills2";
 import ViewBill from "./component/view_bill";
 
@@ -47,16 +43,9 @@ import Home from "./component/home";
 import BillPrintPage from "./component/bill_print_page";
 
 import FloorList from "./component/floor_List";
-import EditFloor from "./component/edit_floor";
-
 import TablesList from "./component/tables_list";
-import EditTable from "./component/edit_table";
 
 import AddStation from "./component/add_station";
-import SingleItempage from "./component/single_item_page";
-
-import AllCustomers from "./component/all_customers";
-import EditCustomer from "./component/edit_customer";
 
 import Dashboard from "./component/dashboard";
 
@@ -86,8 +75,6 @@ import SettingsEditImageMedia from "./settings/settings_edit_media_page";
 
 import Table from "./updateddesigns/tables_view_for_updated_order";
 
-import AddItemNew from "./component/add_item_new";
-import EditItemNew from "./component/edit_item_new";
 import MainPage from "./updateddesigns/LiveCart/index";
 
 import KOTTableDataCartView from "./component/kot_table_data_cartview";
@@ -136,52 +123,53 @@ class Routing extends React.Component {
           component={EditBusiness}
         />
         <PrivateRoute path="/AllEmployees" component={AllEmployees} />
-        <PrivateRoute
-          path="/EditEmployee/:employeeId"
-          component={EditEmployee}
-        />
+
         <PrivateRoute
           path="/AllEmployeePositions"
           component={AllEmployeePositions}
         />
-        <PrivateRoute
-          path="/EditEmployeePosition/:employeePositionId"
-          component={EditEmployeePosition}
-        />
+
         <PrivateRoute path="/AllEmplopyesRoles" component={AllEmplopyesRoles} />
         <PrivateRoute
           path="/EditEmployeeRole/:employeeRoleId"
           component={EditEmployeeRole}
         />
         <PrivateRoute path="/Orders" component={Orders} />
-        <PrivateRoute path="/AddCategoryMenu" component={AddCategoryMenu} />
+
+        <PrivateRoute path="/ViewItemMenu" component={ViewItemMenu} />
+        <PrivateRoute path="/AddItemMenu" component={AddItemMenu} />
+        <PrivateRoute
+          path="/EditItemMenu/:itemmenuid"
+          component={EditItemMenu}
+        />
+        <PrivateRoute path="/AddItemType" component={AddItemType} />
+
+        <PrivateRoute path="/CategoryList" component={CategoryList} />
         <PrivateRoute
           path="/AddCategoryMenuDuplicate"
           component={AddCategoryMenuDuplicate}
         />
-        <PrivateRoute path="/CategoryList" component={CategoryList} />
-        <PrivateRoute path="/AddItemMenu" component={AddItemMenu} />
-        <PrivateRoute path="/ViewItemMenu" component={ViewItemMenu} />
-        <PrivateRoute path="/AddItemType" component={AddItemType} />
-        {/* <PrivateRoute path="/Bills" component={Bills} /> */}
+        <PrivateRoute
+          path="/EditCategoryMenu/:categoryId"
+          component={EditCategoryMenu}
+        />
+        <PrivateRoute
+          path="/ViewCategoryMenu/:categoryId"
+          component={ViewCategoryMenu}
+        />
+
         <PrivateRoute path="/Bills" component={Bills2} />
         <PrivateRoute path="/ViewBill/:billid" component={ViewBill} />
         <PrivateRoute path="/Home" component={Home} />
         <PrivateRoute path="/BillPrintPage" component={BillPrintPage} />
         <PrivateRoute path="/FloorList" component={FloorList} />
-        <PrivateRoute path="/EditFloor/:floorId" component={EditFloor} />
+
         <PrivateRoute path="/TablesList" component={TablesList} />
-        <PrivateRoute path="/EditTable/:tableId" component={EditTable} />
+
         <PrivateRoute path="/AddStation" component={AddStation} />
-        <PrivateRoute
-          path="/SingleItempage/:itemId"
-          component={SingleItempage}
-        />
+
         <PrivateRoute path="/AllCustomers" component={AllCustomers} />
-        <PrivateRoute
-          path="/EditCustomer/:customerId"
-          component={EditCustomer}
-        />
+
         <PrivateRoute path="/Dashboard" component={Dashboard} />
         <PrivateRoute path="/Settings" component={Settings} />
         <PrivateRoute path="/AllMessages" component={AllMessages} />
@@ -217,20 +205,7 @@ class Routing extends React.Component {
           component={SettingsEditImageMedia}
         />
         <PrivateRoute path="/Table" component={Table} />
-        <PrivateRoute
-          path="/EditCategoryMenu/:categoryId"
-          component={EditCategoryMenu}
-        />
-        <PrivateRoute
-          path="/ViewCategoryMenu/:categoryId"
-          component={ViewCategoryMenu}
-        />
-        <PrivateRoute
-          path="/EditItemMenu/:itemmenuid"
-          component={EditItemMenu}
-        />
-        <PrivateRoute path="/AddItemNew" component={AddItemNew} />
-        <PrivateRoute path="/EditItemNew/:itemmenuid" component={EditItemNew} />
+
         <PrivateRoute
           path="/KOTTableDataCartView"
           component={KOTTableDataCartView}

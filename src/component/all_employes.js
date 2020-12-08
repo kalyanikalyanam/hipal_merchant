@@ -1,14 +1,15 @@
 import React from "react";
+import { db } from "../config";
 import firebase from "../config";
 import Sidebar from "./sidebar";
 import Header from "./header";
 import SimpleReactValidator from "simple-react-validator";
 import FileUploader from "react-firebase-file-uploader";
 import { Form } from "reactstrap";
-import { Link } from "react-router-dom";
 import swal from "sweetalert";
+import { Modal } from "react-bootstrap";
 const initState = {
-  created_on: new Date().toLocaleString(),
+  created_on: Date.now(),
 
   employee_name: "",
   user_name: "",
@@ -64,14 +65,17 @@ const initState = {
   settle: "",
   additemdiscount: "",
   deleteitemafterkot: "",
+
+  addEmployee: false,
+  editEmployee: false,
 };
 class AllEmployees extends React.Component {
   constructor(props) {
     super(props);
     this.state = initState;
-
+    this.onEditSubmit = this.onEditSubmit.bind(this);
+    this.editEmployee = this.editEmployee.bind(this);
     this.onChange = this.onChange.bind(this);
-
     this.deleteItem = this.deleteItem.bind(this);
     this.validator = new SimpleReactValidator({
       className: "text-danger",
@@ -81,8 +85,6 @@ class AllEmployees extends React.Component {
             "The :attribute must be at least 6 and at most 30 with 1 numeric,1 special charac" +
             "ter and 1 alphabet.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(
                 val,
@@ -102,8 +104,6 @@ class AllEmployees extends React.Component {
         whitespace: {
           message: "The :attribute not allowed first whitespace   characters.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /[^\s\\]/) &&
               params.indexOf(val) === -1
@@ -113,8 +113,6 @@ class AllEmployees extends React.Component {
         specialChar: {
           message: "The :attribute not allowed special   characters.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^[ A-Za-z0-9_@./#&+-]*$/i) &&
               params.indexOf(val) === -1
@@ -124,8 +122,6 @@ class AllEmployees extends React.Component {
         specialCharText: {
           message: "The :attribute may only contain letters, dot and spaces.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^[ A-Za-z_@./#&+-]*$/i) &&
               params.indexOf(val) === -1
@@ -136,8 +132,6 @@ class AllEmployees extends React.Component {
         zip: {
           message: "Invalid Pin Code",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^(\d{5}(\d{4})?)?$/i) &&
               params.indexOf(val) === -1
@@ -147,8 +141,6 @@ class AllEmployees extends React.Component {
         website: {
           message: "The Url should be example.com ",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(
                 val,
@@ -179,9 +171,7 @@ class AllEmployees extends React.Component {
     if (sessionId) {
       console.log(sessionId);
 
-      firebase
-        .firestore()
-        .collection("/merchant_users")
+      db.collection("/merchant_users")
         .doc(sessionId)
         .get()
         .then((snapshot) => {
@@ -196,9 +186,7 @@ class AllEmployees extends React.Component {
           });
         });
       var businessId = sessionStorage.getItem("businessId");
-      firebase
-        .firestore()
-        .collection("/businessdetails")
+      db.collection("/businessdetails")
         .doc(businessId)
         .get()
         .then((snapshot) => {
@@ -213,14 +201,12 @@ class AllEmployees extends React.Component {
   }
 
   employeePositionsList = async () => {
-    var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
 
     this.setState({ loading: true });
-    await firebase
-      .firestore()
+    await db
       .collection("employee_positions")
-      // .where("sessionId", "==", sessionId)
+
       .where("businessId", "==", businessId)
       .get()
       .then((querySnapshot) => {
@@ -253,57 +239,17 @@ class AllEmployees extends React.Component {
   };
 
   employeeList = async () => {
-    var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
 
     this.setState({ loading: true });
-    await firebase
-      .firestore()
-      .collection("merchant_users")
-      // .where("sessionId", "==", sessionId)
+    db.collection("merchant_users")
       .where("businessId", "==", businessId)
       .where("role", "==", "Employee")
-
       .get()
       .then((querySnapshot) => {
         var data = [];
         querySnapshot.forEach((childSnapShot) => {
-          const GSTData = {
-            employeeId: childSnapShot.id,
-
-            employee_unique_id: childSnapShot.data().employee_unique_id,
-            created_on: childSnapShot.data().created_on,
-
-            employee_name: childSnapShot.data().employee_name,
-            user_name: childSnapShot.data().user_name,
-            password: childSnapShot.data().password,
-            employee_position: childSnapShot.data().employee_position,
-            employee_division: childSnapShot.data().employee_division,
-            employee_employement_type: childSnapShot.data()
-              .employee_employement_type,
-            email_id: childSnapShot.data().email_id,
-            contact_number: childSnapShot.data().contact_number,
-            photo: childSnapShot.data().photo,
-            employee_special_password: childSnapShot.data()
-              .employee_special_password,
-
-            employee_dateofbirth: childSnapShot.data().employee_dateofbirth,
-            employee_bloodgroup: childSnapShot.data().employee_bloodgroup,
-            employee_address: childSnapShot.data().employee_address,
-            employee_emergency_contact_number: childSnapShot.data()
-              .employee_emergency_contact_number,
-            employee_adharcard: childSnapShot.data().employee_adharcard,
-
-            employee_account_number: childSnapShot.data()
-              .employee_account_number,
-            employee_ifsc_code: childSnapShot.data().employee_ifsc_code,
-            employee_upi_id: childSnapShot.data().employee_upi_id,
-
-            sessionId: childSnapShot.data().sessionId,
-            businessId: childSnapShot.data().businessId,
-          };
-
-          data.push(GSTData);
+          data.push({ ...childSnapShot.data(), employeeId: childSnapShot.id });
         });
         this.setState({
           employeeList: data,
@@ -313,6 +259,21 @@ class AllEmployees extends React.Component {
       })
       .catch((err) => {
         console.log(err);
+      });
+    this.unsubscribe = db
+      .collection("merchant_users")
+      .where("businessId", "==", businessId)
+      .where("role", "==", "Employee")
+      .onSnapshot((querySnapshot) => {
+        var data = [];
+        querySnapshot.forEach((childSnapShot) => {
+          data.push({ ...childSnapShot.data(), employeeId: childSnapShot.id });
+        });
+        this.setState({
+          employeeList: data,
+          countPage: data.length,
+          loading: false,
+        });
       });
   };
 
@@ -326,7 +287,6 @@ class AllEmployees extends React.Component {
   handleUploadError = (error) => {
     this.setState({
       isUploading: false,
-      // Todo: handle error
     });
     console.error(error);
   };
@@ -349,82 +309,6 @@ class AllEmployees extends React.Component {
       .then((url) => this.setState({ employee_adharcard: url }));
   };
 
-  // handleSubmit = async (event) => {
-  //   event.preventDefault();
-  //   if (this.validator.allValid() && this.state.validError === true) {
-  //     var sessionId = sessionStorage.getItem("RoleId");
-  //     var username = sessionStorage.getItem("username");
-  //     var businessId = sessionStorage.getItem("businessId");
-  //     var user = null;
-  //     await firebase
-  //       .auth()
-  //       .createUserWithEmailAndPassword(
-  //         this.state.email_id,
-  //         this.state.password
-  //       )
-  //       .then((result) => {
-  //         var userId = result.user;
-  //         user = firebase.auth().currentUser;
-  //         //user.sendEmailVerification();
-  //         var key = Math.round(new Date().getTime() / 1000);
-  //         firebase.auth().sendPasswordResetEmail(this.state.email_id);
-  //         let dbCon = firebase
-  //           .firestore()
-  //           .collection("/merchant_users")
-  //           .doc(userId.uid)
-  //           .set({
-  //             employee_unique_id: key,
-  //             created_on: this.state.created_on,
-
-  //             // business_id:this.state.business_id,
-
-  //             employee_name: this.state.employee_name,
-  //             user_name: this.state.user_name,
-  //             password: this.state.password,
-  //             employee_position: this.state.employee_position,
-  //             employee_division: this.state.employee_division,
-  //             employee_employement_type: this.state.employee_employement_type,
-  //             email_id: this.state.email_id,
-  //             contact_number: this.state.contact_number,
-  //             photo: this.state.photo,
-  //             employee_special_password: this.state.employee_special_password,
-
-  //             employee_dateofbirth: this.state.employee_dateofbirth,
-  //             employee_bloodgroup: this.state.employee_bloodgroup,
-  //             employee_address: this.state.employee_address,
-  //             employee_emergency_contact_number: this.state
-  //               .employee_emergency_contact_number,
-  //             employee_adharcard: this.state.employee_adharcard,
-
-  //             employee_account_number: this.state.employee_account_number,
-  //             employee_ifsc_code: this.state.employee_ifsc_code,
-  //             employee_upi_id: this.state.employee_upi_id,
-
-  //             sessionId: sessionId,
-  //             username: username,
-  //             businessId: businessId,
-  //             role: "Employee",
-  //           });
-
-  //         var user = result.user;
-
-  //         if (user != null) {
-  //           user.sendEmailVerification();
-  //         }
-
-  //         window.location.href = "/AllEmployees";
-  //       })
-  //       .catch((error) => {
-  //         this.setState({ error });
-  //         console.log(this.state.error);
-  //         this.setState({ employer_sevice_message: this.state.error.message });
-  //       });
-  //   } else {
-  //     this.validator.showMessages();
-  //     this.forceUpdate();
-  //   }
-  // };
-
   handleSubmit = async (event) => {
     var sessionId = sessionStorage.getItem("RoleId");
     var username = sessionStorage.getItem("username");
@@ -439,69 +323,61 @@ class AllEmployees extends React.Component {
       var user = firebase.auth().currentUser;
       console.log(user);
       var key = Math.round(new Date().getTime() / 1000);
-      let dbRef = firebase
-        .firestore()
-        .collection("/merchant_users")
-        .doc(userID.uid)
-        .set({
-          employee_unique_id: key,
-          created_on: this.state.created_on,
+      let dbRef = db.collection("/merchant_users").doc(userID.uid).set({
+        employee_unique_id: key,
 
-          // business_id:this.state.business_id,
+        employee_name: this.state.employee_name,
+        user_name: this.state.user_name,
+        password: this.state.password,
+        employee_position: this.state.employee_position,
+        employee_division: this.state.employee_division,
+        employee_employement_type: this.state.employee_employement_type,
+        email_id: this.state.email_id,
+        contact_number: this.state.contact_number,
+        photo: this.state.photo,
+        employee_special_password: this.state.employee_special_password,
 
-          employee_name: this.state.employee_name,
-          user_name: this.state.user_name,
-          password: this.state.password,
-          employee_position: this.state.employee_position,
-          employee_division: this.state.employee_division,
-          employee_employement_type: this.state.employee_employement_type,
-          email_id: this.state.email_id,
-          contact_number: this.state.contact_number,
-          photo: this.state.photo,
-          employee_special_password: this.state.employee_special_password,
+        employee_dateofbirth: this.state.employee_dateofbirth,
+        employee_bloodgroup: this.state.employee_bloodgroup,
+        employee_address: this.state.employee_address,
+        employee_emergency_contact_number: this.state
+          .employee_emergency_contact_number,
+        employee_adharcard: this.state.employee_adharcard,
 
-          employee_dateofbirth: this.state.employee_dateofbirth,
-          employee_bloodgroup: this.state.employee_bloodgroup,
-          employee_address: this.state.employee_address,
-          employee_emergency_contact_number: this.state
-            .employee_emergency_contact_number,
-          employee_adharcard: this.state.employee_adharcard,
+        employee_account_number: this.state.employee_account_number,
+        employee_ifsc_code: this.state.employee_ifsc_code,
+        employee_upi_id: this.state.employee_upi_id,
 
-          employee_account_number: this.state.employee_account_number,
-          employee_ifsc_code: this.state.employee_ifsc_code,
-          employee_upi_id: this.state.employee_upi_id,
+        sessionId: sessionId,
+        username: username,
+        businessId: businessId,
+        role: "Employee",
+        created_on: this.state.created_on,
+        viewcustomersdetails: this.state.viewcustomersdetails,
 
-          sessionId: sessionId,
-          username: username,
-          businessId: businessId,
-          role: "Employee",
-          created_on: this.state.created_on,
-          viewcustomersdetails: this.state.viewcustomersdetails,
+        deleteeditcustomers: this.state.deleteeditcustomers,
+        chatwithcustomers: this.state.chatwithcustomers,
+        addemployees: this.state.addemployees,
+        vieweditdeleteemployees: this.state.vieweditdeleteemployees,
 
-          deleteeditcustomers: this.state.deleteeditcustomers,
-          chatwithcustomers: this.state.chatwithcustomers,
-          addemployees: this.state.addemployees,
-          vieweditdeleteemployees: this.state.vieweditdeleteemployees,
+        categories: this.state.categories,
+        items: this.state.items,
 
-          categories: this.state.categories,
-          items: this.state.items,
+        addtables: this.state.addtables,
+        editdeletetables: this.state.editdeletetables,
+        addfloors: this.state.addfloors,
+        editdeletefloors: this.state.editdeletefloors,
 
-          addtables: this.state.addtables,
-          editdeletetables: this.state.editdeletetables,
-          addfloors: this.state.addfloors,
-          editdeletefloors: this.state.editdeletefloors,
-
-          settings: this.state.settings,
-          viewbill: this.state.viewbill,
-          settle: this.state.settle,
-          additemdiscount: this.state.additemdiscount,
-          deleteitemafterkot: this.state.deleteitemafterkot,
-        });
+        settings: this.state.settings,
+        viewbill: this.state.viewbill,
+        settle: this.state.settle,
+        additemdiscount: this.state.additemdiscount,
+        deleteitemafterkot: this.state.deleteitemafterkot,
+      });
       this.setState(initState);
       if (userID !== null) {
         userID.sendEmailVerification();
       }
-      // window.location.href = "/AllEmployees";
     } else {
       this.validator.showMessages();
       this.forceUpdate();
@@ -509,17 +385,14 @@ class AllEmployees extends React.Component {
   };
 
   employeemailChange = async (e) => {
-    var sessionId = sessionStorage.getItem("RoleId");
-    var username = sessionStorage.getItem("username");
     var businessId = sessionStorage.getItem("businessId");
     this.setState({
       email_id: e.target.value,
     });
     if (this.state.validError != true) {
-      var ref = await firebase
-        .firestore()
+      var ref = await db
         .collection("merchant_users")
-        // .where("sessionId", "==", sessionId)
+
         .where("businessId", "==", businessId)
         .where("email_id", "==", e.target.value)
 
@@ -541,18 +414,14 @@ class AllEmployees extends React.Component {
   };
 
   employeemobileChange = async (e) => {
-    var sessionId = sessionStorage.getItem("RoleId");
-    var username = sessionStorage.getItem("username");
     var businessId = sessionStorage.getItem("businessId");
     this.setState({
       contact_number: e.target.value,
     });
     if (this.state.validError != true) {
-      var ref = await firebase
-
-        .firestore()
+      var ref = await db
         .collection("merchant_users")
-        // .where("sessionId", "==", sessionId)
+
         .where("businessId", "==", businessId)
         .where("contact_number", "==", e.target.value)
 
@@ -583,11 +452,7 @@ class AllEmployees extends React.Component {
     }).then((willDelete) => {
       if (willDelete) {
         console.log(id);
-        var playersRef = firebase
-          .firestore()
-          .collection("/merchant_users")
-          .doc(id)
-          .delete();
+        db.collection("/merchant_users").doc(id).delete();
       } else {
       }
     });
@@ -596,6 +461,172 @@ class AllEmployees extends React.Component {
   onChange = (event) => {
     this.setState({
       [event.target.name]: event.target.value,
+    });
+  };
+
+  editEmployee = (id) => {
+    this.setState({ editEmployee: true });
+    var employee;
+    for (var i = 0; i < this.state.employeeList.length; i++) {
+      if (this.state.employeeList[i].employeeId === id) {
+        employee = this.state.employeeList[i];
+        break;
+      }
+    }
+    console.log(employee);
+    this.setState({
+      employeeId: id,
+
+      employee_unique_id: employee.employee_unique_id,
+      created_on: employee.created_on,
+
+      employee_name: employee.employee_name,
+      user_name: employee.user_name,
+      password: employee.password,
+      employee_position: employee.employee_position,
+      employee_division: employee.employee_division,
+      employee_employement_type: employee.employee_employement_type,
+      email_id: employee.email_id,
+      contact_number: employee.contact_number,
+      photo: employee.photo,
+      employee_special_password: employee.employee_special_password,
+
+      employee_dateofbirth: employee.employee_dateofbirth,
+      employee_bloodgroup: employee.employee_bloodgroup,
+      employee_address: employee.employee_address,
+      employee_emergency_contact_number:
+        employee.employee_emergency_contact_number,
+      employee_adharcard: employee.employee_adharcard,
+
+      employee_account_number: employee.employee_account_number,
+      employee_ifsc_code: employee.employee_ifsc_code,
+      employee_upi_id: employee.employee_upi_id,
+
+      viewcustomersdetails: employee.viewcustomersdetails,
+      deleteeditcustomers: employee.deleteeditcustomers,
+      chatwithcustomers: employee.chatwithcustomers,
+      addemployees: employee.addemployees,
+      vieweditdeleteemployees: employee.vieweditdeleteemployees,
+
+      categories: employee.categories,
+      items: employee.items,
+
+      addtables: employee.addtables,
+      editdeletetables: employee.editdeletetables,
+      addfloors: employee.addfloors,
+      editdeletefloors: employee.editdeletefloors,
+
+      settings: employee.settings,
+      viewbill: employee.viewbill,
+      settle: employee.settle,
+      additemdiscount: employee.additemdiscount,
+      deleteitemafterkot: employee.deleteitemafterkot,
+    });
+  };
+  onEditSubmit = async (e) => {
+    var sessionId = sessionStorage.getItem("RoleId");
+    var username = sessionStorage.getItem("username");
+    var businessId = sessionStorage.getItem("businessId");
+    e.preventDefault();
+
+    await db.collection("merchant_users").doc(this.state.employeeId).update({
+      created_on: this.state.created_on,
+
+      employee_name: this.state.employee_name,
+      user_name: this.state.user_name,
+      password: this.state.password,
+      employee_position: this.state.employee_position,
+      employee_division: this.state.employee_division,
+      employee_employement_type: this.state.employee_employement_type,
+      email_id: this.state.email_id,
+      contact_number: this.state.contact_number,
+      photo: this.state.photo,
+      employee_special_password: this.state.employee_special_password,
+
+      employee_dateofbirth: this.state.employee_dateofbirth,
+      employee_bloodgroup: this.state.employee_bloodgroup,
+      employee_address: this.state.employee_address,
+      employee_emergency_contact_number: this.state
+        .employee_emergency_contact_number,
+      employee_adharcard: this.state.employee_adharcard,
+
+      employee_account_number: this.state.employee_account_number,
+      employee_ifsc_code: this.state.employee_ifsc_code,
+      employee_upi_id: this.state.employee_upi_id,
+
+      sessionId: sessionId,
+      username: username,
+      businessId: businessId,
+
+      viewcustomersdetails: this.state.viewcustomersdetails,
+
+      deleteeditcustomers: this.state.deleteeditcustomers,
+      chatwithcustomers: this.state.chatwithcustomers,
+      addemployees: this.state.addemployees,
+      vieweditdeleteemployees: this.state.vieweditdeleteemployees,
+
+      categories: this.state.categories,
+      items: this.state.items,
+
+      addtables: this.state.addtables,
+      editdeletetables: this.state.editdeletetables,
+      addfloors: this.state.addfloors,
+      editdeletefloors: this.state.editdeletefloors,
+      settings: this.state.settings,
+      viewbill: this.state.viewbill,
+      settle: this.state.settle,
+
+      additemdiscount: this.state.additemdiscount,
+      deleteitemafterkot: this.state.deleteitemafterkot,
+    });
+    this.setState({
+      editEmployee: false,
+      employeeId: "",
+      employee_name: "",
+      user_name: "",
+      password: "",
+      employee_position: "",
+      employee_division: "",
+      employee_employement_type: "",
+      email_id: "",
+      contact_number: "",
+      photo: "",
+      employee_special_password: "",
+
+      employee_dateofbirth: "",
+      employee_bloodgroup: "",
+      employee_address: "",
+      employee_emergency_contact_number: "",
+      employee_adharcard: "",
+
+      employee_account_number: "",
+      employee_ifsc_code: "",
+      employee_upi_id: "",
+
+      sessionId: sessionId,
+      username: username,
+      businessId: businessId,
+
+      viewcustomersdetails: "",
+
+      deleteeditcustomers: "",
+      chatwithcustomers: "",
+      addemployees: "",
+      vieweditdeleteemployees: "",
+
+      categories: "",
+      items: "",
+
+      addtables: "",
+      editdeletetables: "",
+      addfloors: "",
+      editdeletefloors: "",
+      settings: "",
+      viewbill: "",
+      settle: "",
+
+      additemdiscount: "",
+      deleteitemafterkot: "",
     });
   };
 
@@ -679,8 +710,9 @@ class AllEmployees extends React.Component {
                           <div className="order_btns">
                             <span
                               className="btn add_ord m-l-0 p_btn"
-                              data-toggle="modal"
-                              data-target="#add_employee"
+                              onClick={() => {
+                                this.setState({ addEmployee: true });
+                              }}
                             >
                               <img src="/images/icon/add_plus_icon_w.svg" />
                               Add Employees
@@ -691,32 +723,6 @@ class AllEmployees extends React.Component {
                         )}
                       </div>
                     </div>
-
-                    {/* <div className="col-md-7 p-0">
-                      <div className="track_box">
-                        <div className="track_ord_block">
-                          <div className="track_bg">
-                            <div className="track-50">
-                              <form>
-                                <div className="input-group">
-                                  <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="Track here"
-                                  />
-                                </div>
-                              </form>
-                            </div>
-                            <div className="track-50 line-tack">
-                              <span>
-                                <img src="/images/icon/green_order_prepare.svg" />
-                              </span>
-                              Order is being prepared
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div> */}
                   </div>
 
                   <div className="row mt-30">
@@ -732,10 +738,6 @@ class AllEmployees extends React.Component {
                           <li>
                             <a href="/AllEmployeePositions">Positions</a>
                           </li>
-                          {/* 
-                          <li>
-                            <a href="/AllEmplopyesRoles">User roles</a>
-                          </li> */}
                         </ul>
                       </div>
                     </div>
@@ -791,14 +793,16 @@ class AllEmployees extends React.Component {
                                       "vieweditdeleteemployees"
                                     ) == "Yes" ? (
                                       <td>
-                                        <Link
-                                          to={`/EditEmployee/${employee.employeeId}`}
-                                        >
-                                          <img
-                                            src="/images/icon/edit_icon_blue.svg"
-                                            className="edit_delete"
-                                          />
-                                        </Link>
+                                        <img
+                                          src="/images/icon/edit_icon_blue.svg"
+                                          className="edit_delete"
+                                          onClick={() => {
+                                            this.editEmployee(
+                                              employee.employeeId
+                                            );
+                                          }}
+                                        />
+
                                         <img
                                           src="/images/icon/delete_cross.svg"
                                           onClick={this.deleteItem.bind(
@@ -824,14 +828,11 @@ class AllEmployees extends React.Component {
             </div>
           </div>
         </div>
-
-        <div
-          className="modal fade"
-          id="add_employee"
-          tabIndex="-1"
-          role="dialog"
-          aria-labelledby="smallmodalLabel"
-          aria-hidden="true"
+        <Modal
+          show={this.state.addEmployee}
+          onHide={() => {
+            this.setState({ addEmployee: false });
+          }}
         >
           <div className="modal-dialog modal-sm hipal_pop" role="document">
             <div className="modal-content">
@@ -1260,20 +1261,6 @@ class AllEmployees extends React.Component {
                           this.state.employee_adharcard,
                           "required"
                         )}
-
-                        {/* <div className="upload_img upload_small">
- <div className="form-group">
-	<div className="img_show product_img_small"><img id="img-upload"/></div>
-       <div className="input-group">
-            <span className="input-group-btn">
-                <span className="btn btn-default btn-file">
-                    Upload Image<input type="file" id="imgInp"/>
-                </span>
-            </span>
-            <input type="text" className="form-control" readonly=""/>
-        </div>
-        
-    </div></div> */}
                       </div>
                     </div>
                   </div>
@@ -1361,46 +1348,6 @@ class AllEmployees extends React.Component {
 
                   <div className="col-12 w-100-row">
                     <div className="row form-group user_roles_check">
-                      {/* <div className="col col-md-6">
-                        <label>Customers</label>
-                      </div>
-                      <div className="col col-md-6">
-                        <label>
-                          <input
-                            type="radio"
-                            name="customers"
-                            value="Read&Write"
-                            onChange={this.onChange}
-                            checked={this.state.customers === "Read&Write"}
-                          />
-                          Read&Write
-                        </label>
-                        <label style={{ paddingLeft: "20px" }}>
-                          <input
-                            type="radio"
-                            name="customers"
-                            value="Read"
-                            onChange={this.onChange}
-                            checked={this.state.customers === "Read"}
-                          />
-                          Read
-                        </label>
-                        <label style={{ paddingLeft: "20px" }}>
-                          <input
-                            type="radio"
-                            name="customers"
-                            value="None"
-                            onChange={this.onChange}
-                            checked={this.state.customers === "None"}
-                          />
-                          None
-                        </label>
-                        {this.validator.message(
-                          "customers",
-                          this.state.customers,
-                          "required"
-                        )}
-                      </div> */}
                       {sessionStorage.getItem("role") == "Merchant" ||
                       sessionStorage.getItem("viewcustomersdetails") ==
                         "Yes" ? (
@@ -2032,7 +1979,7 @@ class AllEmployees extends React.Component {
                   <button
                     type="button"
                     className="btn close_btn"
-                    data-dismiss="modal"
+                    onClick={() => this.setState({ addEmployee: false })}
                   >
                     Close
                   </button>
@@ -2043,7 +1990,1215 @@ class AllEmployees extends React.Component {
               </Form>
             </div>
           </div>
-        </div>
+        </Modal>{" "}
+        <Modal
+          show={this.state.editEmployee}
+          onHide={() => this.setState({ editEmployee: false })}
+        >
+          <div className="modal-dialog modal-sm hipal_pop" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="smallmodalLabel">
+                  Edit Employee
+                </h5>
+              </div>
+              <Form onSubmit={this.onEditSubmit}>
+                {" "}
+                {this.state.employer_sevice_message}
+                <div className="modal-body product_edit">
+                  <div className="col-12 w-100-row">
+                    <div className="row form-group">
+                      <div className="col col-md-4">
+                        <label className=" form-control-label">
+                          Employee Name
+                        </label>
+                      </div>
+                      <div className="col-12 col-md-6">
+                        <input
+                          type="text"
+                          name="employee_name"
+                          value={this.state.employee_name}
+                          onChange={this.onChange}
+                          placeholder=""
+                          className="form-control edit_product"
+                        />
+                        {this.validator.message(
+                          "Name",
+                          this.state.employee_name,
+                          "required|whitespace|min:2|max:70"
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-12 w-100-row">
+                    <div className="row form-group">
+                      <div className="col col-md-4">
+                        <label className=" form-control-label">Username</label>
+                      </div>
+                      <div className="col-12 col-md-6">
+                        <input
+                          type="text"
+                          name="user_name"
+                          value={this.state.user_name}
+                          onChange={this.onChange}
+                          placeholder=""
+                          className="form-control edit_product"
+                        />
+                        {this.validator.message(
+                          "UserName",
+                          this.state.user_name,
+                          "required|whitespace|min:2|max:70"
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-12 w-100-row">
+                    <div className="row form-group">
+                      <div className="col col-md-4">
+                        <label className=" form-control-label">Password</label>
+                      </div>
+                      <div className="col-12 col-md-6">
+                        <input
+                          type="password"
+                          name="password"
+                          value={this.state.password}
+                          onChange={this.onChange}
+                          placeholder=""
+                          className="form-control edit_product"
+                        />
+                        {this.validator.message(
+                          "Password",
+                          this.state.password,
+                          "required|passwordvalid|min:6|max:30"
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-12 w-100-row">
+                    <div className="row form-group">
+                      <div className="col col-md-4">
+                        <label className=" form-control-label">Position</label>
+                      </div>
+                      <div className="col-12 col-md-6">
+                        <select
+                          className="form-control edit_product"
+                          name="employee_position"
+                          onChange={this.onChange}
+                        >
+                          <option>Select Position</option>
+                          {this.state.employeePositionsList &&
+                            this.state.employeePositionsList.map(
+                              (data, index) => {
+                                return (
+                                  <option
+                                    value={data.employee_position}
+                                    key={index}
+                                  >
+                                    {data.employee_position}
+                                  </option>
+                                );
+                              }
+                            )}
+                        </select>
+                        {this.validator.message(
+                          "Position",
+                          this.state.employee_position,
+                          "required"
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-12 w-100-row">
+                    <div className="row form-group">
+                      <div className="col col-md-4">
+                        <label className=" form-control-label">Division</label>
+                      </div>
+                      <div className="col-12 col-md-6">
+                        <input
+                          type="text"
+                          name="employee_division"
+                          value={this.state.employee_division}
+                          onChange={this.onChange}
+                          placeholder=""
+                          className="form-control edit_product"
+                        />
+                        {this.validator.message(
+                          "Division",
+                          this.state.employee_division,
+                          "required|whitespace|min:2|max:70"
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-12 w-100-row">
+                    <div className="row form-group">
+                      <div className="col col-md-4">
+                        <label className=" form-control-label">
+                          Employment Type
+                        </label>
+                      </div>
+                      <div className="col-12 col-md-6">
+                        <input
+                          type="text"
+                          name="employee_employement_type"
+                          value={this.state.employee_employement_type}
+                          onChange={this.onChange}
+                          placeholder=""
+                          className="form-control edit_product"
+                        />
+                        {this.validator.message(
+                          "Employment Type",
+                          this.state.employee_employement_type,
+                          "required|whitespace|min:2|max:70"
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-12 w-100-row">
+                    <div className="row form-group">
+                      <div className="col col-md-4">
+                        <label className=" form-control-label">
+                          Email Address
+                        </label>
+                      </div>
+                      <div className="col-12 col-md-6">
+                        <input
+                          type="text"
+                          name="email_id"
+                          value={this.state.email_id}
+                          onChange={this.employeemailChange}
+                          placeholder=""
+                          className="form-control edit_product"
+                        />
+                        {this.validator.message(
+                          "Email ",
+                          this.state.email_id,
+                          "required|email|min:6|max:70"
+                        )}
+                        <div className="text-danger">
+                          {" "}
+                          {this.state.employer_sevice_message}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-12 w-100-row">
+                    <div className="row form-group">
+                      <div className="col col-md-4">
+                        <label className=" form-control-label">
+                          Mobile Number
+                        </label>
+                      </div>
+                      <div className="col-12 col-md-6">
+                        <input
+                          type="number"
+                          name="contact_number"
+                          value={this.state.contact_number}
+                          onChange={this.employeemobileChange}
+                          placeholder=""
+                          className="form-control edit_product"
+                        />
+                        {this.validator.message(
+                          "Mobile Number",
+                          this.state.contact_number,
+                          "required|whitespace|min:10|max:10"
+                        )}
+                        <div className="text-danger">
+                          {" "}
+                          {this.state.mobile_message}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-12 w-100-row">
+                    <div className="row form-group">
+                      <div className="col col-md-4">
+                        <label className=" form-control-label">Photo</label>
+                      </div>
+                      <div className="col-12 col-md-6">
+                        {this.state.photo && (
+                          <img
+                            src={this.state.photo}
+                            width="50%"
+                            height="50%"
+                          />
+                        )}
+                        <FileUploader
+                          accept="image/*"
+                          name="photo"
+                          randomizeFilename
+                          storageRef={firebase.storage().ref("images")}
+                          onUploadStart={this.handleFrontImageUploadStart}
+                          onUploadError={this.handleUploadError}
+                          onUploadSuccess={this.handleEmployeePhotoSuccess}
+                          onProgress={this.handleProgress}
+                        />
+
+                        {this.validator.message(
+                          " Photo",
+                          this.state.photo,
+                          "required"
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-12 w-100-row">
+                    <div className="row form-group">
+                      <div className="col col-md-4">
+                        <label className=" form-control-label">
+                          Special Password
+                        </label>
+                      </div>
+                      <div className="col-12 col-md-6">
+                        <input
+                          type="password"
+                          name="employee_special_password"
+                          value={this.state.employee_special_password}
+                          onChange={this.onChange}
+                          placeholder=""
+                          className="form-control edit_product"
+                        />
+                        {this.validator.message(
+                          "Special Password",
+                          this.state.employee_special_password,
+                          "required|passwordvalid|min:6|max:30"
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-12 w-100-row">
+                    <h2 className="bdrbtm">Personal</h2>
+                  </div>
+
+                  <div className="col-12 w-100-row">
+                    <div className="row form-group">
+                      <div className="col col-md-4">
+                        <label className=" form-control-label">D.O.B</label>
+                      </div>
+                      <div className="col-12 col-md-6">
+                        <input
+                          type="date"
+                          name="employee_dateofbirth"
+                          value={this.state.employee_dateofbirth}
+                          onChange={this.onChange}
+                          placeholder=""
+                          className="form-control edit_product"
+                        />
+                        {this.validator.message(
+                          "Date Of Birth",
+                          this.state.employee_dateofbirth,
+                          "required"
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-12 w-100-row">
+                    <div className="row form-group">
+                      <div className="col col-md-4">
+                        <label className=" form-control-label">
+                          Blood group
+                        </label>
+                      </div>
+                      <div className="col-12 col-md-6">
+                        <select
+                          name="employee_bloodgroup"
+                          value={this.state.employee_bloodgroup}
+                          onChange={this.onChange}
+                          id="select"
+                          className="form-control edit_product"
+                        >
+                          <option value="Select">Select Blood Group</option>
+                          <option value="A Positive">A Positive</option>
+                          <option value="B Positive">B Positive</option>
+                          <option value="O Positive">O Positive</option>
+                          <option value="A Negative">A Negative</option>
+                          <option value="B Negative">B Negative</option>
+                          <option value="O Negative">O Negative</option>
+                          <option value="AB Negative">AB Negative</option>
+                          <option value="AB Positive">AB Positive</option>
+                        </select>
+                        {this.validator.message(
+                          "Blood Group",
+                          this.state.employee_bloodgroup,
+                          "required"
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-12 w-100-row">
+                    <div className="row form-group">
+                      <div className="col col-md-4">
+                        <label className=" form-control-label">Address </label>
+                      </div>
+                      <div className="col-12 col-md-6">
+                        <textarea
+                          name="employee_address"
+                          value={this.state.employee_address}
+                          onChange={this.onChange}
+                          id="textarea-input"
+                          rows="3"
+                          placeholder=""
+                          className="form-control edit_product"
+                        ></textarea>
+                        {this.validator.message(
+                          "Employee Address",
+                          this.state.employee_address,
+                          "required|whitespace|min:2|max:70"
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-12 w-100-row">
+                    <div className="row form-group">
+                      <div className="col col-md-4">
+                        <label className=" form-control-label">
+                          Emergency contact{" "}
+                        </label>
+                      </div>
+                      <div className="col-12 col-md-6">
+                        <input
+                          type="text"
+                          name="employee_emergency_contact_number"
+                          value={this.state.employee_emergency_contact_number}
+                          onChange={this.onChange}
+                          placeholder=""
+                          className="form-control edit_product"
+                        />
+                        {this.validator.message(
+                          "Emergency Contact Number",
+                          this.state.employee_emergency_contact_number,
+                          "required|whitespace|min:10|max:10"
+                        )}
+
+                        <div className="text-danger">
+                          {" "}
+                          {this.state.mobile_message}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-12 w-100-row">
+                    <div className="row form-group">
+                      <div className="col col-md-4">
+                        <label className=" form-control-label">
+                          Adhar card{" "}
+                        </label>
+                      </div>
+                      <div className="col-12 col-md-6">
+                        {this.state.employee_adharcard && (
+                          <img
+                            src={this.state.employee_adharcard}
+                            width="50%"
+                            height="50%"
+                          />
+                        )}
+                        <FileUploader
+                          accept="image/*"
+                          name="employee_adharcard"
+                          randomizeFilename
+                          storageRef={firebase.storage().ref("images")}
+                          onUploadStart={this.handleFrontImageUploadStart}
+                          onUploadError={this.handleUploadError}
+                          onUploadSuccess={this.handleAdharPhotoSuccess}
+                          onProgress={this.handleProgress}
+                        />
+
+                        {this.validator.message(
+                          " AdharCard Photo",
+                          this.state.employee_adharcard,
+                          "required"
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-12 w-100-row">
+                    <h2 className="bdrbtm">Banking </h2>
+                  </div>
+
+                  <div className="col-12 w-100-row">
+                    <div className="row form-group">
+                      <div className="col col-md-4">
+                        <label className=" form-control-label">
+                          ACC NUMBER
+                        </label>
+                      </div>
+                      <div className="col-12 col-md-6">
+                        <input
+                          type="text"
+                          name="employee_account_number"
+                          value={this.state.employee_account_number}
+                          onChange={this.onChange}
+                          placeholder=""
+                          className="form-control edit_product"
+                        />
+                        {this.validator.message(
+                          "Account Number",
+                          this.state.employee_account_number,
+                          "required|whitespace|min:10|max:16"
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-12 w-100-row">
+                    <div className="row form-group">
+                      <div className="col col-md-4">
+                        <label className=" form-control-label">
+                          IFSC CODE{" "}
+                        </label>
+                      </div>
+                      <div className="col-12 col-md-6">
+                        <input
+                          type="text"
+                          name="employee_ifsc_code"
+                          value={this.state.employee_ifsc_code}
+                          onChange={this.onChange}
+                          placeholder=""
+                          className="form-control edit_product"
+                        />
+                        {this.validator.message(
+                          "IFSC Code",
+                          this.state.employee_ifsc_code,
+                          "required|whitespace|min:10|max:16"
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-12 w-100-row">
+                    <div className="row form-group">
+                      <div className="col col-md-4">
+                        <label className=" form-control-label">UPI ID</label>
+                      </div>
+                      <div className="col-12 col-md-6">
+                        <input
+                          type="text"
+                          name="employee_upi_id"
+                          value={this.state.employee_upi_id}
+                          onChange={this.onChange}
+                          placeholder=""
+                          className="form-control edit_product"
+                        />
+                        {this.validator.message(
+                          "UPI ID",
+                          this.state.employee_upi_id,
+                          "required|whitespace|min:10|max:16"
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-12 w-100-row">
+                    <h3>Give Permissions</h3>
+                  </div>
+
+                  <div className="col-12 w-100-row">
+                    <div className="row form-group user_roles_check">
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("viewcustomersdetails") ==
+                        "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>View Customers Details</label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="viewcustomersdetails"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={
+                                  this.state.viewcustomersdetails === "Yes"
+                                }
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="viewcustomersdetails"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={
+                                  this.state.viewcustomersdetails === "No"
+                                }
+                              />
+                              No
+                            </label>
+
+                            {this.validator.message(
+                              "View customers Details",
+                              this.state.viewcustomersdetails,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("deleteeditcustomers") == "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>Delete/Edit Customers </label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="deleteeditcustomers"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={
+                                  this.state.deleteeditcustomers === "Yes"
+                                }
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="deleteeditcustomers"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={
+                                  this.state.deleteeditcustomers === "No"
+                                }
+                              />
+                              No
+                            </label>
+
+                            {this.validator.message(
+                              "Delete Edit Customers",
+                              this.state.deleteeditcustomers,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("chatwithcustomers") == "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>Chat With Customers </label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="chatwithcustomers"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={this.state.chatwithcustomers === "Yes"}
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="chatwithcustomers"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={this.state.chatwithcustomers === "No"}
+                              />
+                              No
+                            </label>
+
+                            {this.validator.message(
+                              "Chat With Customers",
+                              this.state.chatwithcustomers,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("addemployees") == "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>Add Employees</label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="addemployees"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={this.state.addemployees === "Yes"}
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="addemployees"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={this.state.addemployees === "No"}
+                              />
+                              No
+                            </label>
+
+                            {this.validator.message(
+                              "Add Employees",
+                              this.state.addemployees,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("vieweditdeleteemployees") ==
+                        "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>View/Edit/Delete Employees</label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="vieweditdeleteemployees"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={
+                                  this.state.vieweditdeleteemployees === "Yes"
+                                }
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="vieweditdeleteemployees"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={
+                                  this.state.vieweditdeleteemployees === "No"
+                                }
+                              />
+                              No
+                            </label>
+
+                            {this.validator.message(
+                              "View/Edit/Delete Employees",
+                              this.state.vieweditdeleteemployees,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("categories") == "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>Add/Edit/Delete Categories</label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="categories"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={this.state.categories === "Yes"}
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="categories"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={this.state.categories === "No"}
+                              />
+                              No
+                            </label>
+
+                            {this.validator.message(
+                              "Categories",
+                              this.state.categories,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("items") == "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>Add/Edit/Delete Items</label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="items"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={this.state.items === "Yes"}
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="items"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={this.state.items === "No"}
+                              />
+                              No
+                            </label>
+
+                            {this.validator.message(
+                              "Items",
+                              this.state.items,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("addtables") == "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>Add Tables</label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="addtables"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={this.state.addtables === "Yes"}
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="addtables"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={this.state.addtables === "No"}
+                              />
+                              No
+                            </label>
+
+                            {this.validator.message(
+                              "Add Tables",
+                              this.state.addtables,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("editdeletetables") == "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>Edit/Delete Tables</label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="editdeletetables"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={this.state.editdeletetables === "Yes"}
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="editdeletetables"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={this.state.editdeletetables === "No"}
+                              />
+                              No
+                            </label>
+
+                            {this.validator.message(
+                              "Edit/Delete Tables",
+                              this.state.editdeletetables,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("addfloors") == "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>Add Floors</label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="addfloors"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={this.state.addfloors === "Yes"}
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="addfloors"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={this.state.addfloors === "No"}
+                              />
+                              No
+                            </label>
+
+                            {this.validator.message(
+                              "Add Floors",
+                              this.state.addfloors,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("editdeletefloors") == "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>Edit/Delete Floors</label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="editdeletefloors"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={this.state.editdeletefloors === "Yes"}
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="editdeletefloors"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={this.state.editdeletefloors === "No"}
+                              />
+                              No
+                            </label>
+
+                            {this.validator.message(
+                              "Edit/Delete Floors",
+                              this.state.editdeletefloors,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("settings") == "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>Settings</label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="settings"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={this.state.settings === "Yes"}
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="settings"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={this.state.settings === "No"}
+                              />
+                              No
+                            </label>
+
+                            {this.validator.message(
+                              "Settings",
+                              this.state.settings,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("viewbill") == "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>View Bill</label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="viewbill"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={this.state.viewbill === "Yes"}
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="viewbill"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={this.state.viewbill === "No"}
+                              />
+                              No
+                            </label>
+
+                            {this.validator.message(
+                              "View Bill",
+                              this.state.viewbill,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("settle") == "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>Settle</label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="settle"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={this.state.settle === "Yes"}
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="settle"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={this.state.settle === "No"}
+                              />
+                              No
+                            </label>
+
+                            {this.validator.message(
+                              "Settle",
+                              this.state.settle,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("additemdiscount") == "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>Add Item Discount</label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="additemdiscount"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={this.state.additemdiscount === "Yes"}
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="additemdiscount"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={this.state.additemdiscount === "No"}
+                              />
+                              No
+                            </label>
+
+                            {this.validator.message(
+                              "Add Item Discount",
+                              this.state.additemdiscount,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {sessionStorage.getItem("role") == "Merchant" ||
+                      sessionStorage.getItem("deleteitemafterkot") == "Yes" ? (
+                        <>
+                          <div className="col col-md-6">
+                            <label>Delete Item After KOT</label>
+                          </div>
+                          <div className="col col-md-6">
+                            <label>
+                              <input
+                                type="radio"
+                                name="deleteitemafterkot"
+                                value="Yes"
+                                onChange={this.onChange}
+                                checked={
+                                  this.state.deleteitemafterkot === "Yes"
+                                }
+                              />
+                              Yes
+                            </label>
+                            <label style={{ paddingLeft: "20px" }}>
+                              <input
+                                type="radio"
+                                name="deleteitemafterkot"
+                                value="No"
+                                onChange={this.onChange}
+                                checked={this.state.deleteitemafterkot === "No"}
+                              />
+                              No
+                            </label>
+
+                            {this.validator.message(
+                              "Delete Item After KOT",
+                              this.state.deleteitemafterkot,
+                              "required"
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn close_btn"
+                    onClick={() => {
+                      this.setState({
+                        editEmployee: false,
+                        employeeId: "",
+                        employee_name: "",
+                        user_name: "",
+                        password: "",
+                        employee_position: "",
+                        employee_division: "",
+                        employee_employement_type: "",
+                        email_id: "",
+                        contact_number: "",
+                        photo: "",
+                        employee_special_password: "",
+
+                        employee_dateofbirth: "",
+                        employee_bloodgroup: "",
+                        employee_address: "",
+                        employee_emergency_contact_number: "",
+                        employee_adharcard: "",
+
+                        employee_account_number: "",
+                        employee_ifsc_code: "",
+                        employee_upi_id: "",
+
+                        viewcustomersdetails: "",
+
+                        deleteeditcustomers: "",
+                        chatwithcustomers: "",
+                        addemployees: "",
+                        vieweditdeleteemployees: "",
+
+                        categories: "",
+                        items: "",
+
+                        addtables: "",
+                        editdeletetables: "",
+                        addfloors: "",
+                        editdeletefloors: "",
+                        settings: "",
+                        viewbill: "",
+                        settle: "",
+
+                        additemdiscount: "",
+                        deleteitemafterkot: "",
+                      });
+                    }}
+                  >
+                    Close
+                  </button>
+
+                  <button type="submit" className="btn save_btn">
+                    Save
+                  </button>
+                </div>
+              </Form>
+            </div>
+          </div>{" "}
+        </Modal>
       </>
     );
   }
