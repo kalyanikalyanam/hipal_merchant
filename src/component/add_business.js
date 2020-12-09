@@ -8,6 +8,7 @@ import { Form } from "reactstrap";
 import { Link } from "react-router-dom";
 import Iframe from "react-iframe";
 import TimezoneSelect from "react-timezone-select";
+
 class AddBusiness extends React.Component {
   constructor(props) {
     super(props);
@@ -21,6 +22,7 @@ class AddBusiness extends React.Component {
       business_email: "",
       business_secondary_email: "",
       business_phone_number: "",
+      business_address: "",
 
       business_logo: "",
 
@@ -49,6 +51,10 @@ class AddBusiness extends React.Component {
       businessurl: "",
       timezone: {},
       created_on: new Date().toLocaleString(),
+
+      business_gst_number: "",
+      business_gst_value: 0,
+      business_cgst_value: 0,
     };
     this.onChange = this.onChange.bind(this);
     this.validator = new SimpleReactValidator({
@@ -203,6 +209,7 @@ class AddBusiness extends React.Component {
           business_email: this.state.business_email,
           business_secondary_email: this.state.business_secondary_email,
           business_phone_number: this.state.business_phone_number,
+          business_address: this.state.business_address,
 
           business_logo: this.state.business_logo,
 
@@ -211,6 +218,10 @@ class AddBusiness extends React.Component {
 
           business_fssai_number: this.state.business_fssai_number,
           business_fssai_form: this.state.business_fssai_form,
+
+          business_gst_number: this.state.business_gst_number,
+          business_gst_value: this.state.business_gst_value,
+          business_cgst_value: this.state.business_cgst_value,
 
           business_account_name: this.state.business_account_name,
           business_account_number: this.state.business_account_number,
@@ -228,11 +239,8 @@ class AddBusiness extends React.Component {
           username: username,
         });
 
-      window.location.href = "/BusinessList";
-      // this
-      //     .props
-      //     .history
-      //     .push("/BusinessList");
+      // window.location.href = "/BusinessList";
+      this.props.history.push("/BusinessList");
     } else {
       this.validator.showMessages();
       this.forceUpdate();
@@ -240,13 +248,11 @@ class AddBusiness extends React.Component {
   };
   businessNameChange = async (e) => {
     var sessionId = sessionStorage.getItem("RoleId");
-    var username = sessionStorage.getItem("username");
-    var businessId = sessionStorage.getItem("businessId");
     this.setState({
       business_name: e.target.value,
     });
     if (this.state.validError != true) {
-      var ref = await firebase
+      await firebase
         .firestore()
         .collection("businessdetails/")
         .where("sessionId", "==", sessionId)
@@ -339,10 +345,7 @@ class AddBusiness extends React.Component {
                         </div>
 
                         <div className="w-50 pull-left">
-                          {/* <span className="active_green font-25">{this.state.status}</span>  */}
-                          <span className="pull-right">
-                            {/* <button className="btn edit_small_button">Edit</button> */}
-                          </span>
+                          <span className="pull-right"></span>
                         </div>
                       </h1>
 
@@ -571,6 +574,30 @@ class AddBusiness extends React.Component {
                                 )}
                               </div>
                             </div>
+
+                            <div className="col-md-6">
+                              <div className="row form-group">
+                                <div className="col col-md-4">
+                                  <label className=" form-control-label">
+                                    Address
+                                  </label>
+                                </div>
+                                <div className="col-12 col-md-8">
+                                  <textarea
+                                    value={this.state.business_address}
+                                    placeholder="Enter Description"
+                                    onChange={this.onChange}
+                                    name="business_address"
+                                    className="form-control"
+                                  ></textarea>
+                                </div>
+                                {this.validator.message(
+                                  "Address",
+                                  this.state.business_address,
+                                  "required|whitespace|min:10|max:500"
+                                )}
+                              </div>
+                            </div>
                           </div>
 
                           <hr></hr>
@@ -735,6 +762,87 @@ class AddBusiness extends React.Component {
                                   {this.validator.message(
                                     "FSSAI Form",
                                     this.state.business_fssai_form,
+                                    "required"
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <hr></hr>
+
+                          <div className="row business_reg_box">
+                            <div className="col-md-6 p-0">
+                              <div className="col-md-12">
+                                <div className="row form-group">
+                                  <div className="col col-md-4">
+                                    <label className=" form-control-label">
+                                      Gst Number
+                                    </label>
+                                  </div>
+                                  <div className="col-12 col-md-8">
+                                    <input
+                                      type="text"
+                                      id="text-input"
+                                      name="business_gst_number"
+                                      value={this.state.business_gst_number}
+                                      onChange={this.onChange}
+                                      placeholder=""
+                                      className="form-control"
+                                    />
+                                  </div>
+                                  {this.validator.message(
+                                    "GST Number",
+                                    this.state.business_gst_number,
+                                    "required|whitespace|min:10|max:20"
+                                  )}
+                                </div>
+                                <div className="row form-group">
+                                  <div className="col col-md-4">
+                                    <label className=" form-control-label">
+                                      GST Value
+                                    </label>
+                                  </div>
+                                  <div className="col-12 col-md-8">
+                                    <input
+                                      type="number"
+                                      id="text-input"
+                                      name="business_gst_value"
+                                      value={this.state.business_gst_value}
+                                      onChange={this.onChange}
+                                      placeholder=""
+                                      pattern="\d+"
+                                      className="form-control"
+                                    />
+                                  </div>
+                                  {this.validator.message(
+                                    "GST Value",
+                                    this.state.business_gst_value,
+                                    "required"
+                                  )}
+                                </div>
+
+                                <div className="row form-group">
+                                  <div className="col col-md-4">
+                                    <label className=" form-control-label">
+                                      CGST Value
+                                    </label>
+                                  </div>
+                                  <div className="col-12 col-md-8">
+                                    <input
+                                      type="number"
+                                      id="text-input"
+                                      name="business_cgst_value"
+                                      value={this.state.business_cgst_value}
+                                      onChange={this.onChange}
+                                      placeholder=""
+                                      pattern="\d+"
+                                      className="form-control"
+                                    />
+                                  </div>
+                                  {this.validator.message(
+                                    "GST Value",
+                                    this.state.business_cgst_value,
                                     "required"
                                   )}
                                 </div>

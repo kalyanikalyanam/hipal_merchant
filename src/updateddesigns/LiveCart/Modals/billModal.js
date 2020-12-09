@@ -102,11 +102,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                 fontSize: "30px",
               }}
             >
-              <b>
-                {" "}
-                The Coffee Cup Pizzeria E-89,
-                <br /> Sainikpuri, Telangana 500094
-              </b>
+              <b> {data && data.businessAddress}</b>
             </td>
           </tr>
           <tr>
@@ -360,26 +356,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                       -
                     </td>
                   </tr>
-                  <tr>
-                    <td
-                      style={{
-                        textAlign: "left",
-                        padding: "3px 10px",
-                        fontSize: "30px",
-                      }}
-                    >
-                      <b style={{ fontSize: "30px" }}> GST</b>
-                    </td>
-                    <td
-                      style={{
-                        textAlign: "right",
-                        padding: "5px 10px",
-                        fontSize: "30px",
-                      }}
-                    >
-                      <b style={{ fontSize: "30px" }}>{data && data.gst}</b>
-                    </td>
-                  </tr>
+
                   <tr>
                     <td
                       style={{
@@ -398,6 +375,26 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                       }}
                     >
                       <b style={{ fontSize: "30px" }}> {data && data.cGst}</b>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      style={{
+                        textAlign: "left",
+                        padding: "3px 10px",
+                        fontSize: "30px",
+                      }}
+                    >
+                      <b style={{ fontSize: "30px" }}> SGST</b>
+                    </td>
+                    <td
+                      style={{
+                        textAlign: "right",
+                        padding: "5px 10px",
+                        fontSize: "30px",
+                      }}
+                    >
+                      <b style={{ fontSize: "30px" }}>{data && data.gst}</b>
                     </td>
                   </tr>
                 </tbody>
@@ -474,7 +471,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                 fontSize: "30px",
               }}
             >
-              <b style={{ fontSize: "30px" }}>- Thank you! -</b>
+              <b style={{ fontSize: "30px" }}>{data && data.gstNum}</b>
             </td>
           </tr>
           <tr>
@@ -486,7 +483,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                 fontSize: "30px",
               }}
             >
-              <b style={{ fontSize: "30px" }}>{data && data.gstNum}</b>
+              <b style={{ fontSize: "30px" }}>- Thank you! -</b>
             </td>
           </tr>
         </tbody>

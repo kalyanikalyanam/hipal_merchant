@@ -41,6 +41,13 @@ class ViewBill extends React.Component {
           console.log(business);
           sessionStorage.setItem("BusinessName", business.business_name);
           sessionStorage.setItem("BusinessLogo", business.business_logo);
+          sessionStorage.setItem("BusinessAddress", business.business_address);
+          sessionStorage.setItem("BusinessGST", business.business_gst_value);
+          sessionStorage.setItem("BusinessCGST", business.business_cgst_value);
+          sessionStorage.setItem(
+            "BusinessGSTNumber",
+            business.business_gst_number
+          );
         });
     }
     document.body.style.backgroundColor = "#ccc";
@@ -71,7 +78,8 @@ class ViewBill extends React.Component {
           orderId: userData.orderId,
           businessId: userData.businessId,
           sessionId: userData.sessionId,
-          payable: userData.payable,
+          gst: userData.gst,
+          cgst: userData.cgst,
 
           grandTotal: userData.grandTotal,
         });
@@ -86,8 +94,8 @@ class ViewBill extends React.Component {
         });
         let total = subTotal + tax - discount;
         let temp = total;
-        total += (total * 2.5) / 100;
-        total += (temp * 2.5) / 100;
+        total += (total * this.state.gst) / 100;
+        total += (temp * this.state.cgst) / 100;
         this.setState({
           total,
           subTotal,
@@ -98,6 +106,8 @@ class ViewBill extends React.Component {
   };
 
   render() {
+    var address = sessionStorage.getItem("BusinessAddress");
+
     return (
       <>
         <div className="print_bill">
@@ -133,8 +143,7 @@ class ViewBill extends React.Component {
                   color: "#000000",
                 }}
               >
-                The Coffee Cup Pizzeria E-89,
-                <br /> Sainikpuri, Telangana 500094
+                {address}
               </td>
             </tr>
 
@@ -295,20 +304,21 @@ class ViewBill extends React.Component {
                       -
                     </td>
                   </tr>
-                  <tr>
-                    <td style={{ textAlign: "left", padding: "3px 30px" }}>
-                      GST
-                    </td>
-                    <td style={{ textAlign: "right", padding: "5px 30px" }}>
-                      2.5
-                    </td>
-                  </tr>
+
                   <tr>
                     <td style={{ textAlign: "left", padding: "3px 30px" }}>
                       CGST
                     </td>
                     <td style={{ textAlign: "right", padding: "3px 30px" }}>
-                      2.5
+                      {this.state.cgst}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{ textAlign: "left", padding: "3px 30px" }}>
+                      SGST
+                    </td>
+                    <td style={{ textAlign: "right", padding: "5px 30px" }}>
+                      {this.state.gst}
                     </td>
                   </tr>
                 </table>
@@ -344,7 +354,17 @@ class ViewBill extends React.Component {
                 </table>
               </td>
             </tr>
-
+            <tr>
+              <td
+                style={{
+                  textAlign: "center",
+                  padding: "10px",
+                  color: "#000000",
+                }}
+              >
+                {sessionStorage.getItem("BusinessGSTNumber")}
+              </td>
+            </tr>
             <tr>
               <td
                 style={{
@@ -354,18 +374,6 @@ class ViewBill extends React.Component {
                 }}
               >
                 - Thank you! -
-              </td>
-            </tr>
-
-            <tr>
-              <td
-                style={{
-                  textAlign: "center",
-                  padding: "10px",
-                  color: "#000000",
-                }}
-              >
-                GSTIN - 456AEW453462
               </td>
             </tr>
           </table>
