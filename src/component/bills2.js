@@ -79,8 +79,9 @@ const Bills = () => {
           });
         let total = subTotal + tax - discount;
         let temp = total;
-        total += (total * 2.5) / 100;
-        total += (temp * 2.5) / 100;
+        console.log(bill.cgst);
+        total += (total * bill.gst) / 100;
+        total += (temp * bill.cgst) / 100;
         grandTotal += Math.round(total);
       });
 
@@ -370,8 +371,10 @@ const Bills = () => {
 
                                         let total = subTotal + tax - discount;
                                         let temp = total;
-                                        total += (total * 2.5) / 100;
-                                        total += (temp * 2.5) / 100;
+                                        // total += (total * 2.5) / 100;
+                                        // total += (temp * 2.5) / 100;
+                                        total += (total * bill.gst) / 100;
+                                        total += (temp * bill.cgst) / 100;
                                         const [date, time] = dateString(
                                           new Date(bill.date)
                                         );
@@ -386,9 +389,7 @@ const Bills = () => {
                                             <td className="bill_date">
                                               {date}
                                             </td>
-                                            <td>
-                                              {time}
-                                            </td>
+                                            <td>{time}</td>
 
                                             {sessionStorage.getItem("role") ==
                                               "Merchant" ||

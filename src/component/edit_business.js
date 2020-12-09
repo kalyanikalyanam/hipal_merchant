@@ -8,8 +8,6 @@ import { Form } from "reactstrap";
 import { Link } from "react-router-dom";
 import Iframe from "react-iframe";
 import TimezoneSelect from "react-timezone-select";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
 class EditBusiness extends React.Component {
   constructor(props) {
     super(props);
@@ -52,8 +50,6 @@ class EditBusiness extends React.Component {
       business_gst_number: "",
       business_gst_value: 0,
       business_cgst_value: 0,
-
-      theme: "snow",
     };
     this.onChange = this.onChange.bind(this);
     this.validator = new SimpleReactValidator({
@@ -142,57 +138,6 @@ class EditBusiness extends React.Component {
       },
     });
   }
-
-  modules = {
-    toolbar: [
-      [
-        {
-          header: [1, 2, 3, 4, 5, 6, false],
-        },
-      ],
-      ["bold", "italic", "underline", "strike", "blockquote"],
-      [
-        {
-          list: "ordered",
-        },
-        {
-          list: "bullet",
-        },
-        {
-          indent: "-1",
-        },
-        {
-          indent: "+1",
-        },
-      ],
-      ["link", "image"],
-      ["clean"],
-      [
-        {
-          color: [],
-        },
-        {
-          background: [],
-        },
-      ],
-    ],
-  };
-
-  formats = [
-    "header",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "blockquote",
-    "list",
-    "bullet",
-    "indent",
-    "link",
-    "image",
-    "color",
-    "background",
-  ];
 
   componentDidMount() {
     this.businessList();
@@ -384,13 +329,8 @@ class EditBusiness extends React.Component {
       timezone: data,
     });
   };
-  handleChange1 = (value) => {
-    this.setState({ business_address: value });
-  };
+
   render() {
-    const divStyle = {
-      height: "50px",
-    };
     var url = `https://hipal-9a554.web.app/${this.state.business_name}`;
     var qrcode =
       "https://chart.googleapis.com/chart?cht=qr&chl=" +
@@ -716,14 +656,13 @@ class EditBusiness extends React.Component {
                                   </label>
                                 </div>
                                 <div className="col-12 col-md-8">
-                                  <ReactQuill
-                                    theme={this.state.theme}
+                                  <textarea
                                     value={this.state.business_address}
                                     placeholder="Enter Description"
-                                    onChange={this.handleChange1}
-                                    className="add-new-post__editor mb-1"
-                                    style={divStyle}
-                                  />
+                                    onChange={this.onChange}
+                                    name="business_address"
+                                    className="form-control"
+                                  ></textarea>
                                 </div>
                                 {this.validator.message(
                                   "Address",

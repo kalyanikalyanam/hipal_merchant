@@ -7,9 +7,10 @@ import {
   balanceContext,
   stateContext,
 } from "./contexts";
+
 const BillPage = () => {
-  const [businessLogo, setBusinessLogo] = useState();
   const [businessId, setBusinessId] = useState();
+  const [businessLogo, setBusinessLogo] = useState();
   const [total, setTotal] = useState(0);
   const [subTotal, setSubTotal] = useState(0);
   const [tax, setTax] = useState(0);
@@ -18,6 +19,7 @@ const BillPage = () => {
   const [gst, setGst] = useState(0);
   const [cGst, setCgst] = useState(0);
   const [gstNum, setGstNum] = useState(0);
+  const [businessAddress, setBusinessAddress] = useState();
 
   const balance = useContext(balanceContext);
   const dispatch = useContext(dispatchContext);
@@ -33,25 +35,26 @@ const BillPage = () => {
   useEffect(() => {
     var unsubscribe;
     const getGST = async () => {
+      console.log(sessionStorage.getItem("BusinessAddress"));
       const data = await db
-        .collection("settings_gst_info")
-        .where("businessId", "==", businessId)
-        .limit(1)
-        .get();
-      data.forEach((querySnapshot) => {
-        setCgst(querySnapshot.data().cgst_value);
-        setGst(querySnapshot.data().gst_value);
-        setGstNum(querySnapshot.data().gst_number);
-      });
+        .collection("businessdetails")
+        .doc(businessId)
+        .get()
+        .then(function (snapshot) {
+          setCgst(snapshot.data().business_cgst_value);
+          setGst(snapshot.data().business_gst_value);
+          setGstNum(snapshot.data().business_gst_number);
+          setBusinessAddress(snapshot.data().business_address);
+        });
       unsubscribe = db
-        .collection("settings_gst_info")
-        .where("businessId", "==", businessId)
-        .onSnapshot((data) => {
-          data.forEach((querySnapshot) => {
-            setCgst(querySnapshot.data().cgst_value);
-            setGst(querySnapshot.data().gst_value);
-            setGstNum(querySnapshot.data().gst_number);
-          });
+        .collection("businessdetails")
+        .doc(businessId)
+        .get()
+        .then(function (snapshot) {
+          setCgst(snapshot.data().business_cgst_value);
+          setGst(snapshot.data().business_gst_value);
+          setGstNum(snapshot.data().business_gst_number);
+          setBusinessAddress(snapshot.data().business_address);
         });
     };
     if (businessId) getGST();
@@ -91,7 +94,7 @@ const BillPage = () => {
   useEffect(() => {
     let total = subTotal + tax - discount;
     let temp = total;
-    console.log(gst);
+    console.log(cGst);
     total += (total * gst) / 100;
     total += (temp * cGst) / 100;
     setTotal(total);
@@ -133,6 +136,8 @@ const BillPage = () => {
         customers: table.customers,
         tablename: table.table_name,
         businessId: businessId,
+        gst: gst,
+        cgst: cGst,
         date: Date.now(),
       };
       await db.collection("bills").add(bill);
@@ -150,6 +155,7 @@ const BillPage = () => {
           cGst,
           isSettle: true,
           gstNum,
+          businessAddress,
         },
       });
       await dbRef.update({
@@ -184,6 +190,7 @@ const BillPage = () => {
         gst,
         cGst,
         gstNum,
+        businessAddress,
         isSettle: false,
         occupency: 0,
       },
@@ -217,6 +224,7 @@ const BillPage = () => {
           return <BillItem item={item} key={index} />;
         })
       : noItem;
+
   return (
     <>
       <div className="order_id_cart_box col-md-12 m-t-20 bg-w m-b-20">
@@ -252,8 +260,7 @@ const BillPage = () => {
                     color: "#000000",
                   }}
                 >
-                  The Coffee Cup Pizzeria E-89,
-                  <br /> Sainikpuri, Telangana 500094
+                  {businessAddress && businessAddress}
                 </td>
               </tr>
               <tr
@@ -407,20 +414,21 @@ const BillPage = () => {
                           -
                         </td>
                       </tr>
-                      <tr>
-                        <td style={{ textAlign: "left", padding: "3px 10px" }}>
-                          GST
-                        </td>
-                        <td style={{ textAlign: "right", padding: "5px 10px" }}>
-                          {gst && gst}
-                        </td>
-                      </tr>
+
                       <tr>
                         <td style={{ textAlign: "left", padding: "3px 10px" }}>
                           CGST
                         </td>
                         <td style={{ textAlign: "right", padding: "3px 10px" }}>
                           {cGst && cGst}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style={{ textAlign: "left", padding: "3px 10px" }}>
+                          SGST
+                        </td>
+                        <td style={{ textAlign: "right", padding: "5px 10px" }}>
+                          {gst && gst}
                         </td>
                       </tr>
                     </tbody>
@@ -467,7 +475,7 @@ const BillPage = () => {
                     color: "#000000",
                   }}
                 >
-                  - Thank you! -
+                  {gstNum}
                 </td>
               </tr>
               <tr>
@@ -478,7 +486,7 @@ const BillPage = () => {
                     color: "#000000",
                   }}
                 >
-                  {gstNum}
+                  - Thank you! -
                 </td>
               </tr>
             </tbody>

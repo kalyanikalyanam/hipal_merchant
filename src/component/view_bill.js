@@ -2,7 +2,6 @@ import React from "react";
 import firebase from "../config";
 import { Link } from "react-router-dom";
 import * as moment from "moment";
-import renderHTML from "react-render-html";
 class ViewBill extends React.Component {
   constructor(props) {
     super(props);
@@ -56,9 +55,6 @@ class ViewBill extends React.Component {
   }
 
   viewBill = async () => {
-    var BusinessGST = sessionStorage.getItem("BusinessGST");
-    var BusinessCGST = sessionStorage.getItem("BusinessCGST");
-
     const { billid } = this.props.match.params;
     console.log(billid);
 
@@ -82,7 +78,8 @@ class ViewBill extends React.Component {
           orderId: userData.orderId,
           businessId: userData.businessId,
           sessionId: userData.sessionId,
-          payable: userData.payable,
+          gst: userData.gst,
+          cgst: userData.cgst,
 
           grandTotal: userData.grandTotal,
         });
@@ -97,8 +94,8 @@ class ViewBill extends React.Component {
         });
         let total = subTotal + tax - discount;
         let temp = total;
-        total += (total * BusinessGST) / 100;
-        total += (temp * BusinessCGST) / 100;
+        total += (total * this.state.gst) / 100;
+        total += (temp * this.state.cgst) / 100;
         this.setState({
           total,
           subTotal,
@@ -110,8 +107,7 @@ class ViewBill extends React.Component {
 
   render() {
     var address = sessionStorage.getItem("BusinessAddress");
-    var BusinessGST = sessionStorage.getItem("BusinessGST");
-    var BusinessCGST = sessionStorage.getItem("BusinessCGST");
+
     return (
       <>
         <div className="print_bill">
@@ -147,7 +143,7 @@ class ViewBill extends React.Component {
                   color: "#000000",
                 }}
               >
-                {renderHTML(address)}
+                {address}
               </td>
             </tr>
 
@@ -308,20 +304,21 @@ class ViewBill extends React.Component {
                       -
                     </td>
                   </tr>
-                  <tr>
-                    <td style={{ textAlign: "left", padding: "3px 30px" }}>
-                      GST
-                    </td>
-                    <td style={{ textAlign: "right", padding: "5px 30px" }}>
-                      {sessionStorage.getItem("BusinessGST")}
-                    </td>
-                  </tr>
+
                   <tr>
                     <td style={{ textAlign: "left", padding: "3px 30px" }}>
                       CGST
                     </td>
                     <td style={{ textAlign: "right", padding: "3px 30px" }}>
-                      {sessionStorage.getItem("BusinessCGST")}
+                      {this.state.cgst}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{ textAlign: "left", padding: "3px 30px" }}>
+                      SGST
+                    </td>
+                    <td style={{ textAlign: "right", padding: "5px 30px" }}>
+                      {this.state.gst}
                     </td>
                   </tr>
                 </table>
@@ -357,19 +354,6 @@ class ViewBill extends React.Component {
                 </table>
               </td>
             </tr>
-
-            <tr>
-              <td
-                style={{
-                  textAlign: "center",
-                  padding: "10px",
-                  color: "#000000",
-                }}
-              >
-                - Thank you! -
-              </td>
-            </tr>
-
             <tr>
               <td
                 style={{
@@ -379,6 +363,17 @@ class ViewBill extends React.Component {
                 }}
               >
                 {sessionStorage.getItem("BusinessGSTNumber")}
+              </td>
+            </tr>
+            <tr>
+              <td
+                style={{
+                  textAlign: "center",
+                  padding: "10px",
+                  color: "#000000",
+                }}
+              >
+                - Thank you! -
               </td>
             </tr>
           </table>
