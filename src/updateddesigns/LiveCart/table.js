@@ -11,8 +11,8 @@ const Table = ({dbRef})=> {
   const {handleSubmit, reset, register} = useForm()
 
   useEffect(() => {
+    var businessId = sessionStorage.getItem("businessId");
     const employeeList = async () => {
-      var businessId = sessionStorage.getItem("businessId");
       try {
         const querySnapshot = await db.collection("merchant_users").where("businessId", "==", businessId).get()
         let employees = []
@@ -23,15 +23,25 @@ const Table = ({dbRef})=> {
         console.log(e)
       }
     }
+    var unsubscribe = db.collection("merchant_users").where("businessId", "==", businessId).onSnapshot(querySnapshot => {
+        let employees = []
+        querySnapshot.forEach(doc => employees.push({...doc.data(), id: doc.id}))
+        setEmployees(employees)
+    })
     employeeList();
+    return unsubscribe
   }, []);
 
   useEffect(() => {
     const tableData = async () => {
+      var unsubscribe
       if (dbRef) {
         const table = await dbRef.get()
         setTable(table.data())
         reset({ employee: table.data().currentEmployee })
+        unsubscribe = dbRef.onSnapshot(table => {
+          setTable(table.data())
+        })
       }
     }
     tableData()
@@ -54,7 +64,6 @@ const Table = ({dbRef})=> {
     })
   }
   const handleAdvancedOption = () => {
-    console.log("here")
     dispatch({
       type:"AdvanceOptionsModalShow"
     })

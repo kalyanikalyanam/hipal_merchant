@@ -123,6 +123,10 @@ const BillPage = () => {
     </tr>
   );
   const handleSettle = async () => {
+    if(table.status.split(' ')[0] === "Merge"){
+      console.log("here")
+      return
+    }
     if (balance.balance != 0) {
       alert("Balance Must be 0 before Settling");
     } else {

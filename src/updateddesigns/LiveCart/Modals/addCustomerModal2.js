@@ -1,154 +1,105 @@
 import React, { useContext, useEffect, useState } from 'react'
-import {db} from '../../../config'
 import { useForm } from 'react-hook-form'
-import CustomerFields from './customerFields'
+import { db } from '../../../config'
 import { dispatchContext, tableContext } from '../contexts'
 
-const CustomerModal = () => {
-    const dbRef = useContext(tableContext)
+const AddCustomerModal = () => {
     const dispatch = useContext(dispatchContext)
-    
+    const dbRef = useContext(tableContext)
+    const [customersList, setCustomersList] = useState()
+    const [currentCustomers, setCurrentCustomers] = useState()
     const [occupency, setOccupency] = useState(0)
-    const [table, setTable] = useState()
-    const [customers, setCustomers] = useState()
 
-    const {handleSubmit, register, setValue, getValues} = useForm({
-        mode: "onBlur",
+    const {handleSubmit, getValues, errors, setErrors, register, setValue} = useForm({
+        mode: "onBlur"
     })
-    const [fields, setFields] = useState(null)
-
     useEffect(() => {
         const getCustomers = async () => {
-            const businessId = sessionStorage.getItem("businessId");
-            const snapshot = await db
+            const querySnapshot= await db 
                 .collection("customers")
-                .where("businessId", "==", businessId)
-                .get();
-            let customers = []
-            snapshot.forEach(childSnapshot => {
-                const customer = {
-                    id: childSnapshot.id,
-                    email: childSnapshot.data().customer_email,
-                    name: childSnapshot.data().customer_name,
-                    phone: childSnapshot.data().customer_phonenumber,
-                    username: childSnapshot.data().username,
-                }
-                customers.push(customer)
+                .where("businessId", "==", sessionStorage.getItem("businessId"))
+                .get()
+            
+            let customersList = []
+            querySnapshot.forEach(childSnapshot => {
+                customersList.push({...childSnapshot.data(), id: childSnapshot.id})
             })
-            setCustomers(customers)
-
-            db
-                .collection("customers")
-                .where("businessId", "==", businessId)
-                .onSnapshot(snapshot =>{
-                    let customers = []
-                    console.log("here")
-                    snapshot.forEach(childSnapshot => {
-                        const customer = {
-                            id: childSnapshot.id,
-                            email: childSnapshot.data().customer_email,
-                            name: childSnapshot.data().customer_name,
-                            phone: childSnapshot.data().customer_phonenumber,
-                            username: childSnapshot.data().username,
-                        }
-                        customers.push(customer)
-                    })
-                    setCustomers(customers)
-                })
+            setCustomersList(customersList)
         }
-        const getOccupency = async () => {
-            let table= await dbRef.get()
-            setTable(table.data())
-            setOccupency(table.data().occupency)
+
+        const getCurrentCustomers = async () => {
+            let querySnapshot = await dbRef.get()
+            const currentCustomers = querySnapshot.data().customers
+            const occupency = querySnapshot.data().occupency
+            setCurrentCustomers(currentCustomers)
+            setOccupency(occupency)
+            setValue("occupency", occupency)
         }
         getCustomers()
-        getOccupency()
-        let unsubscribe = dbRef.onSnapshot(table => {
-            setTable(table.data())
-            setOccupency(table.data().occupency)
-        })
-        return unsubscribe
+        getCurrentCustomers()
     }, [])
-    
 
-    useEffect(() => {
-        setValue("occupency", occupency)
-
+    const handleChange = () => {
+        if(getValues("occupency") < 0) setValue("occupency", "0")
+        const occupency = getValues("occupency")
+        setOccupency(occupency)
         let fields = []
         for(var i = 0; i < occupency; i++){
-            var field = (
-                <div key={i}>
-                    <CustomerFields
-                        index={i}
-                        register={register}
-                        customers ={customers}
-                    />
-                </div>
+            let field = (
+            <div>
+                <input 
+                    ref={register}
+                    name={`${i}Name`}
+                />
+                <input 
+                    ref={register}
+                    name={`${i}Number`}
+                />
+            </div>
             )
             fields.push(field)
         }
-        setFields(fields)
-    }, [occupency])
-   
-
-    const handleKeyDown = (e) => {
-        if (
-            !(
-                (e.keyCode > 95 && e.keyCode < 106) ||
-                (e.keyCode > 47 && e.keyCode < 58) ||
-                e.keyCode == 8
-            )
-        ) {
-            return false;
+        console.log(fields)
+    }
+    const onSubmit = (data) => {
+        if(data.occupency === '0'){
+            dbRef.update({
+                status: "vacant"
+            })
+        }else {
+            dbRef.update({
+                status: "occupied"
+            })
         }
-    };
-    const handleClose = () => {
         dispatch({
-            type: "CustomerToTableModalHide",
-        });
+            type: "CustomerToTableModalHide"
+        })
     }
-    const handleSave = (data) => {
-        console.log(data)
+    const onClose = () => {
+        dispatch({
+            type: "CustomerToTableModalHide"
+        })
     }
-    
     return (
-        <form onSubmit={handleSubmit(handleSave)}>
-            <div className="modal-dialog modal-sm hipal_pop" width="200px" role="document">
-                <div className="modal-content">
-                    <div className="modal-header">
-                        <h5 className="modal-title">
-                            Add table to Table {table && table.table_name}
-                        </h5>
-                    </div>
-                    <div className="modal-body">
-                        <div className="col-12 w-100-row ocupeny_no m-t-10">
-                            Occupancy
-                        <span>
-                                <input
-                                    onKeyDown={handleKeyDown}
-                                    type="number"
-                                    name="occupency"
-                                    min="0"
-                                    max={table && table.table_capacity.split(" ")[0]}
-                                    ref={register}
-                                    onChange={() => { setOccupency(getValues("occupency")) }}
-                                />
-                            </span>
-                        </div>
-                        {fields && fields}
-                    </div>
-                    <div className="modal-footer">
-                        <button onClick={handleClose} className="btn close_btn">
-                            Close
-                    </button>
-                        <button className="btn save_btn" type="submit">
-                            Save
-                    </button>
-                    </div>
+        <div>
+            <form onSubmit={handleSubmit(onSubmit)}>
+            <div>
+                <input 
+                    placeholder="0"
+                    name="occupency"
+                    ref={register}
+                    type="number"
+                    onChange={handleChange}
+                    min={0}
+                />
                 </div>
-            </div>
-        </form>
+               <div>
+                <button type="submit">Save</button>
+                <button onClick={onClose}>Close</button>
+               </div>
+            </form>
+        </div>
     )
 }
 
-export default CustomerModal 
+export default AddCustomerModal

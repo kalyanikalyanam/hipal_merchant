@@ -3,6 +3,49 @@ import { balanceContext, dispatchContext, tableContext } from "./contexts";
 import PaymentMethod from "./paymentMethods";
 
 const BillBottom = () => {
+<<<<<<< HEAD
+    const balance = useContext(balanceContext)
+    const [localBalance, setLocalBalance] = useState(balance)
+    const dbRef = useContext(tableContext)
+    const dispatch = useContext(dispatchContext)
+    const [total, setTotal] = useState()
+    const [table, setTable] = useState()
+    const [state, setState] = useState()
+    useEffect(() => {
+        setTotal(balance.balance)
+        setLocalBalance(balance.balance)
+    }, [balance])
+    useEffect(() => {
+        let unsubscribe
+        const getTable = async () => {
+            if (dbRef) {
+                const table = await dbRef.get()
+                setTable(table.data())
+                unsubscribe = dbRef.onSnapshot(table => setTable(table.data())) 
+            }
+        }
+        getTable()
+        return unsubscribe
+    }, [dbRef])
+     
+    useEffect(() => {
+        if(table && table.bill){
+            let total = 0
+            table.bill.forEach(item => {
+                total += item.price * item.quantity
+                total += item.price * item.tax / 100 * item.quantity
+                total -= item.price * item.discount / 100 * item.quantity
+            })
+            let temp = total
+            total += total * balance.gst/ 100
+            total += temp * balance.gst / 100
+            setTotal(Math.round(total))
+        }
+    }, [table])
+
+    const onValue = (data) => {
+        setState({ ...state, ...data });
+=======
   const balance = useContext(balanceContext);
   const [localBalance, setLocalBalance] = useState(balance);
   const dbRef = useContext(tableContext);
@@ -22,6 +65,7 @@ const BillBottom = () => {
         setTable(table.data());
         unsubscribe = dbRef.onSnapshot((table) => setTable(table.data()));
       }
+>>>>>>> 9d684dd338e57d9a46e21c89c246f67c6097a288
     };
     getTable();
     return unsubscribe;
