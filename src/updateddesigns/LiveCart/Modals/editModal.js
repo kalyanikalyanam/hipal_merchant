@@ -1,82 +1,91 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { dispatchContext} from "../contexts";
+import { dispatchContext } from "../contexts";
 import LoginForm from "./login";
 
-const EditModal = ({item, dbRef, edit}) => {
-  const { register, handleSubmit, errors, reset, setValue} = useForm();
+const EditModal = ({ item, dbRef, edit }) => {
+  const { register, handleSubmit, errors, reset, setValue } = useForm();
   const dispatch = useContext(dispatchContext);
   const [authenticated, setAuthenticated] = useState(false);
   useEffect(() => {
-   reset({
-      quantity: item.quantity, 
+    reset({
+      quantity: item.quantity,
       status: item.status,
       portion: item.portion,
-      discount:`${item.discount}`,
+      item_discount_reason: item.item_discount_reason || "",
+      discount: `${item.discount}`,
     });
   }, []);
   const onClose = () => {
     dispatch({
-      type:"EditModalHide" 
+      type: "EditModalHide",
     });
   };
+
   const onSubmit = async (data) => {
+    console.log(data);
     if (data.item_discount !== "0" && !authenticated) {
       alert("Login to add discount");
       return;
     }
-    let table = await dbRef.get()
-    if(edit === 'liveCart'){
-      let liveCart = table.data().liveCart
+    if (data.item_discount !== "0" && data.item_discount_reason == "") {
+      alert("Reason For Giving The Discount");
+      return;
+    }
+
+    let table = await dbRef.get();
+    if (edit === "liveCart") {
+      let liveCart = table.data().liveCart;
       for (var i = 0; i < liveCart.length; i++) {
-        let newItem = liveCart[i]
+        let newItem = liveCart[i];
         if (newItem.id === item.id && item.price === newItem.price) {
-          newItem.quantity = data.quantity
-          newItem.discount = data.item_discount
-          newItem.instructions = data.instructions || ""
+          newItem.quantity = data.quantity;
+          newItem.discount = data.item_discount;
+          newItem.discountReasons = data.item_discount_reason || "";
+          newItem.instructions = data.instructions || "";
           if (data.portion) {
-            var temp
-            newItem.portions_details.forEach(portion => {
+            var temp;
+            newItem.portions_details.forEach((portion) => {
               if (portion.name === data.portion) {
-                temp = portion.price
+                temp = portion.price;
               }
-            })
-            newItem.price = temp
+            });
+            newItem.price = temp;
           }
           await dbRef.update({
-            liveCart
-          })
+            liveCart,
+          });
           break;
         }
       }
-    }
-    else if(edit === 'order'){
-      console.log("here")
-      let order = table.data().orders
+    } else if (edit === "order") {
+      console.log("here");
+      let order = table.data().orders;
       for (var i = 0; i < order.length; i++) {
-        let newItem = order[i]
-        
+        let newItem = order[i];
+
         if (newItem.id === item.id && item.price === newItem.price) {
-          newItem.quantity = data.quantity
-          newItem.discount = data.item_discount
-          newItem.instructions = data.instructions || ""
+          newItem.quantity = data.quantity;
+          newItem.discount = data.item_discount;
+          newItem.discountReasons = data.item_discount_reason || "";
+          newItem.instructions = data.instructions || "";
           if (data.portion) {
-            var temp
-            newItem.portions_details.forEach(portion => {
+            var temp;
+            newItem.portions_details.forEach((portion) => {
               if (portion.name === data.portion) {
-                temp = portion.price
+                temp = portion.price;
               }
-            })
-            newItem.price = temp
+            });
+            newItem.price = temp;
           }
           await dbRef.update({
-            orders: order
-          })
+            orders: order,
+          });
           break;
         }
       }
     }
-    onClose()
+    onClose();
   };
   const portions =
     item && item.portions === "Yes" ? (
@@ -158,6 +167,24 @@ const EditModal = ({item, dbRef, edit}) => {
                     </div>
                   </div>
                 </div>
+                <div className="col-12 w-100-row">
+                  <div className="row form-group">
+                    <div className="col col-md-4">
+                      <label className=" form-control-label">
+                        Reason for giving the discount
+                      </label>
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <textarea
+                        name="item_discount_reason"
+                        rows="3"
+                        placeholder="enter reason here"
+                        className="form-control edit_product"
+                        ref={register}
+                      ></textarea>
+                    </div>
+                  </div>
+                </div>
                 {!authenticated && <LoginForm auth={setAuthenticated} />}
               </>
             ) : (
@@ -173,7 +200,7 @@ const EditModal = ({item, dbRef, edit}) => {
                   <textarea
                     name="item_instructions"
                     rows="3"
-                    placeholder="enter text here"
+                    placeholder="enter instructions here"
                     className="form-control edit_product"
                     ref={register}
                   ></textarea>
@@ -195,4 +222,4 @@ const EditModal = ({item, dbRef, edit}) => {
   );
 };
 
-export default EditModal
+export default EditModal;

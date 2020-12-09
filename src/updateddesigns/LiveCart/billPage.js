@@ -123,9 +123,9 @@ const BillPage = () => {
     </tr>
   );
   const handleSettle = async () => {
-    if(table.status.split(' ')[0] === "Merge"){
-      console.log("here")
-      return
+    if (table.status.split(" ")[0] === "Merge") {
+      console.log("here");
+      return;
     }
     if (balance.balance != 0) {
       alert("Balance Must be 0 before Settling");
@@ -396,7 +396,7 @@ const BillPage = () => {
                       </tr>
                       <tr>
                         <td style={{ textAlign: "left", padding: "3px 10px" }}>
-                          Offer
+                          Discount
                         </td>
                         <td style={{ textAlign: "right", padding: "3px 10px" }}>
                           {discount ? discount : `-`}
