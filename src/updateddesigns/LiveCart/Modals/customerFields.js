@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import AutoSuggest from 'react-autosuggest'
 
-const CustomerFields = ({index, register, customers}) => {
+const CustomerFields = ({index, register, customers, customer}) => {
     const [nameSuggestions, setNameSuggestion] = useState([])
     const [numberSuggestions, setNumberSuggestion] = useState([])
-    const [name, setName] = useState("")
-    const [number, setNumber] = useState("")
+    const [name, setName] = useState(customer && customer.name)
+    const [number, setNumber] = useState(customer && customer.phone)
     const handleNameChange = (e, {newValue}) => {
         setName(newValue)
     }
@@ -61,7 +61,7 @@ const CustomerFields = ({index, register, customers}) => {
         className: 'form-control',
         onChange: handleNameChange,
         name: `${index + 1} customerName`,
-        ref: register
+        ref: register,
     }
     const numberProps = {
         autoComplete: "none",

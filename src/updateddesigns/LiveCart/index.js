@@ -9,17 +9,21 @@ import {Modal as BootstrapModal} from 'react-bootstrap'
 import AdvancedOptions from './Modals/advancedOptions'
 import RightSideBar from './rightSidebar'
 import BottomComp from './bottomComp'
+
 import EditModal from './Modals/editModal'
 import AddCustomerModal from './Modals/addCustomerModal'
 import AddCustomerForm from './Modals/addCustomerFormModal'
 import KotModal from './Modals/kotModal'
 import BillModal from './Modals/billModal'
+import MoveModal from './Modals/moveModal'
 import Loader from '../../component/Loader'
 import {ToastContainer} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
+import MergeModal from './Modals/mergeModal'
+import SwapModal from './Modals/swapModal'
 
 const MainPage = (props) => {
-    const [reducerState, dispatch] = useReducer(reducer, initState)
+    const [reducerState, dispatch] = useReducer(reducer, initState)i:w
     const [userData, setUserData] = useState("")
     const [dbRef, setDbRef] = useState(null)
     const [loading, setLoading] = useState(false)
@@ -190,7 +194,7 @@ const MainPage = (props) => {
                         })
                     }}
                 >
-                <div>MoveModal</div>
+                    <MoveModal />
                 </BootstrapModal>
                 <BootstrapModal 
                     show={reducerState.mergeModal}
@@ -200,7 +204,7 @@ const MainPage = (props) => {
                         })
                     }}
                 >
-                    <div>MergeModal</div>
+                <MergeModal />
                 </BootstrapModal>
                 <BootstrapModal 
                     show={reducerState.swapModal}
@@ -210,7 +214,7 @@ const MainPage = (props) => {
                         })
                     }}
                 >
-                    <div>SwapModal</div>
+                    <SwapModal />
                 </BootstrapModal>
             </balanceContext.Provider>
             </tableContext.Provider></stateContext.Provider></dispatchContext.Provider></>
