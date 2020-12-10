@@ -38,7 +38,7 @@ const BillPage = () => {
       const snapshot = await db
         .collection("businessdetails")
         .doc(businessId)
-        .get()
+        .get();
       setCgst(snapshot.data().business_cgst_value);
       setGst(snapshot.data().business_gst_value);
       setGstNum(snapshot.data().business_gst_number);
@@ -46,12 +46,12 @@ const BillPage = () => {
       unsubscribe = db
         .collection("businessdetails")
         .doc(businessId)
-        .onSnapshot(snapshot => {
+        .onSnapshot((snapshot) => {
           setCgst(snapshot.data().business_cgst_value);
           setGst(snapshot.data().business_gst_value);
           setGstNum(snapshot.data().business_gst_number);
           setBusinessAddress(snapshot.data().business_address);
-      })
+        });
     };
     if (businessId) getGST();
     return unsubscribe;
@@ -125,7 +125,7 @@ const BillPage = () => {
     if (balance.balance != 0) {
       alert("Balance Must be 0 before Settling");
     } else {
-      console.log(table)
+      console.log(table);
       const bill = {
         bill: table.bill,
         employee: table.currentEmployee,
@@ -137,18 +137,22 @@ const BillPage = () => {
         businessId: businessId,
         gst: gst,
         cgst: cGst,
+        address: businessAddress,
+        logo: businessLogo,
+        gstNumber: gstNum,
+
         date: Date.now(),
       };
-      if(bill.customers.length === 0){
+      if (bill.customers.length === 0) {
         bill.customers.push({
           name: "John Doe",
-          phone: "999999999"
-        })
+          phone: "999999999",
+        });
       }
-      if(bill.employee === ""){
-        bill.employee = "JanDoe"
+      if (bill.employee === "") {
+        bill.employee = "JanDoe";
       }
-      console.log(bill)
+      console.log(bill);
       await db.collection("bills").add(bill);
 
       dispatch({

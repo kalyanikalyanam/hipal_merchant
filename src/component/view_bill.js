@@ -10,46 +10,6 @@ class ViewBill extends React.Component {
   componentDidMount() {
     this.setState({ loading: true });
 
-    var sessionId = sessionStorage.getItem("RoleId");
-    if (sessionId) {
-      console.log(sessionId);
-
-      firebase
-        .firestore()
-        .collection("/merchant_users")
-        .doc(sessionId)
-        .get()
-        .then((snapshot) => {
-          var Users = snapshot.data();
-          console.log(Users);
-          sessionStorage.setItem("username", Users.user_name);
-          sessionStorage.setItem("email", Users.email_id);
-
-          this.setState({
-            userRole: Users.Role,
-            loading: false,
-          });
-        });
-      var businessId = sessionStorage.getItem("businessId");
-      firebase
-        .firestore()
-        .collection("/businessdetails")
-        .doc(businessId)
-        .get()
-        .then((snapshot) => {
-          var business = snapshot.data();
-          console.log(business);
-          sessionStorage.setItem("BusinessName", business.business_name);
-          sessionStorage.setItem("BusinessLogo", business.business_logo);
-          sessionStorage.setItem("BusinessAddress", business.business_address);
-          sessionStorage.setItem("BusinessGST", business.business_gst_value);
-          sessionStorage.setItem("BusinessCGST", business.business_cgst_value);
-          sessionStorage.setItem(
-            "BusinessGSTNumber",
-            business.business_gst_number
-          );
-        });
-    }
     document.body.style.backgroundColor = "#ccc";
     this.viewBill();
   }
@@ -80,7 +40,9 @@ class ViewBill extends React.Component {
           sessionId: userData.sessionId,
           gst: userData.gst,
           cgst: userData.cgst,
-
+          address: userData.address,
+          gstNumber: userData.gstNumber,
+          logo: userData.logo,
           grandTotal: userData.grandTotal,
         });
         console.log();
@@ -107,8 +69,6 @@ class ViewBill extends React.Component {
   };
 
   render() {
-    var address = sessionStorage.getItem("BusinessAddress");
-
     return (
       <>
         <div className="print_bill">
@@ -130,7 +90,8 @@ class ViewBill extends React.Component {
             <tr>
               <td style={{ textAlign: "center", padding: "10px" }}>
                 <img
-                  src={sessionStorage.getItem("BusinessLogo")}
+                  // src={sessionStorage.getItem("BusinessLogo")}
+                  src={this.state.logo}
                   style={{ maxWidth: "150px" }}
                 />
               </td>
@@ -144,7 +105,7 @@ class ViewBill extends React.Component {
                   color: "#000000",
                 }}
               >
-                {address}
+                {this.state.address}
               </td>
             </tr>
 
@@ -376,7 +337,8 @@ class ViewBill extends React.Component {
                   color: "#000000",
                 }}
               >
-                {sessionStorage.getItem("BusinessGSTNumber")}
+                {this.state.gstNumber}
+                {/* {sessionStorage.getItem("BusinessGSTNumber")} */}
               </td>
             </tr>
             <tr>
@@ -410,7 +372,8 @@ class ViewBill extends React.Component {
             <tr>
               <td style={{ textAlign: "center", padding: "10px" }}>
                 <img
-                  src={sessionStorage.getItem("BusinessLogo")}
+                  // src={sessionStorage.getItem("BusinessLogo")}
+                  src={this.state.logo}
                   style={{ maxWidth: "150px" }}
                 />
               </td>
@@ -424,7 +387,7 @@ class ViewBill extends React.Component {
                   color: "#000000",
                 }}
               >
-                {address}
+                {this.state.address}
               </td>
             </tr>
 
@@ -796,7 +759,8 @@ class ViewBill extends React.Component {
                   color: "#000000",
                 }}
               >
-                {sessionStorage.getItem("BusinessGSTNumber")}
+                {this.state.gstNumber}
+                {/* {sessionStorage.getItem("BusinessGSTNumber")} */}
               </td>
             </tr>
             <tr>
