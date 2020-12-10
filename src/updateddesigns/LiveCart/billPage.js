@@ -35,27 +35,23 @@ const BillPage = () => {
   useEffect(() => {
     var unsubscribe;
     const getGST = async () => {
-      console.log(sessionStorage.getItem("BusinessAddress"));
-      const data = await db
+      const snapshot = await db
         .collection("businessdetails")
         .doc(businessId)
         .get()
-        .then(function (snapshot) {
-          setCgst(snapshot.data().business_cgst_value);
-          setGst(snapshot.data().business_gst_value);
-          setGstNum(snapshot.data().business_gst_number);
-          setBusinessAddress(snapshot.data().business_address);
-        });
+      setCgst(snapshot.data().business_cgst_value);
+      setGst(snapshot.data().business_gst_value);
+      setGstNum(snapshot.data().business_gst_number);
+      setBusinessAddress(snapshot.data().business_address);
       unsubscribe = db
         .collection("businessdetails")
         .doc(businessId)
-        .get()
-        .then(function (snapshot) {
+        .onSnapshot(snapshot => {
           setCgst(snapshot.data().business_cgst_value);
           setGst(snapshot.data().business_gst_value);
           setGstNum(snapshot.data().business_gst_number);
           setBusinessAddress(snapshot.data().business_address);
-        });
+      })
     };
     if (businessId) getGST();
     return unsubscribe;
@@ -94,7 +90,6 @@ const BillPage = () => {
   useEffect(() => {
     let total = subTotal + tax - discount;
     let temp = total;
-    console.log(cGst);
     total += (total * gst) / 100;
     total += (temp * cGst) / 100;
     setTotal(total);
@@ -102,6 +97,7 @@ const BillPage = () => {
       type: "SetBalance",
       balance: {
         balance: Math.round(total),
+        total: Math.round(total),
         gst,
         cGst,
       },
@@ -124,13 +120,12 @@ const BillPage = () => {
   );
   const handleSettle = async () => {
     if (table.status.split(" ")[0] === "Merge") {
-      console.log("here");
       return;
     }
     if (balance.balance != 0) {
       alert("Balance Must be 0 before Settling");
     } else {
-      console.log(table);
+      console.log(table)
       const bill = {
         bill: table.bill,
         employee: table.currentEmployee,
@@ -144,6 +139,16 @@ const BillPage = () => {
         cgst: cGst,
         date: Date.now(),
       };
+      if(bill.customers.length === 0){
+        bill.customers.push({
+          name: "John Doe",
+          phone: "999999999"
+        })
+      }
+      if(bill.employee === ""){
+        bill.employee = "JanDoe"
+      }
+      console.log(bill)
       await db.collection("bills").add(bill);
 
       dispatch({

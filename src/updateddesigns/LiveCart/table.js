@@ -38,6 +38,7 @@ const Table = ({dbRef})=> {
       if (dbRef) {
         const table = await dbRef.get()
         setTable(table.data())
+        console.log(table.data())
         reset({ employee: table.data().currentEmployee })
         unsubscribe = dbRef.onSnapshot(table => {
           setTable(table.data())
