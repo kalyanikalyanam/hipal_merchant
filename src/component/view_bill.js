@@ -83,6 +83,7 @@ class ViewBill extends React.Component {
 
           grandTotal: userData.grandTotal,
         });
+        console.log();
         console.log(this.state.billItems);
         let subTotal = 0,
           discount = 0,
@@ -254,6 +255,19 @@ class ViewBill extends React.Component {
                             style={{ textAlign: "right", padding: "3px 30px" }}
                           >
                             {parseFloat(item.price * item.quantity).toFixed(2)}
+                            {item.discount > 0 ? (
+                              <>{`(Discount  ${parseFloat(
+                                item.discount
+                              )} %)`}</>
+                            ) : null}
+                            {item.discount > 0 ? (
+                              <>
+                                {`(Discount ₹ ${parseFloat(
+                                  ((item.price * item.discount) / 100) *
+                                    item.quantity
+                                ).toFixed(2)} )`}
+                              </>
+                            ) : null}
                           </td>
                         </tr>
                       );
@@ -282,7 +296,7 @@ class ViewBill extends React.Component {
                   </tr>
                   <tr>
                     <td style={{ textAlign: "left", padding: "3px 30px" }}>
-                      Offer
+                      Discount
                     </td>
                     <td style={{ textAlign: "right", padding: "3px 30px" }}>
                       {this.state.discount}
@@ -377,14 +391,472 @@ class ViewBill extends React.Component {
               </td>
             </tr>
           </table>
+
+          <table width="100%" style={{ display: "none" }}>
+            <tr>
+              <td
+                style={{
+                  textAlign: "center",
+                  padding: "10px",
+                  color: "#000000",
+                  borderBottom: "1px solid rgba(0, 0, 0, 0.5)",
+                }}
+              >
+                <b style={{ paddingRight: "10px" }}>BILL ID</b>{" "}
+                {this.state.billId}
+              </td>
+            </tr>
+
+            <tr>
+              <td style={{ textAlign: "center", padding: "10px" }}>
+                <img
+                  src={sessionStorage.getItem("BusinessLogo")}
+                  style={{ maxWidth: "150px" }}
+                />
+              </td>
+            </tr>
+
+            <tr>
+              <td
+                style={{
+                  textAlign: "center",
+                  padding: "10px",
+                  color: "#000000",
+                }}
+              >
+                {address}
+              </td>
+            </tr>
+
+            <tr>
+              <td
+                style={{
+                  textAlign: "center",
+                  padding: "10px",
+                  color: "#000000",
+                }}
+              >
+                <b>DINE IN</b>
+              </td>
+            </tr>
+
+            <tr>
+              <td
+                style={{
+                  textAlign: "center",
+                  padding: "10px",
+                  color: "#000000",
+                  borderBottom: "1px dashed rgba(0, 0, 0, 0.5)",
+                }}
+              >
+                <table width="100%">
+                  <tr>
+                    <td
+                      style={{
+                        textAlign: "left",
+                        padding: "3px 30px",
+                        color: "#000000",
+                      }}
+                    >
+                      {moment(this.state.date)
+                        .locale("en")
+                        .format("DD-MM-YYYY")}
+                    </td>
+                    <td
+                      style={{
+                        textAlign: "right",
+                        padding: "3px 30px",
+                        color: "#000000",
+                      }}
+                    >
+                      {this.state.tablename}
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td
+                      style={{
+                        textAlign: "left",
+                        padding: "3px 30px",
+                        color: "#000000",
+                      }}
+                    >
+                      {moment(this.state.date).locale("en").format("HH:mm:ss")}
+                    </td>
+                    <td
+                      style={{
+                        textAlign: "right",
+                        padding: "3px 30px",
+                        color: "#000000",
+                      }}
+                    >
+                      {this.state.settle_by}
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td
+                      style={{
+                        textAlign: "left",
+                        padding: "3px 30px",
+                        color: "#000000",
+                      }}
+                    >
+                      Order ID :{this.state.orderId}
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr>
+              <td
+                style={{
+                  textAlign: "center",
+                  padding: "10px",
+                  color: "#000000",
+                  borderBottom: " 1px dashed rgba(0, 0, 0, 0.5)",
+                }}
+              >
+                <table width="100%">
+                  <tr>
+                    <td
+                      style={{
+                        textAlign: "left",
+                        padding: "5px 30px 10px 30px",
+                      }}
+                    >
+                      <b>Item</b>
+                    </td>
+                    <td
+                      style={{
+                        textAlign: "center",
+                        padding: "5px 30px 10px 30px",
+                        color: "#000000",
+                      }}
+                    >
+                      <b>Qty</b>
+                    </td>
+                    <td
+                      style={{
+                        textAlign: "right",
+                        padding: "5px 30px 10px 30px",
+                        color: "#000000",
+                      }}
+                    >
+                      <b>Price</b>
+                    </td>
+                  </tr>
+                  {this.state.billItems &&
+                    this.state.billItems.map((item, index) => {
+                      console.log(item);
+
+                      return (
+                        <tr key={index}>
+                          <td
+                            style={{
+                              textAlign: "left",
+                              padding: "3px 30px",
+                              color: "#000000",
+                            }}
+                          >
+                            {item.name}
+                          </td>
+                          <td
+                            style={{
+                              textAlign: "center",
+                              padding: "3px 30px",
+                              color: "#000000",
+                            }}
+                          >
+                            {item.quantity}
+                          </td>
+                          <td
+                            style={{
+                              textAlign: "right",
+                              padding: "3px 30px",
+                              color: "#000000",
+                            }}
+                          >
+                            {parseFloat(item.price * item.quantity).toFixed(2)}
+                            {item.discount > 0 ? (
+                              <>{`(Discount  ${parseFloat(
+                                item.discount
+                              )} %)`}</>
+                            ) : null}
+                            {item.discount > 0 ? (
+                              <>
+                                {`(Discount ₹ ${parseFloat(
+                                  ((item.price * item.discount) / 100) *
+                                    item.quantity
+                                ).toFixed(2)} )`}
+                              </>
+                            ) : null}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </table>
+              </td>
+            </tr>
+
+            <tr>
+              <td
+                style={{
+                  textAlign: "center",
+                  padding: "10px",
+                  color: "#000000",
+                  borderBottom: "1px dashed rgba(0, 0, 0, 0.5)",
+                }}
+              >
+                <table width="100%">
+                  <tr>
+                    <td
+                      style={{
+                        textAlign: "left",
+                        padding: "3px 30px",
+                        color: "#000000",
+                      }}
+                    >
+                      Subtotal
+                    </td>
+                    <td
+                      style={{
+                        textAlign: "right",
+                        padding: "3px 30px",
+                        color: "#000000",
+                      }}
+                    >
+                      ₹ {this.state.subTotal}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      style={{
+                        textAlign: "left",
+                        padding: "3px 30px",
+                        color: "#000000",
+                      }}
+                    >
+                      Discount
+                    </td>
+                    <td
+                      style={{
+                        textAlign: "right",
+                        padding: "3px 30px",
+                        color: "#000000",
+                      }}
+                    >
+                      {this.state.discount}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      style={{
+                        textAlign: "left",
+                        padding: "3px 30px",
+                        color: "#000000",
+                      }}
+                    >
+                      Extra charges
+                    </td>
+                    <td
+                      style={{
+                        textAlign: "right",
+                        padding: "3px 30px",
+                        color: "#000000",
+                      }}
+                    >
+                      {this.state.tax}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      style={{
+                        textAlign: "left",
+                        padding: "3px 30px",
+                        color: "#000000",
+                      }}
+                    >
+                      Packaging charges
+                    </td>
+                    <td
+                      style={{
+                        textAlign: "right",
+                        padding: "3px 30px",
+                        color: "#000000",
+                      }}
+                    >
+                      -
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td
+                      style={{
+                        textAlign: "left",
+                        padding: "3px 30px",
+                        color: "#000000",
+                      }}
+                    >
+                      CGST
+                    </td>
+                    <td
+                      style={{
+                        textAlign: "right",
+                        padding: "3px 30px",
+                        color: "#000000",
+                      }}
+                    >
+                      {this.state.cgst}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      style={{
+                        textAlign: "left",
+                        padding: "3px 30px",
+                        color: "#000000",
+                      }}
+                    >
+                      SGST
+                    </td>
+                    <td
+                      style={{
+                        textAlign: "right",
+                        padding: "5px 30px",
+                        color: "#000000",
+                      }}
+                    >
+                      {this.state.gst}
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr>
+              <td
+                style={{
+                  textAlign: "center",
+                  padding: "10px",
+                  color: "#000000",
+                  borderBottom: "1px dashed rgba(0, 0, 0, 0.5)",
+                }}
+              >
+                <table width="100%">
+                  <tr>
+                    <td
+                      style={{
+                        textalign: "left",
+                        padding: "5px 30px",
+                        color: "#000000",
+                      }}
+                    >
+                      <b>Total</b>
+                    </td>
+                    <td
+                      style={{
+                        textalign: "right",
+                        padding: "5px 30px",
+                        color: "#000000",
+                      }}
+                    >
+                      <b>₹ {parseFloat(this.state.total).toFixed(2)}</b>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      style={{
+                        textalign: "left",
+                        padding: "5px 30px",
+                        color: "#000000",
+                      }}
+                    >
+                      <b>Payable</b>
+                    </td>
+                    <td
+                      style={{
+                        textalign: "right",
+                        padding: "5px 30px",
+                        color: "#000000",
+                      }}
+                    >
+                      <b>₹ {Math.round(this.state.total)}</b>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td
+                style={{
+                  textAlign: "center",
+                  padding: "10px",
+                  color: "#000000",
+                }}
+              >
+                {sessionStorage.getItem("BusinessGSTNumber")}
+              </td>
+            </tr>
+            <tr>
+              <td
+                style={{
+                  textAlign: "center",
+                  padding: "10px",
+                  color: "#000000",
+                }}
+              >
+                - Thank you! -
+              </td>
+            </tr>
+          </table>
+
+          <div className="upload_img_block add_menu">
+            <div className="row">
+              <div className="col-md-12 p-0 bills_table">
+                <div className="table-responsive table-data">
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <td>S.no</td>
+
+                        <td>Item Name</td>
+                        <td>Discount</td>
+
+                        <td>Reason</td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {this.state.billItems &&
+                        this.state.billItems.map((bill, index) => {
+                          if (bill.discountReasons != null) {
+                            return (
+                              <tr key={index}>
+                                <td>{index + 1}</td>
+                                <td>{bill.name}</td>
+                                <td>{bill.discount}%</td>
+
+                                <td>{bill.discountReasons}</td>
+                              </tr>
+                            );
+                          } else {
+                          }
+                        })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
         <div className="row business_reg_box">
           <div className="col-md-12 p-0 text-center">
             <Link to="/Bills">
               <button className="btn save_button mr-ml-5 bg_red">Close</button>
             </Link>
-            {/* <button className="btn save_button mr-ml-5">Print Copy</button> */}
-            {/*  <button className="btn save_button mr-ml-5">Save</button> */}
+            <button className="btn save_button mr-ml-5">Print Copy</button>
           </div>
         </div>
       </>
