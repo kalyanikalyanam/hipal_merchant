@@ -16,7 +16,7 @@ import RightSideBar from "./rightSidebar";
 import BottomComp from "./bottomComp";
 
 import EditModal from "./Modals/editModal";
-import AddCustomerModal from "./Modals/addCustomerModal2";
+import AddCustomerModal from "./Modals/addCustomerModal";
 import AddCustomerForm from "./Modals/addCustomerFormModal";
 import KotModal from "./Modals/kotModal";
 import BillModal from "./Modals/billModal";
