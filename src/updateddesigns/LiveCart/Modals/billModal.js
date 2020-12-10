@@ -783,7 +783,6 @@ const Print = ({ data }) => {
     content: () => componentRef.current,
   });
   const handleClose = () => {
-    console.log("here");
     dispatch({
       type: "BillViewModalHide",
     });

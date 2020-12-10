@@ -8,6 +8,7 @@ import {
   stateContext,
 } from "./contexts";
 
+
 const BillPage = () => {
   const [businessId, setBusinessId] = useState();
   const [businessLogo, setBusinessLogo] = useState();
@@ -140,19 +141,17 @@ const BillPage = () => {
         address: businessAddress,
         logo: businessLogo,
         gstNumber: gstNum,
-
         date: Date.now(),
       };
       if (bill.customers.length === 0) {
+        const ref = await db.collection('settings_default_customers').where("businessId", "==", businessId).get()
+        ref.forEach(doc => {
         bill.customers.push({
-          name: "John Doe",
-          phone: "999999999",
+          name: doc.data().customer_name,
+          phone: doc.data().customer_phonenumber
         });
+        })
       }
-      if (bill.employee === "") {
-        bill.employee = "JanDoe";
-      }
-      console.log(bill);
       await db.collection("bills").add(bill);
 
       dispatch({
