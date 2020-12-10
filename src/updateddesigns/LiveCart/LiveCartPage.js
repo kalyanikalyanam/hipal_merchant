@@ -48,32 +48,25 @@ const LiveCartPage = () => {
         })
     }
     const handleSettle = async () => {
-        let table = await dbRef.get()    
-        if(!table.data().customers || table.data().customers.length === 0){
-            alert('Select Customers First')
-        } else if (table.data().currentEmployee === ""){
-            alert('Select Employee First')
-        }
-        else {
-            let liveCartItems = table.data().liveCart
-            let orders = table.data().orders
-            if (!orders) orders = []
-            if (orders.length === 0) {
-                var id = Math.floor(Math.random() * 100000000)
-                dbRef.update({
-                    orderId: id
-                })
-            }
-            orders.push(...liveCartItems)
+        let table = await dbRef.get()
+        let liveCartItems = table.data().liveCart
+        let orders = table.data().orders
+        if (!orders) orders = []
+        if (orders.length === 0) {
+            var id = Math.floor(Math.random() * 100000000)
             dbRef.update({
-                orders,
-                liveCart: []
-            })
-            dispatch({
-                type: "setBillPage",
-                select: 2 
+                orderId: id
             })
         }
+        orders.push(...liveCartItems)
+        dbRef.update({
+            orders,
+            liveCart: []
+        })
+        dispatch({
+            type: "setBillPage",
+            select: 2
+        })
     }
     return (
         <div className="order_id_cart_box col-md-12 m-t-20">

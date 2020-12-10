@@ -11,7 +11,7 @@ const BillBottom = () => {
   const [table, setTable] = useState();
   const [state, setState] = useState();
   useEffect(() => {
-    setTotal(balance.balance);
+    setTotal(balance.total);
     setLocalBalance(balance.balance);
   }, [balance]);
   useEffect(() => {
@@ -50,10 +50,12 @@ const BillBottom = () => {
     var temp = 0;
     for (var key in state) {
       if (state.hasOwnProperty(key)) {
-        temp += parseInt(state[key]);
+        if(state[key] !== ""){
+          temp += parseInt(state[key]);
+        }
       }
     }
-    var newBalance = parseInt(total - temp);
+    var newBalance = parseInt(total- temp);
     dispatch({
       type: "PaymentDetails",
       details: state,
@@ -64,6 +66,7 @@ const BillBottom = () => {
         gst: balance.gst,
         cGst: balance.cGst,
         balance: newBalance,
+        total: total
       },
     });
   }, [state]);

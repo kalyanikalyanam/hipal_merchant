@@ -1,10 +1,11 @@
 import React, { useContext} from "react";
 import {useForm} from 'react-hook-form'
-import firebase from "../../config";
+import firebase, { db } from "../../config";
 import { dispatchContext } from "./contexts";
 
 const Select = ({ item, deleteItem , dbRef}) => {
   const {handleSubmit, register} = useForm()
+
   const handleStatusChange = async (data) => {
     let table = await dbRef.get()
     var order = table.data().orders
@@ -58,6 +59,7 @@ const OrderItem = ({ item, index, dbRef}) => {
   };
   const handleKOTItem = async () => {
     let table = await dbRef.get()
+    const businessId = sessionStorage.getItem('businessId')
     var order = table.data().orders
     for(var i = 0; i < order.length; i++){
       let it = order[i]
@@ -73,6 +75,16 @@ const OrderItem = ({ item, index, dbRef}) => {
     await dbRef.update({
       orders: order
     })
+
+    const KotItem = {
+      name: item.name,
+      id: item.id,
+      type: 'DineIn',
+      businessId,
+      tableName: table.data().table_name
+    }
+
+    await db.collection("kotItems").add(KotItem)
   };
   const deleteItem = () => {
     dbRef.update({
