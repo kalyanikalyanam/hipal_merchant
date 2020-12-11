@@ -23,7 +23,40 @@ const KotModal = React.forwardRef((props, ref) => {
       return (
         <tr key={`${index}`}>
           <td
-            style={{ textAlign: "left", padding: "3px 10px", fontSize: "35px" }}
+            style={{
+              textAlign: "left",
+              padding: "3px 10px",
+              fontSize: "28px",
+              color: "#000000",
+            }}
+          >
+            {item.name}
+          </td>
+          <td
+            style={{
+              textAlign: "center",
+              padding: "3px 10px",
+              fontSize: "28px",
+              color: "#000000",
+            }}
+          >
+            {item.quantity}
+          </td>
+        </tr>
+      );
+    });
+  const itemsbold =
+    data &&
+    data.map((item, index) => {
+      return (
+        <tr key={`${index}`}>
+          <td
+            style={{
+              textAlign: "left",
+              padding: "3px 10px",
+              fontSize: "35px",
+              color: "#000000",
+            }}
           >
             <b>{item.name}</b>
           </td>
@@ -32,115 +65,110 @@ const KotModal = React.forwardRef((props, ref) => {
               textAlign: "center",
               padding: "3px 10px",
               fontSize: "30px",
+              color: "#000000",
             }}
           >
             <b> {item.quantity}</b>
           </td>
-          {/* <td
-            style={{
-              textAlign: "right",
-              padding: "3px 10px",
-              fontSize: "30px",
-            }}
-          >
-            <b> {item.quantity * item.price}</b>
-          </td> */}
         </tr>
       );
     });
   return (
     <>
-      <div width="100%" ref={ref}>
-        <div className="modal-dialog modal-sm hipal_pop" role="document">
-          <div>
-            <table
-              width="100%"
-              style={{
-                display: "table",
-                fontFamily: "Times New Roman",
-                fontSize: "30px",
-              }}
-            >
+      <div className="order_id_cart_box col-md-12 m-t-20 bg-w m-b-20">
+        <div className="width-100 bill_scroll1">
+          <table width="100%" style={{ display: "table" }}>
+            <tbody>
+              <tr>
+                <td
+                  style={{
+                    textAlign: "center",
+                    padding: "10px",
+                    fontSize: "28px",
+                    color: "#000000",
+                  }}
+                >
+                  <b> Dine In</b>
+                </td>
+              </tr>
               <tr>
                 <td
                   style={{
                     textAlign: "center",
                     padding: "10px",
                     color: "#000000",
-                    fontSize: "30px",
+                    fontSize: "28px",
                   }}
                 >
-                  <b style={{ fontSize: "30px" }}>DINE IN</b>
+                  <b> KOT</b>
                 </td>
               </tr>
 
-              <tr>
+              <tr style={{ padding: "0px" }}>
                 <td
                   style={{
                     textAlign: "center",
                     padding: "10px",
+                    paddingBottom: "0px",
                     color: "#000000",
-                    fontSize: "30px",
                     borderBottom: "1px dashed rgba(0, 0, 0, 0.5)",
+                    fontSize: "28px",
                   }}
                 >
                   <table width="100%">
-                    <tr>
-                      <td
-                        style={{
-                          textAlign: "left",
-                          padding: "3px 30px",
-                          fontSize: "30px",
-                        }}
-                      >
-                        <b style={{ fontSize: "30px" }}>
+                    <tbody>
+                      <tr>
+                        <td
+                          style={{
+                            textAlign: "left",
+                            padding: "3px 10px",
+                            fontSize: "28px",
+                            color: "#000000",
+                          }}
+                        >
                           {" "}
                           {moment(new Date().toLocaleString())
                             .locale("en")
                             .format("DD-MM-YYYY")}
-                        </b>
-                      </td>
-                      <td
-                        style={{
-                          textAlign: "right",
-                          padding: "3px 30px",
-                          fontSize: "30px",
-                        }}
-                      >
-                        <b style={{ fontSize: "30px" }}>
-                          {table && table.table_name}
-                        </b>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td
-                        style={{
-                          textAlign: "left",
-                          padding: "3px 30px",
-                          fontSize: "30px",
-                        }}
-                      >
-                        <b style={{ fontSize: "30px" }}>
+                        </td>
+                        <td
+                          style={{
+                            textAlign: "right",
+                            padding: "3px 10px",
+                            fontSize: "28px",
+                            color: "#000000",
+                          }}
+                        >
+                          <b> {table && table.table_name}</b>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td
+                          style={{
+                            textAlign: "left",
+                            padding: "3px 10px",
+                            fontSize: "28px",
+                            color: "#000000",
+                          }}
+                        >
+                          {" "}
                           {moment(new Date().toLocaleString())
                             .locale("en")
                             .locale("en")
                             .format("HH:mm:ss")}
-                        </b>
-                      </td>
-                      <td
-                        style={{
-                          textAlign: "right",
-                          padding: "3px 30px",
-                          fontSize: "30px",
-                        }}
-                      >
-                        <b style={{ fontSize: "30px" }}>
-                          {" "}
+                        </td>
+                        <td
+                          style={{
+                            textAlign: "right",
+                            padding: "3px 10px",
+                            fontSize: "28px",
+                            color: "#000000",
+                          }}
+                        >
                           {table && table.currentEmployee}
-                        </b>
-                      </td>
-                    </tr>
+                        </td>
+                      </tr>
+                    </tbody>
                   </table>
                 </td>
               </tr>
@@ -151,45 +179,189 @@ const KotModal = React.forwardRef((props, ref) => {
                     textAlign: "center",
                     padding: "10px",
                     color: "#000000",
-                    fontSize: "30px",
-                    borderBottom: " 1px dashed rgba(0, 0, 0, 0.5)",
+                    borderBottom: "1px dashed rgba(0, 0,0, 0.5)",
+                    fontSize: "28px",
                   }}
                 >
                   <table width="100%">
-                    <tr>
-                      <td
-                        style={{
-                          textAlign: "left",
-                          padding: "5px 30px 10px 30px",
-                        }}
-                      >
-                        <b style={{ fontSize: "30px" }}>Item</b>
-                      </td>
+                    <tbody>
+                      <tr>
+                        <td
+                          style={{
+                            textAlign: "left",
+                            padding: "5px 10px 10px 10px",
+                            fontSize: "28px",
+                            color: "#000000",
+                          }}
+                        >
+                          <b>Item</b>
+                        </td>
+                        <td
+                          style={{
+                            textAlign: "center",
+                            padding: "5px 10px 10px 10px",
+                            fontSize: "28px",
+                            color: "#000000",
+                          }}
+                        >
+                          <b>Qty</b>
+                        </td>
 
-                      <td
-                        style={{
-                          textAlign: "center",
-                          padding: "5px 30px 10px 30px",
-                          fontSize: "30px",
-                        }}
-                      >
-                        <b style={{ fontSize: "30px" }}>Qty</b>
-                      </td>
-                      {/* <td
-                        style={{
-                          textAlign: "right",
-                          padding: "5px 30px 10px 30px",
-                          fontSize: "30px",
-                        }}
-                      >
-                        <b style={{ fontSize: "30px" }}>Price</b>
-                      </td> */}
-                    </tr>
-                    {items}
+                        <td></td>
+                      </tr>
+                      {items}
+                    </tbody>
                   </table>
                 </td>
               </tr>
-            </table>
+            </tbody>
+          </table>{" "}
+          <div style={{ display: "none" }}>
+            <div className="print_bill" ref={ref}>
+              <table width="100%">
+                <tbody>
+                  <tr>
+                    <td
+                      style={{
+                        textAlign: "center",
+                        padding: "10px",
+                        fontSize: "32px",
+                        color: "#000000",
+                      }}
+                    >
+                      <b> Dine In</b>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      style={{
+                        textAlign: "center",
+                        padding: "10px",
+                        color: "#000000",
+                        fontSize: "32px",
+                      }}
+                    >
+                      <b> KOT</b>
+                    </td>
+                  </tr>
+
+                  <tr style={{ padding: "0px" }}>
+                    <td
+                      style={{
+                        textAlign: "center",
+                        padding: "10px",
+                        paddingBottom: "0px",
+                        color: "#000000",
+                        borderBottom: "1px dashed rgba(0, 0, 0, 0.5)",
+                        fontSize: "32px",
+                      }}
+                    >
+                      <table width="100%">
+                        <tbody>
+                          <tr>
+                            <td
+                              style={{
+                                textAlign: "left",
+                                padding: "3px 10px",
+                                fontSize: "32px",
+                                color: "#000000",
+                              }}
+                            >
+                              <b>
+                                {" "}
+                                {moment(new Date().toLocaleString())
+                                  .locale("en")
+                                  .format("DD-MM-YYYY")}
+                              </b>
+                            </td>
+                            <td
+                              style={{
+                                textAlign: "right",
+                                padding: "3px 10px",
+                                fontSize: "32px",
+                                color: "#000000",
+                              }}
+                            >
+                              <b> {table && table.table_name}</b>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td
+                              style={{
+                                textAlign: "left",
+                                padding: "3px 10px",
+                                fontSize: "32px",
+                                color: "#000000",
+                              }}
+                            >
+                              <b>
+                                {" "}
+                                {moment(new Date().toLocaleString())
+                                  .locale("en")
+                                  .locale("en")
+                                  .format("HH:mm:ss")}
+                              </b>
+                            </td>
+                            <td
+                              style={{
+                                textAlign: "right",
+                                padding: "3px 10px",
+                                fontSize: "32px",
+                                color: "#000000",
+                              }}
+                            >
+                              <b> {table && table.currentEmployee}</b>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td
+                      style={{
+                        textAlign: "center",
+                        padding: "10px",
+                        color: "#000000",
+                        borderBottom: "1px dashed rgba(0, 0,0, 0.5)",
+                        fontSize: "32px",
+                      }}
+                    >
+                      <table width="100%">
+                        <tbody>
+                          <tr>
+                            <td
+                              style={{
+                                textAlign: "left",
+                                padding: "5px 10px 10px 10px",
+                                fontSize: "33px",
+                                color: "#000000",
+                              }}
+                            >
+                              <b>Item</b>
+                            </td>
+                            <td
+                              style={{
+                                textAlign: "center",
+                                padding: "5px 10px 10px 10px",
+                                fontSize: "33px",
+                                color: "#000000",
+                              }}
+                            >
+                              <b>Qty</b>
+                            </td>
+
+                            <td></td>
+                          </tr>
+                          {itemsbold}
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>{" "}
+            </div>
           </div>
         </div>
       </div>
@@ -209,35 +381,20 @@ const Print = ({ data }) => {
     });
   };
   return (
-    <div>
-      <button
-        onClick={handlePrint}
-        style={{
-          textAlign: "center",
-          padding: "10px",
-          color: "#000000",
-          backgroundColor: "#06c00e",
-          borderRadius: "25px",
-          fontSize: "30px",
-        }}
-      >
-        Print this
-      </button>
+    <>
       <KotModal ref={componentRef} data={data} />
-      <button
-        onClick={handleClick}
-        style={{
-          textAlign: "center",
-          padding: "10px",
-          color: "#000000",
-          backgroundColor: "#ff3b3b",
-          borderRadius: "25px",
-          fontSize: "30px",
-        }}
-      >
-        close
-      </button>
-    </div>
+
+      <div className="w-100-row kotsettle_btn">
+        <span className="btn add_ord" onClick={handlePrint}>
+          <a href="#" data-toggle="modal" data-target="#add_edit_position">
+            Print Bill
+          </a>
+        </span>
+        <span className="btn view_ord" onClick={handleClick}>
+          Cancel
+        </span>
+      </div>
+    </>
   );
 };
 export default Print;
