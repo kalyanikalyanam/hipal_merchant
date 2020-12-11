@@ -119,6 +119,10 @@ const BillPage = () => {
     </tr>
   );
   const handleSettle = async () => {
+    if(table.bill.length === 0){
+      alert('no Items in the bill')
+      return
+    }
     if (table.status.split(" ")[0] === "Merge") {
       return;
     }
