@@ -1,62 +1,112 @@
 import React, { useContext, useEffect, useState} from "react";
 import { useForm } from "react-hook-form";
 import {db} from "../../config";
-import { tableContext, dispatchContext } from "../LiveCart/contexts";
+import { dispatchContext } from "../LiveCart/contexts";
 
 const Table = ({dbRef})=> {
   const [employees, setEmployees] = useState([]);
   const [table, setTable] = useState(null)
   const dispatch = useContext(dispatchContext)
 
-  const {handleSubmit, reset, register} = useForm()
+  const {handleSubmit, reset, register, setValue} = useForm()
 
   useEffect(() => {
+    var unsubscribe
     var businessId = sessionStorage.getItem("businessId");
-    const employeeList = async () => {
-      try {
-        const querySnapshot = await db.collection("merchant_users").where("businessId", "==", businessId).get()
-        let employees = []
-        querySnapshot.forEach(doc => employees.push({...doc.data(), id: doc.id}))
-        setEmployees(employees)
-      }
-      catch (e) {
-        console.log(e)
-      }
-    }
-    var unsubscribe = db.collection("merchant_users").where("businessId", "==", businessId).onSnapshot(querySnapshot => {
-        let employees = []
-        querySnapshot.forEach(doc => employees.push({...doc.data(), id: doc.id}))
-        setEmployees(employees)
-    })
-    employeeList();
     return unsubscribe
   }, []);
 
   useEffect(() => {
+    var unsubscribe
     const tableData = async () => {
-      var unsubscribe
       if (dbRef) {
         const table = await dbRef.get()
         setTable(table.data())
-        console.log(table.data())
-        reset({ employee: table.data().currentEmployee })
-        unsubscribe = dbRef.onSnapshot(table => {
+        const role = sessionStorage.getItem("role")
+        const id = sessionStorage.getItem("RoleId")
+        const businessId = sessionStorage.getItem("businessId")
+        const querySnapshot = await db.collection('merchant_users').where('businessId', '==', businessId).get()
+        let employees = []
+        querySnapshot.forEach(doc => employees.push({
+          id: doc.id,
+          employee_name: doc.data().employee_name,
+          role: doc.data().role
+        }))
+
+        db
+          .collection('merchant_users')
+          .where("businessId", "==", businessId)
+          .onSnapshot(querySnapshot =>{
+            let employees = []
+            querySnapshot.forEach(doc => employees.push({
+                employee_name: doc.data().employee_name,
+                role: doc.data().role,
+                id: doc.id
+              })
+            )
+            setEmployees(employees)
+          })
+      
+        const ref = await db
+          .collection('merchant_users')
+          .doc(id)
+          .get()
+        let user = {}
+        if (role === "Merchant") {
+          user.employee_name = ref.data().user_name
+          user.role = ref.data().role
+          user.id = ref.id
+          employees.push(user)
+        } 
+        else {
+          user.employee_name = ref.data().employee_name
+          user.role = ref.data().role
+          user.id = ref.id
+        }
+        setEmployees(employees)
+        setValue('employee', user.employee_name)
+        if(table.data().currentEmployee === ""){
+          dbRef.update({
+            currentEmployee: user.employee_name
+          })
+        }
+        unsubscribe = dbRef.onSnapshot(async (table) => {
           setTable(table.data())
+          let currentEmployee = table.data().currentEmployee
+          console.log(currentEmployee)
+          if(currentEmployee === ''){
+            const ref = await db
+              .collection('merchant_users')
+              .doc(id)
+              .get()
+            let user = {}
+            if (role === "Merchant") {
+              user.employee_name = ref.data().user_name
+              user.role = ref.data().role
+              user.id = ref.id
+            } 
+            else {
+              user.employee_name = ref.data().employee_name
+              user.role = ref.data().role
+              user.id = ref.id
+            }
+            currentEmployee = user.employee_name
+            dbRef.update({
+              currentEmployee: user.employee_name
+            })
+          }
+          setValue('employee', currentEmployee)
         })
       }
     }
     tableData()
+    return unsubscribe
   }, [dbRef])
 
   const onChange = (data) => {
-    try{
-      dbRef.update({
-      currentEmployee: data.employee 
+    dbRef.update({
+      currentEmployee: data.employee
     })
-  }
-  catch(e){
-    console.log(e)
-  }
   }
 
   const handleCustomers = () => {
@@ -108,7 +158,6 @@ const Table = ({dbRef})=> {
         <div className="col-md-4">
           <div className="chooseemp_dropdown">
             <select className="form-control" onClick={handleSubmit(onChange)} ref={register} name="employee" >
-              <option value="">Choose Employee</option>
             {employees &&
                 employees.map((data, index) => {
                   return (
