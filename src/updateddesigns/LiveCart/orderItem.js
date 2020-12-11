@@ -1,29 +1,33 @@
-import React, { useContext} from "react";
-import {useForm} from 'react-hook-form'
+import React, { useContext } from "react";
+import { useForm } from "react-hook-form";
 import firebase, { db } from "../../config";
 import { dispatchContext } from "./contexts";
 
-const Select = ({ item, deleteItem , dbRef}) => {
-  const {handleSubmit, register} = useForm()
+const Select = ({ item, deleteItem, dbRef }) => {
+  const { handleSubmit, register } = useForm();
 
   const handleStatusChange = async (data) => {
-    let table = await dbRef.get()
-    var order = table.data().orders
-    for(var i = 0; i < order.length; i++){
-      let it = order[i]
-      if(it.id === item.id && it.price === item.price ){
-        it.status = data.status
-        break
+    let table = await dbRef.get();
+    var order = table.data().orders;
+    for (var i = 0; i < order.length; i++) {
+      let it = order[i];
+      if (it.id === item.id && it.price === item.price) {
+        it.status = data.status;
+        break;
       }
     }
     await dbRef.update({
-      orders: order
-    })
-  }
+      orders: order,
+    });
+  };
   return (
     <>
       <div>
-        <select name="status" onChange={handleSubmit(handleStatusChange)} ref={register}>
+        <select
+          name="status"
+          onChange={handleSubmit(handleStatusChange)}
+          ref={register}
+        >
           <option value="cooking">Cooking</option>
           <option value="delivery">Delivery</option>
           <option value="delivered">Delivered</option>
@@ -48,43 +52,43 @@ const Select = ({ item, deleteItem , dbRef}) => {
   );
 };
 
-const OrderItem = ({ item, index, dbRef}) => {
+const OrderItem = ({ item, index, dbRef }) => {
   const dispatch = useContext(dispatchContext);
   const handleEdit = (item) => {
     dispatch({
       type: "EditModalShow",
       item: item,
-      edit: 'order'
-    }) 
+      edit: "order",
+    });
   };
   const handleKOTItem = async () => {
-    let table = await dbRef.get()
-    const businessId = sessionStorage.getItem('businessId')
-    var order = table.data().orders
-    for(var i = 0; i < order.length; i++){
-      let it = order[i]
-      if(it.id === item.id && it.price === item.price ){
-        it.status = "cooking"
-        break
+    let table = await dbRef.get();
+    const businessId = sessionStorage.getItem("businessId");
+    var order = table.data().orders;
+    for (var i = 0; i < order.length; i++) {
+      let it = order[i];
+      if (it.id === item.id && it.price === item.price) {
+        it.status = "cooking";
+        break;
       }
     }
     dispatch({
       type: "KOTModalShow",
-      items: [item]
-    })
+      items: [item],
+    });
     await dbRef.update({
-      orders: order
-    })
+      orders: order,
+    });
 
     const KotItem = {
       name: item.name,
       id: item.id,
-      type: 'DineIn',
+      type: "DineIn",
       businessId,
-      tableName: table.data().table_name
-    }
+      tableName: table.data().table_name,
+    };
 
-    await db.collection("kotItems").add(KotItem)
+    await db.collection("kotItems").add(KotItem);
   };
   const deleteItem = (item) => {
     if(item.status !== "NotKot"){
@@ -95,10 +99,9 @@ const OrderItem = ({ item, index, dbRef}) => {
       return
     }
     dbRef.update({
-      orders: firebase.firestore.FieldValue.arrayRemove(item)
-    })
+      orders: firebase.firestore.FieldValue.arrayRemove(item),
+    });
   };
-
 
   return (
     <div className="cart_scroll no_hieght">
@@ -117,7 +120,7 @@ const OrderItem = ({ item, index, dbRef}) => {
                   }}
                 >
                   KOT
-                        </div>
+                </div>
                 <div
                   className="edit"
                   data-toggle="modal"
@@ -127,7 +130,7 @@ const OrderItem = ({ item, index, dbRef}) => {
                   }}
                 >
                   Edit
-                        </div>
+                </div>
 
                 <div
                   className="edit"
@@ -138,16 +141,18 @@ const OrderItem = ({ item, index, dbRef}) => {
                   }}
                 >
                   Delete
-                        </div>
+                </div>
               </>
             ) : (
-                <Select item={item} deleteItem={deleteItem} dbRef={dbRef}/>
-              )}
+              <Select item={item} deleteItem={deleteItem} dbRef={dbRef} />
+            )}
           </div>
-          {item.discount > 0  ? (
+          {item.discount > 0 ? (
             <>
               <p className="offer_applied">{`${item.discount}% off Applied`}</p>
-              <p className="offer_applied">{`₹ ${parseFloat(item.price * item.discount / 100 * item.quantity).toFixed(2)}`}</p>
+              <p className="offer_applied">{`₹ ${parseFloat(
+                ((item.price * item.discount) / 100) * item.quantity
+              ).toFixed(2)}`}</p>
             </>
           ) : null}
         </div>
@@ -155,16 +160,14 @@ const OrderItem = ({ item, index, dbRef}) => {
           <span>x{item.quantity}</span>
         </div>
         <div className="box_3">
-          <span>
-            {item.price * item.quantity}
-          </span>
+          <span>{item.price * item.quantity}</span>
           <span>
             00:03 min <br />
-                    last update
-                  </span>
+            last update
+          </span>
         </div>
       </div>
-     </div>
+    </div>
   );
 };
 

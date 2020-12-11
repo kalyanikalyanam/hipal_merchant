@@ -6,8 +6,21 @@ import * as moment from "moment";
 
 const ViewBill = React.forwardRef((props, ref) => {
   const [loading, setLoading] = useState(false);
+  const [billId, setBillId] = useState();
+  const [logo, setLogo] = useState();
+  const [address, setAddress] = useState();
+  const [date, setDate] = useState();
+  const [tablename, setTablename] = useState();
+  const [billItems, setBillItems] = useState();
+  const [orderId, setOrderId] = useState();
 
-  const [state, setState] = useState({});
+  const [settle_by, setSettle_by] = useState();
+
+  const [paymentDetails, setPaymentDetails] = useState();
+
+  const [gst, setGst] = useState(0);
+  const [cGst, setCgst] = useState(0);
+  const [gstNum, setGstNum] = useState();
 
   const [total, setTotal] = useState(0);
   const [subTotal, setSubTotal] = useState(0);
@@ -16,15 +29,26 @@ const ViewBill = React.forwardRef((props, ref) => {
 
   useEffect(() => {
     document.body.style.backgroundColor = "#ccc";
-    const viewBills = async () => {
+    const viewBills = () => {
       setLoading(true);
 
-      const snapshot = await db
-        .collection("bills")
+      db.collection("bills")
         .doc(props.match.params.billid)
-        .get();
-
-      setState({ ...snapshot.data() });
+        .get()
+        .then((snapshot) => {
+          setBillId(snapshot.data().billId);
+          setLogo(snapshot.data().logo);
+          setAddress(snapshot.data().address);
+          setDate(snapshot.data().date);
+          setTablename(snapshot.data().tablename);
+          setBillItems(snapshot.data().bill);
+          setOrderId(snapshot.data().orderId);
+          setCgst(snapshot.data().cgst);
+          setGst(snapshot.data().gst);
+          setGstNum(snapshot.data().gstNumber);
+          setPaymentDetails(snapshot.data().paymentDetails);
+          setSettle_by(snapshot.data().employee);
+        });
     };
 
     viewBills();
@@ -33,25 +57,24 @@ const ViewBill = React.forwardRef((props, ref) => {
     let subTotal = 0,
       discount = 0,
       tax = 0;
-    state &&
-      state.bill &&
-      state.bill.forEach((item) => {
+    billItems &&
+      billItems.forEach((item) => {
         subTotal += item.price * item.quantity;
         discount += ((item.price * item.discount) / 100) * item.quantity;
         tax += ((item.price * item.tax) / 100) * item.quantity;
       });
     let total = subTotal + tax - discount;
     let temp = total;
-    total += (total * state.gst) / 100;
-    total += (temp * state.cgst) / 100;
-
+    total += (total * gst) / 100;
+    total += (temp * cGst) / 100;
+    console.log(billItems);
     setSubTotal(subTotal);
     setTax(tax);
     setDiscount(discount);
 
     setTotal(total);
     console.log(subTotal);
-  }, [state]);
+  }, [billItems]);
 
   return (
     <>
@@ -66,13 +89,13 @@ const ViewBill = React.forwardRef((props, ref) => {
                 borderBottom: "1px solid rgba(0, 0, 0, 0.5)",
               }}
             >
-              <b style={{ paddingRight: "10px" }}>BILL ID</b> {state.billId}
+              <b style={{ paddingRight: "10px" }}>BILL ID</b> {billId}
             </td>
           </tr>
 
           <tr>
             <td style={{ textAlign: "center", padding: "10px" }}>
-              <img src={state.logo} style={{ maxWidth: "150px" }} />
+              <img src={logo} style={{ maxWidth: "150px" }} />
             </td>
           </tr>
 
@@ -84,7 +107,7 @@ const ViewBill = React.forwardRef((props, ref) => {
                 color: "#000000",
               }}
             >
-              {state.address}
+              {address}
             </td>
           </tr>
 
@@ -112,25 +135,25 @@ const ViewBill = React.forwardRef((props, ref) => {
               <table width="100%">
                 <tr>
                   <td style={{ textAlign: "left", padding: "3px 30px" }}>
-                    {moment(state.date).locale("en").format("DD-MM-YYYY")}
+                    {moment(date).locale("en").format("DD-MM-YYYY")}
                   </td>
                   <td style={{ textAlign: "right", padding: "3px 30px" }}>
-                    {state.tablename}
+                    {tablename}
                   </td>
                 </tr>
 
                 <tr>
                   <td style={{ textAlign: "left", padding: "3px 30px" }}>
-                    {moment(state.date).locale("en").format("HH:mm:ss")}
+                    {moment(date).locale("en").format("HH:mm:ss")}
                   </td>
                   <td style={{ textAlign: "right", padding: "3px 30px" }}>
-                    {state.employee}
+                    {settle_by}
                   </td>
                 </tr>
 
                 <tr>
                   <td style={{ textAlign: "left", padding: "3px 30px" }}>
-                    Order ID :{state.orderId}
+                    Order ID :{orderId}
                   </td>
                 </tr>
               </table>
@@ -173,9 +196,8 @@ const ViewBill = React.forwardRef((props, ref) => {
                     <b>Price</b>
                   </td>
                 </tr>
-                {state &&
-                  state.bill &&
-                  state.bill.map((item, index) => {
+                {billItems &&
+                  billItems.map((item, index) => {
                     console.log(item);
 
                     return (
@@ -255,7 +277,7 @@ const ViewBill = React.forwardRef((props, ref) => {
                     CGST
                   </td>
                   <td style={{ textAlign: "right", padding: "3px 30px" }}>
-                    {state.cgst}
+                    {cGst}
                   </td>
                 </tr>
                 <tr>
@@ -263,7 +285,7 @@ const ViewBill = React.forwardRef((props, ref) => {
                     SGST
                   </td>
                   <td style={{ textAlign: "right", padding: "5px 30px" }}>
-                    {state.gst}
+                    {gst}
                   </td>
                 </tr>
               </table>
@@ -307,7 +329,7 @@ const ViewBill = React.forwardRef((props, ref) => {
                 color: "#000000",
               }}
             >
-              {state.gstNumber}
+              {gstNum}
             </td>
           </tr>
           <tr>
@@ -334,16 +356,13 @@ const ViewBill = React.forwardRef((props, ref) => {
                     borderBottom: "1px solid rgba(0, 0, 0, 0.5)",
                   }}
                 >
-                  <b style={{ paddingRight: "10px", color: "#000000" }}>
-                    BILL ID
-                  </b>{" "}
-                  {state.billId}
+                  <b style={{ paddingRight: "10px" }}>BILL ID</b> {billId}
                 </td>
               </tr>
 
               <tr>
                 <td style={{ textAlign: "center", padding: "10px" }}>
-                  <img src={state.logo} style={{ maxWidth: "150px" }} />
+                  <img src={logo} style={{ maxWidth: "150px" }} />
                 </td>
               </tr>
 
@@ -355,7 +374,7 @@ const ViewBill = React.forwardRef((props, ref) => {
                     color: "#000000",
                   }}
                 >
-                  {state.address}
+                  {address}
                 </td>
               </tr>
 
@@ -389,7 +408,7 @@ const ViewBill = React.forwardRef((props, ref) => {
                           color: "#000000",
                         }}
                       >
-                        {moment(state.date).locale("en").format("DD-MM-YYYY")}
+                        {moment(date).locale("en").format("DD-MM-YYYY")}
                       </td>
                       <td
                         style={{
@@ -398,7 +417,7 @@ const ViewBill = React.forwardRef((props, ref) => {
                           color: "#000000",
                         }}
                       >
-                        {state.tablename}
+                        {tablename}
                       </td>
                     </tr>
 
@@ -410,7 +429,7 @@ const ViewBill = React.forwardRef((props, ref) => {
                           color: "#000000",
                         }}
                       >
-                        {moment(state.date).locale("en").format("HH:mm:ss")}
+                        {moment(date).locale("en").format("HH:mm:ss")}
                       </td>
                       <td
                         style={{
@@ -419,7 +438,7 @@ const ViewBill = React.forwardRef((props, ref) => {
                           color: "#000000",
                         }}
                       >
-                        {state.employee}
+                        {settle_by}
                       </td>
                     </tr>
 
@@ -431,7 +450,7 @@ const ViewBill = React.forwardRef((props, ref) => {
                           color: "#000000",
                         }}
                       >
-                        Order ID :{state.orderId}
+                        Order ID :{orderId}
                       </td>
                     </tr>
                   </table>
@@ -453,7 +472,6 @@ const ViewBill = React.forwardRef((props, ref) => {
                         style={{
                           textAlign: "left",
                           padding: "5px 30px 10px 30px",
-                          color: "#000000",
                         }}
                       >
                         <b>Item</b>
@@ -477,9 +495,8 @@ const ViewBill = React.forwardRef((props, ref) => {
                         <b>Price</b>
                       </td>
                     </tr>
-                    {state &&
-                      state.bill &&
-                      state.bill.map((item, index) => {
+                    {billItems &&
+                      billItems.map((item, index) => {
                         console.log(item);
 
                         return (
@@ -641,7 +658,7 @@ const ViewBill = React.forwardRef((props, ref) => {
                           color: "#000000",
                         }}
                       >
-                        {state.cgst}
+                        {cGst}
                       </td>
                     </tr>
                     <tr>
@@ -661,7 +678,7 @@ const ViewBill = React.forwardRef((props, ref) => {
                           color: "#000000",
                         }}
                       >
-                        {state.gst}
+                        {gst}
                       </td>
                     </tr>
                   </table>
@@ -729,7 +746,7 @@ const ViewBill = React.forwardRef((props, ref) => {
                     color: "#000000",
                   }}
                 >
-                  {state.gstNumber}
+                  {gstNum}
                 </td>
               </tr>
               <tr>
@@ -763,9 +780,8 @@ const ViewBill = React.forwardRef((props, ref) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {state &&
-                      state.bill &&
-                      state.bill.map((bill, index) => {
+                    {billItems &&
+                      billItems.map((bill, index) => {
                         if (bill.discountReasons != null) {
                           return (
                             <tr key={index}>
@@ -801,6 +817,16 @@ const Print = (props) => {
     <>
       <ViewBill ref={componentRef} {...props} />
 
+      {/* <div className="w-100-row kotsettle_btn">
+          <span className="btn add_ord" onClick={handlePrint}>
+            <a href="#" data-toggle="modal" data-target="#add_edit_position">
+              Print Bill
+            </a>
+          </span>
+          <span className="btn view_ord" onClick={handleClose}>
+            Cancel
+          </span>
+        </div> */}
       <div className="row business_reg_box">
         <div className="col-md-12 p-0 text-center">
           <Link to="/Bills">
