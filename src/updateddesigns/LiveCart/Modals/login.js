@@ -13,8 +13,7 @@ const LoginForm = ({auth}) => {
        setLoading(true)
        console.log(data)
        try{
-           const cred = await firebase.auth().signInWithEmailAndPassword(data.email, data.password)
-           if(cred.user.uid !== sessionStorage.getItem('RoleId')) throw 'Wrong User'
+           await firebase.auth().signInWithEmailAndPassword(data.email, data.password)
            setLogin(true)
        }
        catch(e){
@@ -27,6 +26,9 @@ const LoginForm = ({auth}) => {
    }
    useEffect(() => {
        auth(login)
+       if(login){
+           setError(null)
+       }
    }, [login])
    const loadingSign = loading ? <ReactLoading type= 'spin' color="#fff" style={null} /> : null
    const beforeLogin = <span width='100%' onClick={handleSubmit(onSubmit)}>{loadingSign} {loading ? 'Checking' : 'Check'}</span>
