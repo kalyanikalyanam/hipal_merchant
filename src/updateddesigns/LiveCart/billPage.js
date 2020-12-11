@@ -144,7 +144,7 @@ const BillPage = () => {
         date: Date.now(),
       };
       if (bill.customers.length === 0) {
-        const ref = await db.collection('settings_default_customers').where("businessId", "==", businessId).get()
+        const ref = await db.collection('settings_default_customers').where("businessId", "==", businessId).limit(1).get()
         ref.forEach(doc => {
         bill.customers.push({
           name: doc.data().customer_name,

@@ -86,7 +86,14 @@ const OrderItem = ({ item, index, dbRef}) => {
 
     await db.collection("kotItems").add(KotItem)
   };
-  const deleteItem = () => {
+  const deleteItem = (item) => {
+    if(item.status !== "NotKot"){
+      dispatch({
+        type: 'DeleteModalShow',
+        item: item
+      })
+      return
+    }
     dbRef.update({
       orders: firebase.firestore.FieldValue.arrayRemove(item)
     })

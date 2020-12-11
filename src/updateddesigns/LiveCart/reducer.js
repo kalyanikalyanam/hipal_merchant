@@ -1,3 +1,4 @@
+import { AccordionToggle } from "react-bootstrap"
 
 const updateObject = (state, updatedProps) => {
     return {...state ,... updatedProps}
@@ -16,7 +17,9 @@ export const initState = {
     setBillPage: 1,
     kotItems: [],
     liveCartNotification: false,
-    balance: 0
+    deleteModal: true,
+    balance: 0,
+    deleteModal: null
 }
 
 export const reducer = (state, action) => {
@@ -88,7 +91,12 @@ export const reducer = (state, action) => {
             return updateObject(state, {swapModal: true})
         case "SwapModalHide":
             return updateObject(state, {swapModal: false})
+        case "DeleteModalShow":
+            return updateObject(state, {deleteModal: true, deleteModalData:action.item})
+        case "DeleteModalHide":
+            return updateObject(state, {deleteModal: false, deleteModalData: null})
 
         default: return state
+
     }
 }

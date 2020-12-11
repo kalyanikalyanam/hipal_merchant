@@ -26,6 +26,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import MergeModal from "./Modals/mergeModal";
 import SwapModal from "./Modals/swapModal";
+import DeleteModal from './Modals/deleteModal'
 
 const MainPage = (props) => {
   const [reducerState, dispatch] = useReducer(reducer, initState);
@@ -231,6 +232,16 @@ const MainPage = (props) => {
                   >
                     <SwapModal />
                   </BootstrapModal>
+                  <BootstrapModal
+                    show={reducerState.deleteModal}
+                    onHide={() => {
+                      dispatch({
+                        type: "DeleteModalHide"
+                      })
+                    }}
+                    >
+                      <DeleteModal data={reducerState.deleteModalData} />
+                    </BootstrapModal>
                 </balanceContext.Provider>
               </tableContext.Provider>
             </stateContext.Provider>
