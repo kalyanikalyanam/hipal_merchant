@@ -1,17 +1,25 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { tableContext } from "./contexts";
 import firebase from "../../config";
 import { toast } from "react-toastify";
-import useSound from "use-sound";
 import notification from "../../iphone_notification.mp3";
+import useSound from "use-sound";
 
 const MenuItem = ({ item }) => {
   const dbRef = useContext(tableContext);
+  const [clickStyle, setClickStyle] = useState();
   const [play] = useSound(notification, {
     interrupt: true,
     volume: 0.4,
   });
   const handleClick = async () => {
+    setClickStyle({
+      boxShadow: "1px, 6px, 10px, rgba(96, 96, 0.1)",
+      border: "solid 3px",
+    });
+    setTimeout(() => {
+      setClickStyle();
+    }, 100);
     let table = await dbRef.get();
     play();
     toast.success("Item was added to LiveCart!", {
@@ -67,8 +75,8 @@ const MenuItem = ({ item }) => {
     }
   };
   return (
-    <button className="col-md-4 mb-15" onClick={handleClick}>
-      <div className="cate_img_box">
+    <div className="col-md-4 mb-15" onClick={handleClick}>
+      <button className="cate_img_box" style={clickStyle ? clickStyle : null}>
         <img src={item.item_image} alt="imageItem" />
         <p className="text-left">{item.item_name}</p>
         <p className="text-left m-t-5">
@@ -86,8 +94,8 @@ const MenuItem = ({ item }) => {
             </span>
           )}
         </p>
-      </div>
-    </button>
+      </button>
+    </div>
   );
 };
 
