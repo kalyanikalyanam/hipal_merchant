@@ -54,7 +54,7 @@ const LoginForm = ({auth}) => {
                            <input className="form-control edit_product" type="password" name="password" ref={register({ required: 'This is required' })} />
                            <p className="error">{error}</p>
                            <p className="error">{errors.password && errors.password.message}</p>
-                           <p className="btn con-btn-pop">{login ? ('Authenticated') : beforeLogin}</p>
+                           <div className="btn con-btn-pop">{login ? ('Authenticated') : beforeLogin}</div>
                        </div>
                     </div>
                 </div>
