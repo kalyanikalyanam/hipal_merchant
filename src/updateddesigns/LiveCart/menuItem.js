@@ -1,20 +1,20 @@
 import React, { useContext, useEffect } from "react";
 import { tableContext } from "./contexts";
-import firebase from '../../config'
-import {toast} from 'react-toastify'
-import useSound from 'use-sound'
-import notification from '../../iphone_notification.mp3'
+import firebase from "../../config";
+import { toast } from "react-toastify";
+import useSound from "use-sound";
+import notification from "../../iphone_notification.mp3";
 
 const MenuItem = ({ item }) => {
-  const dbRef = useContext(tableContext) 
+  const dbRef = useContext(tableContext);
   const [play] = useSound(notification, {
     interrupt: true,
-    volume: 0.4
-  })
+    volume: 0.4,
+  });
   const handleClick = async () => {
-    let table = await dbRef.get()
-    play()
-    toast.success('Item was added to LiveCart!', {
+    let table = await dbRef.get();
+    play();
+    toast.success("Item was added to LiveCart!", {
       position: "bottom-right",
       autoClose: 5000,
       hideProgressBar: false,
@@ -23,22 +23,25 @@ const MenuItem = ({ item }) => {
       pauseOnHover: false,
     });
 
-    let liveCart = table.data().liveCart
+    let liveCart = table.data().liveCart;
     if (!liveCart) {
-      liveCart = []
+      liveCart = [];
     }
     if (liveCart.length === 0) {
-      var id = Math.floor(Math.random() * 100000000)
+      var id = Math.floor(Math.random() * 100000000);
       dbRef.update({
-        liveCartId: id
-      })
+        liveCartId: id,
+      });
     }
-    var flag = false
+    var flag = false;
     for (var i = 0; i < liveCart.length; i++) {
-      var it = liveCart[i]
-      if (it.id === item.itemId && parseInt(it.price) === parseInt(item.item_price)) {
-        flag = true
-        it.quantity++
+      var it = liveCart[i];
+      if (
+        it.id === item.itemId &&
+        parseInt(it.price) === parseInt(item.item_price)
+      ) {
+        flag = true;
+        it.quantity++;
       }
     }
     if (!flag) {
@@ -52,22 +55,19 @@ const MenuItem = ({ item }) => {
         portions: item.portions,
         portions_details: item.portion_details || [],
         quantity: 1,
-        status: "NotKot"
-      }
+        status: "NotKot",
+      };
       dbRef.update({
-        liveCart: firebase.firestore.FieldValue.arrayUnion(newItem)
-      })
+        liveCart: firebase.firestore.FieldValue.arrayUnion(newItem),
+      });
     } else {
       dbRef.update({
-        liveCart
-      })
+        liveCart,
+      });
     }
-  }
+  };
   return (
-    <div
-      className="col-md-4 mb-15"
-      onClick ={handleClick}
-    >
+    <button className="col-md-4 mb-15" onClick={handleClick}>
       <div className="cate_img_box">
         <img src={item.item_image} alt="imageItem" />
         <p className="text-left">{item.item_name}</p>
@@ -87,7 +87,7 @@ const MenuItem = ({ item }) => {
           )}
         </p>
       </div>
-    </div>
+    </button>
   );
 };
 

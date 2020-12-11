@@ -8,7 +8,6 @@ import {
   stateContext,
 } from "./contexts";
 
-
 const BillPage = () => {
   const [businessId, setBusinessId] = useState();
   const [businessLogo, setBusinessLogo] = useState();
@@ -144,13 +143,16 @@ const BillPage = () => {
         date: Date.now(),
       };
       if (bill.customers.length === 0) {
-        const ref = await db.collection('settings_default_customers').where("businessId", "==", businessId).get()
-        ref.forEach(doc => {
-        bill.customers.push({
-          name: doc.data().customer_name,
-          phone: doc.data().customer_phonenumber
+        const ref = await db
+          .collection("settings_default_customers")
+          .where("businessId", "==", businessId)
+          .get();
+        ref.forEach((doc) => {
+          bill.customers.push({
+            name: doc.data().customer_name,
+            phone: doc.data().customer_phonenumber,
+          });
         });
-        })
       }
       await db.collection("bills").add(bill);
 
@@ -487,7 +489,7 @@ const BillPage = () => {
                     color: "#000000",
                   }}
                 >
-                  {gstNum}
+                  GSTIN - {gstNum}
                 </td>
               </tr>
               <tr>

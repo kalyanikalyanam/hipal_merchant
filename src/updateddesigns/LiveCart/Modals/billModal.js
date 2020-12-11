@@ -491,7 +491,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                       fontSize: "32px",
                     }}
                   >
-                    <b>{data && data.gstNum}</b>
+                    <b>GSTIN - {data && data.gstNum}</b>
                   </td>
                 </tr>
                 <tr>
@@ -754,7 +754,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                   color: "#000000",
                 }}
               >
-                {data && data.gstNum}
+                GSTIN - {data && data.gstNum}
               </td>
             </tr>
             <tr>

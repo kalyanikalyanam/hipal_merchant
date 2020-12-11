@@ -79,7 +79,7 @@ class BusinessList extends React.Component {
             business_secondary_email: childSnapShot.data()
               .business_secondary_email,
             business_phone_number: childSnapShot.data().business_phone_number,
-
+            business_address: childSnapShot.data().business_address,
             business_logo: childSnapShot.data().business_logo,
 
             business_currency: childSnapShot.data().business_currency,
@@ -89,6 +89,10 @@ class BusinessList extends React.Component {
 
             business_fssai_number: childSnapShot.data().business_fssai_number,
             business_fssai_form: childSnapShot.data().business_fssai_form,
+
+            business_gst_number: childSnapShot.data().business_gst_number,
+            business_gst_value: childSnapShot.data().business_gst_value,
+            business_cgst_value: childSnapShot.data().business_cgst_value,
 
             business_account_name: childSnapShot.data().business_account_name,
             business_account_number: childSnapShot.data()
@@ -181,17 +185,10 @@ class BusinessList extends React.Component {
                                                 Cafe 2 Sankipuri
                                               </p>
                                               <p className="cafe_address">
-                                                12, Sainikpuri, Kapra,
-                                                Secunderabad, Telangana 500094
+                                                {business.business_address}
                                               </p>
                                               <p className="cafe_timings">
-                                                Timings :{" "}
-                                                {
-                                                  business.business_timezone_from
-                                                }{" "}
-                                                am to{" "}
-                                                {business.business_timezone_to}{" "}
-                                                pm
+                                                Timings : 9 am to 11 pm
                                               </p>
 
                                               <Link to="/Dashboard">

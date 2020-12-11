@@ -35,9 +35,13 @@ import EditEmployeeRole from "./component/edit_employee_role";
 
 import AllCustomers from "./component/all_customers";
 
+import BillDuplicate from "./component/bills_duplicate";
+import ViewBillDuplicate from "./component/view_bills_duplicate";
+
 import Bills2 from "./component/bills2";
 import ViewBill from "./component/view_bill";
 
+import Test from "./component/test";
 import Home from "./component/home";
 
 import BillPrintPage from "./component/bill_print_page";
@@ -123,19 +127,16 @@ class Routing extends React.Component {
           component={EditBusiness}
         />
         <PrivateRoute path="/AllEmployees" component={AllEmployees} />
-
         <PrivateRoute
           path="/AllEmployeePositions"
           component={AllEmployeePositions}
         />
-
         <PrivateRoute path="/AllEmplopyesRoles" component={AllEmplopyesRoles} />
         <PrivateRoute
           path="/EditEmployeeRole/:employeeRoleId"
           component={EditEmployeeRole}
         />
         <PrivateRoute path="/Orders" component={Orders} />
-
         <PrivateRoute path="/ViewItemMenu" component={ViewItemMenu} />
         <PrivateRoute path="/AddItemMenu" component={AddItemMenu} />
         <PrivateRoute
@@ -143,7 +144,6 @@ class Routing extends React.Component {
           component={EditItemMenu}
         />
         <PrivateRoute path="/AddItemType" component={AddItemType} />
-
         <PrivateRoute path="/CategoryList" component={CategoryList} />
         <PrivateRoute
           path="/AddCategoryMenuDuplicate"
@@ -157,19 +157,21 @@ class Routing extends React.Component {
           path="/ViewCategoryMenu/:categoryId"
           component={ViewCategoryMenu}
         />
-
         <PrivateRoute path="/Bills" component={Bills2} />
         <PrivateRoute path="/ViewBill/:billid" component={ViewBill} />
+        <PrivateRoute path="/BillDuplicate" component={BillDuplicate} />
+        <PrivateRoute
+          path="/ViewBillDuplicate/:billid"
+          component={ViewBillDuplicate}
+        />
+
+        <PrivateRoute path="/Test" component={Test} />
         <PrivateRoute path="/Home" component={Home} />
         <PrivateRoute path="/BillPrintPage" component={BillPrintPage} />
         <PrivateRoute path="/FloorList" component={FloorList} />
-
         <PrivateRoute path="/TablesList" component={TablesList} />
-
         <PrivateRoute path="/AddStation" component={AddStation} />
-
         <PrivateRoute path="/AllCustomers" component={AllCustomers} />
-
         <PrivateRoute path="/Dashboard" component={Dashboard} />
         <PrivateRoute path="/Settings" component={Settings} />
         <PrivateRoute path="/AllMessages" component={AllMessages} />
@@ -205,7 +207,6 @@ class Routing extends React.Component {
           component={SettingsEditImageMedia}
         />
         <PrivateRoute path="/Table" component={Table} />
-
         <PrivateRoute
           path="/KOTTableDataCartView"
           component={KOTTableDataCartView}
