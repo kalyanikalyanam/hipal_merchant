@@ -71,122 +71,125 @@ const BillModal = React.forwardRef(({ data }, ref) => {
           <b>X</b>
         </span>
         <div style={{ display: "none" }}>
-          <table width="100%" ref={ref}>
-            <tbody>
-              <tr>
-                <td
-                  style={{
-                    textAlign: "center",
-                    padding: "10px",
-                    color: "#000000",
-                    borderBottom: "1px solid rgba(0, 0, 0, 0.5)",
-                    fontSize: "30px",
-                  }}
-                >
-                  <b style={{ paddingRight: "10px" }}>BILL ID</b>{" "}
-                  {/* {data && data.billId} */}
-                  <b>{data && data.table && data.table.billId}</b>
-                </td>
-              </tr>
-              <tr>
-                <td
-                  style={{
-                    textAlign: "center",
-                    padding: "10px",
-                    fontSize: "32px",
-                  }}
-                >
-                  <img
-                    src={businessLogo}
-                    style={{ maxWidth: "150px", fontSize: "32px" }}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td
-                  style={{
-                    textAlign: "center",
-                    padding: "10px",
-                    color: "#000000",
-                    fontSize: "32px",
-                  }}
-                >
-                  <b> {data && data.businessAddress}</b>
-                </td>
-              </tr>
-              <tr>
-                <td
-                  style={{
-                    textAlign: "center",
-                    padding: "10px",
-                    color: "#000000",
-                    fontSize: "32px",
-                  }}
-                >
-                  <b>DINE IN</b>
-                </td>
-              </tr>
-              <tr style={{ padding: "0px" }}>
-                <td
-                  style={{
-                    textAlign: "center",
-                    padding: "10px",
-                    paddingBottom: "0px",
-                    color: "#000000",
-                    borderBottom: "1px dashed rgba(0, 0, 0, 0.5)",
-                    fontSize: "32px",
-                  }}
-                >
-                  <table width="100%">
-                    <tbody>
-                      <tr>
-                        <td
-                          style={{
-                            textAlign: "left",
-                            padding: "3px 10px",
-                            fontSize: "32px",
-                            color: "#000000",
-                          }}
-                        >
-                          <b> {date()}</b>
-                        </td>
-                        <td
-                          style={{
-                            textAlign: "right",
-                            padding: "3px 10px",
-                            fontSize: "32px",
-                            color: "#000000",
-                          }}
-                        >
-                          <b>
-                            {" "}
-                            {data && data.table ? data.table.table_name : null}
-                          </b>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td
-                          style={{
-                            textAlign: "left",
-                            padding: "3px 10px",
-                            fontSize: "32px",
-                            color: "#000000",
-                          }}
-                        >
-                          <b>{formatAMPM(new Date())}</b>
-                        </td>
-                        <td
-                          style={{
-                            textAlign: "right",
-                            padding: "3px 10px",
-                            fontSize: "32px",
-                            color: "#000000",
-                          }}
-                        >
-                          <b> {data && data.employee}</b>
-                        </td>
-                      </tr>
-                      {/* <td
+          <div className="print_bill" ref={ref}>
+            <table width="100%">
+              <tbody>
+                <tr>
+                  <td
+                    style={{
+                      textAlign: "center",
+                      padding: "10px",
+                      color: "#000000",
+                      borderBottom: "1px solid rgba(0, 0, 0, 0.5)",
+                      fontSize: "30px",
+                    }}
+                  >
+                    <b style={{ paddingRight: "10px" }}>BILL ID</b>{" "}
+                    {/* {data && data.billId} */}
+                    <b>{data && data.table && data.table.billId}</b>
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    style={{
+                      textAlign: "center",
+                      padding: "10px",
+                      fontSize: "32px",
+                    }}
+                  >
+                    <img
+                      src={businessLogo}
+                      style={{ maxWidth: "150px", fontSize: "32px" }}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    style={{
+                      textAlign: "center",
+                      padding: "10px",
+                      color: "#000000",
+                      fontSize: "32px",
+                    }}
+                  >
+                    <b> {data && data.businessAddress}</b>
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    style={{
+                      textAlign: "center",
+                      padding: "10px",
+                      color: "#000000",
+                      fontSize: "32px",
+                    }}
+                  >
+                    <b>DINE IN</b>
+                  </td>
+                </tr>
+                <tr style={{ padding: "0px" }}>
+                  <td
+                    style={{
+                      textAlign: "center",
+                      padding: "10px",
+                      paddingBottom: "0px",
+                      color: "#000000",
+                      borderBottom: "1px dashed rgba(0, 0, 0, 0.5)",
+                      fontSize: "32px",
+                    }}
+                  >
+                    <table width="100%">
+                      <tbody>
+                        <tr>
+                          <td
+                            style={{
+                              textAlign: "left",
+                              padding: "3px 10px",
+                              fontSize: "32px",
+                              color: "#000000",
+                            }}
+                          >
+                            <b> {date()}</b>
+                          </td>
+                          <td
+                            style={{
+                              textAlign: "right",
+                              padding: "3px 10px",
+                              fontSize: "32px",
+                              color: "#000000",
+                            }}
+                          >
+                            <b>
+                              {" "}
+                              {data && data.table
+                                ? data.table.table_name
+                                : null}
+                            </b>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style={{
+                              textAlign: "left",
+                              padding: "3px 10px",
+                              fontSize: "32px",
+                              color: "#000000",
+                            }}
+                          >
+                            <b>{formatAMPM(new Date())}</b>
+                          </td>
+                          <td
+                            style={{
+                              textAlign: "right",
+                              padding: "3px 10px",
+                              fontSize: "32px",
+                              color: "#000000",
+                            }}
+                          >
+                            <b> {data && data.employee}</b>
+                          </td>
+                        </tr>
+                        {/* <td
                       style={{
                         textAlign: "left",
                         padding: "3px 10px",
@@ -195,316 +198,317 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                     >
                       Copy : 1
                     </td>{" "} */}
-                    </tbody>
-                  </table>
-                </td>
-              </tr>
-              <tr
-                style={{
-                  textAlign: "center",
-                  padding: "10px",
-                  color: "#000000",
-                  borderBottom: "1px rgba(0, 0, 0, 0.5)",
-                  fontSize: "32px",
-                }}
-              >
-                <td
-                  style={{
-                    textAlign: "left",
-                    padding: "3px 10px",
-                    fontSize: "32px",
-                    color: "#000000",
-                  }}
-                >
-                  <b>Order ID : {data && data.table && data.table.orderId}</b>
-                </td>
-              </tr>
-              <tr>
-                <td
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+                <tr
                   style={{
                     textAlign: "center",
                     padding: "10px",
                     color: "#000000",
-                    borderBottom: "1px dashed rgba(0, 0,0, 0.5)",
+                    borderBottom: "1px rgba(0, 0, 0, 0.5)",
                     fontSize: "32px",
                   }}
                 >
-                  <table width="100%">
-                    <tbody>
-                      <tr>
-                        <td
-                          style={{
-                            textAlign: "left",
-                            padding: "5px 10px 10px 10px",
-                            fontSize: "33px",
-                            color: "#000000",
-                          }}
-                        >
-                          <b>Item</b>
-                        </td>
-                        <td
-                          style={{
-                            textAlign: "center",
-                            padding: "5px 10px 10px 10px",
-                            fontSize: "33px",
-                            color: "#000000",
-                          }}
-                        >
-                          <b>Qty</b>
-                        </td>
-                        <td
-                          style={{
-                            textAlign: "right",
-                            padding: "5px 10px 10px 10px",
-                            fontSize: "33px",
-                            color: "#000000",
-                          }}
-                        >
-                          <b>Price</b>
-                        </td>
-                        <td></td>
-                      </tr>
-                      {billItems}
-                    </tbody>
-                  </table>
-                </td>
-              </tr>
-              <tr>
-                <td
-                  style={{
-                    textAlign: "center",
-                    padding: "10px",
-                    color: "#000000",
-                    bottomBorder: "1px dashed rgba(0, 0, 0, 0.5)",
-                    fontSize: "32px",
-                  }}
-                >
-                  <table width="100%">
-                    <tbody>
-                      <tr>
-                        <td
-                          style={{
-                            textAlign: "left",
-                            padding: "3px 10px",
-                            fontSize: "32px",
-                            color: "#000000",
-                          }}
-                        >
-                          <b>Subtotal</b>
-                        </td>
-                        <td
-                          style={{
-                            textAlign: "right",
-                            padding: "3px 10px",
-                            fontSize: "32px",
-                            color: "#000000",
-                          }}
-                        >
-                          <b> ₹ {data && data.subTotal}</b>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td
-                          style={{
-                            textAlign: "left",
-                            padding: "3px 10px",
-                            fontSize: "33px",
-                            color: "#000000",
-                          }}
-                        >
-                          <b style={{ fontSize: "33px" }}>Discount</b>
-                        </td>
-                        <td
-                          style={{
-                            textAlign: "right",
-                            padding: "3px 10px",
-                            fontSize: "33px",
-                            color: "#000000",
-                          }}
-                        >
-                          <b> {data ? data.discount : `-`}</b>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td
-                          style={{
-                            textAlign: "left",
-                            padding: "3px 10px",
-                            fontSize: "32px",
-                            color: "#000000",
-                          }}
-                        >
-                          <b> Extra charges</b>
-                        </td>
-                        <td
-                          style={{
-                            textAlign: "right",
-                            padding: "3px 10px",
-                            fontSize: "32px",
-                            color: "#000000",
-                          }}
-                        >
-                          <b>{data ? data.tax : `-`}</b>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td
-                          style={{
-                            textAlign: "left",
-                            padding: "3px 10px",
-                            fontSize: "32px",
-                            color: "#000000",
-                          }}
-                        >
-                          <b>Packaging charges</b>
-                        </td>
-                        <td
-                          style={{
-                            textAlign: "right",
-                            padding: "3px 10px",
-                            fontSize: "32px",
-                            color: "#000000",
-                          }}
-                        >
-                          -
-                        </td>
-                      </tr>
+                  <td
+                    style={{
+                      textAlign: "left",
+                      padding: "3px 10px",
+                      fontSize: "32px",
+                      color: "#000000",
+                    }}
+                  >
+                    <b>Order ID : {data && data.table && data.table.orderId}</b>
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    style={{
+                      textAlign: "center",
+                      padding: "10px",
+                      color: "#000000",
+                      borderBottom: "1px dashed rgba(0, 0,0, 0.5)",
+                      fontSize: "32px",
+                    }}
+                  >
+                    <table width="100%">
+                      <tbody>
+                        <tr>
+                          <td
+                            style={{
+                              textAlign: "left",
+                              padding: "5px 10px 10px 10px",
+                              fontSize: "33px",
+                              color: "#000000",
+                            }}
+                          >
+                            <b>Item</b>
+                          </td>
+                          <td
+                            style={{
+                              textAlign: "center",
+                              padding: "5px 10px 10px 10px",
+                              fontSize: "33px",
+                              color: "#000000",
+                            }}
+                          >
+                            <b>Qty</b>
+                          </td>
+                          <td
+                            style={{
+                              textAlign: "right",
+                              padding: "5px 10px 10px 10px",
+                              fontSize: "33px",
+                              color: "#000000",
+                            }}
+                          >
+                            <b>Price</b>
+                          </td>
+                          <td></td>
+                        </tr>
+                        {billItems}
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    style={{
+                      textAlign: "center",
+                      padding: "10px",
+                      color: "#000000",
+                      bottomBorder: "1px dashed rgba(0, 0, 0, 0.5)",
+                      fontSize: "32px",
+                    }}
+                  >
+                    <table width="100%">
+                      <tbody>
+                        <tr>
+                          <td
+                            style={{
+                              textAlign: "left",
+                              padding: "3px 10px",
+                              fontSize: "32px",
+                              color: "#000000",
+                            }}
+                          >
+                            <b>Subtotal</b>
+                          </td>
+                          <td
+                            style={{
+                              textAlign: "right",
+                              padding: "3px 10px",
+                              fontSize: "32px",
+                              color: "#000000",
+                            }}
+                          >
+                            <b> ₹ {data && data.subTotal}</b>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style={{
+                              textAlign: "left",
+                              padding: "3px 10px",
+                              fontSize: "33px",
+                              color: "#000000",
+                            }}
+                          >
+                            <b style={{ fontSize: "33px" }}>Discount</b>
+                          </td>
+                          <td
+                            style={{
+                              textAlign: "right",
+                              padding: "3px 10px",
+                              fontSize: "33px",
+                              color: "#000000",
+                            }}
+                          >
+                            <b> {data ? data.discount : `-`}</b>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style={{
+                              textAlign: "left",
+                              padding: "3px 10px",
+                              fontSize: "32px",
+                              color: "#000000",
+                            }}
+                          >
+                            <b> Extra charges</b>
+                          </td>
+                          <td
+                            style={{
+                              textAlign: "right",
+                              padding: "3px 10px",
+                              fontSize: "32px",
+                              color: "#000000",
+                            }}
+                          >
+                            <b>{data ? data.tax : `-`}</b>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style={{
+                              textAlign: "left",
+                              padding: "3px 10px",
+                              fontSize: "32px",
+                              color: "#000000",
+                            }}
+                          >
+                            <b>Packaging charges</b>
+                          </td>
+                          <td
+                            style={{
+                              textAlign: "right",
+                              padding: "3px 10px",
+                              fontSize: "32px",
+                              color: "#000000",
+                            }}
+                          >
+                            -
+                          </td>
+                        </tr>
 
-                      <tr>
-                        <td
-                          style={{
-                            textAlign: "left",
-                            padding: "3px 10px",
-                            fontSize: "32px",
-                            color: "#000000",
-                          }}
-                        >
-                          <b> CGST</b>
-                        </td>
-                        <td
-                          style={{
-                            textAlign: "right",
-                            padding: "3px 10px",
-                            fontSize: "32px",
-                            color: "#000000",
-                          }}
-                        >
-                          <b> {data && data.cGst}</b>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td
-                          style={{
-                            textAlign: "left",
-                            padding: "3px 10px",
-                            fontSize: "32px",
-                            color: "#000000",
-                          }}
-                        >
-                          <b> SGST</b>
-                        </td>
-                        <td
-                          style={{
-                            textAlign: "right",
-                            padding: "5px 10px",
-                            fontSize: "32px",
-                            color: "#000000",
-                          }}
-                        >
-                          <b>{data && data.gst}</b>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </td>
-              </tr>
-              <tr>
-                <td
-                  style={{
-                    textAlign: "center",
-                    padding: "10px",
-                    paddingTop: "0px",
-                    color: "#000000",
-                    borderBottom: "1px dashed rgba(0, 0, 0, 0.5)",
-                    fontSize: "32px",
-                  }}
-                >
-                  <table width="100%">
-                    <tbody>
-                      <tr>
-                        <td
-                          style={{
-                            textAlign: "left",
-                            padding: "5px 10px",
-                            fontSize: "32px",
-                            color: "#000000",
-                          }}
-                        >
-                          <b>Grand Total</b>
-                        </td>
-                        <td
-                          style={{
-                            textAlign: "right",
-                            padding: "5px 10px",
-                            fontSize: "32px",
-                            color: "#000000",
-                          }}
-                        >
-                          <b>₹ {data && parseFloat(data.total).toFixed(2)}</b>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td
-                          style={{
-                            textAlign: "left",
-                            padding: "5px 10px",
-                            fontSize: "32px",
-                            color: "#000000",
-                          }}
-                        >
-                          <b>Payable</b>
-                        </td>
-                        <td
-                          style={{
-                            textAlign: "right",
-                            padding: "5px 10px",
-                            fontSize: "32px",
-                            color: "#000000",
-                          }}
-                        >
-                          <b>₹ {data && Math.round(data.total)}</b>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </td>
-              </tr>
-              <tr>
-                <td
-                  style={{
-                    textAlign: "center",
-                    padding: "10px",
-                    color: "#000000",
-                    fontSize: "32px",
-                  }}
-                >
-                  <b>{data && data.gstNum}</b>
-                </td>
-              </tr>
-              <tr>
-                <td
-                  style={{
-                    textAlign: "center",
-                    padding: "10px",
-                    color: "#000000",
-                    fontSize: "32px",
-                  }}
-                >
-                  <b>- Thank you! -</b>
-                </td>
-              </tr>
-            </tbody>
-          </table>{" "}
+                        <tr>
+                          <td
+                            style={{
+                              textAlign: "left",
+                              padding: "3px 10px",
+                              fontSize: "32px",
+                              color: "#000000",
+                            }}
+                          >
+                            <b> CGST</b>
+                          </td>
+                          <td
+                            style={{
+                              textAlign: "right",
+                              padding: "3px 10px",
+                              fontSize: "32px",
+                              color: "#000000",
+                            }}
+                          >
+                            <b> {data && data.cGst}</b>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style={{
+                              textAlign: "left",
+                              padding: "3px 10px",
+                              fontSize: "32px",
+                              color: "#000000",
+                            }}
+                          >
+                            <b> SGST</b>
+                          </td>
+                          <td
+                            style={{
+                              textAlign: "right",
+                              padding: "5px 10px",
+                              fontSize: "32px",
+                              color: "#000000",
+                            }}
+                          >
+                            <b>{data && data.gst}</b>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    style={{
+                      textAlign: "center",
+                      padding: "10px",
+                      paddingTop: "0px",
+                      color: "#000000",
+                      borderBottom: "1px dashed rgba(0, 0, 0, 0.5)",
+                      fontSize: "32px",
+                    }}
+                  >
+                    <table width="100%">
+                      <tbody>
+                        <tr>
+                          <td
+                            style={{
+                              textAlign: "left",
+                              padding: "5px 10px",
+                              fontSize: "32px",
+                              color: "#000000",
+                            }}
+                          >
+                            <b>Grand Total</b>
+                          </td>
+                          <td
+                            style={{
+                              textAlign: "right",
+                              padding: "5px 10px",
+                              fontSize: "32px",
+                              color: "#000000",
+                            }}
+                          >
+                            <b>₹ {data && parseFloat(data.total).toFixed(2)}</b>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style={{
+                              textAlign: "left",
+                              padding: "5px 10px",
+                              fontSize: "32px",
+                              color: "#000000",
+                            }}
+                          >
+                            <b>Payable</b>
+                          </td>
+                          <td
+                            style={{
+                              textAlign: "right",
+                              padding: "5px 10px",
+                              fontSize: "32px",
+                              color: "#000000",
+                            }}
+                          >
+                            <b>₹ {data && Math.round(data.total)}</b>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    style={{
+                      textAlign: "center",
+                      padding: "10px",
+                      color: "#000000",
+                      fontSize: "32px",
+                    }}
+                  >
+                    <b>{data && data.gstNum}</b>
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    style={{
+                      textAlign: "center",
+                      padding: "10px",
+                      color: "#000000",
+                      fontSize: "32px",
+                    }}
+                  >
+                    <b>- Thank you! -</b>
+                  </td>
+                </tr>
+              </tbody>
+            </table>{" "}
+          </div>
         </div>
 
         <table width="100%" style={{ display: "table" }}>
