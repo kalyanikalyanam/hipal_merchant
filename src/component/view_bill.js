@@ -307,7 +307,7 @@ const ViewBill = React.forwardRef((props, ref) => {
                 color: "#000000",
               }}
             >
-              {state.gstNumber}
+              GSTIN - {state.gstNumber}
             </td>
           </tr>
           <tr>
@@ -729,7 +729,7 @@ const ViewBill = React.forwardRef((props, ref) => {
                     color: "#000000",
                   }}
                 >
-                  {state.gstNumber}
+                  GSTIN - {state.gstNumber}
                 </td>
               </tr>
               <tr>
