@@ -41,6 +41,7 @@ import ViewBillDuplicate from "./component/view_bills_duplicate";
 import Bills2 from "./component/bills2";
 import ViewBill from "./component/view_bill";
 
+import KOT from './component/KotPage/index'
 import Test from "./component/test";
 import Home from "./component/home";
 
@@ -207,6 +208,7 @@ class Routing extends React.Component {
           component={SettingsEditImageMedia}
         />
         <PrivateRoute path="/Table" component={Table} />
+        <PrivateRoute path="/KOT" component={KOT} />
         <PrivateRoute
           path="/KOTTableDataCartView"
           component={KOTTableDataCartView}

@@ -82,16 +82,16 @@ class Sidebar extends React.Component {
                 </Link>
               </li>
               {sessionStorage.getItem("role") == "Merchant" ||
-              sessionStorage.getItem("customers") == "Read" ||
-              sessionStorage.getItem("customers") == "Read&Write" ? (
-                <li>
-                  <Link to="/AllCustomers" className="customers">
-                    Customers
+                sessionStorage.getItem("customers") == "Read" ||
+                sessionStorage.getItem("customers") == "Read&Write" ? (
+                  <li>
+                    <Link to="/AllCustomers" className="customers">
+                      Customers
                   </Link>
-                </li>
-              ) : (
-                ""
-              )}
+                  </li>
+                ) : (
+                  ""
+                )}
               {/* <li>
                 <Link to="/AddItemMenu" className="resturent">
                   Menu
@@ -122,16 +122,21 @@ class Sidebar extends React.Component {
                   Tables
                 </Link>
               </li>
+              <li>
+                <Link to="/KOT" className="tabels">
+                  KOT
+                </Link>
+              </li>
               {sessionStorage.getItem("role") == "Merchant" ||
-              sessionStorage.getItem("settings") == "Yes" ? (
-                <li>
-                  <Link to="/Settings" className="settings">
-                    Settings
+                sessionStorage.getItem("settings") == "Yes" ? (
+                  <li>
+                    <Link to="/Settings" className="settings">
+                      Settings
                   </Link>
-                </li>
-              ) : (
-                ""
-              )}
+                  </li>
+                ) : (
+                  ""
+                )}
               {sessionStorage.getItem("role") == "Merchant" ? (
                 <li>
                   <Link to="/BusinessList" className="settings">
@@ -139,8 +144,8 @@ class Sidebar extends React.Component {
                   </Link>
                 </li>
               ) : (
-                ""
-              )}
+                  ""
+                )}
               {/* <li>
                 <div className="settings" onClick={this.logout}>
                   Logout
