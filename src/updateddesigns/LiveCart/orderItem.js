@@ -65,10 +65,18 @@ const OrderItem = ({ item, index, dbRef }) => {
     let table = await dbRef.get();
     const businessId = sessionStorage.getItem("businessId");
     var order = table.data().orders;
+    let KotItems = []
     for (var i = 0; i < order.length; i++) {
       let it = order[i];
       if (it.id === item.id && it.price === item.price) {
         it.status = "cooking";
+        const kotItems = {
+          name: it.name,
+          id: item.id,
+          type: "DineIn",
+          status: "Cooking",
+        } 
+        KotItems.push(kotItems)
         break;
       }
     }
@@ -80,16 +88,14 @@ const OrderItem = ({ item, index, dbRef }) => {
       orders: order,
     });
 
-    const KotItem = {
-      name: item.name,
-      id: item.id,
-      type: "DineIn",
-      businessId,
-      tableName: table.data().table_name,
-      employee: table.data().currentEmployee
-    };
 
-    await db.collection("kotItems").add(KotItem);
+    await db.collection("kotItems").add({
+      items: kotItems, 
+      businessId, 
+      employee: table.data().currentEmployee, 
+      tableName: table.data().tableName, 
+      tableId: table.id
+    });
   };
   const deleteItem = (item) => {
     if(item.status !== "NotKot"){
