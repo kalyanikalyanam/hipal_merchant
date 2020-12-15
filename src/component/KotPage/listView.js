@@ -11,6 +11,7 @@ const ListView = ({kots}) => {
         let end = new Date()
         end.setHours(23, 59, 59, 999)
         let kotItems = kots
+        console.log(kots)
         kotItems.filter(item => item.createdOn > start && item.createdOn < end)
         setKotItems(kotItems)
     }, [kots])
