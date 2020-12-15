@@ -9,7 +9,6 @@ const KotModal = React.forwardRef((props, ref) => {
   const dbRef = useContext(tableContext);
   useEffect(() => {
     const tabledata = async () => {
-      console.log(data);
       if (dbRef) {
         let table = await dbRef.get();
         setTable(table.data());
