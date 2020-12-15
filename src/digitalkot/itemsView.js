@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../config";
-import ItemsView from "./itemsView";
+
 import Sidebar from "../component/sidebar";
 import Header from "../component/header";
 
@@ -166,7 +166,6 @@ const KOTTableDataCartView = () => {
                         ></i>{" "}
                         Dine in
                       </span>
-
                       {/* <span>
                         <i
                           className="fa fa-circle takeway_color"
@@ -189,7 +188,7 @@ const KOTTableDataCartView = () => {
                   <div className="list-kot">
                     {items &&
                       items.map(
-                        (item, index) => (
+                        (item) => (
                           <div className="box-kot">
                             <div className="kot-card ">
                               {/* selected */}
@@ -214,8 +213,7 @@ const KOTTableDataCartView = () => {
                                 <span>Iteams</span>
                                 <span>0/2</span>
                               </div>
-
-                              <div className="iteamsrow">
+                              {/* <div className="iteamsrow">
                                 <div className="w-15">
                                   <i className="far fa-square"></i>
                                 </div>
@@ -241,7 +239,7 @@ const KOTTableDataCartView = () => {
                                 <div className="w-15 text-right">
                                   x<span className="bigfont">2</span>
                                 </div>
-                              </div>
+                              </div> */}
                               <div className="iteamsrow text-center">
                                 <button
                                   type="button"
