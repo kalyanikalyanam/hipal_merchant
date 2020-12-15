@@ -86,6 +86,7 @@ const OrderItem = ({ item, index, dbRef }) => {
       type: "DineIn",
       businessId,
       tableName: table.data().table_name,
+      employee: table.data().employee
     };
 
     await db.collection("kotItems").add(KotItem);
