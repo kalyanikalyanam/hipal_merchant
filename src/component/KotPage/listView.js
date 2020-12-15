@@ -1,43 +1,29 @@
 import React, { useEffect, useState } from 'react'
-import { db } from '../../config'
+import {Modal} from 'react-bootstrap'
 
-const ListView = () => {
-    const [kotItems, setKotItems] = useState()
+const ListView = ({kots}) => {
+    const [modalShow, setModalShow] = useState(false)
+    const [kotItems, setKotItems] = useState([])
+    const [modalKot, setModalKot] = useState({})
     useEffect(() => {
-        let unsubscribe
-        const businessId = sessionStorage.getItem("businessId")
-        console.log(businessId)
-        const getData = async () => {
-            let start = new Date()
-            start.setHours(0,0,0,0)
-            let end = new Date()
-            end.setHours(23,59,59,999)
-            const ref = db
-                .collection("kotItems")
-                .where("businessId", "==", businessId)
-            try {
-                const querySnapshot = await ref.get()
-                let kotItems = []
-                querySnapshot.forEach(doc => {
-                    kotItems.push({ id: doc.id, ...doc.data()})
-                })
-                kotItems.filter(item => item.createdOn > start && item.createdOn < end)
-                setKotItems(kotItems)
-            }
-            catch (e){
-                console.log(e)
-            }
-            unsubscribe = ref.onSnapshot(querySnapshot => {
-                let kotItems = []
-                querySnapshot.forEach(doc => {
-                    kotItems.push({ id: doc.id, ...doc.data()})
-                })
-                kotItems.filter(item => item.createdOn > start && item.createdOn < end)
-                setKotItems(kotItems)
-            })
-        }
-        getData()
-    }, [])
+        let start = new Date()
+        start.setHours(0, 0, 0, 0)
+        let end = new Date()
+        end.setHours(23, 59, 59, 999)
+        let kotItems = kots
+        kotItems.filter(item => item.createdOn > start && item.createdOn < end)
+        setKotItems(kotItems)
+    }, [kots])
+
+    const openModal = (kot) => {
+        setModalKot(kot)
+        setModalShow(true)
+    }
+
+    const closeModal = () => {
+        setModalKot({})
+        setModalShow(false)
+    }
     return (
         <>
             <div className="col-md-12 p-0">
@@ -88,8 +74,7 @@ const ListView = () => {
                             <div className="databox td8">
                                 <span
                                     className="btn view_order_btn_td padd_kot"
-                                    data-toggle="modal"
-                                    data-target="#view_table"
+                                    onClick={() => {openModal(kot)}}
                                 >
                                     View
                         </span>
@@ -98,6 +83,53 @@ const ListView = () => {
                     )
                 })}
             </div>
+            <Modal show={modalShow} onHide={closeModal}>
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="col-12 w-100-row kot_head">
+                            Table: {modalKot.tableName}<span onClick={closeModal}>X</span>
+                        </div>
+                        <div class="col-12 w-100-row kot_waiter">
+                            Waiter: {modalKot.employee} 
+                    </div>
+                        <div class="col-12 w-100-row kot_date">
+                            Items <span>21/07/2021 | 12.20pm</span>
+                        </div>
+                        {modalKot.items && modalKot.items.map(item => {
+                            return (
+                                <>
+                                    <div class="col-12 w-100-row bdr-top1">
+                                        <div class="w-10 no">
+                                            <span class="check-icon">
+                                                <i class="fa fa-check" aria-hidden="true"></i>
+                                            </span>
+                                        </div>
+                                        <div class="w-80 table_kotdata">
+                                            <h5>{item.name}</h5>
+                                        </div>
+                                        <div class="w-10 text-right">x<span class="big_font">1</span></div>
+                                    </div>
+                                    {item.instructions && item.instructions !== "" &&
+                                        <div class="col-12 w-100-row p-0">
+                                            <div class="w-10 no pb-10">
+                                                <i class="fa fa-info-circle info-circle" aria-hidden="true"></i>
+                                            </div>
+                                            <div class="w-90 color_black">
+                                                (Make the pizza little spicy)
+                                            </div>
+                                        </div>
+                                    }
+                                </>
+                            )
+                        })}
+                        <div class="col-12 w-100-row bdr-top1">
+                            <div class="col-12 p-0 text-center">
+                                <button type="button" class="btn btn_print_kot">Print</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Modal>
         </>
     )
 }

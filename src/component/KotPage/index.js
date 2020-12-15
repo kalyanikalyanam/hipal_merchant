@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Sidebar from '../sidebar'
 import Header from '../header'
 
 import ListView from './listView'
 import CardView from './cardView'
 import HistoryView from './historyView'
+import { db } from '../../config'
 
 const stations = [
     { name: "Station 1"},
@@ -15,9 +16,34 @@ const stations = [
 const KOTPage = () => {
     const [station, setStation] = useState(1)
     const [view, setView] = useState(1)
+    const [kots, setKots] = useState()
+    useEffect(() => {
+        const businessId = sessionStorage.getItem("businessId")
+        let unsubscribe
+        const getItems = async () => {
+            const ref = db
+                .collection("kotItems")
+                .where('businessId' , "==" ,businessId)
+            const data = await ref.get()
+            let kots = []
+            data.forEach(doc => {
+                kots.push({id: doc.id, ...doc.data()})
+            })
+            setKots(kots)
+            unsubscribe = ref.onSnapshot(data => {
+                let kots = []
+                data.forEach(doc => {
+                    kots.push({ id: doc.id, ...doc.data() })
+                })
+                setKots(kots)
+            })
+        }
+        getItems()
+        return unsubscribe
+    } ,[])
 
-    const viewPage = view === 1 ? <CardView /> : 
-                     view === 2 ? <ListView /> : <HistoryView />
+    const viewPage = view === 1 ? <CardView kots={kots ? kots: [] }/> : 
+                     view === 2 ? <ListView kots={kots ? kots : []} /> : <HistoryView />
 
     return (
             <div className="page-wrapper">
