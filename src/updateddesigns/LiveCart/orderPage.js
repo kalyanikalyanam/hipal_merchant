@@ -1,3 +1,4 @@
+import {db} from '../../config'
 import React, { useContext, useEffect, useState } from "react";
 import { dispatchContext, tableContext } from "./contexts";
 import OrderItem from './orderItem'
@@ -15,14 +16,48 @@ const Orders = () => {
   const dispatch = useContext(dispatchContext)
 
   const handleKOTCart = async () => {
+    const businessId = sessionStorage.getItem("businessId")
     let table = await dbRef.get()
     let arr = []
     var order = table.data().orders
+    let kotItems = []
     for(var i = 0; i < order.length; i++){
       let it = order[i]
-      if(it.status === "NotKot") arr.push(it)
+      if(it.status === "NotKot") {
+        arr.push(it)
+        let kotItem = {
+          name: it.name,
+          id: it.id,
+          status: 'Cooking',
+          quantity: it.quantity,
+          instructions: it.instructions || ""
+        }
+        kotItems.push(kotItem)
+      }
       it.status = "cooking"
     }
+    console.log(table.data())
+    if(table.data().kotId === undefined || table.data().kotId === ""){
+      const kot = await db.collection("kotItems").add({
+        items: kotItems,
+        businessId,
+        employee: table.data().currentEmployee,
+        tableName: table.data().table_name,
+        tableId: table.id,
+        orderId: table.data().orderId 
+      });
+      dbRef.update({
+        kotId: kot.id
+      })
+    }
+    else {
+      const kot = await db.collection('kotItems').doc(table.data().kotId).get()
+      let currentItems = kot.data().items
+      await db.collection('kotItems').doc(table.data().kotId).update({
+        items: currentItems.concat(kotItems)
+      })
+    }
+    
     dispatch({
       type: "KOTModalShow",
       items: arr 

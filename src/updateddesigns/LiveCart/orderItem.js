@@ -73,8 +73,9 @@ const OrderItem = ({ item, index, dbRef }) => {
         const kotItems = {
           name: it.name,
           id: item.id,
-          type: "DineIn",
           status: "Cooking",
+          quantity: it.quantity,
+          instructions: it.instructions || ""
         } 
         KotItems.push(kotItems)
         break;
@@ -84,19 +85,36 @@ const OrderItem = ({ item, index, dbRef }) => {
       type: "KOTModalShow",
       items: [item],
     });
+
     await dbRef.update({
       orders: order,
     });
 
+    console.log(KotItems)
+    
+    if(table.data().kotId === undefined || table.data().kotId === ""){
+      console.log("here")
+      const kot = await db.collection("kotItems").add({
+        items: KotItems,
+        businessId,
+        employee: table.data().currentEmployee,
+        tableName: table.data().table_name,
+        tableId: table.id
+      });
 
-    await db.collection("kotItems").add({
-      items: kotItems, 
-      businessId, 
-      employee: table.data().currentEmployee, 
-      tableName: table.data().tableName, 
-      tableId: table.id
-    });
-  };
+      dbRef.update({
+        kotId: kot.id
+      })
+    }
+    else {
+      console.log("here2")
+      const kot = await db.collection('kotItems').doc(table.data().kotId).get()
+      let currentItems = kot.data().items
+      await db.collection('kotItems').doc(table.data().kotId).update({
+        items: currentItems.concat(KotItems)
+      })
+    }
+  }
   const deleteItem = (item) => {
     if(item.status !== "NotKot"){
       dispatch({
