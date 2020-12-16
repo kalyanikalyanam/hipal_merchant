@@ -82,9 +82,9 @@ import Table from "./updateddesigns/tables_view_for_updated_order";
 
 import MainPage from "./updateddesigns/LiveCart/index";
 
-import KOTTableDataCartView from "./component/kot_table_data_cartview";
-import KOTTableDataHistory from "./component/kot_table_data_history";
-import KOTTableDataTableView from "./component/kot_table_data_tableview";
+import KOTTableDataCartView from "./digitalkot/kot_table_data_cartview";
+import KOTTableDataHistory from "./digitalkot/kot_table_data_history";
+import KOTTableDataTableView from "./digitalkot/kot_table_data_tableview";
 
 export const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route

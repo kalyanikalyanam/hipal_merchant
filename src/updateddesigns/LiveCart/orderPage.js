@@ -1,21 +1,22 @@
 import {db} from '../../config'
 import React, { useContext, useEffect, useState } from "react";
 import { dispatchContext, tableContext } from "./contexts";
-import OrderItem from './orderItem'
+import OrderItem from "./orderItem";
 
 const Orders = () => {
-  const [orderList, setOrderList] = useState()
-  const [total, setTotal] = useState(0)
-  const [discount, setDiscount] = useState(0)
-  const [tax, setTax] = useState(0)
+  const [orderList, setOrderList] = useState();
+  const [total, setTotal] = useState(0);
+  const [discount, setDiscount] = useState(0);
+  const [tax, setTax] = useState(0);
   const [kotNum, setKotNum] = useState(0);
-  const [id, setId] = useState()
-  const [cartId, setCartId] = useState()
+  const [id, setId] = useState();
+  const [cartId, setCartId] = useState();
 
   const dbRef = useContext(tableContext);
-  const dispatch = useContext(dispatchContext)
+  const dispatch = useContext(dispatchContext);
 
   const handleKOTCart = async () => {
+<<<<<<< HEAD
     const businessId = sessionStorage.getItem("businessId")
     let table = await dbRef.get()
     let arr = []
@@ -35,6 +36,15 @@ const Orders = () => {
         kotItems.push(kotItem)
       }
       it.status = "cooking"
+=======
+    let table = await dbRef.get();
+    let arr = [];
+    var order = table.data().orders;
+    for (var i = 0; i < order.length; i++) {
+      let it = order[i];
+      if (it.status === "NotKot") arr.push(it);
+      it.status = "cooking";
+>>>>>>> fc3ea82d5773e7af395efb658d07df46052e29e4
     }
     console.log(table.data())
     if(table.data().kotId === undefined || table.data().kotId === ""){
@@ -60,84 +70,85 @@ const Orders = () => {
     
     dispatch({
       type: "KOTModalShow",
-      items: arr 
-    })
+      items: arr,
+    });
     await dbRef.update({
-      orders: order
-    })
+      orders: order,
+    });
   };
 
-
   useEffect(() => {
-    let unsubscribe
+    let unsubscribe;
     const getOrders = async () => {
       if (dbRef) {
-        const table = await dbRef.get()
-        setOrderList(table.data().orders)
-        setId(table.data().orderId)
-        setCartId(table.data().liveCartId)
-        unsubscribe = dbRef.onSnapshot(table => {
-          setOrderList(table.data().orders)
-          setId(table.data().orderId)
-          setCartId(table.data().liveCartId)
-        })
+        const table = await dbRef.get();
+        setOrderList(table.data().orders);
+        setId(table.data().orderId);
+        setCartId(table.data().liveCartId);
+        unsubscribe = dbRef.onSnapshot((table) => {
+          setOrderList(table.data().orders);
+          setId(table.data().orderId);
+          setCartId(table.data().liveCartId);
+        });
       }
-    }
-    getOrders()
-    return unsubscribe
-  }, [dbRef])
+    };
+    getOrders();
+    return unsubscribe;
+  }, [dbRef]);
   useEffect(() => {
-    if(orderList){
-      let total = 0, discount = 0, tax = 0, kot = 0
-      orderList.forEach(item => {
-        if (item.status !== 'NotKot') {
-          kot++
+    if (orderList) {
+      let total = 0,
+        discount = 0,
+        tax = 0,
+        kot = 0;
+      orderList.forEach((item) => {
+        if (item.status !== "NotKot") {
+          kot++;
         }
-        total += item.price * item.quantity
-        discount += item.price * item.discount / 100 * item.quantity
-        tax += item.tax * item.price / 100 * item.quantity
-      })
-      setKotNum(kot)
-      setTotal(parseFloat(total).toFixed(2))
-      setDiscount(parseFloat(discount).toFixed(2))
-      setTax(parseFloat(tax).toFixed(2))
+        total += item.price * item.quantity;
+        discount += ((item.price * item.discount) / 100) * item.quantity;
+        tax += ((item.tax * item.price) / 100) * item.quantity;
+      });
+      setKotNum(kot);
+      setTotal(parseFloat(total).toFixed(2));
+      setDiscount(parseFloat(discount).toFixed(2));
+      setTax(parseFloat(tax).toFixed(2));
     }
-  }, [orderList])
-
+  }, [orderList]);
 
   const check = () => {
-    let flag = true
+    let flag = true;
     orderList.forEach((item) => {
-      if (item.status === "NotKot") flag = false
-    })
-    return flag
-  }
+      if (item.status === "NotKot") flag = false;
+    });
+    return flag;
+  };
 
   const handleBillThis = async () => {
-    if(!check()){
-      alert("All Items must have Kot")
+    if (!check()) {
+      alert("All Items must have Kot");
     } else {
-      let table = await dbRef.get()    
-      let billItem = table.data().bill
-      if(!billItem) billItem = []
-      if(billItem.length === 0) {
-        var id = Math.floor(Math.random() * 100000000)
+      let table = await dbRef.get();
+      let billItem = table.data().bill;
+      if (!billItem) billItem = [];
+      if (billItem.length === 0) {
+        var id = Math.floor(Math.random() * 100000000);
         dbRef.update({
-          billId: id
-        })
+          billId: id,
+        });
       }
-      let orders = table.data().orders
-      billItem.push(...orders)
+      let orders = table.data().orders;
+      billItem.push(...orders);
       dbRef.update({
         orders: [],
-        bill: billItem
-      })
+        bill: billItem,
+      });
       dispatch({
         type: "setBillPage",
-        select: 3 
-      })
+        select: 3,
+      });
     }
-  }
+  };
 
   return (
     <div className="order_id_cart_box col-md-12 m-t-20">
@@ -158,12 +169,12 @@ const Orders = () => {
           {orderList &&
             orderList.map((item, index) => {
               return (
-                <OrderItem 
-                 item={item} 
-                 index={index}
-                 dbRef={dbRef}
-                 key={index}
-                 />
+                <OrderItem
+                  item={item}
+                  index={index}
+                  dbRef={dbRef}
+                  key={index}
+                />
               );
             })}
         </div>
@@ -186,13 +197,18 @@ const Orders = () => {
             </p>
             <p>
               <span className="left discount">Discount (free delivery)</span>{" "}
-              <span className="right discount">₹ {parseFloat(discount).toFixed(2)}</span>
+              <span className="right discount">
+                ₹ {parseFloat(discount).toFixed(2)}
+              </span>
             </p>
             <p className="m-t-15">
               <span className="left grandtotal_font">Grand Total</span>{" "}
               <span className="right grand_font">
                 {" "}
-                ₹{parseFloat(total - parseFloat(discount) + parseFloat(tax)).toFixed(2)}
+                ₹
+                {parseFloat(
+                  total - parseFloat(discount) + parseFloat(tax)
+                ).toFixed(2)}
               </span>
             </p>
           </div>

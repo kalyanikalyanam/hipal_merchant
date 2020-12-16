@@ -1,6 +1,6 @@
 import React from "react";
-import Sidebar from "./sidebar";
-import Header from "./header";
+import Sidebar from "../component/sidebar";
+import Header from "../component/header";
 
 const KOTTableDataTableView = () => {
   return (

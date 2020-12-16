@@ -65,7 +65,7 @@ const OrderItem = ({ item, index, dbRef }) => {
     let table = await dbRef.get();
     const businessId = sessionStorage.getItem("businessId");
     var order = table.data().orders;
-    let KotItems = []
+    let KotItems = [];
     for (var i = 0; i < order.length; i++) {
       let it = order[i];
       if (it.id === item.id && it.price === item.price) {
@@ -74,10 +74,15 @@ const OrderItem = ({ item, index, dbRef }) => {
           name: it.name,
           id: item.id,
           status: "Cooking",
+<<<<<<< HEAD
           quantity: it.quantity,
           instructions: it.instructions || ""
         } 
         KotItems.push(kotItems)
+=======
+        };
+        KotItems.push(kotItems);
+>>>>>>> fc3ea82d5773e7af395efb658d07df46052e29e4
         break;
       }
     }
@@ -89,6 +94,7 @@ const OrderItem = ({ item, index, dbRef }) => {
     await dbRef.update({
       orders: order,
     });
+<<<<<<< HEAD
 
     console.log(KotItems)
     
@@ -115,13 +121,25 @@ const OrderItem = ({ item, index, dbRef }) => {
       })
     }
   }
+=======
+    console.log(table.data());
+    await db.collection("kotItems").add({
+      items: KotItems,
+      businessId,
+      employee: table.data().currentEmployee,
+      tableName: table.data().table_name,
+      tableId: table.id,
+      orderId: table.orderId,
+    });
+  };
+>>>>>>> fc3ea82d5773e7af395efb658d07df46052e29e4
   const deleteItem = (item) => {
-    if(item.status !== "NotKot"){
+    if (item.status !== "NotKot") {
       dispatch({
-        type: 'DeleteModalShow',
-        item: item
-      })
-      return
+        type: "DeleteModalShow",
+        item: item,
+      });
+      return;
     }
     dbRef.update({
       orders: firebase.firestore.FieldValue.arrayRemove(item),
