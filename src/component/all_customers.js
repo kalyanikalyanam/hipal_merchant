@@ -6,7 +6,8 @@ import SimpleReactValidator from "simple-react-validator";
 import { Form } from "reactstrap";
 import swal from "sweetalert";
 import { Modal } from "react-bootstrap";
-
+import ReactPaginate from "react-paginate";
+const PER_PAGE = 10;
 class AllCustomers extends React.Component {
   constructor(props) {
     super(props);
@@ -24,6 +25,7 @@ class AllCustomers extends React.Component {
       show: false,
       viewCustomer: false,
       editCustomer: false,
+      currentPage: 0,
     };
 
     this.onEditSubmit = this.onEditSubmit.bind(this);
@@ -31,6 +33,8 @@ class AllCustomers extends React.Component {
     this.onChange = this.onChange.bind(this);
     this.viewCustomer = this.viewCustomer.bind(this);
     this.deleteItem = this.deleteItem.bind(this);
+    this.handlePageClick = this.handlePageClick.bind(this);
+
     this.validator = new SimpleReactValidator({
       className: "text-danger",
       validators: {
@@ -353,7 +357,110 @@ class AllCustomers extends React.Component {
       customerId: "",
     });
   };
+
+  handlePageClick = ({ selected: selectedPage }) => {
+    this.setState({
+      currentPage: selectedPage,
+    });
+  };
   render() {
+    const offset = this.state.currentPage * PER_PAGE;
+
+    const currentPageData =
+      this.state.customersList &&
+      this.state.customersList
+        .slice(offset, offset + PER_PAGE)
+        .map((customer, index) => {
+          return (
+            <tr key={index}>
+              <td>{index + 1}</td>
+
+              <td>{customer.customer_name}</td>
+              <td>{customer.customer_email}</td>
+              <td>**********</td>
+              <td>10+</td>
+              <td>
+                {sessionStorage.getItem("role") == "Merchant" ? (
+                  <>
+                    <img
+                      src="images/icon/edit_icon_blue.svg"
+                      className="edit_delete"
+                      onClick={() => {
+                        this.editCustomer(customer.customerId);
+                      }}
+                    />
+                    <img
+                      src="images/icon/delete_cross.svg"
+                      onClick={this.deleteItem.bind(this, customer.customerId)}
+                      className="edit_delete"
+                    />
+                    <button
+                      type="button"
+                      data-toggle="modal"
+                      data-target="#view_customer"
+                    >
+                      <span
+                        className="btn view_order_btn_td"
+                        onClick={this.viewCustomer.bind(
+                          this,
+                          customer.customerId
+                        )}
+                      >
+                        View Customer
+                      </span>
+                    </button>
+                  </>
+                ) : (
+                  ""
+                )}
+
+                {sessionStorage.getItem("deleteeditcustomers") == "Yes" ? (
+                  <>
+                    <img
+                      src="images/icon/edit_icon_blue.svg"
+                      className="edit_delete"
+                      onClick={() => {
+                        this.editCustomer.bind(this, customer.customerId);
+                      }}
+                    />
+                    <img
+                      src="images/icon/delete_cross.svg"
+                      onClick={this.deleteItem.bind(this, customer.customerId)}
+                      className="edit_delete"
+                    />
+                  </>
+                ) : (
+                  ""
+                )}
+                {sessionStorage.getItem("viewcustomersdetails") == "Yes" ? (
+                  <>
+                    <button
+                      type="button"
+                      data-toggle="modal"
+                      data-target="#view_customer"
+                    >
+                      <span
+                        className="btn view_order_btn_td"
+                        onClick={this.viewCustomer.bind(
+                          this,
+                          customer.customerId
+                        )}
+                      >
+                        View Customers
+                      </span>
+                    </button>
+                  </>
+                ) : (
+                  ""
+                )}
+              </td>
+            </tr>
+          );
+        });
+
+    const pageCount = Math.ceil(
+      this.state.customersList && this.state.customersList.length / PER_PAGE
+    );
     return (
       <>
         <div className="page-wrapper">
@@ -459,116 +566,28 @@ class AllCustomers extends React.Component {
                                       )}
                                     </tr>
                                   </thead>
-                                  <tbody id="myTable">
-                                    {this.state.customersList &&
-                                      this.state.customersList.map(
-                                        (customer, index) => {
-                                          return (
-                                            <tr key={index}>
-                                              <td>{index + 1}</td>
-
-                                              <td>{customer.customer_name}</td>
-                                              <td>{customer.customer_email}</td>
-                                              <td>**********</td>
-                                              <td>10+</td>
-                                              <td>
-                                                {sessionStorage.getItem(
-                                                  "role"
-                                                ) == "Merchant" ? (
-                                                  <>
-                                                    <img
-                                                      src="images/icon/edit_icon_blue.svg"
-                                                      className="edit_delete"
-                                                      onClick={() => {
-                                                        this.editCustomer(
-                                                          customer.customerId
-                                                        );
-                                                      }}
-                                                    />
-                                                    <img
-                                                      src="images/icon/delete_cross.svg"
-                                                      onClick={this.deleteItem.bind(
-                                                        this,
-                                                        customer.customerId
-                                                      )}
-                                                      className="edit_delete"
-                                                    />
-                                                    <button
-                                                      type="button"
-                                                      data-toggle="modal"
-                                                      data-target="#view_customer"
-                                                    >
-                                                      <span
-                                                        className="btn view_order_btn_td"
-                                                        onClick={this.viewCustomer.bind(
-                                                          this,
-                                                          customer.customerId
-                                                        )}
-                                                      >
-                                                        View Customer
-                                                      </span>
-                                                    </button>
-                                                  </>
-                                                ) : (
-                                                  ""
-                                                )}
-
-                                                {sessionStorage.getItem(
-                                                  "deleteeditcustomers"
-                                                ) == "Yes" ? (
-                                                  <>
-                                                    <img
-                                                      src="images/icon/edit_icon_blue.svg"
-                                                      className="edit_delete"
-                                                      onClick={() => {
-                                                        this.editCustomer.bind(
-                                                          this,
-                                                          customer.customerId
-                                                        );
-                                                      }}
-                                                    />
-                                                    <img
-                                                      src="images/icon/delete_cross.svg"
-                                                      onClick={this.deleteItem.bind(
-                                                        this,
-                                                        customer.customerId
-                                                      )}
-                                                      className="edit_delete"
-                                                    />
-                                                  </>
-                                                ) : (
-                                                  ""
-                                                )}
-                                                {sessionStorage.getItem(
-                                                  "viewcustomersdetails"
-                                                ) == "Yes" ? (
-                                                  <>
-                                                    <button
-                                                      type="button"
-                                                      data-toggle="modal"
-                                                      data-target="#view_customer"
-                                                    >
-                                                      <span
-                                                        className="btn view_order_btn_td"
-                                                        onClick={this.viewCustomer.bind(
-                                                          this,
-                                                          customer.customerId
-                                                        )}
-                                                      >
-                                                        View Customers
-                                                      </span>
-                                                    </button>
-                                                  </>
-                                                ) : (
-                                                  ""
-                                                )}
-                                              </td>
-                                            </tr>
-                                          );
-                                        }
-                                      )}
-                                  </tbody>
+                                  <tbody id="myTable">{currentPageData}</tbody>
                                 </table>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="col-md-12">
+                            <div className="row">
+                              <div className="col-md-6"></div>
+                              <div className="col-md-6">
+                                <ReactPaginate
+                                  previousLabel={"Previous"}
+                                  nextLabel={"Next"}
+                                  pageCount={pageCount}
+                                  onPageChange={this.handlePageClick.bind(this)}
+                                  containerClassName={"pagination"}
+                                  previousLinkClassName={"pagination__link"}
+                                  nextLinkClassName={"pagination__link"}
+                                  disabledClassName={
+                                    "pagination__link--disabled"
+                                  }
+                                  activeClassName={"pagination__link--active"}
+                                />
                               </div>
                             </div>
                           </div>
