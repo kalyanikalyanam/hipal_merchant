@@ -21,44 +21,28 @@ const Orders = () => {
     let arr = []
     var order = table.data().orders
     let kotItems = []
+    let kotId = Math.floor(Math.random()*1000000000)
     for(var i = 0; i < order.length; i++){
       let it = order[i]
       if(it.status === "NotKot") {
+        it.kotId = kotId
         arr.push(it)
-        let kotItem = {
-          name: it.name,
-          id: it.id,
-          status: 'Cooking',
-          quantity: it.quantity,
-          instructions: it.instructions || ""
-        }
-        kotItems.push(kotItem)
+        kotItems.push(it)
+        it.status = "cooking"
       }
-      it.status = "cooking"
     }
-    console.log(table.data())
-    if(table.data().kotId === undefined || table.data().kotId === ""){
-      const kot = await db.collection("kotItems").add({
-        items: kotItems,
-        businessId,
-        employee: table.data().currentEmployee,
-        tableName: table.data().table_name,
-        tableId: table.id,
-        orderId: table.data().orderId,
-        kotStatus: 'served' 
-      });
-      dbRef.update({
-        kotId: kot.id
-      })
-    }
-    else {
-      const kot = await db.collection('kotItems').doc(table.data().kotId).get()
-      let currentItems = kot.data().items
-      await db.collection('kotItems').doc(table.data().kotId).update({
-        items: currentItems.concat(kotItems)
-      })
-    }
-    
+    const kot = {
+      items: kotItems,
+      businessId,
+      tableName: table.data().table_name,
+      createdOn: Date.now(),
+      employee: table.data().currentEmployee,
+      orderId: table.data().orderId,
+      tableId: table.id,
+      type: "DineIn"
+    } 
+
+    await db.collection('kotItems').doc(kotId.toString()).set(kot)
     dispatch({
       type: "KOTModalShow",
       items: arr 
@@ -78,7 +62,7 @@ const Orders = () => {
         setId(table.data().orderId)
         setCartId(table.data().liveCartId)
         unsubscribe = dbRef.onSnapshot(table => {
-          setOrderList(table.data().orders)
+         setOrderList(table.data().orders)
           setId(table.data().orderId)
           setCartId(table.data().liveCartId)
         })

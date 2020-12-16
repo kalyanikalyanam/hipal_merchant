@@ -59,7 +59,22 @@ const LiveCartPage = () => {
         orderId: id,
       });
     }
-    orders.push(...liveCartItems);
+    liveCartItems.forEach(item => {
+      let flag = false
+      orders.forEach(orderItem => {
+        if(item.id === orderItem.id && item.price === orderItem.price && orderItem.status === 'NotKot'){
+          orderItem.quantity += item.quantity
+          flag = true
+        }
+      })
+      if(!flag){
+        orders.push({
+          ...item,
+          orderPageId : Math.floor(Math.random()* 10000000)
+        })
+      }
+    })
+
     dbRef.update({
       orders,
       liveCart: [],

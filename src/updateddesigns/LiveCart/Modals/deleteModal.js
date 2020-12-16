@@ -15,30 +15,25 @@ const DeleteModal = ({data}) => {
             alert('login To Delete This')
         } else {
             setLoading(true)
+            console.log(data)
             const table = await dbRef.get()
-            const kotRef = db
+            let orders = table.data().orders.filter(item => item.orderPageId !== data.orderPageId)
+            const ref = await db
                 .collection('kotItems')
-                .doc(table.data().kotId)
-            const kotData = await kotRef.get()
-            
-            console.log(kotData.data().items)
-            const newItems = kotData.data().items.filter(it => it.id != data.id)
-            if(newItems.length === 0){
-                await dbRef.update({
-                    kotId: ''
-                })
-            }
-            kotRef.update({
-                items: newItems
+                .doc(data.kotId.toString())
+
+            const kot = await ref.get()
+            let items = kot.data().items.filter(item => item.orderPageId !== data.orderPageId)
+            ref.update({
+                items
             })
             dbRef.update({
-                orders: firebase.firestore.FieldValue.arrayRemove(data)
+                orders: orders 
             })
             setLoading(false)
             dispatch({
                 type: 'DeleteModalHide'
             })
-            
         }
     }
 

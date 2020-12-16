@@ -1,37 +1,61 @@
 import React, { useEffect, useState } from 'react'
+import Timer from 'react-compound-timer'
 import { db } from '../../config'
 
 
 const CardView = ({kots}) => {
     const [kotItems, setKotItems] = useState([])
     useEffect(() => {
-        let start = new Date()
-        start.setHours(0, 0, 0, 0)
-        let end = new Date()
-        end.setHours(23, 59, 59, 999)
         let kotItems = kots
-        kotItems.filter(item => item.createdOn > start && item.createdOn < end)
+        kotItems = kotItems.filter(kot => kot.status !== 'served')
         setKotItems(kotItems)
     }, [kots])
 
+    const handleTimerStop = (kot) => {
+        const newKot = kot
+        newKot.status = 'served'
+        setTimeout(() => {
+            db.collection('kotItems').doc(kot.id).update(newKot)
+        }, [2000])
+    }
     const handleServed = async (kot) => {
         let newKot = kot
         let newItems = newKot.items
         newItems.forEach(item => {
             item.status = "served"
         })
+        const ref =  db
+            .collection('tables')
+            .doc(kot.tableId)
+
         await db
             .collection('kotItems')
             .doc(kot.id)
             .update(newKot)
+
+        const table = await ref.get()
+
+        let orders = table.data().orders
+        orders.forEach(item => {
+            if(item.orderPageId === item.orderPageId){
+                item.status = 'served'
+            }
+        })
+
+        ref.update({
+            orders
+        })
     }
+
     const handleCheckMark = async (it , kot) => {
+        let flag = false
         let newKot = kot
         let newItems = newKot.items
         if(it.status === 'served'){
+            flag = true
             newItems.forEach(item => {
                 if (item.id === it.id) {
-                    item.status = "Cooking"
+                    item.status = "cooking"
                 }
             })
         }
@@ -42,10 +66,28 @@ const CardView = ({kots}) => {
                 }
             })
         }
+
         await db
             .collection('kotItems')
             .doc(kot.id)
             .update(newKot)
+
+        const ref =  db
+            .collection('tables')
+            .doc(kot.tableId)
+
+        const table = await ref.get()
+
+        let orders = table.data().orders
+        orders.forEach(item => {
+            if(item.orderPageId === it.orderPageId){
+                if(flag) item.status = "cooking"
+                else item.status = "served"
+            }
+        })
+        ref.update({
+            orders
+        })
     }
     return (
         <div className="list-kot">
@@ -57,7 +99,10 @@ const CardView = ({kots}) => {
                     ready++
                 }
             })
-            if(ready === kot.items.length) served = true
+            if(ready === kot.items.length){
+                served = true
+
+            } 
             return (
                 <div className="box-kot" key={kot.id}>
                     <div className={served ? 'kot-card selected' : 'kot-card'}>
@@ -75,8 +120,25 @@ const CardView = ({kots}) => {
                         </div>
 
                         <div className="main-head">
-                            <span>14:35 hours</span>
-                            <span>0:44</span>
+                            <span>Table: {kot.tableName}</span>
+                            <span>
+                                <Timer
+                                    initialTime={Date.now() - kot.createdOn}
+                                    onStop={() => handleTimerStop(kot)}
+                                >
+                                    {({ start, stop }) => {
+                                        if(served)stop()
+                                    return (
+                                        <React.Fragment>
+                                            <Timer.Hours />:
+                                            <Timer.Minutes />:
+                                            <Timer.Seconds />
+                                        </React.Fragment>
+                                        )
+                                    }}
+
+                                </Timer>
+                            </span>
                         </div>
 
                         <div className="waiterrow">{kot.orderId || `0931280AASD90`}</div>
