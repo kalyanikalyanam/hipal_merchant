@@ -8,6 +8,8 @@ import FileUploader from "react-firebase-file-uploader";
 import { Form } from "reactstrap";
 import swal from "sweetalert";
 import { Modal } from "react-bootstrap";
+import ReactPaginate from "react-paginate";
+const PER_PAGE = 5;
 const initState = {
   created_on: Date.now(),
 
@@ -68,6 +70,7 @@ const initState = {
 
   addEmployee: false,
   editEmployee: false,
+  currentPage: 0,
 };
 class AllEmployees extends React.Component {
   constructor(props) {
@@ -77,6 +80,7 @@ class AllEmployees extends React.Component {
     this.editEmployee = this.editEmployee.bind(this);
     this.onChange = this.onChange.bind(this);
     this.deleteItem = this.deleteItem.bind(this);
+    this.handlePageClick = this.handlePageClick.bind(this);
     this.validator = new SimpleReactValidator({
       className: "text-danger",
       validators: {
@@ -629,8 +633,58 @@ class AllEmployees extends React.Component {
       deleteitemafterkot: "",
     });
   };
-
+  handlePageClick = ({ selected: selectedPage }) => {
+    this.setState({
+      currentPage: selectedPage,
+    });
+  };
   render() {
+    const offset = this.state.currentPage * PER_PAGE;
+
+    const currentPageData =
+      this.state.employeeList &&
+      this.state.employeeList
+        .slice(offset, offset + PER_PAGE)
+        .map((employee, index) => {
+          return (
+            <tr key={index}>
+              <td>{index + 1}</td>
+              <td>{employee.employee_name}</td>
+              <td>{employee.employee_position}</td>
+              <td>{employee.employee_division}</td>
+              <td>{employee.employee_employement_type}</td>
+              <td>{employee.contact_number}</td>
+              <td>{employee.email_id}</td>
+              <td>
+                <img src={employee.photo} className="user_profile" />
+              </td>
+              {sessionStorage.getItem("role") == "Merchant" ||
+              sessionStorage.getItem("vieweditdeleteemployees") == "Yes" ? (
+                <td>
+                  <img
+                    src="/images/icon/edit_icon_blue.svg"
+                    className="edit_delete"
+                    onClick={() => {
+                      this.editEmployee(employee.employeeId);
+                    }}
+                  />
+
+                  <img
+                    src="/images/icon/delete_cross.svg"
+                    onClick={this.deleteItem.bind(this, employee.employeeId)}
+                    className="edit_delete"
+                  />
+                </td>
+              ) : (
+                ""
+              )}
+            </tr>
+          );
+        });
+
+    const pageCount = Math.ceil(
+      this.state.employeeList && this.state.employeeList.length / PER_PAGE
+    );
     return (
       <>
         <div className="page-wrapper">
@@ -767,62 +821,22 @@ class AllEmployees extends React.Component {
                               )}
                             </tr>
                           </thead>
-                          <tbody id="myTable">
-                            {this.state.employeeList &&
-                              this.state.employeeList.map((employee, index) => {
-                                return (
-                                  <tr key={index}>
-                                    <td>{index + 1}</td>
-                                    <td>{employee.employee_name}</td>
-                                    <td>{employee.employee_position}</td>
-                                    <td>{employee.employee_division}</td>
-                                    <td>
-                                      {employee.employee_employement_type}
-                                    </td>
-                                    <td>{employee.contact_number}</td>
-                                    <td>{employee.email_id}</td>
-                                    <td>
-                                      <img
-                                        src={employee.photo}
-                                        className="user_profile"
-                                      />
-                                    </td>
-                                    {sessionStorage.getItem("role") ==
-                                      "Merchant" ||
-                                    sessionStorage.getItem(
-                                      "vieweditdeleteemployees"
-                                    ) == "Yes" ? (
-                                      <td>
-                                        <img
-                                          src="/images/icon/edit_icon_blue.svg"
-                                          className="edit_delete"
-                                          onClick={() => {
-                                            this.editEmployee(
-                                              employee.employeeId
-                                            );
-                                          }}
-                                        />
-
-                                        <img
-                                          src="/images/icon/delete_cross.svg"
-                                          onClick={this.deleteItem.bind(
-                                            this,
-                                            employee.employeeId
-                                          )}
-                                          className="edit_delete"
-                                        />
-                                      </td>
-                                    ) : (
-                                      ""
-                                    )}
-                                  </tr>
-                                );
-                              })}
-                          </tbody>
+                          <tbody id="myTable">{currentPageData}</tbody>
                         </table>
                       </div>
                     </div>
                   </div>
+                  <ReactPaginate
+                    previousLabel={"Previous"}
+                    nextLabel={"Next"}
+                    pageCount={pageCount}
+                    onPageChange={this.handlePageClick.bind(this)}
+                    containerClassName={"pagination"}
+                    previousLinkClassName={"pagination__link"}
+                    nextLinkClassName={"pagination__link"}
+                    disabledClassName={"pagination__link--disabled"}
+                    activeClassName={"pagination__link--active"}
+                  />
                 </div>
               </div>
             </div>

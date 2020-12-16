@@ -4,9 +4,8 @@ import { db } from "../config";
 import { Modal } from "react-bootstrap";
 import Sidebar from "./sidebar";
 import Header from "./header";
-import ReactPaginate from "react-paginate";
 import FilterModal from "./filterModal";
-const PER_PAGE = 10;
+
 const PaymentDetails = {
   Card: 0,
   Cash: 0,
@@ -29,7 +28,7 @@ const Bills = () => {
   const [show, setShow] = useState(false);
   const [grandTotal, setGrandTotal] = useState(0);
   const [search, setSearch] = useState("");
-  const [currentPage, setCurrentPage] = useState(0);
+
   useEffect(() => {
     const getBills = async () => {
       setLoading(true);
@@ -197,69 +196,6 @@ const Bills = () => {
     });
     setBills(bills);
   };
-  function handlePageClick({ selected: selectedPage }) {
-    setCurrentPage(selectedPage);
-  }
-
-  const offset = currentPage * PER_PAGE;
-
-  const currentPageData = bills
-    .slice(offset, offset + PER_PAGE)
-    .map((bill, index) => {
-      let subTotal = 0,
-        discount = 0,
-        tax = 0;
-      bill.bill &&
-        bill.bill.forEach((item) => {
-          subTotal += parseFloat(item.price * item.quantity);
-          discount += parseFloat(
-            ((item.price * item.discount) / 100) * item.quantity
-          );
-          tax += parseFloat(((item.price * item.tax) / 100) * item.quantity);
-        });
-
-      let total = subTotal + tax - discount;
-      let temp = total;
-      // total += (total * 2.5) / 100;
-      // total += (temp * 2.5) / 100;
-      total += (total * bill.gst) / 100;
-      total += (temp * bill.cgst) / 100;
-      const [date, time] = dateString(new Date(bill.date));
-      return (
-        <tr key={index}>
-          <td>{index + 1}</td>
-          <td>{bill.billId}</td>
-          <td>{bill.orderId}</td>
-
-          <td>{bill.employee}</td>
-          <td>Rs {Math.round(total)}</td>
-          <td className="bill_date">{date}</td>
-          <td>{time}</td>
-
-          {sessionStorage.getItem("role") == "Merchant" ||
-          sessionStorage.getItem("viewbill") == "Yes" ? (
-            <td>
-              <Link to={`/ViewBill/${bill.id}`}>
-                <span className="btn view_order_btn_td">View Bill</span>
-              </Link>
-              {/* <img
-                                                    src="/images/icon/delete_cross.svg"
-                                                    onClick={this.deleteItem.bind(
-                                                      this,
-                                                      bill.billid
-                                                    )}
-                                                    className="edit_delete"
-                                                  /> */}
-            </td>
-          ) : (
-            ""
-          )}
-        </tr>
-      );
-    });
-
-  const pageCount = Math.ceil(bills.length / PER_PAGE);
-
   return (
     <>
       <div className="page-wrapper">
@@ -396,22 +332,97 @@ const Bills = () => {
                                     )}
                                   </tr>
                                 </thead>
-                                <tbody>{currentPageData}</tbody>
+                                <tbody>
+                                  {bills &&
+                                    bills
+                                      // .filter((bill) => {
+                                      //   console.log(bill.date);
+                                      //   console.log(
+                                      //     Date.parse("December 2, 2020")
+                                      //   );
+                                      //   if (!bill.date) return false;
+                                      //   return (
+                                      //     bill.date <=
+                                      //       Date.parse("December 2, 2020") &&
+                                      //     bill.date >=
+                                      //       Date.parse("December 1, 2020")
+                                      //   );
+                                      // })
+                                      .map((bill, index) => {
+                                        let subTotal = 0,
+                                          discount = 0,
+                                          tax = 0;
+                                        bill.bill &&
+                                          bill.bill.forEach((item) => {
+                                            subTotal += parseFloat(
+                                              item.price * item.quantity
+                                            );
+                                            discount += parseFloat(
+                                              ((item.price * item.discount) /
+                                                100) *
+                                                item.quantity
+                                            );
+                                            tax += parseFloat(
+                                              ((item.price * item.tax) / 100) *
+                                                item.quantity
+                                            );
+                                          });
+
+                                        let total = subTotal + tax - discount;
+                                        let temp = total;
+                                        // total += (total * 2.5) / 100;
+                                        // total += (temp * 2.5) / 100;
+                                        total += (total * bill.gst) / 100;
+                                        total += (temp * bill.cgst) / 100;
+                                        const [date, time] = dateString(
+                                          new Date(bill.date)
+                                        );
+                                        return (
+                                          <tr key={index}>
+                                            <td>{index + 1}</td>
+                                            <td>{bill.billId}</td>
+                                            <td>{bill.orderId}</td>
+
+                                            <td>{bill.employee}</td>
+                                            <td>Rs {Math.round(total)}</td>
+                                            <td className="bill_date">
+                                              {date}
+                                            </td>
+                                            <td>{time}</td>
+
+                                            {sessionStorage.getItem("role") ==
+                                              "Merchant" ||
+                                            sessionStorage.getItem(
+                                              "viewbill"
+                                            ) == "Yes" ? (
+                                              <td>
+                                                <Link
+                                                  to={`/ViewBill/${bill.id}`}
+                                                >
+                                                  <span className="btn view_order_btn_td">
+                                                    View Bill
+                                                  </span>
+                                                </Link>
+                                                {/* <img
+                                                    src="/images/icon/delete_cross.svg"
+                                                    onClick={this.deleteItem.bind(
+                                                      this,
+                                                      bill.billid
+                                                    )}
+                                                    className="edit_delete"
+                                                  /> */}
+                                              </td>
+                                            ) : (
+                                              ""
+                                            )}
+                                          </tr>
+                                        );
+                                      })}
+                                </tbody>
                               </table>
                             </div>
                           </div>
                         </div>
-                        <ReactPaginate
-                          previousLabel={"Previous"}
-                          nextLabel={"Next"}
-                          pageCount={pageCount}
-                          onPageChange={handlePageClick}
-                          containerClassName={"pagination"}
-                          previousLinkClassName={"pagination__link"}
-                          nextLinkClassName={"pagination__link"}
-                          disabledClassName={"pagination__link--disabled"}
-                          activeClassName={"pagination__link--active"}
-                        />
                       </div>
                     </div>
                   </div>

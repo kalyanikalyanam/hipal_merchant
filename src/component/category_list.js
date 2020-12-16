@@ -1,12 +1,12 @@
 import React from "react";
-import firebase from "../config";
+import firebase, { db } from "../config";
 import Sidebar from "./sidebar";
 import Header from "./header";
 import SimpleReactValidator from "simple-react-validator";
 import swal from "sweetalert";
-import FileUploader from "react-firebase-file-uploader";
-import { Form } from "reactstrap";
 import { Link } from "react-router-dom";
+import ReactPaginate from "react-paginate";
+const PER_PAGE = 10;
 class CategoryList extends React.Component {
   constructor(props) {
     super(props);
@@ -14,7 +14,6 @@ class CategoryList extends React.Component {
       item_category: "",
       item_sub_category: "",
       item_categoty_list: "",
-
       employer_sevice_message: "",
       validError: false,
       mobile_message: "",
@@ -24,8 +23,10 @@ class CategoryList extends React.Component {
       avatarURL: "",
       filenames: [],
       uploadProgress: 0,
+      currentPage: 0,
     };
     this.deleteItem = this.deleteItem.bind(this);
+    this.handlePageClick = this.handlePageClick.bind(this);
     this.validator = new SimpleReactValidator({
       className: "text-danger",
       validators: {
@@ -34,8 +35,6 @@ class CategoryList extends React.Component {
             "The :attribute must be at least 6 and at most 30 with 1 numeric,1 special charac" +
             "ter and 1 alphabet.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(
                 val,
@@ -55,8 +54,6 @@ class CategoryList extends React.Component {
         whitespace: {
           message: "The :attribute not allowed first whitespace   characters.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /[^\s\\]/) &&
               params.indexOf(val) === -1
@@ -66,8 +63,6 @@ class CategoryList extends React.Component {
         specialChar: {
           message: "The :attribute not allowed special   characters.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^[ A-Za-z0-9_@./#&+-]*$/i) &&
               params.indexOf(val) === -1
@@ -77,8 +72,6 @@ class CategoryList extends React.Component {
         specialCharText: {
           message: "The :attribute may only contain letters, dot and spaces.",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^[ A-Za-z_@./#&+-]*$/i) &&
               params.indexOf(val) === -1
@@ -89,8 +82,6 @@ class CategoryList extends React.Component {
         zip: {
           message: "Invalid Pin Code",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(val, /^(\d{5}(\d{4})?)?$/i) &&
               params.indexOf(val) === -1
@@ -100,8 +91,6 @@ class CategoryList extends React.Component {
         website: {
           message: "The Url should be example.com ",
           rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
             return (
               validator.helpers.testRegex(
                 val,
@@ -127,11 +116,9 @@ class CategoryList extends React.Component {
 
   componentDidMount() {
     this.setState({ loading: true });
-
     var sessionId = sessionStorage.getItem("RoleId");
     if (sessionId) {
       console.log(sessionId);
-
       firebase
         .firestore()
         .collection("/merchant_users")
@@ -165,55 +152,90 @@ class CategoryList extends React.Component {
     this.itemCategoryList();
     this.itemMenuList();
   }
-
-  itemCategoryList = () => {
-    var sessionId = sessionStorage.getItem("RoleId");
+  itemCategoryList = async () => {
     var businessId = sessionStorage.getItem("businessId");
-    this.setState({ loading: true });
-    firebase
-      .firestore()
-      .collection("categories2")
-      // .where("sessionId", "==", sessionId)
-      .where("businessId", "==", businessId)
 
+    this.setState({ loading: true });
+    db.collection("categories2")
+      .where("businessId", "==", businessId)
       .get()
       .then((querySnapshot) => {
         var data = [];
         querySnapshot.forEach((childSnapShot) => {
-          const GSTData = {
-            categoryId: childSnapShot.id,
-            name: childSnapShot.data().name,
-            isParent: childSnapShot.data().isParent,
-            photo: childSnapShot.data().photo,
-            color: childSnapShot.data().color,
-            created_on: childSnapShot.data().created_on,
-            parentId: childSnapShot.data().parentId,
-            sessionId: childSnapShot.data().sessionId,
-            username: childSnapShot.data().username,
-            itemId: childSnapShot.data().itemId,
-          };
-
-          data.push(GSTData);
+          data.push({ ...childSnapShot.data(), categoryId: childSnapShot.id });
         });
         this.setState({
           CategoryList: data,
           countPage: data.length,
           loading: false,
         });
-        // console.log(CategoryList);
-        this.setState({
-          currentCategory: [
-            {
-              id: "",
-              name: "categories2",
-            },
-          ],
-        });
       })
       .catch((err) => {
-        // console.log(err);
+        console.log(err);
+      });
+    this.unsubscribe = db
+      .collection("categories2")
+      .where("businessId", "==", businessId)
+      .onSnapshot((querySnapshot) => {
+        var data = [];
+        querySnapshot.forEach((childSnapShot) => {
+          data.push({ ...childSnapShot.data(), categoryId: childSnapShot.id });
+        });
+        this.setState({
+          CategoryList: data,
+          countPage: data.length,
+          loading: false,
+        });
       });
   };
+  // itemCategoryList = () => {
+  //   var sessionId = sessionStorage.getItem("RoleId");
+  //   var businessId = sessionStorage.getItem("businessId");
+  //   this.setState({ loading: true });
+  //   firebase
+  //     .firestore()
+  //     .collection("categories2")
+  //     // .where("sessionId", "==", sessionId)
+  //     .where("businessId", "==", businessId)
+
+  //     .get()
+  //     .then((querySnapshot) => {
+  //       var data = [];
+  //       querySnapshot.forEach((childSnapShot) => {
+  //         const GSTData = {
+  //           categoryId: childSnapShot.id,
+  //           name: childSnapShot.data().name,
+  //           isParent: childSnapShot.data().isParent,
+  //           photo: childSnapShot.data().photo,
+  //           color: childSnapShot.data().color,
+  //           created_on: childSnapShot.data().created_on,
+  //           parentId: childSnapShot.data().parentId,
+  //           sessionId: childSnapShot.data().sessionId,
+  //           username: childSnapShot.data().username,
+  //           itemId: childSnapShot.data().itemId,
+  //         };
+
+  //         data.push(GSTData);
+  //       });
+  //       this.setState({
+  //         CategoryList: data,
+  //         countPage: data.length,
+  //         loading: false,
+  //       });
+  //       // console.log(CategoryList);
+  //       this.setState({
+  //         currentCategory: [
+  //           {
+  //             id: "",
+  //             name: "categories2",
+  //           },
+  //         ],
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       // console.log(err);
+  //     });
+  // };
   itemMenuList = async () => {
     var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
@@ -222,7 +244,6 @@ class CategoryList extends React.Component {
     firebase
       .firestore()
       .collection("menuitems")
-      // .where("sessionId", "==", sessionId)
       .where("businessId", "==", businessId)
       .get()
       .then((querySnapshot) => {
@@ -284,11 +305,8 @@ class CategoryList extends React.Component {
           countPage: data.length,
           loading: false,
         });
-        //// console.log(itemTypeList);
       })
-      .catch((err) => {
-        // console.log(err);
-      });
+      .catch((err) => {});
   };
 
   deleteItem = (id) => {
@@ -310,8 +328,58 @@ class CategoryList extends React.Component {
       }
     });
   };
-
+  handlePageClick = ({ selected: selectedPage }) => {
+    this.setState({
+      currentPage: selectedPage,
+    });
+  };
   render() {
+    const offset = this.state.currentPage * PER_PAGE;
+
+    const currentPageData =
+      this.state.CategoryList &&
+      this.state.CategoryList.slice(offset, offset + PER_PAGE).map(
+        (category, index) => {
+          return (
+            <tr key={index}>
+              <td>{index + 1}</td>
+              <td>{category.name}</td>
+
+              <td>{category.itemId.length}</td>
+              <td>{category.color}</td>
+
+              <td>
+                {" "}
+                <Link to={`/ViewCategoryMenu/${category.categoryId}`}>
+                  click
+                </Link>
+              </td>
+              {sessionStorage.getItem("role") == "Merchant" ||
+              sessionStorage.getItem("categories") == "Yes" ? (
+                <td>
+                  <Link to={`/EditCategoryMenu/${category.categoryId}`}>
+                    <img
+                      src="images/icon/edit_icon_blue.svg"
+                      className="edit_delete"
+                    />{" "}
+                  </Link>
+                  <img
+                    src="images/icon/delete_cross.svg"
+                    onClick={this.deleteItem.bind(this, category.categoryId)}
+                    className="edit_delete"
+                  />
+                </td>
+              ) : (
+                ""
+              )}
+            </tr>
+          );
+        }
+      );
+
+    const pageCount = Math.ceil(
+      this.state.CategoryList && this.state.CategoryList.length / PER_PAGE
+    );
     return (
       <div className="page-wrapper">
         <Sidebar />
@@ -426,11 +494,10 @@ class CategoryList extends React.Component {
                           <tr>
                             <td>S.no</td>
                             <td>Category Name</td>
-                            {/* <td>No.Of Parent Catagory</td>
-                            <td>No.Sub Catagory</td> */}
+
                             <td>Number of Items Number</td>
                             <td>Color</td>
-                            {/* <td>Add Item</td> */}
+
                             <td>View Category</td>
                             {sessionStorage.getItem("role") == "Merchant" ||
                             sessionStorage.getItem("categories") == "Yes" ? (
@@ -440,59 +507,22 @@ class CategoryList extends React.Component {
                             )}
                           </tr>
                         </thead>
-                        <tbody>
-                          {this.state.CategoryList &&
-                            this.state.CategoryList.map((category, index) => {
-                              return (
-                                <tr key={index}>
-                                  <td>{index + 1}</td>
-                                  <td>{category.name}</td>
-                                  {/* <td>2</td>
-                                  <td>0</td> */}
-                                  <td>{category.itemId.length}</td>
-                                  <td>{category.color}</td>
-                                  {/* <td>ADD</td> */}
-                                  <td>
-                                    {" "}
-                                    <Link
-                                      to={`/ViewCategoryMenu/${category.categoryId}`}
-                                    >
-                                      click
-                                    </Link>
-                                  </td>
-                                  {sessionStorage.getItem("role") ==
-                                    "Merchant" ||
-                                  sessionStorage.getItem("categories") ==
-                                    "Yes" ? (
-                                    <td>
-                                      <Link
-                                        to={`/EditCategoryMenu/${category.categoryId}`}
-                                      >
-                                        <img
-                                          src="images/icon/edit_icon_blue.svg"
-                                          className="edit_delete"
-                                        />{" "}
-                                      </Link>
-                                      <img
-                                        src="images/icon/delete_cross.svg"
-                                        onClick={this.deleteItem.bind(
-                                          this,
-                                          category.categoryId
-                                        )}
-                                        className="edit_delete"
-                                      />
-                                    </td>
-                                  ) : (
-                                    ""
-                                  )}
-                                </tr>
-                              );
-                            })}
-                        </tbody>
+                        <tbody>{currentPageData}</tbody>
                       </table>
                     </div>
                   </div>
                 </div>
+                <ReactPaginate
+                  previousLabel={"Previous"}
+                  nextLabel={"Next"}
+                  pageCount={pageCount}
+                  onPageChange={this.handlePageClick.bind(this)}
+                  containerClassName={"pagination"}
+                  previousLinkClassName={"pagination__link"}
+                  nextLinkClassName={"pagination__link"}
+                  disabledClassName={"pagination__link--disabled"}
+                  activeClassName={"pagination__link--active"}
+                />
               </div>
             </div>
           </div>

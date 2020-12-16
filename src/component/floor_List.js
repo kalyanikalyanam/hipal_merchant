@@ -7,6 +7,8 @@ import SimpleReactValidator from "simple-react-validator";
 import { Form } from "reactstrap";
 import swal from "sweetalert";
 import { Modal } from "react-bootstrap";
+import ReactPaginate from "react-paginate";
+const PER_PAGE = 10;
 class FloorList extends React.Component {
   constructor(props) {
     super(props);
@@ -17,6 +19,7 @@ class FloorList extends React.Component {
       show: false,
       viewFloor: false,
       EditFloor: false,
+      currentPage: 0,
     };
 
     this.onChange = this.onChange.bind(this);
@@ -26,7 +29,7 @@ class FloorList extends React.Component {
     this.editFloor = this.editFloor.bind(this);
 
     this.viewFloor = this.viewFloor.bind(this);
-
+    this.handlePageClick = this.handlePageClick.bind(this);
     this.validator = new SimpleReactValidator({
       className: "text-danger",
       validators: {
@@ -361,8 +364,62 @@ class FloorList extends React.Component {
       [event.target.name]: event.target.value,
     });
   };
-
+  handlePageClick = ({ selected: selectedPage }) => {
+    this.setState({
+      currentPage: selectedPage,
+    });
+  };
   render() {
+    const offset = this.state.currentPage * PER_PAGE;
+
+    const currentPageData =
+      this.state.floorsList &&
+      this.state.floorsList
+        .slice(offset, offset + PER_PAGE)
+        .map((floor, index) => {
+          return (
+            <tr key={index}>
+              <td>{index + 1}</td>
+
+              <td>{floor.floor_name}</td>
+              <td>{floor.floor_capacity}</td>
+              <td>
+                {sessionStorage.getItem("role") == "Merchant" ||
+                sessionStorage.getItem("editdeletefloors") == "Yes" ? (
+                  <>
+                    <img
+                      src="images/icon/edit_icon_blue.svg"
+                      className="edit_delete"
+                      onClick={() => {
+                        this.editFloor(floor.floorId);
+                      }}
+                    />
+
+                    <img
+                      src="images/icon/delete_cross.svg"
+                      onClick={this.deleteItem.bind(this, floor.floorId)}
+                      className="edit_delete"
+                    />
+                  </>
+                ) : (
+                  ""
+                )}
+                <button type="button">
+                  <span
+                    className="btn view_order_btn_td"
+                    onClick={this.viewFloor.bind(this, floor.floorId)}
+                  >
+                    View Floor
+                  </span>
+                </button>
+              </td>
+            </tr>
+          );
+        });
+
+    const pageCount = Math.ceil(
+      this.state.floorsList && this.state.floorsList.length / PER_PAGE
+    );
     return (
       <>
         <div className="page-wrapper">
@@ -514,62 +571,23 @@ class FloorList extends React.Component {
                               <td>Actions</td>
                             </tr>
                           </thead>
-                          <tbody id="myTable">
-                            {this.state.floorsList &&
-                              this.state.floorsList.map((floor, index) => {
-                                return (
-                                  <tr key={index}>
-                                    <td>{index + 1}</td>
-
-                                    <td>{floor.floor_name}</td>
-                                    <td>{floor.floor_capacity}</td>
-                                    <td>
-                                      {sessionStorage.getItem("role") ==
-                                        "Merchant" ||
-                                      sessionStorage.getItem(
-                                        "editdeletefloors"
-                                      ) == "Yes" ? (
-                                        <>
-                                          <img
-                                            src="images/icon/edit_icon_blue.svg"
-                                            className="edit_delete"
-                                            onClick={() => {
-                                              this.editFloor(floor.floorId);
-                                            }}
-                                          />
-
-                                          <img
-                                            src="images/icon/delete_cross.svg"
-                                            onClick={this.deleteItem.bind(
-                                              this,
-                                              floor.floorId
-                                            )}
-                                            className="edit_delete"
-                                          />
-                                        </>
-                                      ) : (
-                                        ""
-                                      )}
-                                      <button type="button">
-                                        <span
-                                          className="btn view_order_btn_td"
-                                          onClick={this.viewFloor.bind(
-                                            this,
-                                            floor.floorId
-                                          )}
-                                        >
-                                          View Floor
-                                        </span>
-                                      </button>
-                                    </td>
-                                  </tr>
-                                );
-                              })}
-                          </tbody>
+                          <tbody id="myTable">{currentPageData}</tbody>
                         </table>
                       </div>
                     </div>
                   </div>
+
+                  <ReactPaginate
+                    previousLabel={"Previous"}
+                    nextLabel={"Next"}
+                    pageCount={pageCount}
+                    onPageChange={this.handlePageClick.bind(this)}
+                    containerClassName={"pagination"}
+                    previousLinkClassName={"pagination__link"}
+                    nextLinkClassName={"pagination__link"}
+                    disabledClassName={"pagination__link--disabled"}
+                    activeClassName={"pagination__link--active"}
+                  />
                 </div>
               </div>
             </div>

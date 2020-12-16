@@ -2,125 +2,11 @@ import React from "react";
 import firebase, { db } from "../config";
 import Sidebar from "./sidebar";
 import Header from "./header";
-import SimpleReactValidator from "simple-react-validator";
-import FileUploader from "react-firebase-file-uploader";
-import { Form } from "reactstrap";
-import { Link } from "react-router-dom";
 import swal from "sweetalert";
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      employer_sevice_message: "",
-      email_message: "",
-      mobile_message: "",
-
-      customer_name: "",
-      customer_email: "",
-      customer_phonenumber: "",
-      customer_notes: "",
-    };
-
-    this.onChange = this.onChange.bind(this);
-
-    this.deleteItem = this.deleteItem.bind(this);
-    this.validator = new SimpleReactValidator({
-      className: "text-danger",
-      validators: {
-        passwordvalid: {
-          message:
-            "The :attribute must be at least 6 and at most 30 with 1 numeric,1 special charac" +
-            "ter and 1 alphabet.",
-          rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
-            return (
-              validator.helpers.testRegex(
-                val,
-                /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z]).{6,30}$/i
-              ) && params.indexOf(val) === -1
-            );
-          },
-        },
-        passwordMismatch: {
-          message: "confirm password must match with password field.",
-          rule: function (val, params, validator) {
-            return document.getElementById("password_input").value === val
-              ? true
-              : false;
-          },
-        },
-        whitespace: {
-          message: "The :attribute not allowed first whitespace   characters.",
-          rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
-            return (
-              validator.helpers.testRegex(val, /[^\s\\]/) &&
-              params.indexOf(val) === -1
-            );
-          },
-        },
-        specialChar: {
-          message: "The :attribute not allowed special   characters.",
-          rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
-            return (
-              validator.helpers.testRegex(val, /^[ A-Za-z0-9_@./#&+-]*$/i) &&
-              params.indexOf(val) === -1
-            );
-          },
-        },
-        specialCharText: {
-          message: "The :attribute may only contain letters, dot and spaces.",
-          rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
-            return (
-              validator.helpers.testRegex(val, /^[ A-Za-z_@./#&+-]*$/i) &&
-              params.indexOf(val) === -1
-            );
-          },
-        },
-
-        zip: {
-          message: "Invalid Pin Code",
-          rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
-            return (
-              validator.helpers.testRegex(val, /^(\d{5}(\d{4})?)?$/i) &&
-              params.indexOf(val) === -1
-            );
-          },
-        },
-        website: {
-          message: "The Url should be example.com ",
-          rule: function (val, params, validator) {
-            // return validator.helpers.testRegex(val,/^[a-zA-Z0-9]{6,30}$/i) &&
-            // params.indexOf(val) === -1
-            return (
-              validator.helpers.testRegex(
-                val,
-                /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g
-              ) && params.indexOf(val) === -1
-            );
-          },
-        },
-        Fax: {
-          message: "Invalid fax number ",
-          rule: function (val, params, validator) {
-            return (
-              validator.helpers.testRegex(
-                val,
-                /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/i
-              ) && params.indexOf(val) === -1
-            );
-          },
-        },
-      },
-    });
+    this.state = {};
   }
 
   componentDidMount() {
@@ -155,149 +41,8 @@ class Dashboard extends React.Component {
           sessionStorage.setItem("BusinessLogo", business.business_logo);
         });
     }
-
-    this.customersList();
   }
 
-  customersList = () => {
-    this.setState({ loading: true });
-    var ref = firebase.database().ref("customers/");
-
-    ref.on("value", (snapshot) => {
-      const data = [];
-      snapshot.forEach((childSnapShot) => {
-        const GSTData = {
-          customerId: childSnapShot.key.toString(),
-
-          customer_name: childSnapShot.val().customer_name,
-          customer_email: childSnapShot.val().customer_email,
-          customer_phonenumber: childSnapShot.val().customer_phonenumber,
-          customer_notes: childSnapShot.val().customer_notes,
-        };
-
-        data.push(GSTData);
-      });
-
-      this.setState({
-        customersList: data,
-        countPage: data.length,
-        loading: false,
-      });
-      console.log(this.state.customersList);
-    });
-  };
-
-  handleSubmit = (event) => {
-    event.preventDefault();
-    if (this.validator.allValid()) {
-      var sessionId = sessionStorage.getItem("RoleId");
-      var username = sessionStorage.getItem("username");
-
-      let dbCon = firebase.database().ref("/customers");
-
-      dbCon.push({
-        customer_name: this.state.customer_name,
-        customer_email: this.state.customer_email,
-        customer_phonenumber: this.state.customer_phonenumber,
-
-        customer_notes: this.state.customer_notes,
-
-        sessionId: sessionId,
-        username: username,
-      });
-      this.setState({
-        employer_sevice_message: "Data Added",
-        customer_name: "",
-        customer_email: "",
-        customer_phonenumber: "",
-        customer_notes: "",
-      });
-      window.location.href = "/AllCustomers";
-
-      // this
-      //     .props
-      //     .history
-      //     .push("/AllCustomers");
-    } else {
-      this.validator.showMessages();
-      this.forceUpdate();
-    }
-  };
-
-  customeremailchange = (e) => {
-    this.setState({
-      customer_email: e.target.value,
-    });
-    if (this.state.validError != true) {
-      var ref = firebase
-        .database()
-        .ref("customers/")
-        .orderByChild("customer_email")
-        .equalTo(e.target.value);
-      ref.on("value", (snapshot) => {
-        var user_exist = snapshot.numChildren();
-        console.log(user_exist);
-
-        if (user_exist > 0 && this.state.validError != true) {
-          this.setState({
-            email_message: "customer email id  already exist",
-            validError: false,
-          });
-        } else {
-          this.setState({ email_message: "", validError: true });
-        }
-      });
-    }
-  };
-
-  customerphonenumberchange = (e) => {
-    this.setState({
-      customer_phonenumber: e.target.value,
-    });
-    if (this.state.validError != true) {
-      var ref = firebase
-        .database()
-        .ref("customers/")
-        .orderByChild("customer_phonenumber")
-        .equalTo(e.target.value);
-      ref.on("value", (snapshot) => {
-        var user_exist = snapshot.numChildren();
-        console.log(user_exist);
-
-        if (user_exist > 0 && this.state.validError != true) {
-          this.setState({
-            mobile_message: "customer Phone Number already exist",
-            validError: false,
-          });
-        } else {
-          this.setState({ mobile_message: "", validError: true });
-        }
-      });
-    }
-  };
-
-  deleteItem = (id) => {
-    swal({
-      title: "Are you sure?",
-      text: "Do your really want to remove?",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete) {
-        console.log(id);
-        var playersRef = firebase.database().ref(`/customers/${id}`);
-        playersRef.remove();
-      } else {
-      }
-    });
-  };
-
-  onChange = (event) => {
-    this.setState({
-      [event.target.name]: event.target.value,
-    });
-  };
   render() {
     return (
       <>
@@ -308,39 +53,12 @@ class Dashboard extends React.Component {
             <div className="main-content">
               <div className="section__content">
                 <div className="container-fluid">
-                  {/* <div className="row">
-<div className="col-md-12 p-0">
-<div className="search_profile">
-<div className="row">
-<div className="col-md-8">
-<div className="search_top">
-<a href="#" className="search_icon"><i className="fas fa-search"></i></a>
-<input className="search_input" type="text" name="" placeholder="Search..."/>
-</div>
-</div>
-
-<div className="col-md-4 ">
-<div className="profile_user">
-<span className="usericon">
-<img src="/images/icon/profile.jpg"/>
-</span>
-<span className="profile_data">
-<p className="name">{sessionStorage.getItem("username")}</p>
-<p>{sessionStorage.getItem("email")}</p>
-</span>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div> */}
-
-                  <div class="row">
-                    <div class="col-md-12 p-0">
-                      <div class="search_profile">
-                        <div class="row">
-                          <div class="col-md-6">
-                            <div class="company_name_box">
+                  <div className="row">
+                    <div className="col-md-12 p-0">
+                      <div className="search_profile">
+                        <div className="row">
+                          <div className="col-md-6">
+                            <div className="company_name_box">
                               <div className="company_iocn">
                                 <img
                                   src={sessionStorage.getItem("BusinessLogo")}
@@ -350,40 +68,40 @@ class Dashboard extends React.Component {
                                   }}
                                 />
                               </div>
-                              <div class="company_details">
-                                <p class="name">
+                              <div className="company_details">
+                                <p className="name">
                                   {sessionStorage.getItem("BusinessName")}{" "}
                                 </p>
-                                <p class="open">
+                                <p className="open">
                                   OPEN{" "}
                                   <i
-                                    class="fa fa-circle"
+                                    className="fa fa-circle"
                                     aria-hidden="true"
                                   ></i>
                                 </p>
                               </div>
                             </div>
                           </div>
-                          <div class="col-md-3">
-                            <div class="search_top">
-                              <a href="#" class="search_icon">
-                                <i class="fas fa-search"></i>
+                          <div className="col-md-3">
+                            <div className="search_top">
+                              <a href="#" className="search_icon">
+                                <i className="fas fa-search"></i>
                               </a>
                               <input
-                                class="search_input"
+                                className="search_input"
                                 type="text"
                                 name=""
                                 placeholder="Search..."
                               />
                             </div>
                           </div>
-                          <div class="col-md-3 ">
-                            <div class="profile_user">
-                              <span class="usericon">
+                          <div className="col-md-3 ">
+                            <div className="profile_user">
+                              <span className="usericon">
                                 <img src="/images/icon/profile.jpg" />
                               </span>
-                              <span class="profile_data">
-                                <p class="name">
+                              <span className="profile_data">
+                                <p className="name">
                                   {sessionStorage.getItem("username")}
                                 </p>
                                 <p>{sessionStorage.getItem("email")}</p>

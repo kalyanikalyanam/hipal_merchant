@@ -11,6 +11,8 @@ import Doc from "./DocService";
 import PdfContainer from "./PdfContainer";
 import swal from "sweetalert";
 import { Modal } from "react-bootstrap";
+import ReactPaginate from "react-paginate";
+const PER_PAGE = 10;
 class TablesList extends React.Component {
   constructor(props) {
     super(props);
@@ -30,6 +32,7 @@ class TablesList extends React.Component {
       show: false,
       viewTable: false,
       editTable: false,
+      currentPage: 0,
     };
 
     this.onChange = this.onChange.bind(this);
@@ -38,7 +41,7 @@ class TablesList extends React.Component {
     this.onEditSubmit = this.onEditSubmit.bind(this);
     this.editTable = this.editTable.bind(this);
     this.viewTable = this.viewTable.bind(this);
-
+    this.handlePageClick = this.handlePageClick.bind(this);
     this.validator = new SimpleReactValidator({
       className: "text-danger",
       validators: {
@@ -453,6 +456,12 @@ class TablesList extends React.Component {
     });
   };
 
+  handlePageClick = ({ selected: selectedPage }) => {
+    this.setState({
+      currentPage: selectedPage,
+    });
+  };
+
   createPdf = (html) => Doc.createPdf(html);
 
   render() {
@@ -460,7 +469,64 @@ class TablesList extends React.Component {
       "https://chart.googleapis.com/chart?cht=qr&chl=" +
       this.state.table_name +
       "&chs=160x160&chld=L|0";
+    const offset = this.state.currentPage * PER_PAGE;
 
+    const currentPageData =
+      this.state.tableList &&
+      this.state.tableList
+        .slice(offset, offset + PER_PAGE)
+        .map((table, index) => {
+          return (
+            <tr key={index}>
+              <td>{index + 1}</td>
+
+              <td>{table.table_name}</td>
+              <td>{table.table_capacity}</td>
+              <td>{table.table_floor}</td>
+              <td>
+                <img src={table.table_icon} width="15%" />
+              </td>
+              <td>
+                {sessionStorage.getItem("role") == "Merchant" ||
+                sessionStorage.getItem("editdeletetables") == "Yes" ? (
+                  <>
+                    <img
+                      src="images/icon/edit_icon_blue.svg"
+                      className="edit_delete"
+                      onClick={() => {
+                        this.editTable(table.tableId);
+                      }}
+                    />
+
+                    <img
+                      src="images/icon/delete_cross.svg"
+                      onClick={this.deleteItem.bind(this, table.tableId)}
+                      className="edit_delete"
+                    />
+                  </>
+                ) : (
+                  ""
+                )}
+                <button
+                  type="button"
+                  data-toggle="modal"
+                  data-target="#view_table"
+                >
+                  <span
+                    className="btn view_order_btn_td"
+                    onClick={this.viewTable.bind(this, table.tableId)}
+                  >
+                    View Table
+                  </span>
+                </button>
+              </td>
+            </tr>
+          );
+        });
+
+    const pageCount = Math.ceil(
+      this.state.tableList && this.state.tableList.length / PER_PAGE
+    );
     return (
       <>
         <div className="page-wrapper">
@@ -588,70 +654,22 @@ class TablesList extends React.Component {
                               <td>Actions</td>
                             </tr>
                           </thead>
-                          <tbody id="myTable">
-                            {this.state.tableList &&
-                              this.state.tableList.map((table, index) => {
-                                return (
-                                  <tr key={index}>
-                                    <td>{index + 1}</td>
-
-                                    <td>{table.table_name}</td>
-                                    <td>{table.table_capacity}</td>
-                                    <td>{table.table_floor}</td>
-                                    <td>
-                                      <img src={table.table_icon} width="15%" />
-                                    </td>
-                                    <td>
-                                      {sessionStorage.getItem("role") ==
-                                        "Merchant" ||
-                                      sessionStorage.getItem(
-                                        "editdeletetables"
-                                      ) == "Yes" ? (
-                                        <>
-                                          <img
-                                            src="images/icon/edit_icon_blue.svg"
-                                            className="edit_delete"
-                                            onClick={() => {
-                                              this.editTable(table.tableId);
-                                            }}
-                                          />
-
-                                          <img
-                                            src="images/icon/delete_cross.svg"
-                                            onClick={this.deleteItem.bind(
-                                              this,
-                                              table.tableId
-                                            )}
-                                            className="edit_delete"
-                                          />
-                                        </>
-                                      ) : (
-                                        ""
-                                      )}
-                                      <button
-                                        type="button"
-                                        data-toggle="modal"
-                                        data-target="#view_table"
-                                      >
-                                        <span
-                                          className="btn view_order_btn_td"
-                                          onClick={this.viewTable.bind(
-                                            this,
-                                            table.tableId
-                                          )}
-                                        >
-                                          View Table
-                                        </span>
-                                      </button>
-                                    </td>
-                                  </tr>
-                                );
-                              })}
-                          </tbody>
+                          <tbody id="myTable">{currentPageData}</tbody>
                         </table>
                       </div>
                     </div>
                   </div>
+                  <ReactPaginate
+                    previousLabel={"Previous"}
+                    nextLabel={"Next"}
+                    pageCount={pageCount}
+                    onPageChange={this.handlePageClick.bind(this)}
+                    containerClassName={"pagination"}
+                    previousLinkClassName={"pagination__link"}
+                    nextLinkClassName={"pagination__link"}
+                    disabledClassName={"pagination__link--disabled"}
+                    activeClassName={"pagination__link--active"}
+                  />
                 </div>
               </div>
             </div>
