@@ -1,4 +1,3 @@
-import { updateLocale } from 'moment'
 import React, { useEffect, useState } from 'react'
 import { db } from '../../config'
 
@@ -14,6 +13,18 @@ const CardView = ({kots}) => {
         kotItems.filter(item => item.createdOn > start && item.createdOn < end)
         setKotItems(kotItems)
     }, [kots])
+
+    const handleServed = async (kot) => {
+        let newKot = kot
+        let newItems = newKot.items
+        newItems.forEach(item => {
+            item.status = "served"
+        })
+        await db
+            .collection('kotItems')
+            .doc(kot.id)
+            .update(newKot)
+    }
     const handleCheckMark = async (it , kot) => {
         let newKot = kot
         let newItems = newKot.items
@@ -39,15 +50,17 @@ const CardView = ({kots}) => {
     return (
         <div className="list-kot">
         {kotItems && kotItems.map(kot => {
+            let served = false
             let ready = 0
             kot.items.forEach(item => {
                 if (item.status === 'served') {
                     ready++
                 }
             })
+            if(ready === kot.items.length) served = true
             return (
                 <div className="box-kot" key={kot.id}>
-                    <div className="kot-card">
+                    <div className={served ? 'kot-card selected' : 'kot-card'}>
                         <div className="headrow">
                             <h1>
                                 {kot.type || "DineIn"}{" "}
@@ -94,9 +107,15 @@ const CardView = ({kots}) => {
                             )
                         })}
                         <div className="iteamsrow text-center">
-                            <button type="button" className="btn served_kot">
+                            <button 
+                                type="button" 
+                                onClick = {() => {
+                                    handleServed(kot)
+                                }} 
+                                className="btn served_kot"
+                            >
                                 Served
-                          </button>
+                            </button>
                         </div>
                     </div>
                 </div>
