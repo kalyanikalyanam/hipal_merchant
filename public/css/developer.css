@@ -14,7 +14,7 @@
   cursor: pointer;
 }
 
-.pagination {
+/* .pagination {
   display: flex;
   justify-content: space-between;
   list-style: none;
@@ -23,6 +23,20 @@
 
 .pagination a {
   padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #fd8d36;
+  color: #fd8d36;
+} */
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  list-style: none;
+  cursor: pointer;
+}
+
+.pagination a {
+  padding: 8px 16px;
   border-radius: 5px;
   border: 1px solid #fd8d36;
   color: #fd8d36;

@@ -41,15 +41,17 @@ class BusinessSidebar extends React.Component {
         <div className="menu-sidebar__content js-scrollbar1">
           <nav className="navbar-sidebar">
             <ul className="list-unstyled navbar__list">
-              <li>
+              <li
+                className={this.isPathActive("/BusinessList") ? "active" : null}
+              >
                 <Link to="/BusinessList" className="settings">
                   Business List
                 </Link>
               </li>
               <li>
-                <a href="#" className="settings" onClick={this.logout}>
+                <Link to="#" className="settings" onClick={this.logout}>
                   Logout
-                </a>
+                </Link>
               </li>
             </ul>
           </nav>
