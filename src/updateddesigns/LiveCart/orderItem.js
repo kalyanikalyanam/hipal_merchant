@@ -3,38 +3,20 @@ import { useForm } from "react-hook-form";
 import firebase, { db } from "../../config";
 import { dispatchContext } from "./contexts";
 
-const Select = ({ item, deleteItem, dbRef }) => {
-  const { handleSubmit, register } = useForm();
-
-  const handleStatusChange = async (data) => {
-    let table = await dbRef.get();
-    var order = table.data().orders;
-    for (var i = 0; i < order.length; i++) {
-      let it = order[i];
-      if (it.id === item.id && it.price === item.price) {
-        it.status = data.status;
-        break;
-      }
-    }
-    await dbRef.update({
-      orders: order,
-    });
-  };
+const Select = ({ item, deleteItem}) => {
   return (
     <>
       <div>
         <select
           name="status"
-          onChange={handleSubmit(handleStatusChange)}
-          ref={register}
+          value={item.status}
         >
           <option value="cooking">Cooking</option>
-          <option value="delivery">Delivery</option>
-          <option value="delivered">Delivered</option>
+          <option value="served">Served</option>
         </select>
       </div>
-      {sessionStorage.getItem("role") == "Merchant" ||
-      sessionStorage.getItem("deleteitemafterkot") == "Yes" ? (
+      {(sessionStorage.getItem("role") == "Merchant" ||
+      sessionStorage.getItem("deleteitemafterkot") == "Yes") && item.status !== 'served' ? (
         <div
           className="edit"
           data-toggle="modal"
@@ -65,22 +47,31 @@ const OrderItem = ({ item, index, dbRef }) => {
     let table = await dbRef.get();
     const businessId = sessionStorage.getItem("businessId");
     var order = table.data().orders;
-    let KotItems = [];
+    var kotItems = []    
+    let kotId = Math.floor(Math.random()*1000000000)
     for (var i = 0; i < order.length; i++) {
       let it = order[i];
-      if (it.id === item.id && it.price === item.price) {
+      if (it.orderPageId === item.orderPageId) {
         it.status = "cooking";
-        const kotItems = {
-          name: it.name,
-          id: item.id,
-          status: "Cooking",
-          quantity: it.quantity,
-          instructions: it.instructions || ""
-        } 
-        KotItems.push(kotItems)
+        it.kotId = kotId
+        kotItems.push(it)
         break;
       }
     }
+    const kot = {
+      items: kotItems,
+      businessId,
+      tableName: table.data().table_name,
+      createdOn: Date.now(),
+      employee: table.data().currentEmployee,
+      tableId: table.id,
+      orderId: table.data().orderId,
+      type: "DineIn",
+      status: 'notServed'
+    } 
+
+    await db.collection('kotItems').doc(kotId.toString()).set(kot)
+
     dispatch({
       type: "KOTModalShow",
       items: [item],
@@ -90,30 +81,7 @@ const OrderItem = ({ item, index, dbRef }) => {
       orders: order,
     });
 
-    console.log(KotItems)
     
-    if(table.data().kotId === undefined || table.data().kotId === ""){
-      console.log("here")
-      const kot = await db.collection("kotItems").add({
-        items: KotItems,
-        businessId,
-        employee: table.data().currentEmployee,
-        tableName: table.data().table_name,
-        tableId: table.id
-      });
-
-      dbRef.update({
-        kotId: kot.id
-      })
-    }
-    else {
-      console.log("here2")
-      const kot = await db.collection('kotItems').doc(table.data().kotId).get()
-      let currentItems = kot.data().items
-      await db.collection('kotItems').doc(table.data().kotId).update({
-        items: currentItems.concat(KotItems)
-      })
-    }
   }
   const deleteItem = (item) => {
     if (item.status !== "NotKot") {
