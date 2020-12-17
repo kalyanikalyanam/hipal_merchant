@@ -63,7 +63,9 @@ const MenuItem = ({ item }) => {
         portions: item.portions,
         portions_details: item.portion_details || [],
         quantity: 1,
+        station: item.station_name,
         status: "NotKot",
+        instructions: item.instructions || ""
       };
       dbRef.update({
         liveCart: firebase.firestore.FieldValue.arrayUnion(newItem),

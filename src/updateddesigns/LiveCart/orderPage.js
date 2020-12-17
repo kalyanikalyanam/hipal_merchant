@@ -40,7 +40,8 @@ const Orders = () => {
       orderId: table.data().orderId,
       tableId: table.id,
       type: "DineIn",
-    };
+      status: 'notServed',
+    } 
 
     await db.collection("kotItems").doc(kotId.toString()).set(kot);
     dispatch({
@@ -66,10 +67,11 @@ const Orders = () => {
           setCartId(table.data().liveCartId);
         });
       }
-    };
-    getOrders();
-    return unsubscribe;
-  }, [dbRef]);
+    }
+    getOrders()
+    return unsubscribe
+  }, [dbRef])
+
   useEffect(() => {
     if (orderList) {
       let total = 0,

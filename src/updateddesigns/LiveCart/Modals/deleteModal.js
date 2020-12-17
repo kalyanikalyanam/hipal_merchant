@@ -24,9 +24,14 @@ const DeleteModal = ({data}) => {
 
             const kot = await ref.get()
             let items = kot.data().items.filter(item => item.orderPageId !== data.orderPageId)
-            ref.update({
-                items
-            })
+            if(items.length > 0){
+                ref.update({
+                    items
+                })
+            }
+            else {
+                await ref.delete()
+            }
             dbRef.update({
                 orders: orders 
             })
