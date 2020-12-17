@@ -8,12 +8,14 @@ const EditModal = ({ item, dbRef, edit }) => {
   const dispatch = useContext(dispatchContext);
   const [authenticated, setAuthenticated] = useState(false);
   useEffect(() => {
+    console.log(item)
     reset({
       quantity: item.quantity,
       status: item.status,
       portion: item.portion,
-      item_discount_reason: item.item_discount_reason || "",
-      discount: `${item.discount}`,
+      item_discount_reason: item.discountReasons || "",
+      item_discount: `${item.discount}`,
+      item_instructions: item.instructions || ""
     });
   }, []);
   const onClose = () => {
@@ -42,7 +44,7 @@ const EditModal = ({ item, dbRef, edit }) => {
           newItem.quantity = data.quantity;
           newItem.discount = data.item_discount;
           newItem.discountReasons = data.item_discount_reason || "";
-          newItem.instructions = data.instructions || "";
+          newItem.instructions = data.item_instructions || "";
           if (data.portion) {
             var temp;
             newItem.portions_details.forEach((portion) => {
@@ -68,7 +70,7 @@ const EditModal = ({ item, dbRef, edit }) => {
           newItem.quantity = data.quantity;
           newItem.discount = data.item_discount;
           newItem.discountReasons = data.item_discount_reason || "";
-          newItem.instructions = data.instructions || "";
+          newItem.instructions = data.item_instructions || "";
           if (data.portion) {
             var temp;
             newItem.portions_details.forEach((portion) => {

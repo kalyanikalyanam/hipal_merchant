@@ -65,6 +65,7 @@ const MenuItem = ({ item }) => {
         quantity: 1,
         station: item.station_name,
         status: "NotKot",
+        instructions: item.instructions || ""
       };
       dbRef.update({
         liveCart: firebase.firestore.FieldValue.arrayUnion(newItem),

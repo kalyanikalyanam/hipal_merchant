@@ -99,19 +99,13 @@ const HistoryView = () => {
                 <div className="databox td2">{kot.type}</div>
                 <div className="databox td3">Table {kot.tableName}</div>
                 <div className="databox td4">
-                  <span>
-                    {ready === kot.items.length ? (
-                      <span className="served-color">Served</span>
-                    ) : (
-                      "Cooking"
-                    )}
-                  </span>
+                  <span>{kot.status}</span>
                 </div>
                 <div className="databox td5 big">
                   {" "}
                   {date} | {time}
                 </div>
-                <div className="databox td6 small">Station 1</div>
+                <div className="databox td6 small">Station</div>
                 <div className="databox td7">{kot.orderId}</div>
                 <div className="databox td8">
                   <span

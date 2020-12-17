@@ -17,13 +17,8 @@ const CardView = ({kots, station}) => {
         if(station !== "" && kotItems.length > 0){
             setSelectedStation(station)
         }
-    }, [station])
+    }, [station, kotItems])
 
-    useEffect(() => {
-        if(station != "" && kotItems.length !== 0){
-            setSelectedStation(station)
-        }
-    }, [station])
 
 
     const handleTimerStop = (kot) => {
@@ -73,90 +68,96 @@ const CardView = ({kots, station}) => {
                     item.status = "cooking"
                 }
             })
+    } else {
+      newItems.forEach((item) => {
+        if (item.id === it.id) {
+          item.status = "served";
         }
-        else {
-            newItems.forEach(item => {
-                if (item.id === it.id) {
-                    item.status = "served"
-                }
-            })
-        }
-
-        await db
-            .collection('kotItems')
-            .doc(kot.id)
-            .update(newKot)
-
-        const ref =  db
-            .collection('tables')
-            .doc(kot.tableId)
-
-        const table = await ref.get()
-
-        let orders = table.data().orders
-        orders.forEach(item => {
-            if(item.orderPageId === it.orderPageId){
-                if(flag) item.status = "cooking"
-                else item.status = "served"
-            }
-        })
-        ref.update({
-            orders
-        })
+      });
     }
-    return (
-        <div className="list-kot">
-        {kotItems && kotItems.map(kot => {
-            let served = false
-            let ready = 0
-            kot.items.forEach(item => {
-                if (item.status === 'served') {
-                    ready++
-                }
+
+    await db.collection("kotItems").doc(kot.id).update(newKot);
+
+    const ref = db.collection("tables").doc(kot.tableId);
+
+    const table = await ref.get();
+
+    let orders = table.data().orders;
+    orders.forEach((item) => {
+      if (item.orderPageId === it.orderPageId) {
+        if (flag) item.status = "cooking";
+        else item.status = "served";
+      }
+    });
+    ref.update({
+      orders,
+    });
+  };
+  return (
+    <div className="list-kot">
+      {kotItems &&
+        kotItems
+        .filter(kot => {
+          let items = kot.items.filter(item => {
+            let flag = false
+            item.station.forEach(sta => {
+              if(sta === selectedStation) flag = true
             })
-            if(ready === kot.items.length){
-                served = true
+            return flag
+          })
+          return items.length > 0
+        })
+        .map((kot) => {
+          let served = false;
+          let ready = 0;
+          kot.items.forEach((item) => {
+            if (item.status === "served") {
+              ready++;
+            }
+          });
+          if (ready === kot.items.length) {
+            served = true;
+          }
+          return (
+            <div className="box-kot" key={kot.id}>
+              <div className={served ? "kot-card selected" : "kot-card"}>
+                <div className="headrow">
+                  <h1>
+                    {kot.type || "DineIn"}{" "}
+                    <i
+                      className="fa fa-circle dinein_color"
+                      aria-hidden="true"
+                    ></i>
+                    <span>
+                      <i className="fas fa-ellipsis-v"></i>
+                    </span>
+                  </h1>
+                </div>
 
-            } 
-            return (
-                <div className="box-kot" key={kot.id}>
-                    <div className={served ? 'kot-card selected' : 'kot-card'}>
-                        <div className="headrow">
-                            <h1>
-                                {kot.type || "DineIn"}{" "}
-                                <i
-                                    className="fa fa-circle dinein_color"
-                                    aria-hidden="true"
-                                ></i>
-                                <span>
-                                    <i className="fas fa-ellipsis-v"></i>
-                                </span>
-                            </h1>
-                        </div>
+                <div className="main-head">
+                  <span>Table: {kot.tableName}</span>
+                  <span>
+                    <Timer
+                      initialTime={Date.now() - kot.createdOn}
+                      onStop={() => handleTimerStop(kot)}
+                    >
+                      {({ start, stop }) => {
+                        if (served) stop();
+                        return (
+                          <React.Fragment>
+                            <Timer.Hours />:
+                            <Timer.Minutes />:
+                            <Timer.Seconds />
+                          </React.Fragment>
+                        );
+                      }}
+                    </Timer>
+                  </span>
+                </div>
 
-                        <div className="main-head">
-                            <span>Table: {kot.tableName}</span>
-                            <span>
-                                <Timer
-                                    initialTime={Date.now() - kot.createdOn}
-                                    onStop={() => handleTimerStop(kot)}
-                                >
-                                    {({ start, stop }) => {
-                                        if(served)stop()
-                                    return (
-                                        <React.Fragment>
-                                            <Timer.Hours />:
-                                            <Timer.Minutes />:
-                                            <Timer.Seconds />
-                                        </React.Fragment>
-                                        )
-                                    }}
-
-                                </Timer>
-                            </span>
-                        </div>
-
-                        <div className="waiterrow">{kot.orderId || `0931280AASD90`}</div>
+                <div className="waiterrow">
+                  {kot.orderId || `0931280AASD90`}
+                </div>
 
                         <div className="iteamsrow-gray">
                             <span>Items</span>
@@ -166,7 +167,8 @@ const CardView = ({kots, station}) => {
                             .filter(item => {
                                 let flag = false
                                 item.station.forEach(sta => {
-                                    if (sta == selectedStation) {
+                                    if(selectedStation === "") flag = true
+                                    else if (sta == selectedStation) {
                                         flag = true
                                     }
                                 })
@@ -205,11 +207,11 @@ const CardView = ({kots, station}) => {
                             </button>
                         </div>
                     </div>
-                </div>
-            ) 
+              </div>
+          );
         })}
-        </div>
-    )
-}
+    </div>
+  );
+};
 
-export default CardView
+export default CardView;
