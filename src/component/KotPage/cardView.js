@@ -3,13 +3,28 @@ import Timer from 'react-compound-timer'
 import { db } from '../../config'
 
 
-const CardView = ({kots}) => {
+const CardView = ({kots, station}) => {
     const [kotItems, setKotItems] = useState([])
+    const [selectedStation, setSelectedStation] = useState('')
+
     useEffect(() => {
         let kotItems = kots
         kotItems = kotItems.filter(kot => kot.status !== 'served')
         setKotItems(kotItems)
     }, [kots])
+
+    useEffect(() => {
+        if(station !== "" && kotItems.length > 0){
+            setSelectedStation(station)
+        }
+    }, [station])
+
+    useEffect(() => {
+        if(station != "" && kotItems.length !== 0){
+            setSelectedStation(station)
+        }
+    }, [station])
+
 
     const handleTimerStop = (kot) => {
         const newKot = kot
@@ -147,27 +162,37 @@ const CardView = ({kots}) => {
                             <span>Items</span>
                             <span>{ready}/{kot.items.length}</span>
                         </div>
-                        {kot.items.map(item => {
-                            return (
-                                <div 
-                                    className={item.status === "served" ? "iteamsrow checkedrow" : "iteamsrow"} 
-                                    key={item.id}
-                                >
-                                    <div className="w-15">
-                                        <i className={item.status === "served" ? 'far fa-check-square' : 'far fa-square'} 
-                                            onClick={() => handleCheckMark(item, kot)} 
-                                        />
+                        {kot.items
+                            .filter(item => {
+                                let flag = false
+                                item.station.forEach(sta => {
+                                    if (sta == selectedStation) {
+                                        flag = true
+                                    }
+                                })
+                                return flag
+                            })
+                            .map(item => {
+                                return (
+                                    <div
+                                        className={item.status === "served" ? "iteamsrow checkedrow" : "iteamsrow"}
+                                        key={item.id}
+                                    >
+                                        <div className="w-15">
+                                            <i className={item.status === "served" ? 'far fa-check-square' : 'far fa-square'}
+                                                onClick={() => handleCheckMark(item, kot)}
+                                            />
+                                        </div>
+                                        <div className="w-70">
+                                            <h5>{item.name}</h5>
+                                        </div>
+                                        <div className="w-15 text-right">
+                                            x<span className="bigfont">{item.quantity}</span>
+                                            {item.instructions && item.instructions !== '' ? <img src="/images/icon/info-icon-new.png" /> : null}
+                                        </div>
                                     </div>
-                                    <div className="w-70">
-                                        <h5>{item.name}</h5>
-                                    </div>
-                                    <div className="w-15 text-right">
-                                        x<span className="bigfont">{item.quantity}</span>
-                                        {item.instructions && item.instructions !== '' ? <img src="/images/icon/info-icon-new.png" /> : null}
-                                    </div>
-                                </div>
-                            )
-                        })}
+                                )
+                            })}
                         <div className="iteamsrow text-center">
                             <button 
                                 type="button" 

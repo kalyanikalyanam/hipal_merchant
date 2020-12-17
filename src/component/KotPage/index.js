@@ -14,6 +14,7 @@ const stations = [
     { name: "Station 4"},
 ]
 const KOTPage = () => {
+    const [stations, setStations] = useState(null)
     const [station, setStation] = useState(1)
     const [view, setView] = useState(1)
     const [kots, setKots] = useState()
@@ -38,12 +39,25 @@ const KOTPage = () => {
                 setKots(kots)
             })
         }
+        const getStations = async () => {
+            const querySnapshot = await db
+                .collection("settings_station")
+                .where("businessId", "==", businessId)
+                .limit(4)
+                .get()
+            let stations = []
+            querySnapshot.forEach(doc => stations.push({id: doc.id, ...doc.data()})) 
+            console.log(stations)
+            setStations(stations)
+            setStation(stations[0].station_name)
+        }
         getItems()
+        getStations()
         return unsubscribe
     } ,[])
 
-    const viewPage = view === 1 ? <CardView kots={kots ? kots: [] }/> : 
-                     view === 2 ? <ListView kots={kots ? kots : []} /> : <HistoryView />
+    const viewPage = view === 1 ? <CardView kots={kots ? kots: [] } station={station || ""}/> : 
+                     view === 2 ? <ListView kots={kots ? kots : []} station={station || ""}/> : <HistoryView />
 
     return (
             <div className="page-wrapper">
@@ -106,17 +120,17 @@ const KOTPage = () => {
                                         <div className="orders_menu my_menu_link">
                                             <ul>
                                                 {stations && stations.map((sta, index) => (
-                                                    <li >
+                                                    <li key={index}>
                                                         <a 
                                                             style={{cursor:'pointer'}} 
                                                             className={
-                                                                station === index + 1 ?
+                                                                station === sta.station_name ?
                                                                     'activemenu' :
                                                                     null
                                                             }
-                                                            onClick={() => setStation(index + 1)}
+                                                            onClick={() => setStation(sta.station_name)}
                                                         >
-                                                            {sta.name}
+                                                            {sta.station_name}
                                                         </a>
                                                     </li>
                                                 ))}

@@ -39,7 +39,8 @@ const Orders = () => {
       employee: table.data().currentEmployee,
       orderId: table.data().orderId,
       tableId: table.id,
-      type: "DineIn"
+      type: "DineIn",
+      status: 'notServed',
     } 
 
     await db.collection('kotItems').doc(kotId.toString()).set(kot)
