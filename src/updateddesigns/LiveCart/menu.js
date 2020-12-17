@@ -7,7 +7,6 @@ import { tableContext } from "./contexts";
 
 const Menu = () => {
   const dbRef = useContext(tableContext)
-  const unsubscribe = useRef()
   const [itemList, setItemsList] = useState([]);
   const [categoryList, setCategoryList] = useState([]);
   const [permanentCategoryList, setPermanentCategoryList] = useState([]);
@@ -209,6 +208,7 @@ const Menu = () => {
   }, []);
 
   useEffect(() => {
+    var unsubscribe
     const getData = async () => {
       if (dbRef) {
         const table = await dbRef.get()
@@ -217,11 +217,11 @@ const Menu = () => {
     }
     getData()
     if(dbRef){
-      unsubscribe.current = dbRef.onSnapshot(table => {
+      unsubscribe = dbRef.onSnapshot(table => {
         setTable(table.data().liveCart.length)
       })
     }
-    return unsubscribe.current   
+    return unsubscribe
   }, [dbRef])
   return (
     <div className="row m-t-20">

@@ -14,6 +14,7 @@ const KOTPage = () => {
     const [kots, setKots] = useState()
     useEffect(() => {
         const businessId = sessionStorage.getItem("businessId")
+        console.log("here2")
         let unsubscribe
         const getItems = async () => {
             const ref = db
