@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Timer from "react-compound-timer";
 import { db } from "../../config";
-
+import { Modal } from "react-bootstrap";
 const CardView = ({ kots }) => {
   const [kotItems, setKotItems] = useState([]);
+  const [modalShow, setModalShow] = useState(false);
+  const [modalKot, setModalKot] = useState({});
   useEffect(() => {
     let kotItems = kots;
     kotItems = kotItems.filter((kot) => kot.status !== "served");
@@ -77,115 +79,163 @@ const CardView = ({ kots }) => {
       orders,
     });
   };
+
+  const openModal = (kot) => {
+    setModalKot(kot);
+    setModalShow(true);
+  };
+
+  const closeModal = () => {
+    setModalKot({});
+    setModalShow(false);
+  };
+
   return (
-    <div className="list-kot">
-      {kotItems &&
-        kotItems.map((kot) => {
-          let served = false;
-          let ready = 0;
-          kot.items.forEach((item) => {
-            if (item.status === "served") {
-              ready++;
+    <>
+      <div className="list-kot">
+        {kotItems &&
+          kotItems.map((kot) => {
+            let served = false;
+            let ready = 0;
+            kot.items.forEach((item) => {
+              if (item.status === "served") {
+                ready++;
+              }
+            });
+            if (ready === kot.items.length) {
+              served = true;
             }
-          });
-          if (ready === kot.items.length) {
-            served = true;
-          }
-          return (
-            <div className="box-kot" key={kot.id}>
-              <div className={served ? "kot-card selected" : "kot-card"}>
-                <div className="headrow">
-                  <h1>
-                    {kot.type || "DineIn"}{" "}
-                    <i
-                      className="fa fa-circle dinein_color"
-                      aria-hidden="true"
-                    ></i>
+            return (
+              <div className="box-kot" key={kot.id}>
+                <div className={served ? "kot-card selected" : "kot-card"}>
+                  <div className="headrow">
+                    <h1>
+                      {kot.type || "DineIn"}{" "}
+                      <i
+                        className="fa fa-circle dinein_color"
+                        aria-hidden="true"
+                      ></i>
+                      <span>
+                        <i className="fas fa-ellipsis-v"></i>
+                      </span>
+                    </h1>
+                  </div>
+
+                  <div className="main-head">
+                    <span>Table: {kot.tableName}</span>
                     <span>
-                      <i className="fas fa-ellipsis-v"></i>
+                      <Timer
+                        initialTime={Date.now() - kot.createdOn}
+                        onStop={() => handleTimerStop(kot)}
+                      >
+                        {({ start, stop }) => {
+                          if (served) stop();
+                          return (
+                            <React.Fragment>
+                              <Timer.Hours />:
+                              <Timer.Minutes />:
+                              <Timer.Seconds />
+                            </React.Fragment>
+                          );
+                        }}
+                      </Timer>
                     </span>
-                  </h1>
-                </div>
+                  </div>
 
-                <div className="main-head">
-                  <span>Table: {kot.tableName}</span>
-                  <span>
-                    <Timer
-                      initialTime={Date.now() - kot.createdOn}
-                      onStop={() => handleTimerStop(kot)}
-                    >
-                      {({ start, stop }) => {
-                        if (served) stop();
-                        return (
-                          <React.Fragment>
-                            <Timer.Hours />:
-                            <Timer.Minutes />:
-                            <Timer.Seconds />
-                          </React.Fragment>
-                        );
+                  <div className="waiterrow">
+                    {kot.orderId || `0931280AASD90`}
+                  </div>
+
+                  <div className="iteamsrow-gray">
+                    <span>Items</span>
+                    <span>
+                      {ready}/{kot.items.length}
+                    </span>
+                  </div>
+                  {kot.items.map((item) => {
+                    return (
+                      <div
+                        className={
+                          item.status === "served"
+                            ? "iteamsrow checkedrow"
+                            : "iteamsrow"
+                        }
+                        key={item.id}
+                      >
+                        <div className="w-15">
+                          <i
+                            className={
+                              item.status === "served"
+                                ? "far fa-check-square"
+                                : "far fa-square"
+                            }
+                            onClick={() => handleCheckMark(item, kot)}
+                          />
+                        </div>
+                        <div className="w-70">
+                          <h5>{item.name}</h5>
+                        </div>
+                        <div className="w-15 text-right">
+                          x<span className="bigfont">{item.quantity}</span>
+                          {item.instructions && item.instructions !== "" ? (
+                            <img
+                              src="/images/icon/info-icon-new.png"
+                              onClick={() => {
+                                openModal(kot);
+                              }}
+                            />
+                          ) : null}
+                        </div>
+                      </div>
+                    );
+                  })}
+                  <div className="iteamsrow text-center">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        handleServed(kot);
                       }}
-                    </Timer>
-                  </span>
-                </div>
-
-                <div className="waiterrow">
-                  {kot.orderId || `0931280AASD90`}
-                </div>
-
-                <div className="iteamsrow-gray">
-                  <span>Items</span>
-                  <span>
-                    {ready}/{kot.items.length}
-                  </span>
-                </div>
-                {kot.items.map((item) => {
-                  return (
-                    <div
-                      className={
-                        item.status === "served"
-                          ? "iteamsrow checkedrow"
-                          : "iteamsrow"
-                      }
-                      key={item.id}
+                      className="btn served_kot"
                     >
-                      <div className="w-15">
-                        <i
-                          className={
-                            item.status === "served"
-                              ? "far fa-check-square"
-                              : "far fa-square"
-                          }
-                          onClick={() => handleCheckMark(item, kot)}
-                        />
-                      </div>
-                      <div className="w-70">
-                        <h5>{item.name}</h5>
-                      </div>
-                      <div className="w-15 text-right">
-                        x<span className="bigfont">{item.quantity}</span>
-                        {item.instructions && item.instructions !== "" ? (
-                          <img src="/images/icon/info-icon-new.png" />
-                        ) : null}
-                      </div>
-                    </div>
-                  );
-                })}
-                <div className="iteamsrow text-center">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      handleServed(kot);
-                    }}
-                    className="btn served_kot"
-                  >
-                    Served
-                  </button>
+                      Served
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+      </div>
+
+      <Modal show={modalShow} onHide={closeModal}>
+        <div className="modal-content">
+          <div className="modal-body">
+            <div className="col-md-12">
+              <div className="row">
+                <div className="col-md-6 ">
+                  <span>Instructions</span>
+                </div>
+                <div className="col-md-6 text-right">
+                  <button onClick={closeModal}>Close</button>
                 </div>
               </div>
             </div>
-          );
-        })}
-    </div>
+
+            <div className="col-12 w-100-row bdr-top1">
+              <div className="col-md-12">
+                <div className="row">
+                  <div className="col-md-6 ">
+                    <h5>Item</h5>
+                  </div>
+                  <div className="col-md-6 text-right">
+                    <h5>Instructions</h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
+    </>
   );
 };
 
