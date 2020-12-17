@@ -23,13 +23,15 @@ const ListView = ({ kots, station}) => {
 
   useEffect(() => {
     let kotItems = kots;
+    console.log("here")
     kotItems = kotItems.filter(kot => kot.status !== 'served')
     setKotItems(kotItems);
-    setSelectedStation(station)
+    if(station !== "")setSelectedStation(station)
   }, [kots]);
 
   useEffect(() => {
     if (station !== "" && kotItems.length > 0) {
+      console.log("here1")
       setSelectedStation(station)
     }
   }, [kots, station])
@@ -72,12 +74,12 @@ const ListView = ({ kots, station}) => {
   }
 
   const onAllServed = (kot) => {
-    const newKot = kot
+    let newKot = kot
     newKot.status = 'served'
-    setModalShow(false)
-    setModalKot({})
     setTimeout(() => {
       db.collection('kotItems').doc(kot.id).update(newKot)
+      setModalShow(false)
+      setModalKot({})
     }, [2000])
   }
 
@@ -196,8 +198,8 @@ const ListView = ({ kots, station}) => {
               })
               .map((item) => {
                 return (
-                  <>
-                    <div className="col-12 w-100-row bdr-top1">
+                  <div key={item.orderPageId}>
+                    <div className="col-12 w-100-row bdr-top1" >
                       <div className="w-10 no">
                         <span className="check-icon">
                           <i 
@@ -226,7 +228,7 @@ const ListView = ({ kots, station}) => {
                         </div>
                       </div>
                     )}
-                  </>
+                  </div>
                 );
               })}
             <div className="col-12 w-100-row bdr-top1">
