@@ -21,7 +21,7 @@ const Orders = () => {
     let arr = [];
     var order = table.data().orders;
     let kotItems = [];
-    let kotId = Math.floor(Math.random() * 1000000000);
+    let kotId = Math.floor(Math.random() * 100000000000);
     for (var i = 0; i < order.length; i++) {
       let it = order[i];
       if (it.status === "NotKot") {

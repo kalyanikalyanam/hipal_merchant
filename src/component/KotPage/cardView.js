@@ -58,40 +58,40 @@ const CardView = ({kots, station}) => {
     }
 
     const handleCheckMark = async (it , kot) => {
-        let flag = false
-        let newKot = kot
-        let newItems = newKot.items
-        if(it.status === 'served'){
-            flag = true
-            newItems.forEach(item => {
-                if (item.id === it.id) {
-                    item.status = "cooking"
-                }
-            })
-    } else {
-      newItems.forEach((item) => {
-        if (item.id === it.id) {
-          item.status = "served";
+      let flag = false
+      let newKot = kot
+      let newItems = newKot.items
+      if (it.status === 'served') {
+        flag = true
+        newItems.forEach(item => {
+          if (item.id === it.id) {
+            item.status = "cooking"
+          }
+        })
+      } else {
+        newItems.forEach((item) => {
+          if (item.id === it.id) {
+            item.status = "served";
+          }
+        });
+      }
+
+      await db.collection("kotItems").doc(kot.id).update(newKot);
+
+      const ref = db.collection("tables").doc(kot.tableId);
+
+      const table = await ref.get();
+
+      let orders = table.data().orders;
+      orders.forEach((item) => {
+        if (item.orderPageId === it.orderPageId) {
+          if (flag) item.status = "cooking";
+          else item.status = "served";
         }
       });
-    }
-
-    await db.collection("kotItems").doc(kot.id).update(newKot);
-
-    const ref = db.collection("tables").doc(kot.tableId);
-
-    const table = await ref.get();
-
-    let orders = table.data().orders;
-    orders.forEach((item) => {
-      if (item.orderPageId === it.orderPageId) {
-        if (flag) item.status = "cooking";
-        else item.status = "served";
-      }
-    });
-    ref.update({
-      orders,
-    });
+      ref.update({
+        orders,
+      });
   };
   return (
     <div className="list-kot">
