@@ -72,6 +72,7 @@ const Orders = () => {
     getOrders()
     return unsubscribe
   }, [dbRef])
+
   useEffect(() => {
     if(orderList){
       let total = 0, discount = 0, tax = 0, kot = 0
