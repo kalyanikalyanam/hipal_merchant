@@ -1,46 +1,38 @@
 import React, { useEffect, useState } from "react";
-import { db } from "../../config";
+import {Modal} from 'react-bootstrap'
 
-const HistoryView = () => {
-  const [kotItems, setKotItems] = useState();
+const HistoryView = ({kots, station}) => {
+  const [kotItems, setKotItems] = useState([]);
+  const [selectedStation, setSelectedStation] = useState("")
+  const [modalShow, setModalShow] = useState(false)
+  const [modalItem, setModalItem] = useState(null)
+
   useEffect(() => {
-    let unsubscribe;
-    const businessId = sessionStorage.getItem("businessId");
-    console.log(businessId);
-    const getData = async () => {
-      let start = new Date();
-      start.setHours(0, 0, 0, 0);
-      let end = new Date();
-      end.setHours(23, 59, 59, 999);
-      const ref = db
-        .collection("kotItems")
-        .where("businessId", "==", businessId);
-      try {
-        const querySnapshot = await ref.get();
-        let kotItems = [];
-        querySnapshot.forEach((doc) => {
-          kotItems.push({ id: doc.id, ...doc.data() });
-        });
-        kotItems.filter(
-          (item) => item.createdOn > start && item.createdOn < end
-        );
-        setKotItems(kotItems);
-      } catch (e) {
-        console.log(e);
-      }
-      unsubscribe = ref.onSnapshot((querySnapshot) => {
-        let kotItems = [];
-        querySnapshot.forEach((doc) => {
-          kotItems.push({ id: doc.id, ...doc.data() });
-        });
-        kotItems.filter(
-          (item) => item.createdOn > start && item.createdOn < end
-        );
-        setKotItems(kotItems);
-      });
-    };
-    getData();
-  }, []);
+    let kotItems = kots
+    console.log(kotItems)
+    kotItems = kots.filter(kot => kot.status === 'served')
+    console.log(kotItems)
+    setKotItems(kotItems)
+  }, [kots]);
+
+  useEffect(() => {
+    if (station !== "" && kotItems.length > 0) {
+      setSelectedStation(station)
+    }
+  }, [station, kotItems])
+
+  const handleModalHide = () => {
+    setModalShow(false)
+    setTimeout(() => {
+      setModalItem(null)
+    }, [200])
+  }
+
+  const handleModalShow = (item) => {
+    console.log(item)
+    setModalItem(item)
+    setModalShow(true)
+  }
 
   const dateString = (date) => {
     let year = date.getFullYear();
@@ -73,18 +65,23 @@ const HistoryView = () => {
         <div className="databox td8">View Order</div>
       </div>
       {kotItems &&
-        kotItems.map((kot, index) => {
-          let ready = 0;
-          kot.items.forEach((item) => {
-            if (item.status === "Done") {
-              ready++;
-            }
-          });
+        kotItems
+        .filter(kot => {
+          let items = kot.items.filter(item => {
+            let flag = false
+            item.station.forEach(sta => {
+              if(sta === selectedStation) flag = true
+            })
+            return flag
+          })
+          return items.length > 0
+        })
+        .map((kot, index) => {
           const [date, time] = dateString(new Date(kot.createdOn));
           return (
-            <>
-              <div className="kot-table_row bg-trans  p-10">
-                <span className="bg text-left">- 12/07/2021 -</span>
+            <div key={index}>
+              <div className="kot-table_row bg-trans  p-10" >
+                <span className="bg text-left">- {date}-</span>
               </div>
 
               <div className="kot-table_row">
@@ -110,90 +107,86 @@ const HistoryView = () => {
                 <div className="databox td8">
                   <span
                     className="btn view_order_btn_td padd_kot"
-                    data-toggle="modal"
-                    data-target="#view_table"
+                    onClick = {() => {
+                     handleModalShow(kot) 
+                    }}
                   >
                     View
                   </span>
                 </div>
               </div>
 
-              {/* <div
-                className="modal fade"
-                id="view_table"
-                tabindex="-1"
-                role="dialog"
-                aria-labelledby="smallmodalLabel"
-                aria-hidden="true"
-              >
-                <div
-                  className="modal-dialog modal-sm kot_table_pop"
-                  role="document"
+              {}
+            </div>
+          );
+        })}
+      <Modal show={modalShow} onHide={handleModalHide}>
+        {modalItem &&
+          <div className="modal-content">
+            <div className="modal-body">
+              <div className="col-12 w-100-row kot_head">
+                Table: {modalItem.tableName} 
+                <span  
+                  onClick={handleModalHide}
                 >
-                  <div className="modal-content">
-                    <div className="modal-body">
-                      <div className="col-12 w-100-row kot_head">
-                        Table: 07A <span data-dismiss="modal">X</span>
-                      </div>
+                  X
+                </span>
+              </div>
 
-                      <div className="col-12 w-100-row kot_waiter">
-                        Waiter: Varun S
-                      </div>
+              <div className="col-12 w-100-row kot_waiter">
+                Waiter: {modalItem.employee}
+              </div>
 
-                      <div className="col-12 w-100-row kot_date">
-                        Items{" "}
-                        <span>
-                          {date}| {time}
+              <div className="col-12 w-100-row kot_date">
+                Items{" "}
+                <span>
+                {modalItem.createdOn && dateString(new Date(modalItem.createdOn))[0] + ' | ' + dateString(new Date(modalItem.createdOn))[1]}
+                  </span>
+              </div>
+
+            {modalItem.items &&
+              modalItem.items
+                .filter(item => {
+                  let flag = false
+                  item.station.forEach(sta => {
+                    if (selectedStation === "") flag = true
+                    else if (sta == selectedStation) {
+                      flag = true
+                    }
+                  })
+                  return flag
+                })
+                .map((item, index) => {
+                  return (
+                    <div className="col-12 w-100-row bdr-top1" key={index}>
+                      <div className="w-10 no">
+                        <span className="check-icon">
+                          <i className="fa fa-check" aria-hidden="true"></i>
                         </span>
                       </div>
 
-                      <div className="col-12 w-100-row bdr-top1">
-                        <div className="w-10 no">
-                          <span className="check-icon">
-                            <i className="fa fa-check" aria-hidden="true"></i>
-                          </span>
-                        </div>
-
-                        <div className="w-80 table_kotdata">
-                          <h5>Pepporoni Pizza(Large)</h5>
-                          <p>+ Cheese Burst</p>
-                          <p>+ Mushrooms</p>
-                          <p>+ Green Peppers</p>
-                        </div>
-                        <div className="w-10 text-right">
-                          x<span className="big_font">1</span>
-                        </div>
+                      <div className="w-80 table_kotdata">
+                        <h5>{item.name}</h5>
                       </div>
-
-                      <div className="col-12 w-100-row bdr-top1">
-                        <div className="w-10 no">
-                          <span className="check-icon">
-                            <i className="fa fa-check" aria-hidden="true"></i>
-                          </span>
-                        </div>
-
-                        <div className="w-80 table_kotdata">
-                          <h5>Pepporoni Pizza(Large)</h5>
-                        </div>
-                        <div className="w-10 text-right">
-                          x<span className="big_font">2</span>
-                        </div>
-                      </div>
-
-                      <div className="col-12 w-100-row bdr-top1">
-                        <div className="col-12 p-0 text-center">
-                          <button type="button" className="btn btn_print_kot">
-                            Print
-                          </button>
-                        </div>
+                      <div className="w-10 text-right">
+                        x<span className="big_font">{item.quantity}</span>
                       </div>
                     </div>
-                  </div>
+                  )
+                })
+            }
+              <div className="col-12 w-100-row bdr-top1">
+                <div className="col-12 p-0 text-center">
+                  <button type="button" className="btn btn_print_kot">
+                    Print
+                          </button>
                 </div>
-              </div> */}
-            </>
-          );
-        })}
+              </div>
+            </div>
+          </div>
+      }
+            
+      </Modal>
     </div>
   );
 };

@@ -84,6 +84,7 @@ const ListView = ({ kots, station}) => {
   }
 
   const openModal = (kot) => {
+    console.log(kot)
     setModalKot(kot);
     setModalShow(true);
   };
