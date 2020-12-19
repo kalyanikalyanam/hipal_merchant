@@ -27,7 +27,6 @@ const ListView = ({ kots, station}) => {
 
   useEffect(() => {
     let kotItems = kots;
-    console.log("here")
     kotItems = kotItems.filter(kot => kot.status !== 'served')
     setKotItems(kotItems);
     if(station !== "")setSelectedStation(station)
@@ -39,7 +38,6 @@ const ListView = ({ kots, station}) => {
 
   useEffect(() => {
     if (station !== "" && kotItems.length > 0) {
-      console.log("here1")
       setSelectedStation(station)
     }
   }, [kots, station])
@@ -92,7 +90,6 @@ const ListView = ({ kots, station}) => {
   }
 
   const openModal = (kot) => {
-    console.log(kot)
     setModalKot(kot);
     setModalShow(true);
   };
