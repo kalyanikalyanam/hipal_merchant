@@ -51,7 +51,8 @@ const KOTPage = () => {
     } ,[])
 
     const viewPage = view === 1 ? <CardView kots={kots ? kots: [] } station={station || ""}/> : 
-                     view === 2 ? <ListView kots={kots ? kots : []} station={station || ""}/> : <HistoryView />
+                     view === 2 ? <ListView kots={kots ? kots : []} station={station || ""}/> : 
+                                  <HistoryView kots={kots ? kots : []} station={station || ""} />
 
     return (
       <div className="page-wrapper">
