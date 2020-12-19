@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {db} from '../../config'
 import { Modal } from "react-bootstrap";
+import { useReactToPrint } from 'react-to-print'
 
 
 const getDate = (time) => {
+  
   const date = new Date(time)
   let hours = date.getHours()
   let minutes = "0" + date.getMinutes()
@@ -15,11 +17,13 @@ const getDate = (time) => {
   return `${day}/${month}/${year} | ${hours}.${minutes.substr(-2)}${ampm}`
 
 }
+
 const ListView = ({ kots, station}) => {
   const [modalShow, setModalShow] = useState(false);
   const [kotItems, setKotItems] = useState([]);
   const [modalKot, setModalKot] = useState({});
   const [selectedStation, setSelectedStation] = useState('')
+  const componentRef = useRef()
 
   useEffect(() => {
     let kotItems = kots;
@@ -28,6 +32,10 @@ const ListView = ({ kots, station}) => {
     setKotItems(kotItems);
     if(station !== "")setSelectedStation(station)
   }, [kots]);
+
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current
+  })
 
   useEffect(() => {
     if (station !== "" && kotItems.length > 0) {
@@ -173,7 +181,7 @@ const ListView = ({ kots, station}) => {
           })}
       </div>
       <Modal show={modalShow} onHide={closeModal}>
-        <div className="modal-content">
+        <div className="modal-content" ref={componentRef}>
           <div className="modal-body">
             <div className="col-12 w-100-row kot_head">
               Table: {modalKot.tableName}
@@ -234,7 +242,11 @@ const ListView = ({ kots, station}) => {
               })}
             <div className="col-12 w-100-row bdr-top1">
               <div className="col-12 p-0 text-center">
-                <button type="button" className="btn btn_print_kot">
+                <button 
+                  type="button" 
+                  className="btn btn_print_kot"
+                  onClick={handlePrint}
+                >
                   Print
                 </button>
               </div>

@@ -1,17 +1,37 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {Modal} from 'react-bootstrap'
+import { useReactToPrint } from 'react-to-print'
 
 const HistoryView = ({kots, station}) => {
   const [kotItems, setKotItems] = useState([]);
+  const [dateItems, setDateItems] = useState([])
   const [selectedStation, setSelectedStation] = useState("")
   const [modalShow, setModalShow] = useState(false)
   const [modalItem, setModalItem] = useState(null)
+  const componentRef = useRef()
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current
+  })
 
   useEffect(() => {
     let kotItems = kots
-    console.log(kotItems)
     kotItems = kots.filter(kot => kot.status === 'served')
-    console.log(kotItems)
+    const groups = kotItems.reduce((groups, kot) => {
+      const date = new Date(kot.createdOn).toISOString().split('T')[0]
+      if(!groups[date]){
+        groups[date] =[]
+      }
+      groups[date].push(kot)
+      return groups
+    }, {})
+
+    const groupedArrays = Object.keys(groups).map(date => {
+      return {
+        date,
+        kots: groups[date]
+      }
+    })
+    setDateItems(groupedArrays)
     setKotItems(kotItems)
   }, [kots]);
 
@@ -64,66 +84,72 @@ const HistoryView = ({kots, station}) => {
         <div className="databox td7">Order ID</div>
         <div className="databox td8">View Order</div>
       </div>
-      {kotItems &&
-        kotItems
-        .filter(kot => {
-          let items = kot.items.filter(item => {
-            let flag = false
-            item.station.forEach(sta => {
-              if(sta === selectedStation) flag = true
-            })
-            return flag
-          })
-          return items.length > 0
-        })
-        .map((kot, index) => {
-          const [date, time] = dateString(new Date(kot.createdOn));
-          return (
-            <div key={index}>
-              <div className="kot-table_row bg-trans  p-10" >
-                <span className="bg text-left">- {date}-</span>
-              </div>
-
-              <div className="kot-table_row">
-                <div className="databox td1">
-                  <span>
-                    <i
-                      className="fa fa-circle dinein_color"
-                      aria-hidden="true"
-                    ></i>
+      {dateItems && dateItems.map((kotItems, index) => {
+        return (
+          <div key={index}>
+            <div className="kot-table-row bg-trans">
+              {kotItems.date}
+              {kotItems.kots
+                .filter(kot => {
+                  let items = kot.items.filter(item => {
+                    let flag = false
+                    item.station.forEach(sta => {
+                      if (sta === selectedStation) flag = true
+                    })
+                    return flag
+                  })
+                  return items.length > 0
+                })
+                .map((kot, index) => {
+                  const [date, time] = dateString(new Date(kot.createdOn));
+                  return (
+                    <div key={index}>
+                      <div className="kot-table_row">
+                        <div className="databox td1">
+                          <span>
+                            <i
+                              className="fa fa-circle dinein_color"
+                              aria-hidden="true"
+                            ></i>
+                          </span>
+                        </div>
+                        <div className="databox td2">{kot.type}</div>
+                        <div className="databox td3">Table {kot.tableName}</div>
+                        <div className="databox td4">
+                          <span className='served-color'>{kot.status}</span>
+                        </div>
+                        <div className="databox td5 big">
+                          {" "}
+                          {date} | {time}
+                        </div>
+                        <div className="databox td6 small">Station</div>
+                        <div className="databox td7">{kot.orderId}</div>
+                        <div className="databox td8">
+                          <span
+                            className="btn view_order_btn_td padd_kot"
+                            onClick={() => {
+                              handleModalShow(kot)
+                            }}
+                          >
+                            View
                   </span>
-                </div>
-                <div className="databox td2">{kot.type}</div>
-                <div className="databox td3">Table {kot.tableName}</div>
-                <div className="databox td4">
-                  <span>{kot.status}</span>
-                </div>
-                <div className="databox td5 big">
-                  {" "}
-                  {date} | {time}
-                </div>
-                <div className="databox td6 small">Station</div>
-                <div className="databox td7">{kot.orderId}</div>
-                <div className="databox td8">
-                  <span
-                    className="btn view_order_btn_td padd_kot"
-                    onClick = {() => {
-                     handleModalShow(kot) 
-                    }}
-                  >
-                    View
-                  </span>
-                </div>
-              </div>
+                        </div>
+                      </div>
 
-              {}
+                      {}
+                    </div>
+                  );
+                })}
             </div>
-          );
-        })}
+
+          </div>
+        )
+      })}
+      
       <Modal show={modalShow} onHide={handleModalHide}>
         {modalItem &&
           <div className="modal-content">
-            <div className="modal-body">
+            <div className="modal-body" ref={componentRef}>
               <div className="col-12 w-100-row kot_head">
                 Table: {modalItem.tableName} 
                 <span  
@@ -177,7 +203,11 @@ const HistoryView = ({kots, station}) => {
             }
               <div className="col-12 w-100-row bdr-top1">
                 <div className="col-12 p-0 text-center">
-                  <button type="button" className="btn btn_print_kot">
+                  <button 
+                    type="button" 
+                    className="btn btn_print_kot"
+                    onClick={handlePrint}
+                  >
                     Print
                           </button>
                 </div>
@@ -185,7 +215,6 @@ const HistoryView = ({kots, station}) => {
             </div>
           </div>
       }
-            
       </Modal>
     </div>
   );
