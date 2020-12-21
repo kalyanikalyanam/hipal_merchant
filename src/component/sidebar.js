@@ -2,6 +2,7 @@ import React from "react";
 import firebase from "../config";
 import { Link, withRouter } from "react-router-dom";
 import swal from "sweetalert";
+import {Scrollbars} from 'react-custom-scrollbars' 
 class Sidebar extends React.Component {
   constructor(props) {
     super(props);
@@ -38,6 +39,10 @@ class Sidebar extends React.Component {
   render() {
     return (
       <aside className="menu-sidebar d-none d-lg-block">
+          <Scrollbars 
+            height={100}
+            autoHide={1000}
+          >
         <div className="menu-sidebar__content js-scrollbar1">
           <nav className="navbar-sidebar">
             <ul className="list-unstyled navbar__list">
@@ -137,6 +142,7 @@ class Sidebar extends React.Component {
             </ul>
           </nav>
         </div>
+            </Scrollbars>
       </aside>
     );
   }

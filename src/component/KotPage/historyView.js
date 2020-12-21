@@ -3,7 +3,6 @@ import {Modal} from 'react-bootstrap'
 import { useReactToPrint } from 'react-to-print'
 
 const HistoryView = ({kots, station}) => {
-  const [kotItems, setKotItems] = useState([]);
   const [dateItems, setDateItems] = useState([])
   const [selectedStation, setSelectedStation] = useState("")
   const [modalShow, setModalShow] = useState(false)
@@ -14,32 +13,40 @@ const HistoryView = ({kots, station}) => {
   })
 
   useEffect(() => {
-    let kotItems = kots
-    kotItems = kots.filter(kot => kot.status === 'served')
-    const groups = kotItems.reduce((groups, kot) => {
-      const date = new Date(kot.createdOn).toISOString().split('T')[0]
-      if(!groups[date]){
-        groups[date] =[]
-      }
-      groups[date].push(kot)
-      return groups
-    }, {})
+    if (station !== "" && kots.length > 0) {
+      let kotItems = kots
+      console.log(kotItems)
+      kotItems = kots.filter(kot => {
+        if (kot.status !== 'served') return false
+        let items = kot.items.filter((item) => {
+          let flag = false;
+          item.station.forEach((sta) => {
+            if (sta === station) flag = true;
+          });
+          return flag;
+        });
+        return items.length > 0
+      });
+      console.log(kotItems)
+      const groups = kotItems.reduce((groups, kot) => {
+        const date = new Date(kot.createdOn).toISOString().split('T')[0]
+        if (!groups[date]) {
+          groups[date] = []
+        }
+        groups[date].push(kot)
+        return groups
+      }, {})
 
-    const groupedArrays = Object.keys(groups).map(date => {
-      return {
-        date,
-        kots: groups[date]
-      }
-    })
-    setDateItems(groupedArrays)
-    setKotItems(kotItems)
-  }, [kots]);
-
-  useEffect(() => {
-    if (station !== "" && kotItems.length > 0) {
-      setSelectedStation(station)
+      const groupedArrays = Object.keys(groups).map(date => {
+        return {
+          date: new Date(date).toLocaleDateString(),
+          kots: groups[date]
+        }
+      })
+      setDateItems(groupedArrays)
     }
-  }, [station, kotItems])
+  }, [kots, station]);
+
 
   const handleModalHide = () => {
     setModalShow(false)
@@ -49,7 +56,6 @@ const HistoryView = ({kots, station}) => {
   }
 
   const handleModalShow = (item) => {
-    console.log(item)
     setModalItem(item)
     setModalShow(true)
   }
@@ -88,18 +94,8 @@ const HistoryView = ({kots, station}) => {
         return (
           <div key={index}>
             <div className="kot-table-row bg-trans">
-              {kotItems.date}
+            {`- ${kotItems.date} -`}
               {kotItems.kots
-                .filter(kot => {
-                  let items = kot.items.filter(item => {
-                    let flag = false
-                    item.station.forEach(sta => {
-                      if (sta === selectedStation) flag = true
-                    })
-                    return flag
-                  })
-                  return items.length > 0
-                })
                 .map((kot, index) => {
                   const [date, time] = dateString(new Date(kot.createdOn));
                   return (
@@ -175,8 +171,8 @@ const HistoryView = ({kots, station}) => {
                 .filter(item => {
                   let flag = false
                   item.station.forEach(sta => {
-                    if (selectedStation === "") flag = true
-                    else if (sta == selectedStation) {
+                    if (station === "") flag = true
+                    else if (sta == station) {
                       flag = true
                     }
                   })

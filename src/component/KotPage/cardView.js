@@ -4,20 +4,25 @@ import { db } from "../../config";
 import { Modal } from "react-bootstrap";
 const CardView = ({ kots, station }) => {
   const [kotItems, setKotItems] = useState([]);
-  const [selectedStation, setSelectedStation] = useState("");
   const [modalShow, setModalShow] = useState(false);
   const [modalKot, setModalKot] = useState({});
   useEffect(() => {
-    let kotItems = kots;
-    kotItems = kotItems.filter((kot) => kot.status !== "served");
-    setKotItems(kotItems);
-  }, [kots]);
-
-  useEffect(() => {
-    if (station !== "" && kotItems.length > 0) {
-      setSelectedStation(station);
+    if (station !== "" && kots.length > 0) {
+      let kotItems = kots;
+      kotItems = kotItems
+        .filter((kot) => {
+          let items = kot.items.filter((item) => {
+            let flag = false;
+            item.station.forEach((sta) => {
+              if (sta === station) flag = true;
+            });
+            return flag;
+          });
+          return items.length > 0 && kot.status !== "served";
+        });
+      setKotItems(kotItems);
     }
-  }, [station, kotItems]);
+  }, [kots, station]);
 
   const handleTimerStop = (kot) => {
     const newKot = kot;
@@ -98,19 +103,10 @@ const CardView = ({ kots, station }) => {
   };
   return (
     <>
+    <div style={{alignContent: "right"}}>Total active card: {kotItems && kotItems.length}</div>
       <div className="list-kot">
         {kotItems &&
           kotItems
-            .filter((kot) => {
-              let items = kot.items.filter((item) => {
-                let flag = false;
-                item.station.forEach((sta) => {
-                  if (sta === selectedStation) flag = true;
-                });
-                return flag;
-              });
-              return items.length > 0;
-            })
             .map((kot) => {
               let served = false;
               let ready = 0;
@@ -173,8 +169,9 @@ const CardView = ({ kots, station }) => {
                       .filter((item) => {
                         let flag = false;
                         item.station.forEach((sta) => {
-                          if (selectedStation === "") flag = true;
-                          else if (sta == selectedStation) {
+                          
+                          if (station === "") flag = true;
+                          else if (sta == station) {
                             flag = true;
                           }
                         });

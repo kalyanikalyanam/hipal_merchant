@@ -26,21 +26,27 @@ const ListView = ({ kots, station}) => {
   const componentRef = useRef()
 
   useEffect(() => {
-    let kotItems = kots;
-    kotItems = kotItems.filter(kot => kot.status !== 'served')
-    setKotItems(kotItems);
-    if(station !== "")setSelectedStation(station)
-  }, [kots]);
+    if (station !== "" && kots.length > 0) {
+      let kotItems = kots;
+      kotItems = kotItems
+        .filter((kot) => {
+          let items = kot.items.filter((item) => {
+            let flag = false;
+            item.station.forEach((sta) => {
+              if (sta === station) flag = true;
+            });
+            return flag;
+          });
+          return items.length > 0 && kot.status !== "served";
+        });
+      setKotItems(kotItems);
+    }
+  }, [kots, station]);
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current
   })
 
-  useEffect(() => {
-    if (station !== "" && kotItems.length > 0) {
-      setSelectedStation(station)
-    }
-  }, [kots, station])
 
   const handleCheck = async (it, kot) => {
     let flag = false
@@ -119,16 +125,6 @@ const ListView = ({ kots, station}) => {
 
         {kotItems &&
           kotItems
-          .filter(kot => {
-            let items = kot.items.filter(item => {
-              let flag = false
-              item.station.forEach(sta => {
-                if (sta === selectedStation) flag = true
-              })
-              return flag
-            })
-            return items.length > 0
-          })
           .map((kot, index) => {
             let ready = 0;
             kot.items.forEach((item) => {
@@ -195,8 +191,8 @@ const ListView = ({ kots, station}) => {
               .filter(item => {
                 let flag = false
                 item.station.forEach(sta => {
-                  if (selectedStation === "") flag = true
-                  else if (sta == selectedStation) {
+                  if (station === "") flag = true
+                  else if (sta == station) {
                     flag = true
                   }
                 })
