@@ -145,12 +145,12 @@ const Table = ({ dbRef }) => {
               Customers Names
             </a>
           </div>
-          {/* <div className="names_options m-t-20" onClick={handleAdvancedOption}>
+          <div className="names_options m-t-20" onClick={handleAdvancedOption}>
             <a href="#">
               <img src="/images/icon/icon_settings.svg" />
               Advanced Options
             </a>
-          </div> */}
+          </div>
         </div>
         <div className="col-md-4">
           <div className="chooseemp_dropdown">

@@ -63,88 +63,110 @@ const MoveModal = () => {
             type: "MoveModalHide"
         })
     }
+    const handleSave = async (values) => {
+        const dbRef = db
+            .collection('tables')
+            .doc(values.move_to)
+        const table = await dbRef.get()
+        let newTable = table.data()
+        const data = {
+            currentEmployee: currentTable.currentEmployee,
+            billID: currentTable.billId === null ? '' : currentTable.billId, 
+            orderId: currentTable.orderId || "",
+            liveCartId: currentTable.liveCartId || "",
+            liveCart: currentTable.liveCart,
+            orders: currentTable.orders,
+            bill: currentTable.bill,
+            occupency: currentTable.occupency || "",
+            customers: currentTable.customers || []
+        }
+        newTable = {...newTable, ...data}
+        dbRef.update(data)
+    }
     return (
         <div className="modal-dialog modal-sm hipal_pop" role="document">
-            <div className="modal-content">
-                <div className="modal-header">
-                    <h5 className="modal-title" id="smallmodalLabel">
-                        Move
+            <form onSubmit={handleSubmit(handleSave)}>
+                <div className="modal-content">
+                    <div className="modal-header">
+                        <h5 className="modal-title" id="smallmodalLabel">
+                            Move
                     </h5>
-                </div>
-                <div className="modal-body product_edit">
-                    <div className="col-12 w-100-row">
-                        <div className="row form-group">
-                            <div className="col col-md-4">
-                                <label className=" form-control-label">Current Table</label>
-                            </div>
-                            <div className="col-12 col-md-6">
-                                <input
-                                    type="text"
-                                    value={`${currentTable && currentTable.table_name}`}
-                                    name="current_table"
-                                    ref={register}
-                                    placeholder={`Table ${currentTable && currentTable.table_name}`}
-                                    className="form-control edit_product"
-                                    readOnly
-                                />
-                                <div className="customers_merge">
-                                    <div className="left">
-                                        <span>
-                                            {" "}
-                                            {currentTable && currentTable.customers && currentTable.customers.length}
-                                        </span>
+                    </div>
+                    <div className="modal-body product_edit">
+                        <div className="col-12 w-100-row">
+                            <div className="row form-group">
+                                <div className="col col-md-4">
+                                    <label className=" form-control-label">Current Table</label>
+                                </div>
+                                <div className="col-12 col-md-6">
+                                    <input
+                                        type="text"
+                                        value={`${currentTable && currentTable.table_name}`}
+                                        name="current_table"
+                                        ref={register}
+                                        placeholder={`Table ${currentTable && currentTable.table_name}`}
+                                        className="form-control edit_product"
+                                        readOnly
+                                    />
+                                    <div className="customers_merge">
+                                        <div className="left">
+                                            <span>
+                                                {" "}
+                                                {currentTable && currentTable.customers && currentTable.customers.length}
+                                            </span>
                                         Customers
                                     </div>
-                                    <div className="right">
-                                        <span>14</span>Orders
+                                        <div className="right">
+                                            <span>14</span>Orders
+                                    </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="col-12 w-100-row">
-                        <div className="row form-group">
-                            <div className="col col-md-4">
-                                <label className=" form-control-label">Move to</label>
-                            </div>
-                            <div className="col-12 col-md-6">
-                                <select
-                                    name="move_to"
-                                    ref={register}
-                                    className="form-control edit_product"
-                                    onChange={handleSelect}
-                                >
-                                    <option value={0}>Select</option>
-                                    {tables &&
-                                        tables.map((table, index) => (
-                                            <option
-                                                value={table.id}
-                                                key={index}
-                                            >{`Table ${table.table_name}`}</option>
-                                        ))}
-                                </select>
-                                {selectedTableRender}
+                        <div className="col-12 w-100-row">
+                            <div className="row form-group">
+                                <div className="col col-md-4">
+                                    <label className=" form-control-label">Move to</label>
+                                </div>
+                                <div className="col-12 col-md-6">
+                                    <select
+                                        name="move_to"
+                                        ref={register}
+                                        className="form-control edit_product"
+                                        onChange={handleSelect}
+                                    >
+                                        <option value={0}>Select</option>
+                                        {tables &&
+                                            tables.map((table, index) => (
+                                                <option
+                                                    value={table.id}
+                                                    key={index}
+                                                >{`Table ${table.table_name}`}</option>
+                                            ))}
+                                    </select>
+                                    {selectedTableRender}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div className="modal-footer">
-                    <button
-                        type="button"
-                        className="btn close_btn"
-                        data-dismiss="modal"
-                        onClick={handleClose}
-                    >
-                        Close
+                    <div className="modal-footer">
+                        <button
+                            type="button"
+                            className="btn close_btn"
+                            data-dismiss="modal"
+                            onClick={handleClose}
+                        >
+                            Close
           </button>
-                    <button
-                        type="button"
-                        className="btn save_btn"
-                    >
-                        Save
+                        <button
+                            type="submit"
+                            className="btn save_btn"
+                        >
+                            Save
           </button>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
 
     )
