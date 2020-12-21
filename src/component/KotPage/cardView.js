@@ -248,7 +248,7 @@ const CardView = ({ kots, station }) => {
                 <h5>{modalKot.name}</h5>
               </div>
               <div className="w-10 text-right">
-                x<span className="big_font">1</span>
+                x<span className="big_font">{modalKot.quantity}</span>
               </div>
             </div>
 
