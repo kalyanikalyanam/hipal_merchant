@@ -1,11 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Timer from "react-compound-timer";
 import { db } from "../../config";
 import { Modal } from "react-bootstrap";
+import { useReactToPrint } from "react-to-print";
 const CardView = ({ kots, station }) => {
   const [kotItems, setKotItems] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const [modalKot, setModalKot] = useState({});
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
+
   useEffect(() => {
     if (station !== "" && kots.length > 0) {
       let kotItems = kots;
@@ -54,7 +60,24 @@ const CardView = ({ kots, station }) => {
       orders,
     });
   };
-
+  const dateString = (date) => {
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+    if (day < 10) {
+      day = "0" + day;
+    }
+    if (month < 10) {
+      month = "0" + month;
+    }
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    let AmPm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    minutes = minutes < 10 ? `0${minutes}` : minutes;
+    return [`${day}-${month}-${year}`, `${hours}:${minutes} ${AmPm}`];
+  };
   const handleCheckMark = async (it, kot) => {
     let flag = false;
     let newKot = kot;
@@ -129,6 +152,13 @@ const CardView = ({ kots, station }) => {
                         className="fa fa-circle dinein_color"
                         aria-hidden="true"
                       ></i>
+                      <button
+                        type="button"
+                        className="btn btn_print_kot"
+                        onClick={handlePrint}
+                      >
+                        Print
+                      </button>
                       <span>
                         <i className="fas fa-ellipsis-v"></i>
                       </span>
@@ -224,6 +254,181 @@ const CardView = ({ kots, station }) => {
                     >
                       Served
                     </button>
+                  </div>
+
+                  <div style={{ display: "none" }}>
+                    <div className="print_bill" ref={componentRef}>
+                      <table width="100%">
+                        <tbody>
+                          <tr>
+                            <td
+                              style={{
+                                textAlign: "center",
+                                padding: "10px",
+                                fontSize: "32px",
+                                color: "#000000",
+                              }}
+                            >
+                              Dine In
+                            </td>
+                          </tr>
+                          <tr>
+                            <td
+                              style={{
+                                textAlign: "center",
+                                padding: "10px",
+                                color: "#000000",
+                                fontSize: "32px",
+                              }}
+                            >
+                              KOT
+                            </td>
+                          </tr>
+
+                          <tr style={{ padding: "0px" }}>
+                            <td
+                              style={{
+                                textAlign: "center",
+                                padding: "10px",
+                                paddingBottom: "0px",
+                                color: "#000000",
+                                borderBottom: "1px dashed rgba(0, 0, 0, 0.5)",
+                                fontSize: "32px",
+                              }}
+                            >
+                              <table width="100%">
+                                <tbody>
+                                  <tr>
+                                    <td
+                                      style={{
+                                        textAlign: "left",
+                                        padding: "3px 10px",
+                                        fontSize: "32px",
+                                        color: "#000000",
+                                      }}
+                                    >
+                                      {kot.createdOn &&
+                                        dateString(new Date(kot.createdOn))[0]}
+                                    </td>
+                                    <td
+                                      style={{
+                                        textAlign: "right",
+                                        padding: "3px 10px",
+                                        fontSize: "32px",
+                                        color: "#000000",
+                                      }}
+                                    >
+                                      <b> {kot.tableName}</b>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td
+                                      style={{
+                                        textAlign: "left",
+                                        padding: "3px 10px",
+                                        fontSize: "32px",
+                                        color: "#000000",
+                                      }}
+                                    >
+                                      {kot.createdOn &&
+                                        dateString(new Date(kot.createdOn))[1]}
+                                    </td>
+                                    <td
+                                      style={{
+                                        textAlign: "right",
+                                        padding: "3px 10px",
+                                        fontSize: "32px",
+                                        color: "#000000",
+                                      }}
+                                    >
+                                      {kot.employee}
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </td>
+                          </tr>
+
+                          <tr>
+                            <td
+                              style={{
+                                textAlign: "center",
+                                padding: "10px",
+                                color: "#000000",
+                                borderBottom: "1px dashed rgba(0, 0,0, 0.5)",
+                                fontSize: "32px",
+                              }}
+                            >
+                              <table width="100%">
+                                <tbody>
+                                  <tr>
+                                    <td
+                                      style={{
+                                        textAlign: "left",
+                                        padding: "5px 10px 10px 10px",
+                                        fontSize: "33px",
+                                        color: "#000000",
+                                      }}
+                                    >
+                                      <b>Item</b>
+                                    </td>
+                                    <td
+                                      style={{
+                                        textAlign: "center",
+                                        padding: "5px 10px 10px 10px",
+                                        fontSize: "33px",
+                                        color: "#000000",
+                                      }}
+                                    >
+                                      <b>Qty</b>
+                                    </td>
+
+                                    <td></td>
+                                  </tr>
+                                  {kot.items
+                                    .filter((item) => {
+                                      let flag = false;
+                                      item.station.forEach((sta) => {
+                                        if (station === "") flag = true;
+                                        else if (sta == station) {
+                                          flag = true;
+                                        }
+                                      });
+                                      return flag;
+                                    })
+                                    .map((item) => {
+                                      return (
+                                        <tr key={item.id}>
+                                          <td
+                                            style={{
+                                              textAlign: "left",
+                                              padding: "3px 10px",
+                                              fontSize: "35px",
+                                              color: "#000000",
+                                            }}
+                                          >
+                                            {item.name}
+                                          </td>
+                                          <td
+                                            style={{
+                                              textAlign: "center",
+                                              padding: "3px 10px",
+                                              fontSize: "30px",
+                                              color: "#000000",
+                                            }}
+                                          >
+                                            {item.quantity}
+                                          </td>
+                                        </tr>
+                                      );
+                                    })}
+                                </tbody>
+                              </table>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
               </div>

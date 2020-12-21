@@ -7,7 +7,7 @@ const getDate = (time) => {
   const date = new Date(time);
   let hours = date.getHours();
   let minutes = "0" + date.getMinutes();
-  let day = date.getDay();
+  let day = date.getDate();
   let month = date.getMonth() + 1;
   let year = date.getFullYear();
   let ampm = hours >= 12 ? "pm" : "am";
@@ -25,7 +25,6 @@ const ListView = ({ kots, station }) => {
   useEffect(() => {
     if (station !== "" && kots.length > 0) {
       let kotItems = kots;
-      console.log(kots);
       kotItems = kotItems.filter((kot) => {
         let items = kot.items.filter((item) => {
           let flag = false;
@@ -169,7 +168,7 @@ const ListView = ({ kots, station }) => {
           })}
       </div>
       <Modal show={modalShow} onHide={closeModal}>
-        <div className="modal-content" ref={componentRef}>
+        <div className="modal-content">
           <div className="modal-body">
             <div className="col-12 w-100-row kot_head">
               Table: {modalKot.tableName}
@@ -214,7 +213,7 @@ const ListView = ({ kots, station }) => {
                           <h5>{item.name}</h5>
                         </div>
                         <div className="w-10 text-right">
-                          x<span className="big_font">1</span>
+                          x<span className="big_font">{item.quantity}</span>
                         </div>
                       </div>
                       {item.instructions && item.instructions !== "" && (
@@ -226,7 +225,7 @@ const ListView = ({ kots, station }) => {
                             ></i>
                           </div>
                           <div className="w-90 color_black">
-                            (Make the pizza little spicy)
+                            {item.instructions}
                           </div>
                         </div>
                       )}
@@ -244,6 +243,181 @@ const ListView = ({ kots, station }) => {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+        <div style={{ display: "none" }}>
+          <div className="print_bill" ref={componentRef}>
+            {modalKot && (
+              <table width="100%">
+                <tbody>
+                  <tr>
+                    <td
+                      style={{
+                        textAlign: "center",
+                        padding: "10px",
+                        fontSize: "30px",
+                        color: "#000000",
+                      }}
+                    >
+                      Dine In
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      style={{
+                        textAlign: "center",
+                        padding: "10px",
+                        color: "#000000",
+                        fontSize: "30px",
+                      }}
+                    >
+                      KOT
+                    </td>
+                  </tr>
+
+                  <tr style={{ padding: "0px" }}>
+                    <td
+                      style={{
+                        textAlign: "center",
+                        padding: "10px",
+                        paddingBottom: "0px",
+                        color: "#000000",
+                        borderBottom: "1px dashed rgba(0, 0, 0, 0.5)",
+                        fontSize: "30px",
+                      }}
+                    >
+                      <table width="100%">
+                        <tbody>
+                          <tr>
+                            <td
+                              style={{
+                                textAlign: "left",
+                                padding: "3px 10px",
+                                fontSize: "30px",
+                                color: "#000000",
+                              }}
+                            >
+                              {" "}
+                            </td>
+                            <td
+                              style={{
+                                textAlign: "right",
+                                padding: "3px 10px",
+                                fontSize: "30px",
+                                color: "#000000",
+                              }}
+                            >
+                              <b> {modalKot.tableName}</b>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td
+                              style={{
+                                textAlign: "left",
+                                padding: "3px 10px",
+                                fontSize: "30px",
+                                color: "#000000",
+                              }}
+                            >
+                              {getDate(modalKot.createdOn)}
+                            </td>
+                            <td
+                              style={{
+                                textAlign: "right",
+                                padding: "3px 10px",
+                                fontSize: "30px",
+                                color: "#000000",
+                              }}
+                            >
+                              {modalKot.employee}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td
+                      style={{
+                        textAlign: "center",
+                        padding: "10px",
+                        color: "#000000",
+                        borderBottom: "1px dashed rgba(0, 0,0, 0.5)",
+                        fontSize: "30px",
+                      }}
+                    >
+                      <table width="100%">
+                        <tbody>
+                          <tr>
+                            <td
+                              style={{
+                                textAlign: "left",
+                                padding: "5px 10px 10px 10px",
+                                fontSize: "30px",
+                                color: "#000000",
+                              }}
+                            >
+                              <b>Item</b>
+                            </td>
+                            <td
+                              style={{
+                                textAlign: "center",
+                                padding: "5px 10px 10px 10px",
+                                fontSize: "30px",
+                                color: "#000000",
+                              }}
+                            >
+                              <b>Qty</b>
+                            </td>
+
+                            <td></td>
+                          </tr>
+                          {modalKot.items &&
+                            modalKot.items
+                              .filter((item) => {
+                                let flag = false;
+                                item.station.forEach((sta) => {
+                                  if (station === "") flag = true;
+                                  else if (sta == station) {
+                                    flag = true;
+                                  }
+                                });
+                                return flag;
+                              })
+                              .map((item) => {
+                                return (
+                                  <tr key={item.orderPageId}>
+                                    <td
+                                      style={{
+                                        textAlign: "left",
+                                        padding: "3px 10px",
+                                        fontSize: "30px",
+                                        color: "#000000",
+                                      }}
+                                    >
+                                      {item.name}
+                                    </td>
+                                    <td
+                                      style={{
+                                        textAlign: "center",
+                                        padding: "3px 10px",
+                                        fontSize: "30px",
+                                        color: "#000000",
+                                      }}
+                                    >
+                                      {item.quantity}
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
       </Modal>

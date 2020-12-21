@@ -85,7 +85,7 @@ const HistoryView = ({ kots, station }) => {
         <div className="databox td3">Table No</div>
         <div className="databox td4">Table status</div>
         <div className="databox td5 big">Date & Time</div>
-        <div className="databox td6 small">Station no</div>
+        {/* <div className="databox td6 small">Station no</div> */}
         <div className="databox td7">Order ID</div>
         <div className="databox td8">View Order</div>
       </div>
@@ -117,7 +117,7 @@ const HistoryView = ({ kots, station }) => {
                           {" "}
                           {date} | {time}
                         </div>
-                        <div className="databox td6 small">Station</div>
+                        {/* <div className="databox td6 small">Station</div> */}
                         <div className="databox td7">{kot.orderId}</div>
                         <div className="databox td8">
                           <span
@@ -142,70 +142,253 @@ const HistoryView = ({ kots, station }) => {
 
       <Modal show={modalShow} onHide={handleModalHide}>
         {modalItem && (
-          <div className="modal-content">
-            <div className="modal-body" ref={componentRef}>
-              <div className="col-12 w-100-row kot_head">
-                Table: {modalItem.tableName}
-                <span onClick={handleModalHide}>X</span>
-              </div>
+          <>
+            <div className="modal-content">
+              <div className="modal-body">
+                <div className="col-12 w-100-row kot_head">
+                  Table: {modalItem.tableName}
+                  <span onClick={handleModalHide}>X</span>
+                </div>
 
-              <div className="col-12 w-100-row kot_waiter">
-                Waiter: {modalItem.employee}
-              </div>
+                <div className="col-12 w-100-row kot_waiter">
+                  Waiter: {modalItem.employee}
+                </div>
 
-              <div className="col-12 w-100-row kot_date">
-                Items{" "}
-                <span>
-                  {modalItem.createdOn &&
-                    dateString(new Date(modalItem.createdOn))[0] +
-                      " | " +
-                      dateString(new Date(modalItem.createdOn))[1]}
-                </span>
-              </div>
+                <div className="col-12 w-100-row kot_date">
+                  Items{" "}
+                  <span>
+                    {modalItem.createdOn &&
+                      dateString(new Date(modalItem.createdOn))[0] +
+                        " | " +
+                        dateString(new Date(modalItem.createdOn))[1]}
+                  </span>
+                </div>
 
-              {modalItem.items &&
-                modalItem.items
-                  .filter((item) => {
-                    let flag = false;
-                    item.station.forEach((sta) => {
-                      if (station === "") flag = true;
-                      else if (sta == station) {
-                        flag = true;
-                      }
-                    });
-                    return flag;
-                  })
-                  .map((item, index) => {
-                    return (
-                      <div className="col-12 w-100-row bdr-top1" key={index}>
-                        <div className="w-10 no">
-                          <span className="check-icon">
-                            <i className="fa fa-check" aria-hidden="true"></i>
-                          </span>
+                {modalItem.items &&
+                  modalItem.items
+                    .filter((item) => {
+                      let flag = false;
+                      item.station.forEach((sta) => {
+                        if (station === "") flag = true;
+                        else if (sta == station) {
+                          flag = true;
+                        }
+                      });
+                      return flag;
+                    })
+                    .map((item, index) => {
+                      return (
+                        <div className="col-12 w-100-row bdr-top1" key={index}>
+                          <div className="w-10 no">
+                            <span className="check-icon">
+                              <i className="fa fa-check" aria-hidden="true"></i>
+                            </span>
+                          </div>
+
+                          <div className="w-80 table_kotdata">
+                            <h5>{item.name}</h5>
+                          </div>
+                          <div className="w-10 text-right">
+                            x<span className="big_font">{item.quantity}</span>
+                          </div>
                         </div>
-
-                        <div className="w-80 table_kotdata">
-                          <h5>{item.name}</h5>
-                        </div>
-                        <div className="w-10 text-right">
-                          x<span className="big_font">{item.quantity}</span>
-                        </div>
-                      </div>
-                    );
-                  })}
-              <div className="col-12 w-100-row bdr-top1">
-                <div className="col-12 p-0 text-center">
-                  <button
-                    type="button"
-                    className="btn btn_print_kot"
-                    onClick={handlePrint}
-                  >
-                    Print
-                  </button>
+                      );
+                    })}
+                <div className="col-12 w-100-row bdr-top1">
+                  <div className="col-12 p-0 text-center">
+                    <button
+                      type="button"
+                      className="btn btn_print_kot"
+                      onClick={handlePrint}
+                    >
+                      Print
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+            <div style={{ display: "none" }}>
+              <div className="print_bill" ref={componentRef}>
+                {modalItem && (
+                  <table width="100%">
+                    <tbody>
+                      <tr>
+                        <td
+                          style={{
+                            textAlign: "center",
+                            padding: "10px",
+                            fontSize: "32px",
+                            color: "#000000",
+                          }}
+                        >
+                          Dine In
+                        </td>
+                      </tr>
+                      <tr>
+                        <td
+                          style={{
+                            textAlign: "center",
+                            padding: "10px",
+                            color: "#000000",
+                            fontSize: "32px",
+                          }}
+                        >
+                          KOT
+                        </td>
+                      </tr>
+
+                      <tr style={{ padding: "0px" }}>
+                        <td
+                          style={{
+                            textAlign: "center",
+                            padding: "10px",
+                            paddingBottom: "0px",
+                            color: "#000000",
+                            borderBottom: "1px dashed rgba(0, 0, 0, 0.5)",
+                            fontSize: "32px",
+                          }}
+                        >
+                          <table width="100%">
+                            <tbody>
+                              <tr>
+                                <td
+                                  style={{
+                                    textAlign: "left",
+                                    padding: "3px 10px",
+                                    fontSize: "32px",
+                                    color: "#000000",
+                                  }}
+                                >
+                                  {modalItem.createdOn &&
+                                    dateString(
+                                      new Date(modalItem.createdOn)
+                                    )[0]}
+                                </td>
+                                <td
+                                  style={{
+                                    textAlign: "right",
+                                    padding: "3px 10px",
+                                    fontSize: "32px",
+                                    color: "#000000",
+                                  }}
+                                >
+                                  <b> {modalItem.tableName}</b>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td
+                                  style={{
+                                    textAlign: "left",
+                                    padding: "3px 10px",
+                                    fontSize: "32px",
+                                    color: "#000000",
+                                  }}
+                                >
+                                  {modalItem.createdOn &&
+                                    dateString(
+                                      new Date(modalItem.createdOn)
+                                    )[1]}
+                                </td>
+                                <td
+                                  style={{
+                                    textAlign: "right",
+                                    padding: "3px 10px",
+                                    fontSize: "32px",
+                                    color: "#000000",
+                                  }}
+                                >
+                                  {modalItem.employee}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td
+                          style={{
+                            textAlign: "center",
+                            padding: "10px",
+                            color: "#000000",
+                            borderBottom: "1px dashed rgba(0, 0,0, 0.5)",
+                            fontSize: "32px",
+                          }}
+                        >
+                          <table width="100%">
+                            <tbody>
+                              <tr>
+                                <td
+                                  style={{
+                                    textAlign: "left",
+                                    padding: "5px 10px 10px 10px",
+                                    fontSize: "33px",
+                                    color: "#000000",
+                                  }}
+                                >
+                                  <b>Item</b>
+                                </td>
+                                <td
+                                  style={{
+                                    textAlign: "center",
+                                    padding: "5px 10px 10px 10px",
+                                    fontSize: "33px",
+                                    color: "#000000",
+                                  }}
+                                >
+                                  <b>Qty</b>
+                                </td>
+
+                                <td></td>
+                              </tr>
+                              {modalItem.items &&
+                                modalItem.items
+                                  .filter((item) => {
+                                    let flag = false;
+                                    item.station.forEach((sta) => {
+                                      if (station === "") flag = true;
+                                      else if (sta == station) {
+                                        flag = true;
+                                      }
+                                    });
+                                    return flag;
+                                  })
+                                  .map((item, index) => {
+                                    return (
+                                      <tr key={index}>
+                                        <td
+                                          style={{
+                                            textAlign: "left",
+                                            padding: "3px 10px",
+                                            fontSize: "35px",
+                                            color: "#000000",
+                                          }}
+                                        >
+                                          {item.name}
+                                        </td>
+                                        <td
+                                          style={{
+                                            textAlign: "center",
+                                            padding: "3px 10px",
+                                            fontSize: "30px",
+                                            color: "#000000",
+                                          }}
+                                        >
+                                          {item.quantity}
+                                        </td>
+                                      </tr>
+                                    );
+                                  })}
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            </div>
+          </>
         )}
       </Modal>
     </div>
