@@ -29,7 +29,9 @@ const ListView = ({ kots, station }) => {
         let items = kot.items.filter((item) => {
           let flag = false;
           item.station.forEach((sta) => {
-            if (sta === station) flag = true;
+            if(typeof(station) === 'string'){
+              if (sta.trim() === station.trim())flag = true;
+            }
           });
           return flag;
         });
