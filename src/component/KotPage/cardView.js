@@ -15,12 +15,11 @@ const CardView = ({ kots, station }) => {
   useEffect(() => {
     if (station !== "" && kots.length > 0) {
       let kotItems = kots;
-      console.log(kots);
       kotItems = kotItems.filter((kot) => {
         let items = kot.items.filter((item) => {
           let flag = false;
           item.station.forEach((sta) => {
-            if (sta === station) flag = true;
+            if (sta.slice() === station.slice()) flag = true;
           });
           return flag;
         });

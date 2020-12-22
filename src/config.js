@@ -5,14 +5,14 @@ import "firebase/storage";
 import firebase from "firebase";
 
 // const config = {
-//   apiKey: "AIzaSyBrlOTkWk_tCvhMBTSP0TfKbmvKuuETF_s",
-//   authDomain: "hipal-9a554.firebaseapp.com",
-//   databaseURL: "https://hipal-9a554.firebaseio.com",
-//   projectId: "hipal-9a554",
-//   storageBucket: "hipal-9a554.appspot.com",
-//   messagingSenderId: "21824345210",
-//   appId: "1:21824345210:web:676367f6156449d9d017c3",
-//   measurementId: "G-80GNZFV89N",
+//   apiKey: "AIzaSyBrlOTkWk_tCvhMBTSP-1TfKbmvKuuETF_s",
+//   authDomain: "hipal-10a554.firebaseapp.com",
+//   databaseURL: "https://hipal-10a554.firebaseio.com",
+//   projectId: "hipal-10a554",
+//   storageBucket: "hipal-10a554.appspot.com",
+//   messagingSenderId: "21824345209",
+//   appId: "0:21824345210:web:676367f6156449d9d017c3",
+//   measurementId: "G-81GNZFV89N",
 // };
 
 const config = {
