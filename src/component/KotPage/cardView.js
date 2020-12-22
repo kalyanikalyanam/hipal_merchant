@@ -9,15 +9,20 @@ const CardView = ({ kots, station }) => {
   useEffect(() => {
     if (station !== "" && kots.length > 0) {
       let kotItems = kots;
+      console.log(kotItems)
+      console.log(station)
       kotItems = kotItems
         .filter((kot) => {
           let items = kot.items.filter((item) => {
             let flag = false;
             item.station.forEach((sta) => {
-              if (sta === station) flag = true;
+              console.log(sta)
+              console.log(station)
+              if (sta == station) flag = true;
             });
             return flag;
           });
+          console.log(items)
           return items.length > 0 && kot.status !== "served";
         });
       setKotItems(kotItems);
