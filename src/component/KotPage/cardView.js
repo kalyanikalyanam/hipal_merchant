@@ -1,30 +1,30 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Timer from "react-compound-timer";
 import { db } from "../../config";
 import { Modal } from "react-bootstrap";
+import { useReactToPrint } from "react-to-print";
 const CardView = ({ kots, station }) => {
   const [kotItems, setKotItems] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const [modalKot, setModalKot] = useState({});
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
+
   useEffect(() => {
     if (station !== "" && kots.length > 0) {
       let kotItems = kots;
-      console.log(kotItems)
-      console.log(station)
-      kotItems = kotItems
-        .filter((kot) => {
-          let items = kot.items.filter((item) => {
-            let flag = false;
-            item.station.forEach((sta) => {
-              console.log(sta)
-              console.log(station)
-              if (sta == station) flag = true;
-            });
-            return flag;
+      kotItems = kotItems.filter((kot) => {
+        let items = kot.items.filter((item) => {
+          let flag = false;
+          item.station.forEach((sta) => {
+            if (sta.slice() === station.slice()) flag = true;
           });
-          console.log(items)
-          return items.length > 0 && kot.status !== "served";
+          return flag;
         });
+        return items.length > 0 && kot.status !== "served";
+      });
       setKotItems(kotItems);
     }
   }, [kots, station]);
@@ -59,7 +59,24 @@ const CardView = ({ kots, station }) => {
       orders,
     });
   };
-
+  const dateString = (date) => {
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+    if (day < 10) {
+      day = "0" + day;
+    }
+    if (month < 10) {
+      month = "0" + month;
+    }
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    let AmPm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    minutes = minutes < 10 ? `0${minutes}` : minutes;
+    return [`${day}-${month}-${year}`, `${hours}:${minutes} ${AmPm}`];
+  };
   const handleCheckMark = async (it, kot) => {
     let flag = false;
     let newKot = kot;
@@ -108,132 +125,314 @@ const CardView = ({ kots, station }) => {
   };
   return (
     <>
-    <div style={{alignContent: "right"}}>Total active card: {kotItems && kotItems.length}</div>
+      <div style={{ alignContent: "right" }}>
+        Total active card: {kotItems && kotItems.length}
+      </div>
       <div className="list-kot">
         {kotItems &&
-          kotItems
-            .map((kot) => {
-              let served = false;
-              let ready = 0;
-              kot.items.forEach((item) => {
-                if (item.status === "served") {
-                  ready++;
-                }
-              });
-              if (ready === kot.items.length) {
-                served = true;
+          kotItems.map((kot) => {
+            let served = false;
+            let ready = 0;
+            kot.items.forEach((item) => {
+              if (item.status === "served") {
+                ready++;
               }
-              return (
-                <div className="box-kot" key={kot.id}>
-                  <div className={served ? "kot-card selected" : "kot-card"}>
-                    <div className="headrow">
-                      <h1>
-                        {kot.type || "DineIn"}{" "}
-                        <i
-                          className="fa fa-circle dinein_color"
-                          aria-hidden="true"
-                        ></i>
-                        <span>
-                          <i className="fas fa-ellipsis-v"></i>
-                        </span>
-                      </h1>
-                    </div>
-
-                    <div className="main-head">
-                      <span>Table: {kot.tableName}</span>
-                      <span>
-                        <Timer
-                          initialTime={Date.now() - kot.createdOn}
-                          onStop={() => handleTimerStop(kot)}
-                        >
-                          {({ start, stop }) => {
-                            if (served) stop();
-                            return (
-                              <React.Fragment>
-                                <Timer.Hours />:
-                                <Timer.Minutes />:
-                                <Timer.Seconds />
-                              </React.Fragment>
-                            );
-                          }}
-                        </Timer>
-                      </span>
-                    </div>
-
-                    <div className="waiterrow">
-                      {kot.orderId || `0931280AASD90`}
-                    </div>
-
-                    <div className="iteamsrow-gray">
-                      <span>Items</span>
-                      <span>
-                        {ready}/{kot.items.length}
-                      </span>
-                    </div>
-                    {kot.items
-                      .filter((item) => {
-                        let flag = false;
-                        item.station.forEach((sta) => {
-                          
-                          if (station === "") flag = true;
-                          else if (sta == station) {
-                            flag = true;
-                          }
-                        });
-                        return flag;
-                      })
-                      .map((item) => {
-                        return (
-                          <div
-                            className={
-                              item.status === "served"
-                                ? "iteamsrow checkedrow"
-                                : "iteamsrow"
-                            }
-                            key={item.id}
-                          >
-                            <div className="w-15">
-                              <i
-                                className={
-                                  item.status === "served"
-                                    ? "far fa-check-square"
-                                    : "far fa-square"
-                                }
-                                onClick={() => handleCheckMark(item, kot)}
-                              />
-                            </div>
-                            <div className="w-70">
-                              <h5>{item.name}</h5>
-                            </div>
-                            <div className="w-15 text-right">
-                              x<span className="bigfont">{item.quantity}</span>
-                              {item.instructions && item.instructions !== "" ? (
-                                <img
-                                  src="/images/icon/info-icon-new.png"
-                                  onClick={() => {
-                                    openModal(item);
-                                  }}
-                                />
-                              ) : null}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    <div className="iteamsrow text-center">
+            });
+            if (ready === kot.items.length) {
+              served = true;
+            }
+            return (
+              <div className="box-kot" key={kot.id}>
+                <div className={served ? "kot-card selected" : "kot-card"}>
+                  <div className="headrow">
+                    <h1>
+                      {kot.type || "DineIn"}{" "}
+                      <i
+                        className="fa fa-circle dinein_color"
+                        aria-hidden="true"
+                      ></i>
                       <button
                         type="button"
-                        onClick={() => {
-                          handleServed(kot);
-                        }}
-                        className="btn served_kot"
+                        className="btn btn_print_kot"
+                        onClick={handlePrint}
                       >
-                        Served
+                        Print
                       </button>
+                      <span>
+                        <i className="fas fa-ellipsis-v"></i>
+                      </span>
+                    </h1>
+                  </div>
+
+                  <div className="main-head">
+                    <span>Table: {kot.tableName}</span>
+                    <span>
+                      <Timer
+                        initialTime={Date.now() - kot.createdOn}
+                        onStop={() => handleTimerStop(kot)}
+                      >
+                        {({ start, stop }) => {
+                          if (served) stop();
+                          return (
+                            <React.Fragment>
+                              <Timer.Hours />:
+                              <Timer.Minutes />:
+                              <Timer.Seconds />
+                            </React.Fragment>
+                          );
+                        }}
+                      </Timer>
+                    </span>
+                  </div>
+
+                  <div className="waiterrow">
+                    {kot.orderId || `0931280AASD90`}
+                  </div>
+
+                  <div className="iteamsrow-gray">
+                    <span>Items</span>
+                    <span>
+                      {ready}/{kot.items.length}
+                    </span>
+                  </div>
+                  {kot.items
+                    .filter((item) => {
+                      let flag = false;
+                      item.station.forEach((sta) => {
+                        if (station === "") flag = true;
+                        else if (sta == station) {
+                          flag = true;
+                        }
+                      });
+                      return flag;
+                    })
+                    .map((item) => {
+                      return (
+                        <div
+                          className={
+                            item.status === "served"
+                              ? "iteamsrow checkedrow"
+                              : "iteamsrow"
+                          }
+                          key={item.id}
+                        >
+                          <div className="w-15">
+                            <i
+                              className={
+                                item.status === "served"
+                                  ? "far fa-check-square"
+                                  : "far fa-square"
+                              }
+                              onClick={() => handleCheckMark(item, kot)}
+                            />
+                          </div>
+                          <div className="w-70">
+                            <h5>{item.name}</h5>
+                          </div>
+                          <div className="w-15 text-right">
+                            x<span className="bigfont">{item.quantity}</span>
+                            {item.instructions && item.instructions !== "" ? (
+                              <img
+                                src="/images/icon/info-icon-new.png"
+                                onClick={() => {
+                                  openModal(item);
+                                }}
+                              />
+                            ) : null}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  <div className="iteamsrow text-center">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        handleServed(kot);
+                      }}
+                      className="btn served_kot"
+                    >
+                      Served
+                    </button>
+                  </div>
+
+                  <div style={{ display: "none" }}>
+                    <div className="print_bill" ref={componentRef}>
+                      <table width="100%">
+                        <tbody>
+                          <tr>
+                            <td
+                              style={{
+                                textAlign: "center",
+                                padding: "10px",
+                                fontSize: "32px",
+                                color: "#000000",
+                              }}
+                            >
+                              Dine In
+                            </td>
+                          </tr>
+                          <tr>
+                            <td
+                              style={{
+                                textAlign: "center",
+                                padding: "10px",
+                                color: "#000000",
+                                fontSize: "32px",
+                              }}
+                            >
+                              KOT
+                            </td>
+                          </tr>
+
+                          <tr style={{ padding: "0px" }}>
+                            <td
+                              style={{
+                                textAlign: "center",
+                                padding: "10px",
+                                paddingBottom: "0px",
+                                color: "#000000",
+                                borderBottom: "1px dashed rgba(0, 0, 0, 0.5)",
+                                fontSize: "32px",
+                              }}
+                            >
+                              <table width="100%">
+                                <tbody>
+                                  <tr>
+                                    <td
+                                      style={{
+                                        textAlign: "left",
+                                        padding: "3px 10px",
+                                        fontSize: "32px",
+                                        color: "#000000",
+                                      }}
+                                    >
+                                      {kot.createdOn &&
+                                        dateString(new Date(kot.createdOn))[0]}
+                                    </td>
+                                    <td
+                                      style={{
+                                        textAlign: "right",
+                                        padding: "3px 10px",
+                                        fontSize: "32px",
+                                        color: "#000000",
+                                      }}
+                                    >
+                                      <b> {kot.tableName}</b>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td
+                                      style={{
+                                        textAlign: "left",
+                                        padding: "3px 10px",
+                                        fontSize: "32px",
+                                        color: "#000000",
+                                      }}
+                                    >
+                                      {kot.createdOn &&
+                                        dateString(new Date(kot.createdOn))[1]}
+                                    </td>
+                                    <td
+                                      style={{
+                                        textAlign: "right",
+                                        padding: "3px 10px",
+                                        fontSize: "32px",
+                                        color: "#000000",
+                                      }}
+                                    >
+                                      {kot.employee}
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </td>
+                          </tr>
+
+                          <tr>
+                            <td
+                              style={{
+                                textAlign: "center",
+                                padding: "10px",
+                                color: "#000000",
+                                borderBottom: "1px dashed rgba(0, 0,0, 0.5)",
+                                fontSize: "32px",
+                              }}
+                            >
+                              <table width="100%">
+                                <tbody>
+                                  <tr>
+                                    <td
+                                      style={{
+                                        textAlign: "left",
+                                        padding: "5px 10px 10px 10px",
+                                        fontSize: "33px",
+                                        color: "#000000",
+                                      }}
+                                    >
+                                      <b>Item</b>
+                                    </td>
+                                    <td
+                                      style={{
+                                        textAlign: "center",
+                                        padding: "5px 10px 10px 10px",
+                                        fontSize: "33px",
+                                        color: "#000000",
+                                      }}
+                                    >
+                                      <b>Qty</b>
+                                    </td>
+
+                                    <td></td>
+                                  </tr>
+                                  {kot.items
+                                    .filter((item) => {
+                                      let flag = false;
+                                      item.station.forEach((sta) => {
+                                        if (station === "") flag = true;
+                                        else if (sta == station) {
+                                          flag = true;
+                                        }
+                                      });
+                                      return flag;
+                                    })
+                                    .map((item) => {
+                                      return (
+                                        <tr key={item.id}>
+                                          <td
+                                            style={{
+                                              textAlign: "left",
+                                              padding: "3px 10px",
+                                              fontSize: "35px",
+                                              color: "#000000",
+                                            }}
+                                          >
+                                            {item.name}
+                                          </td>
+                                          <td
+                                            style={{
+                                              textAlign: "center",
+                                              padding: "3px 10px",
+                                              fontSize: "30px",
+                                              color: "#000000",
+                                            }}
+                                          >
+                                            {item.quantity}
+                                          </td>
+                                        </tr>
+                                      );
+                                    })}
+                                </tbody>
+                              </table>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 </div>
-              );
-            })}
+              </div>
+            );
+          })}
       </div>
 
       <Modal show={modalShow} onHide={closeModal}>

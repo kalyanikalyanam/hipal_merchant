@@ -1,64 +1,59 @@
 import React, { useEffect, useRef, useState } from "react";
-import {db} from '../../config'
+import { db } from "../../config";
 import { Modal } from "react-bootstrap";
-import { useReactToPrint } from 'react-to-print'
-
+import { useReactToPrint } from "react-to-print";
 
 const getDate = (time) => {
-  
-  const date = new Date(time)
-  let hours = date.getHours()
-  let minutes = "0" + date.getMinutes()
-  let day = date.getDay()
-  let month = date.getMonth() + 1
-  let year = date.getFullYear()
-  let ampm = hours >= 12 ? 'pm' : 'am'
-  hours %= 12
-  return `${day}/${month}/${year} | ${hours}.${minutes.substr(-2)}${ampm}`
+  const date = new Date(time);
+  let hours = date.getHours();
+  let minutes = "0" + date.getMinutes();
+  let day = date.getDate();
+  let month = date.getMonth() + 1;
+  let year = date.getFullYear();
+  let ampm = hours >= 12 ? "pm" : "am";
+  hours %= 12;
+  return `${day}/${month}/${year} | ${hours}.${minutes.substr(-2)}${ampm}`;
+};
 
-}
-
-const ListView = ({ kots, station}) => {
+const ListView = ({ kots, station }) => {
   const [modalShow, setModalShow] = useState(false);
   const [kotItems, setKotItems] = useState([]);
   const [modalKot, setModalKot] = useState({});
-  const [selectedStation, setSelectedStation] = useState('')
-  const componentRef = useRef()
+  const [selectedStation, setSelectedStation] = useState("");
+  const componentRef = useRef();
 
   useEffect(() => {
     if (station !== "" && kots.length > 0) {
       let kotItems = kots;
-      kotItems = kotItems
-        .filter((kot) => {
-          let items = kot.items.filter((item) => {
-            let flag = false;
-            item.station.forEach((sta) => {
-              if (sta === station) flag = true;
-            });
-            return flag;
+      kotItems = kotItems.filter((kot) => {
+        let items = kot.items.filter((item) => {
+          let flag = false;
+          item.station.forEach((sta) => {
+            if (sta === station) flag = true;
           });
-          return items.length > 0 && kot.status !== "served";
+          return flag;
         });
+        return items.length > 0 && kot.status !== "served";
+      });
       setKotItems(kotItems);
     }
   }, [kots, station]);
 
   const handlePrint = useReactToPrint({
-    content: () => componentRef.current
-  })
-
+    content: () => componentRef.current,
+  });
 
   const handleCheck = async (it, kot) => {
-    let flag = false
-    let newKot = kot
-    let newItems = newKot.items
-    if (it.status === 'served') {
-      flag = true
-      newItems.forEach(item => {
+    let flag = false;
+    let newKot = kot;
+    let newItems = newKot.items;
+    if (it.status === "served") {
+      flag = true;
+      newItems.forEach((item) => {
         if (item.id === it.id) {
-          item.status = "cooking"
+          item.status = "cooking";
         }
-      })
+      });
     } else {
       newItems.forEach((item) => {
         if (item.id === it.id) {
@@ -83,17 +78,17 @@ const ListView = ({ kots, station}) => {
     ref.update({
       orders,
     });
-  }
+  };
 
   const onAllServed = (kot) => {
-    let newKot = kot
-    newKot.status = 'served'
+    let newKot = kot;
+    newKot.status = "served";
     setTimeout(() => {
-      db.collection('kotItems').doc(kot.id).update(newKot)
-      setModalShow(false)
-      setModalKot({})
-    }, [2000])
-  }
+      db.collection("kotItems").doc(kot.id).update(newKot);
+      setModalShow(false);
+      setModalKot({});
+    }, [2000]);
+  };
 
   const openModal = (kot) => {
     setModalKot(kot);
@@ -102,7 +97,7 @@ const ListView = ({ kots, station}) => {
 
   const closeModal = () => {
     setModalShow(false);
-    setTimeout(() =>setModalKot({}), [200]) 
+    setTimeout(() => setModalKot({}), [200]);
   };
 
   return (
@@ -124,15 +119,14 @@ const ListView = ({ kots, station}) => {
         </div>
 
         {kotItems &&
-          kotItems
-          .map((kot, index) => {
+          kotItems.map((kot, index) => {
             let ready = 0;
             kot.items.forEach((item) => {
               if (item.status === "served") {
                 ready++;
               }
               if (ready === kot.items.length) {
-                onAllServed(kot)
+                onAllServed(kot);
               }
             });
             return (
@@ -174,7 +168,7 @@ const ListView = ({ kots, station}) => {
           })}
       </div>
       <Modal show={modalShow} onHide={closeModal}>
-        <div className="modal-content" ref={componentRef}>
+        <div className="modal-content">
           <div className="modal-body">
             <div className="col-12 w-100-row kot_head">
               Table: {modalKot.tableName}
@@ -188,55 +182,60 @@ const ListView = ({ kots, station}) => {
             </div>
             {modalKot.items &&
               modalKot.items
-              .filter(item => {
-                let flag = false
-                item.station.forEach(sta => {
-                  if (station === "") flag = true
-                  else if (sta == station) {
-                    flag = true
-                  }
+                .filter((item) => {
+                  let flag = false;
+                  item.station.forEach((sta) => {
+                    if (station === "") flag = true;
+                    else if (sta == station) {
+                      flag = true;
+                    }
+                  });
+                  return flag;
                 })
-                return flag
-              })
-              .map((item) => {
-                return (
-                  <div key={item.orderPageId}>
-                    <div className="col-12 w-100-row bdr-top1" >
-                      <div className="w-10 no">
-                        <span className="check-icon">
-                          <i 
-                            className={item.status === "served" ? 'fa fa-check' : 'fa fa'} 
-                            onClick={() => handleCheck(item, modalKot)}
-                            aria-hidden="true"></i>
-                        </span>
+                .map((item) => {
+                  return (
+                    <div key={item.orderPageId}>
+                      <div className="col-12 w-100-row bdr-top1">
+                        <div className="w-10 no">
+                          <span className="check-icon">
+                            <i
+                              className={
+                                item.status === "served"
+                                  ? "fa fa-check"
+                                  : "fa fa"
+                              }
+                              onClick={() => handleCheck(item, modalKot)}
+                              aria-hidden="true"
+                            ></i>
+                          </span>
+                        </div>
+                        <div className="w-80 table_kotdata">
+                          <h5>{item.name}</h5>
+                        </div>
+                        <div className="w-10 text-right">
+                          x<span className="big_font">{item.quantity}</span>
+                        </div>
                       </div>
-                      <div className="w-80 table_kotdata">
-                        <h5>{item.name}</h5>
-                      </div>
-                      <div className="w-10 text-right">
-                        x<span className="big_font">1</span>
-                      </div>
+                      {item.instructions && item.instructions !== "" && (
+                        <div className="col-12 w-100-row p-0">
+                          <div className="w-10 no pb-10">
+                            <i
+                              className="fa fa-info-circle info-circle"
+                              aria-hidden="true"
+                            ></i>
+                          </div>
+                          <div className="w-90 color_black">
+                            {item.instructions}
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    {item.instructions && item.instructions !== "" && (
-                      <div className="col-12 w-100-row p-0">
-                        <div className="w-10 no pb-10">
-                          <i
-                            className="fa fa-info-circle info-circle"
-                            aria-hidden="true"
-                          ></i>
-                        </div>
-                        <div className="w-90 color_black">
-                          (Make the pizza little spicy)
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+                  );
+                })}
             <div className="col-12 w-100-row bdr-top1">
               <div className="col-12 p-0 text-center">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="btn btn_print_kot"
                   onClick={handlePrint}
                 >
@@ -244,6 +243,181 @@ const ListView = ({ kots, station}) => {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+        <div style={{ display: "none" }}>
+          <div className="print_bill" ref={componentRef}>
+            {modalKot && (
+              <table width="100%">
+                <tbody>
+                  <tr>
+                    <td
+                      style={{
+                        textAlign: "center",
+                        padding: "10px",
+                        fontSize: "30px",
+                        color: "#000000",
+                      }}
+                    >
+                      Dine In
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      style={{
+                        textAlign: "center",
+                        padding: "10px",
+                        color: "#000000",
+                        fontSize: "30px",
+                      }}
+                    >
+                      KOT
+                    </td>
+                  </tr>
+
+                  <tr style={{ padding: "0px" }}>
+                    <td
+                      style={{
+                        textAlign: "center",
+                        padding: "10px",
+                        paddingBottom: "0px",
+                        color: "#000000",
+                        borderBottom: "1px dashed rgba(0, 0, 0, 0.5)",
+                        fontSize: "30px",
+                      }}
+                    >
+                      <table width="100%">
+                        <tbody>
+                          <tr>
+                            <td
+                              style={{
+                                textAlign: "left",
+                                padding: "3px 10px",
+                                fontSize: "30px",
+                                color: "#000000",
+                              }}
+                            >
+                              {" "}
+                            </td>
+                            <td
+                              style={{
+                                textAlign: "right",
+                                padding: "3px 10px",
+                                fontSize: "30px",
+                                color: "#000000",
+                              }}
+                            >
+                              <b> {modalKot.tableName}</b>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td
+                              style={{
+                                textAlign: "left",
+                                padding: "3px 10px",
+                                fontSize: "30px",
+                                color: "#000000",
+                              }}
+                            >
+                              {getDate(modalKot.createdOn)}
+                            </td>
+                            <td
+                              style={{
+                                textAlign: "right",
+                                padding: "3px 10px",
+                                fontSize: "30px",
+                                color: "#000000",
+                              }}
+                            >
+                              {modalKot.employee}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td
+                      style={{
+                        textAlign: "center",
+                        padding: "10px",
+                        color: "#000000",
+                        borderBottom: "1px dashed rgba(0, 0,0, 0.5)",
+                        fontSize: "30px",
+                      }}
+                    >
+                      <table width="100%">
+                        <tbody>
+                          <tr>
+                            <td
+                              style={{
+                                textAlign: "left",
+                                padding: "5px 10px 10px 10px",
+                                fontSize: "30px",
+                                color: "#000000",
+                              }}
+                            >
+                              <b>Item</b>
+                            </td>
+                            <td
+                              style={{
+                                textAlign: "center",
+                                padding: "5px 10px 10px 10px",
+                                fontSize: "30px",
+                                color: "#000000",
+                              }}
+                            >
+                              <b>Qty</b>
+                            </td>
+
+                            <td></td>
+                          </tr>
+                          {modalKot.items &&
+                            modalKot.items
+                              .filter((item) => {
+                                let flag = false;
+                                item.station.forEach((sta) => {
+                                  if (station === "") flag = true;
+                                  else if (sta == station) {
+                                    flag = true;
+                                  }
+                                });
+                                return flag;
+                              })
+                              .map((item) => {
+                                return (
+                                  <tr key={item.orderPageId}>
+                                    <td
+                                      style={{
+                                        textAlign: "left",
+                                        padding: "3px 10px",
+                                        fontSize: "30px",
+                                        color: "#000000",
+                                      }}
+                                    >
+                                      {item.name}
+                                    </td>
+                                    <td
+                                      style={{
+                                        textAlign: "center",
+                                        padding: "3px 10px",
+                                        fontSize: "30px",
+                                        color: "#000000",
+                                      }}
+                                    >
+                                      {item.quantity}
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
       </Modal>

@@ -55,3 +55,8 @@
   color: rgb(198, 197, 202);
   border: 1px solid rgb(198, 197, 202);
 }
+
+.threedots:after {
+  content: "\2807";
+  font-size: 30px;
+}

@@ -37,7 +37,6 @@ const KOTPage = () => {
       const querySnapshot = await db
         .collection("settings_station")
         .where("businessId", "==", businessId)
-        .limit(4)
         .get();
       let stations = [];
       querySnapshot.forEach((doc) =>
