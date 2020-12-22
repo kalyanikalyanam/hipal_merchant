@@ -19,8 +19,8 @@ const CardView = ({ kots, station }) => {
         let items = kot.items.filter((item) => {
           let flag = false;
           item.station.forEach((sta) => {
-            if(typeof(station) === 'string'){
-              if (sta.trim() === station.trim())flag = true;
+            if (typeof station === "string") {
+              if (sta.trim() === station.trim()) flag = true;
             }
           });
           return flag;
@@ -153,15 +153,20 @@ const CardView = ({ kots, station }) => {
                         className="fa fa-circle dinein_color"
                         aria-hidden="true"
                       ></i>
-                      <button
-                        type="button"
-                        className="btn btn_print_kot"
-                        onClick={handlePrint}
-                      >
-                        Print
-                      </button>
                       <span>
-                        <i className="fas fa-ellipsis-v"></i>
+                        <div className="dropdowncart">
+                          <button className="dropbtn">
+                            {" "}
+                            <i className="fas fa-ellipsis-v"></i>
+                          </button>
+                          <div className="dropdown-content">
+                            <a href="#" onClick={handlePrint}>
+                              Print
+                            </a>
+                            {/* <a href="#">Link 2</a>
+                            <a href="#">Link 3</a> */}
+                          </div>
+                        </div>
                       </span>
                     </h1>
                   </div>
