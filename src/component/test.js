@@ -59,6 +59,16 @@ class Test extends React.Component {
     console.log(Today);
   };
 
+  clearCollection = () => {
+    const ref = db.collection("kotItems");
+
+    ref.onSnapshot((snapshot) => {
+      snapshot.docs.forEach((doc) => {
+        ref.doc(doc.id).delete();
+      });
+    });
+  };
+
   render() {
     const { open } = this.state;
     return (
@@ -75,6 +85,12 @@ class Test extends React.Component {
             onClick={this.delete}
           >
             delete
+          </div>
+          <div
+            className="btn add_btn_pop_orange addmode_pad m-t-15"
+            onClick={this.clearCollection}
+          >
+            clear KotItems Collection
           </div>
         </div>
       </>
