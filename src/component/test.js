@@ -37,11 +37,11 @@ class Test extends React.Component {
     // yesterday.seconds = yesterday.seconds - 24 * 60 * 60;
     console.log(Today);
     db.collection("kotItems")
-      .where("createdOn", ">=", Today)
+      .where("createdOn", ">", Today)
       .get()
       .then(function (querySnapshote) {
         querySnapshote.forEach(function (doc) {
-          console.log(doc.id, " => ", doc.data());
+          console.log(doc.id, " > ", doc.data());
         });
       })
       .catch(function (error) {
