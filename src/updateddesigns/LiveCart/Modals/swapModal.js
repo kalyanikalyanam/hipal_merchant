@@ -67,15 +67,82 @@ const SwapModal = () => {
             type: "SwapModalHide"
         })
     }
-    const onSubmit = (data) => {
-        console.log(data)
-        if(data.swap_with === "0"){
+    const onSubmit = async (values) => {
+        if(values.swap_with === "0"){
             setError("swap_with", {
                 type: "manual",
                 message: "Table must be selected"
             })
             return
         }
+        const swapTableRef = db
+                        .collection('tables')
+                        .doc(values.swap_with)
+        
+        const swapTable = await swapTableRef.get()
+
+        let currentKotItem = {}
+        currentTable.orders.forEach(item => {
+            if (item.status !== 'NotKot') {
+                if (!currentKotItem[item.kotId]) {
+                    currentKotItem[item.kotId] = [item.orderPageId]
+                }
+                else {
+                    currentKotItem[item.kotId].push(item.orderPageId)
+                }
+            }
+        })
+        let swapKotItem = {}
+        swapTable.data().orders.forEach(item => {
+            if(item.status !== 'NotKot'){
+                if(!swapKotItem[item.kotId]){
+                    swapKotItem[item.kotId] = [item.orderPageId]
+                }
+                else {
+                    swapKotItem[item.kotId].push(item.orderPageId)
+                }
+            }
+        })
+        Object.keys(currentKotItem).forEach(key => {
+            const kotRef = db.collection('kotItems').doc(key)
+            kotRef.update({
+                tableName: swapTable.data().table_name,
+                tableId: values.swap_with
+            })
+        })
+        Object.keys(swapKotItem).forEach(key => {
+            const kotRef = db.collection('kotItems').doc(key)
+            kotRef.update({
+                tableName: currentTable.table_name,
+                tableId: currentTable.id 
+            })
+        })
+        const newSwapData = {
+            billId: currentTable.id,
+            currentEmployee: currentTable.currentEmployee,
+            bill: currentTable.bill,
+            billId: currentTable.billId,
+            liveCart: currentTable.liveCart,
+            liveCartId: currentTable.liveCartId,
+            orderId: currentTable.orderId,
+            orders: currentTable.orders,
+            occupency: currentTable.occupency,
+            customers: currentTable.customers
+        }
+        const newCurrentTableData = {
+            billId: swapTable.data().id,
+            currentEmployee: swapTable.data().currentEmployee,
+            bill: swapTable.data().bill,
+            billId: swapTable.data().billId,
+            liveCart: swapTable.data().liveCart,
+            liveCartId: swapTable.data().liveCartId,
+            orderId: swapTable.data().orderId,
+            orders: swapTable.data().orders,
+            occupency: swapTable.data().occupency,
+            customers: swapTable.data().customers
+        }
+        await swapTableRef.update(newSwapData)
+        await db.collection('tables').doc(currentTable.id).update(newCurrentTableData)
     } 
     return (
         <div className="modal-dialog modal-sm hipal_pop" role="document">

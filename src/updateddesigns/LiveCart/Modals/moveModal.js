@@ -12,7 +12,7 @@ const MoveModal = () => {
     const [currentTable, setCurrentTable] = useState()
     const [tables, setTables] = useState()
 
-    const {handleSubmit, register, getValues, errors} = useForm()
+    const {handleSubmit, register, getValues, errors, setError} = useForm()
     useEffect(() => {
         const getCurrentTable = async () => {
             const current_table = await dbRef.get()
@@ -26,11 +26,15 @@ const MoveModal = () => {
                 .collection("tables")
                 .where("businessId", "==", sessionStorage.getItem("businessId"))
                 .get()
-            const tables = []
-            console.log(currentTable.id)
+            let tables = []
             querySnapshot.forEach(table => {
                 if(currentTable.id !== table.id)
                     tables.push({...table.data(), id: table.id})
+            })
+            tables = tables.filter(table => {
+                if(table.orders.length > 0) return false
+                if(table.status !== 'Vacant') return false
+                return true
             })
             setTables(tables)
         }
@@ -64,14 +68,33 @@ const MoveModal = () => {
         })
     }
     const handleSave = async (values) => {
+        if(values.move_to === "0"){
+            setError("move_to", {
+                type: "manual",
+                message: "Table must be selected"
+            })
+            return
+        }
         const dbRef = db
             .collection('tables')
             .doc(values.move_to)
         const table = await dbRef.get()
         let newTable = table.data()
+        const kotItem = {}
+        currentTable.orders.forEach(item => {
+            if (item.status !== 'NotKot') {
+                if (!kotItem[item.kotId]) {
+                    kotItem[item.kotId] = [item.orderPageId]
+                }
+                else {
+                    kotItem[item.kotId].push(item.orderPageId)
+                }
+            }
+        })
+
         const data = {
             currentEmployee: currentTable.currentEmployee,
-            billID: currentTable.billId === null ? '' : currentTable.billId, 
+            billId: currentTable.billId === null ? '' : currentTable.billId,
             orderId: currentTable.orderId || "",
             liveCartId: currentTable.liveCartId || "",
             liveCart: currentTable.liveCart,
@@ -80,8 +103,28 @@ const MoveModal = () => {
             occupency: currentTable.occupency || "",
             customers: currentTable.customers || []
         }
-        newTable = {...newTable, ...data}
-        dbRef.update(data)
+        newTable = { ...newTable, ...data }
+        console.log(currentTable)
+        console.log(table.data())
+        Object.keys(kotItem).forEach((key) => {
+            const kotRef = db.collection('kotItems').doc(key)
+            kotRef.update({
+                tableName: table.data().table_name,
+                tableId: values.move_to
+            })
+        })
+        await dbRef.update(newTable)
+        await db.collection('tables').doc(currentTable.id).update({
+            currentEmployee:"", 
+            billId: "", 
+            orderId:"", 
+            liveCartId:"", 
+            liveCart: [],
+            orders:[], 
+            bill: [],
+            occupency: "",
+            customers: []
+        })
     }
     return (
         <div className="modal-dialog modal-sm hipal_pop" role="document">
@@ -144,6 +187,7 @@ const MoveModal = () => {
                                                 >{`Table ${table.table_name}`}</option>
                                             ))}
                                     </select>
+                                    {errors.move_to && <div>{errors.move_to.message}</div>}
                                     {selectedTableRender}
                                 </div>
                             </div>
