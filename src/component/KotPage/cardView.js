@@ -121,6 +121,45 @@ const CardView = ({ kots, station }) => {
       orders,
     });
   };
+  const handleCheckDelete = async (it, kot) => {
+    console.log("handleCheckDelete");
+    console.log(it.id + "," + it.name);
+    console.log(it);
+    let arr = [];
+    const obj = it;
+    let k = 0;
+    for (let i = 0; i < kot.items.length; i++) {
+      if (kot.items[i].id === it.id) {
+        console.log("before", arr);
+        arr.splice(i, 1);
+        console.log("after", arr);
+        k = 1;
+        break;
+      }
+    }
+    if (k == 0) {
+      arr.push(obj);
+      console.log(arr);
+    }
+    // arr.push(obj);
+    // console.log(arr);
+    // console.log(kot.items.length);
+
+    // for (let i = 0; i < kot.items.length; i++) {}
+  };
+
+  const handleDelete = async () => {
+    console.log("handleDelete");
+  };
+
+  const handleCheckItemNotAvailable = async (it, kot) => {
+    console.log("handleCheckItemNotAvailable");
+    console.log(it);
+  };
+
+  const handleItemNotAvailable = async () => {
+    console.log("handleItemNotAvailable");
+  };
 
   const openModal = (kot) => {
     setModalKot(kot);
@@ -649,7 +688,15 @@ const CardView = ({ kots, station }) => {
                       <div className="col-12 w-100-row bdr-top1">
                         <div className="w-10 no">
                           <span className="check-icon">
-                            <i className="fa fa" aria-hidden="true"></i>
+                            <i
+                              className={
+                                item.status === "delete"
+                                  ? "fa fa-check"
+                                  : "fa fa"
+                              }
+                              onClick={() => handleCheckDelete(item, modalKot)}
+                              aria-hidden="true"
+                            ></i>
                           </span>
                         </div>
                         <div className="w-80 table_kotdata">
@@ -675,6 +722,17 @@ const CardView = ({ kots, station }) => {
                     </div>
                   );
                 })}
+            <div className="col-12 w-100-row bdr-top1">
+              <div className="col-12 p-0 text-center">
+                <button
+                  type="button"
+                  className="btn btn_print_kot_delete"
+                  onClick={handleDelete}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </Modal>
@@ -721,7 +779,17 @@ const CardView = ({ kots, station }) => {
                       <div className="col-12 w-100-row bdr-top1">
                         <div className="w-10 no">
                           <span className="check-icon">
-                            <i className="fa fa" aria-hidden="true"></i>
+                            <i
+                              className={
+                                item.status === "delete"
+                                  ? "fa fa-check"
+                                  : "fa fa"
+                              }
+                              onClick={() =>
+                                handleCheckItemNotAvailable(item, modalKot)
+                              }
+                              aria-hidden="true"
+                            ></i>
                           </span>
                         </div>
                         <div className="w-80 table_kotdata">
@@ -747,6 +815,17 @@ const CardView = ({ kots, station }) => {
                     </div>
                   );
                 })}
+            <div className="col-12 w-100-row bdr-top1">
+              <div className="col-12 p-0 text-center">
+                <button
+                  type="button"
+                  className="btn btn_print_kot_item-not-available"
+                  onClick={handleItemNotAvailable}
+                >
+                  Item Not Available
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </Modal>

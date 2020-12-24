@@ -118,7 +118,7 @@
 .kot-table_row_history {
   float: left;
   width: 100%;
-  background: #fff;
+
   border-radius: 7.5px;
   border: solid 1px #e8e8e8;
 }
@@ -185,4 +185,16 @@
 
 .kot-table_row_history .databox.td8 {
   width: 10%;
+}
+
+.btn_print_kot_delete {
+  background: rgb(209, 25, 25);
+  color: #fff;
+  padding: 7.5px 30px;
+}
+
+.btn_print_kot_item-not-available {
+  background: rgb(209, 129, 25);
+  color: #fff;
+  padding: 7.5px 30px;
 }
