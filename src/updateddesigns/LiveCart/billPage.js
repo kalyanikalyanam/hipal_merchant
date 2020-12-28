@@ -13,6 +13,7 @@ const BillPage = () => {
   const [businessLogo, setBusinessLogo] = useState();
   const [total, setTotal] = useState(0);
   const [subTotal, setSubTotal] = useState(0);
+  const [subTotalDiscount, setSubTotalDiscount] = useState(0);
   const [tax, setTax] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [table, setTable] = useState();
@@ -74,21 +75,24 @@ const BillPage = () => {
       let bill = table.bill;
       let subTotal = 0,
         discount = 0,
-        tax = 0;
+        tax = 0,
+        subTotalDiscount = 0;
       if (!bill) bill = [];
       bill.forEach((item) => {
         subTotal += item.price * item.quantity;
         discount += ((item.price * item.discount) / 100) * item.quantity;
         tax += ((item.price * item.tax) / 100) * item.quantity;
+        subTotalDiscount += (subTotal * 10) / 100;
       });
       setSubTotal(subTotal);
       setTax(tax);
       setDiscount(discount);
+      setSubTotalDiscount(subTotalDiscount);
     }
   }, [table]);
 
   useEffect(() => {
-    let total = subTotal + tax - discount;
+    let total = subTotal - subTotalDiscount + tax - discount;
     let temp = total;
     total += (total * gst) / 100;
     total += (temp * cGst) / 100;
@@ -119,9 +123,9 @@ const BillPage = () => {
     </tr>
   );
   const handleSettle = async () => {
-    if(table.bill.length === 0){
-      alert('no Items in the bill')
-      return
+    if (table.bill.length === 0) {
+      alert("no Items in the bill");
+      return;
     }
     if (table.status.split(" ")[0] === "Merge") {
       return;
@@ -411,6 +415,15 @@ const BillPage = () => {
                       </tr>
                       <tr>
                         <td style={{ textAlign: "left", padding: "3px 10px" }}>
+                          Subtotal Discount
+                        </td>
+                        <td style={{ textAlign: "right", padding: "3px 10px" }}>
+                          ₹ {subTotalDiscount && subTotalDiscount}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td style={{ textAlign: "left", padding: "3px 10px" }}>
                           Discount
                         </td>
                         <td style={{ textAlign: "right", padding: "3px 10px" }}>
@@ -433,7 +446,6 @@ const BillPage = () => {
                           -
                         </td>
                       </tr>
-
                       <tr>
                         <td style={{ textAlign: "left", padding: "3px 10px" }}>
                           CGST

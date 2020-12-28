@@ -40,8 +40,8 @@ const Orders = () => {
       orderId: table.data().orderId,
       tableId: table.id,
       type: "DineIn",
-      status: 'notServed',
-    } 
+      status: "notServed",
+    };
 
     await db.collection("kotItems").doc(kotId.toString()).set(kot);
     dispatch({
@@ -50,6 +50,12 @@ const Orders = () => {
     });
     await dbRef.update({
       orders: order,
+    });
+  };
+
+  const handleTotalDiscount = async () => {
+    dispatch({
+      type: "TotalDiscountModalShow",
     });
   };
 
@@ -67,10 +73,10 @@ const Orders = () => {
           setCartId(table.data().liveCartId);
         });
       }
-    }
-    getOrders()
-    return unsubscribe
-  }, [dbRef])
+    };
+    getOrders();
+    return unsubscribe;
+  }, [dbRef]);
 
   useEffect(() => {
     if (orderList) {
@@ -141,6 +147,9 @@ const Orders = () => {
             </div>
             <div className="kot_box" onClick={handleKOTCart}>
               <span className="btn kot">KOT</span>
+            </div>
+            <div className="kot_box" onClick={handleTotalDiscount}>
+              <span className="btn kot"> Discount</span>
             </div>
           </div>
           {orderList &&

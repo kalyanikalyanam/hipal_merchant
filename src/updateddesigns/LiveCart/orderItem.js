@@ -3,20 +3,18 @@ import { useForm } from "react-hook-form";
 import firebase, { db } from "../../config";
 import { dispatchContext } from "./contexts";
 
-const Select = ({ item, deleteItem}) => {
+const Select = ({ item, deleteItem }) => {
   return (
     <>
       <div>
-        <select
-          name="status"
-          value={item.status}
-        >
+        <select name="status" value={item.status}>
           <option value="cooking">Cooking</option>
           <option value="served">Served</option>
         </select>
       </div>
       {(sessionStorage.getItem("role") == "Merchant" ||
-      sessionStorage.getItem("deleteitemafterkot") == "Yes") && item.status !== 'served' ? (
+        sessionStorage.getItem("deleteitemafterkot") == "Yes") &&
+      item.status !== "served" ? (
         <div
           className="edit"
           data-toggle="modal"
@@ -47,14 +45,14 @@ const OrderItem = ({ item, index, dbRef }) => {
     let table = await dbRef.get();
     const businessId = sessionStorage.getItem("businessId");
     var order = table.data().orders;
-    var kotItems = []    
-    let kotId = Math.floor(Math.random()*1000000000)
+    var kotItems = [];
+    let kotId = Math.floor(Math.random() * 1000000000);
     for (var i = 0; i < order.length; i++) {
       let it = order[i];
       if (it.orderPageId === item.orderPageId) {
         it.status = "cooking";
-        it.kotId = kotId
-        kotItems.push(it)
+        it.kotId = kotId;
+        kotItems.push(it);
         break;
       }
     }
@@ -67,10 +65,10 @@ const OrderItem = ({ item, index, dbRef }) => {
       tableId: table.id,
       orderId: table.data().orderId,
       type: "DineIn",
-      status: 'notServed'
-    } 
+      status: "notServed",
+    };
 
-    await db.collection('kotItems').doc(kotId.toString()).set(kot)
+    await db.collection("kotItems").doc(kotId.toString()).set(kot);
 
     dispatch({
       type: "KOTModalShow",
@@ -80,9 +78,7 @@ const OrderItem = ({ item, index, dbRef }) => {
     await dbRef.update({
       orders: order,
     });
-
-    
-  }
+  };
   const deleteItem = (item) => {
     if (item.status !== "NotKot") {
       dispatch({

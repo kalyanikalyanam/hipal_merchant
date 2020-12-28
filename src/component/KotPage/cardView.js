@@ -122,30 +122,32 @@ const CardView = ({ kots, station }) => {
     });
   };
   const handleCheckDelete = async (it, kot) => {
-    console.log("handleCheckDelete");
-    console.log(it.id + "," + it.name);
-    console.log(it);
-    let arr = [];
-    const obj = it;
-    let k = 0;
-    for (let i = 0; i < kot.items.length; i++) {
-      if (kot.items[i].id === it.id) {
-        console.log("before", arr);
-        arr.splice(i, 1);
-        console.log("after", arr);
-        k = 1;
-        break;
-      }
-    }
-    if (k == 0) {
-      arr.push(obj);
-      console.log(arr);
-    }
-    // arr.push(obj);
-    // console.log(arr);
-    // console.log(kot.items.length);
+    let flag = false;
+    let newKot = kot;
+    let newItems = newKot.items;
 
-    // for (let i = 0; i < kot.items.length; i++) {}
+    newItems.forEach((item) => {
+      if (item.id === it.id) {
+        item.status = "delete";
+      }
+    });
+
+    await db.collection("kotItems").doc(kot.id).update(newKot);
+
+    const ref = db.collection("tables").doc(kot.tableId);
+
+    const table = await ref.get();
+
+    let orders = table.data().orders;
+    orders.forEach((item) => {
+      if (item.orderPageId === it.orderPageId) {
+        if (flag) item.status = "cooking";
+        else item.status = "delete";
+      }
+    });
+    ref.update({
+      orders,
+    });
   };
 
   const handleDelete = async () => {

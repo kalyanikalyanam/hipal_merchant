@@ -8,14 +8,14 @@ const EditModal = ({ item, dbRef, edit }) => {
   const dispatch = useContext(dispatchContext);
   const [authenticated, setAuthenticated] = useState(false);
   useEffect(() => {
-    console.log(item)
+    console.log(item);
     reset({
       quantity: item.quantity,
       status: item.status,
       portion: item.portion,
       item_discount_reason: item.discountReasons || "",
       item_discount: `${item.discount}`,
-      item_instructions: item.instructions || ""
+      item_instructions: item.instructions || "",
     });
   }, []);
   const onClose = () => {
@@ -156,16 +156,21 @@ const EditModal = ({ item, dbRef, edit }) => {
                       </label>
                     </div>
                     <div className="col-12 col-md-6">
-                      <select
+                      <input
                         name="item_discount"
+                        pattern="\d+"
                         className="form-control edit_product"
                         ref={register}
-                      >
-                        <option value="0">0%</option>
+                        type="number"
+                        id="text-input"
+                        min="0"
+                        max="100"
+                      />
+                      {/* <option value="0">0%</option>
                         <option value="10">10%</option>
                         <option value="15">15%</option>
                         <option value="20">20%</option>
-                      </select>
+                      </select> */}
                     </div>
                   </div>
                 </div>
