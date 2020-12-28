@@ -79,13 +79,13 @@ const MergeModal = () => {
         liveCart1.push(...liveCart2)
         let newTableData = {
             status: `Merge ${thisTable.data().table_name} ${mergingTable.data().table_name}` ,
-            // bill: bill1,
-            // orders:orders1,
-            // liveCart: liveCart1 
+            bill: bill1,
+            orders:orders1,
+            liveCart: liveCart1 
         }
-        // liveCartId && (newTableData.liveCartId = liveCartId )
-        // orderId && (newTableData.orderId = orderId)
-        // billId && (newTableData.billId = orderId)
+        liveCartId && (newTableData.liveCartId = liveCartId )
+        orderId && (newTableData.orderId = orderId)
+        billId && (newTableData.billId = orderId)
 
         dbRef.update(newTableData)
         db.collection("tables").doc(selectedTable).update(newTableData)

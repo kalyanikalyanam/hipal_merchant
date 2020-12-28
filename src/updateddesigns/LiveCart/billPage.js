@@ -127,9 +127,6 @@ const BillPage = () => {
       alert("no Items in the bill");
       return;
     }
-    if (table.status.split(" ")[0] === "Merge") {
-      return;
-    }
     if (balance.balance != 0) {
       alert("Balance Must be 0 before Settling");
     } else {
