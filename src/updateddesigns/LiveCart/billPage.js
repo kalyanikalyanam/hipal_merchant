@@ -13,7 +13,7 @@ const BillPage = () => {
   const [businessLogo, setBusinessLogo] = useState();
   const [total, setTotal] = useState(0);
   const [subTotal, setSubTotal] = useState(0);
-  const [subTotalDiscount, setSubTotalDiscount] = useState(0);
+  const [totalDiscount, setTotalDiscount] = useState(0);
   const [tax, setTax] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [table, setTable] = useState();
@@ -75,24 +75,26 @@ const BillPage = () => {
       let bill = table.bill;
       let subTotal = 0,
         discount = 0,
-        tax = 0,
-        subTotalDiscount = 0;
+        tax = 0;
       if (!bill) bill = [];
       bill.forEach((item) => {
         subTotal += item.price * item.quantity;
         discount += ((item.price * item.discount) / 100) * item.quantity;
         tax += ((item.price * item.tax) / 100) * item.quantity;
-        subTotalDiscount += (subTotal * 10) / 100;
       });
+      let totalDiscount = 0;
+      totalDiscount =
+        (subTotal * parseFloat(table.total_discount || 0).toFixed(2) || "0") /
+        100;
       setSubTotal(subTotal);
       setTax(tax);
       setDiscount(discount);
-      setSubTotalDiscount(subTotalDiscount);
+      setTotalDiscount(totalDiscount);
     }
   }, [table]);
 
   useEffect(() => {
-    let total = subTotal - subTotalDiscount + tax - discount;
+    let total = subTotal + tax - discount - totalDiscount;
     let temp = total;
     total += (total * gst) / 100;
     total += (temp * cGst) / 100;
@@ -142,6 +144,9 @@ const BillPage = () => {
         orderId: table.orderId,
         customers: table.customers,
         tablename: table.table_name,
+        tableTotalDiscount: table.total_discount
+          ? table.total_discount
+          : "0.00",
         businessId: businessId,
         gst: gst,
         cgst: cGst,
@@ -192,6 +197,7 @@ const BillPage = () => {
         billId: null,
         orderId: null,
         liveCartId: null,
+        total_discount: "0.00",
       });
       dispatch({
         type: "setBillPage",
@@ -415,10 +421,15 @@ const BillPage = () => {
                       </tr>
                       <tr>
                         <td style={{ textAlign: "left", padding: "3px 10px" }}>
-                          Subtotal Discount
+                          Total Discount(
+                          {parseFloat(
+                            (table && table.total_discount) || 0
+                          ).toFixed(2) || "0"}
+                          %)
+                          {/* ({table && table.total_discount}%) */}
                         </td>
                         <td style={{ textAlign: "right", padding: "3px 10px" }}>
-                          ₹ {subTotalDiscount && subTotalDiscount}
+                          ₹ {totalDiscount && totalDiscount}
                         </td>
                       </tr>
 

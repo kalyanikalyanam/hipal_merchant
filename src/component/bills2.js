@@ -77,9 +77,14 @@ const Bills = () => {
             );
             tax += parseFloat(((item.price * item.tax) / 100) * item.quantity);
           });
-        let total = subTotal + tax - discount;
+        let totalDiscount = 0;
+
+        totalDiscount =
+          (subTotal * parseFloat(bill.tableTotalDiscount || 0).toFixed(2) ||
+            "0") / 100;
+        let total = subTotal + tax - discount - totalDiscount;
         let temp = total;
-        console.log(bill.cgst);
+
         total += (total * bill.gst) / 100;
         total += (temp * bill.cgst) / 100;
         grandTotal += Math.round(total);
@@ -104,7 +109,7 @@ const Bills = () => {
             PaymentDetails[key] += parseInt(bill.PaymentDetails[key]);
         });
       });
-    console.log();
+
     setPaymentDetails({ ...paymentDetails, ...PaymentDetails });
     setGrandTotal(grandTotal);
   }, [bills]);
@@ -217,8 +222,12 @@ const Bills = () => {
           );
           tax += parseFloat(((item.price * item.tax) / 100) * item.quantity);
         });
+      let totalDiscount = 0;
 
-      let total = subTotal + tax - discount;
+      totalDiscount =
+        (subTotal * parseFloat(bill.tableTotalDiscount || 0).toFixed(2) ||
+          "0") / 100;
+      let total = subTotal + tax - discount - totalDiscount;
       let temp = total;
       // total += (total * 2.5) / 100;
       // total += (temp * 2.5) / 100;

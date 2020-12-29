@@ -19,6 +19,7 @@ import EditModal from "./Modals/editModal";
 import AddCustomerModal from "./Modals/addCustomerModal";
 import AddCustomerForm from "./Modals/addCustomerFormModal";
 import KotModal from "./Modals/kotModal";
+import TotalDiscountModal from "./Modals/totalDiscountModal";
 import BillModal from "./Modals/billModal";
 import MoveModal from "./Modals/moveModal";
 import Loader from "../../component/Loader";
@@ -26,7 +27,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import MergeModal from "./Modals/mergeModal";
 import SwapModal from "./Modals/swapModal";
-import DeleteModal from './Modals/deleteModal'
+import DeleteModal from "./Modals/deleteModal";
 
 const MainPage = (props) => {
   const [reducerState, dispatch] = useReducer(reducer, initState);
@@ -170,6 +171,16 @@ const MainPage = (props) => {
                     />
                   </BootstrapModal>
                   <BootstrapModal
+                    show={reducerState.totalDiscountModal}
+                    onHide={() => {
+                      dispatch({
+                        type: "TotalDiscountModalHide",
+                      });
+                    }}
+                  >
+                    <TotalDiscountModal dbRef={dbRef} />
+                  </BootstrapModal>
+                  <BootstrapModal
                     show={reducerState.customerToTableModal}
                     onHide={() => {
                       dispatch({
@@ -236,12 +247,12 @@ const MainPage = (props) => {
                     show={reducerState.deleteModal}
                     onHide={() => {
                       dispatch({
-                        type: "DeleteModalHide"
-                      })
+                        type: "DeleteModalHide",
+                      });
                     }}
-                    >
-                      <DeleteModal data={reducerState.deleteModalData} />
-                    </BootstrapModal>
+                  >
+                    <DeleteModal data={reducerState.deleteModalData} />
+                  </BootstrapModal>
                 </balanceContext.Provider>
               </tableContext.Provider>
             </stateContext.Provider>

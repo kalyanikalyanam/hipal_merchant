@@ -311,6 +311,44 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                             style={{
                               textAlign: "left",
                               padding: "3px 10px",
+                              fontSize: "32px",
+                              color: "#000000",
+                            }}
+                          >
+                            <b>
+                              Total Discount ({" "}
+                              {parseFloat(
+                                (data && data.table.total_discount) || 0
+                              ).toFixed(2) || "0"}
+                              % )
+                            </b>
+                          </td>
+                          <td
+                            style={{
+                              textAlign: "right",
+                              padding: "3px 10px",
+                              fontSize: "32px",
+                              color: "#000000",
+                            }}
+                          >
+                            <b>
+                              {" "}
+                              {/* {data && data.table.total_discount}% */}₹
+                              {((data &&
+                                data.subTotal *
+                                  parseFloat(
+                                    (data && data.table.total_discount) || 0
+                                  ).toFixed(2)) ||
+                                "0") / 100}
+                            </b>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td
+                            style={{
+                              textAlign: "left",
+                              padding: "3px 10px",
                               fontSize: "33px",
                               color: "#000000",
                             }}
@@ -667,6 +705,24 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                       </td>
                       <td style={{ textAlign: "right", padding: "3px 10px" }}>
                         ₹{data && data.subTotal}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ textAlign: "left", padding: "3px 10px" }}>
+                        Total Discount (
+                        {parseFloat(
+                          (data && data.table.total_discount) || 0
+                        ).toFixed(2) || "0"}
+                        %)
+                      </td>
+                      <td style={{ textAlign: "right", padding: "3px 10px" }}>
+                        ₹
+                        {((data &&
+                          data.subTotal *
+                            parseFloat(
+                              (data && data.table.total_discount) || 0
+                            ).toFixed(2)) ||
+                          "0") / 100}
                       </td>
                     </tr>
                     <tr>

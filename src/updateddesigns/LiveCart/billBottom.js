@@ -50,12 +50,12 @@ const BillBottom = () => {
     var temp = 0;
     for (var key in state) {
       if (state.hasOwnProperty(key)) {
-        if(state[key] !== ""){
+        if (state[key] !== "") {
           temp += parseInt(state[key]);
         }
       }
     }
-    var newBalance = parseInt(total- temp);
+    var newBalance = parseInt(total - temp);
     dispatch({
       type: "PaymentDetails",
       details: state,
@@ -66,10 +66,10 @@ const BillBottom = () => {
         gst: balance.gst,
         cGst: balance.cGst,
         balance: newBalance,
-        total: total
+        total: total,
       },
     });
-  }, [state]);
+  }, [state, table]);
   const paymentMethods = [
     "Cash",
     "Card",

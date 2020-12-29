@@ -12,6 +12,7 @@ const ViewBill = React.forwardRef((props, ref) => {
   const [total, setTotal] = useState(0);
   const [subTotal, setSubTotal] = useState(0);
   const [discount, setDiscount] = useState(0);
+  const [totalDiscount, setTotalDiscount] = useState(0);
   const [tax, setTax] = useState(0);
 
   useEffect(() => {
@@ -40,7 +41,11 @@ const ViewBill = React.forwardRef((props, ref) => {
         discount += ((item.price * item.discount) / 100) * item.quantity;
         tax += ((item.price * item.tax) / 100) * item.quantity;
       });
-    let total = subTotal + tax - discount;
+    let totalDiscount = 0;
+    totalDiscount =
+      (subTotal * parseFloat(state.tableTotalDiscount || 0).toFixed(2) || "0") /
+      100;
+    let total = subTotal + tax - discount - totalDiscount;
     let temp = total;
     total += (total * state.gst) / 100;
     total += (temp * state.cgst) / 100;
@@ -50,6 +55,7 @@ const ViewBill = React.forwardRef((props, ref) => {
     setDiscount(discount);
 
     setTotal(total);
+    setTotalDiscount(totalDiscount);
     console.log(subTotal);
   }, [state]);
 
@@ -229,6 +235,15 @@ const ViewBill = React.forwardRef((props, ref) => {
                 </tr>
                 <tr>
                   <td style={{ textAlign: "left", padding: "3px 30px" }}>
+                    Total Discount({state.tableTotalDiscount}%)
+                  </td>
+                  <td style={{ textAlign: "right", padding: "3px 30px" }}>
+                    ₹ {totalDiscount}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style={{ textAlign: "left", padding: "3px 30px" }}>
                     Discount
                   </td>
                   <td style={{ textAlign: "right", padding: "3px 30px" }}>
@@ -249,7 +264,6 @@ const ViewBill = React.forwardRef((props, ref) => {
                   </td>
                   <td style={{ textAlign: "right", padding: "3px 30px" }}>-</td>
                 </tr>
-
                 <tr>
                   <td style={{ textAlign: "left", padding: "3px 30px" }}>
                     CGST
@@ -571,6 +585,27 @@ const ViewBill = React.forwardRef((props, ref) => {
                           color: "#000000",
                         }}
                       >
+                        Total Discount( ({state.tableTotalDiscount}%))
+                      </td>
+                      <td
+                        style={{
+                          textAlign: "right",
+                          padding: "3px 30px",
+                          color: "#000000",
+                        }}
+                      >
+                        ₹ {totalDiscount}
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td
+                        style={{
+                          textAlign: "left",
+                          padding: "3px 30px",
+                          color: "#000000",
+                        }}
+                      >
                         Discount
                       </td>
                       <td
@@ -623,7 +658,6 @@ const ViewBill = React.forwardRef((props, ref) => {
                         -
                       </td>
                     </tr>
-
                     <tr>
                       <td
                         style={{

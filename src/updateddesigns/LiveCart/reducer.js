@@ -1,102 +1,129 @@
-import { AccordionToggle } from "react-bootstrap"
+import { AccordionToggle } from "react-bootstrap";
 
 const updateObject = (state, updatedProps) => {
-    return {...state ,... updatedProps}
-}
+  return { ...state, ...updatedProps };
+};
 
 export const initState = {
-    editModal: false,
-    kotModal: false,
-    customerToTableModal: false,
-    addUserModal: false,
-    advacedOptionModal: false,
-    moveModal: false,
-    mergeModal: false,
-    swapModal: false,
-    billViewModal: false,
-    setBillPage: 1,
-    kotItems: [],
-    liveCartNotification: false,
-    deleteModal: true,
-    balance: 0,
-    deleteModal: null
-}
+  editModal: false,
+  totalDiscountModal: false,
+  kotModal: false,
+  customerToTableModal: false,
+  addUserModal: false,
+  advacedOptionModal: false,
+  moveModal: false,
+  mergeModal: false,
+  swapModal: false,
+  billViewModal: false,
+  setBillPage: 1,
+  kotItems: [],
+  liveCartNotification: false,
+  deleteModal: true,
+  balance: 0,
+  deleteModal: null,
+};
 
 export const reducer = (state, action) => {
-    switch(action.type){
-        case "EditModalShow":
-            return updateObject(state, {editModal: true, editModalItem: action.item, edit: action.edit})
-        case "EditModalHide":
-            return updateObject(state, {editModal: false, editModalItem: null, edit: action.edit})
+  switch (action.type) {
+    case "EditModalShow":
+      return updateObject(state, {
+        editModal: true,
+        editModalItem: action.item,
+        edit: action.edit,
+      });
+    case "EditModalHide":
+      return updateObject(state, {
+        editModal: false,
+        editModalItem: null,
+        edit: action.edit,
+      });
 
-        case "KOTModalShow":
-            return updateObject(state, {kotModal: true, kotItems: action.items})
-        case "KOTModalHide":
-            return updateObject(state, {kotModal: false})
+    case "TotalDiscountModalShow":
+      return updateObject(state, {
+        totalDiscountModal: true,
+      });
+    case "TotalDiscountModalHide":
+      return updateObject(state, {
+        totalDiscountModal: false,
+      });
 
-        case "CustomerToTableModalShow":
-            return updateObject(state, {customerToTableModal: true})
-        case "CustomerToTableModalHide":
-            return updateObject(state, {customerToTableModal: false})
+    case "KOTModalShow":
+      return updateObject(state, { kotModal: true, kotItems: action.items });
+    case "KOTModalHide":
+      return updateObject(state, { kotModal: false });
 
-        case "AddUserModalShow":
-            return updateObject(state, {addUserModal: true})
-        case "AddUserModalHide":
-            return updateObject(state, {addUserModal: false})
+    case "CustomerToTableModalShow":
+      return updateObject(state, { customerToTableModal: true });
+    case "CustomerToTableModalHide":
+      return updateObject(state, { customerToTableModal: false });
 
-        case "AdvanceOptionsModalShow":
-            return updateObject(state, {advacedOptionModal: true})
-        case "AdvanceOptionsModalHide":
-            return updateObject(state, {advacedOptionModal: false})
-        
-        case "MoveModalShow":
-            return updateObject(state, {moveModal: true})
-        case "MoveModalHide":
-            return updateObject(state, {moveModal: false})
+    case "AddUserModalShow":
+      return updateObject(state, { addUserModal: true });
+    case "AddUserModalHide":
+      return updateObject(state, { addUserModal: false });
 
-        case "MergeModalShow":
-            return updateObject(state, {mergeModal: true})
-        case "MergeModalHide":
-            return updateObject(state, {mergeModal: false})
+    case "AdvanceOptionsModalShow":
+      return updateObject(state, { advacedOptionModal: true });
+    case "AdvanceOptionsModalHide":
+      return updateObject(state, { advacedOptionModal: false });
 
-        case "SwapModalShow":
-            return updateObject(state, {swapModal: true})
-        case "SwapModalHide":
-            return updateObject(state, {swapModal: false})
+    case "MoveModalShow":
+      return updateObject(state, { moveModal: true });
+    case "MoveModalHide":
+      return updateObject(state, { moveModal: false });
 
-        case "BillViewModalShow":
-            return updateObject(state, {billViewModal: true, billData: action.data})
-        case "BillViewModalHide":
-            return updateObject(state, {billViewModal: false, billData: null})
+    case "MergeModalShow":
+      return updateObject(state, { mergeModal: true });
+    case "MergeModalHide":
+      return updateObject(state, { mergeModal: false });
 
-        case "setBillPage":
-            return updateObject(state, {setBillPage: action.select})
-        
-        case "SetBalance":
-            return updateObject(state, {balance: action.balance})
-        case "PaymentDetails":
-            return updateObject(state, {details: action.details})
+    case "SwapModalShow":
+      return updateObject(state, { swapModal: true });
+    case "SwapModalHide":
+      return updateObject(state, { swapModal: false });
 
-        case "MergeModalShow":
-            return updateObject(state, {mergeModal: true})
-        case "MergeModalHide":
-            return updateObject(state, {mergeModal: false})
+    case "BillViewModalShow":
+      return updateObject(state, {
+        billViewModal: true,
+        billData: action.data,
+      });
+    case "BillViewModalHide":
+      return updateObject(state, { billViewModal: false, billData: null });
 
-        case "MoveModalShow":
-            return updateObject(state, {moveModal: true})
-        case "MoveModalHide":
-            return updateObject(state, {moveModal: false})
+    case "setBillPage":
+      return updateObject(state, { setBillPage: action.select });
 
-        case "SwapModalShow":
-            return updateObject(state, {swapModal: true})
-        case "SwapModalHide":
-            return updateObject(state, {swapModal: false})
-        case "DeleteModalShow":
-            return updateObject(state, {deleteModal: true, deleteModalData:action.item})
-        case "DeleteModalHide":
-            return updateObject(state, {deleteModal: false, deleteModalData: null})
+    case "SetBalance":
+      return updateObject(state, { balance: action.balance });
+    case "PaymentDetails":
+      return updateObject(state, { details: action.details });
 
-        default: return state
+    case "MergeModalShow":
+      return updateObject(state, { mergeModal: true });
+    case "MergeModalHide":
+      return updateObject(state, { mergeModal: false });
 
-    }
-}
+    case "MoveModalShow":
+      return updateObject(state, { moveModal: true });
+    case "MoveModalHide":
+      return updateObject(state, { moveModal: false });
+
+    case "SwapModalShow":
+      return updateObject(state, { swapModal: true });
+    case "SwapModalHide":
+      return updateObject(state, { swapModal: false });
+    case "DeleteModalShow":
+      return updateObject(state, {
+        deleteModal: true,
+        deleteModalData: action.item,
+      });
+    case "DeleteModalHide":
+      return updateObject(state, {
+        deleteModal: false,
+        deleteModalData: null,
+      });
+
+    default:
+      return state;
+  }
+};
