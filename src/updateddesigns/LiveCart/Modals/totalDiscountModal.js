@@ -7,7 +7,20 @@ const TotalDiscountModal = ({ dbRef }) => {
   const { register, handleSubmit, errors, reset, setValue } = useForm();
   const dispatch = useContext(dispatchContext);
   const [authenticated, setAuthenticated] = useState(false);
-
+  useEffect(() => {
+    if (dbRef) {
+      const setValues = async () => {
+        const data = await dbRef.get();
+        if (data.data().total_discount !== "") {
+          setValue("total_discount", data.data().total_discount);
+        }
+        if (data.data().total_discount == "") {
+          setValue("total_discount", 0);
+        }
+      };
+      setValues();
+    }
+  }, [dbRef]);
   const onClose = () => {
     dispatch({
       type: "TotalDiscountModalHide",
