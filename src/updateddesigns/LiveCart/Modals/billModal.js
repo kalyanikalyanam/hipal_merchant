@@ -303,7 +303,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                               color: "#000000",
                             }}
                           >
-                            <b> ₹ {data && data.subTotal}</b>
+                            <b> ₹ {data && data.subTotalWithDiscount}</b>
                           </td>
                         </tr>
                         <tr>
@@ -344,7 +344,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                           </td>
                         </tr>
 
-                        <tr>
+                        {/* <tr>
                           <td
                             style={{
                               textAlign: "left",
@@ -365,7 +365,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                           >
                             <b> {data ? data.discount : `-`}</b>
                           </td>
-                        </tr>
+                        </tr> */}
                         <tr>
                           <td
                             style={{
@@ -704,7 +704,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                         Subtotal
                       </td>
                       <td style={{ textAlign: "right", padding: "3px 10px" }}>
-                        ₹{data && data.subTotal}
+                        ₹{data && data.subTotalWithDiscount}
                       </td>
                     </tr>
                     <tr>
@@ -725,14 +725,14 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                           "0") / 100}
                       </td>
                     </tr>
-                    <tr>
+                    {/* <tr>
                       <td style={{ textAlign: "left", padding: "3px 10px" }}>
                         Discount
                       </td>
                       <td style={{ textAlign: "right", padding: "3px 10px" }}>
                         {data ? data.discount : `-`}
                       </td>
-                    </tr>
+                    </tr> */}
                     <tr>
                       <td style={{ textAlign: "left", padding: "3px 10px" }}>
                         Extra charges

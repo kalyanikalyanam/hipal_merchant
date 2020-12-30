@@ -10,6 +10,7 @@ const Select = ({ item, deleteItem }) => {
         <select name="status" value={item.status}>
           <option value="cooking">Cooking</option>
           <option value="served">Served</option>
+          <option value="delete">Delete</option>
         </select>
       </div>
       {(sessionStorage.getItem("role") == "Merchant" ||

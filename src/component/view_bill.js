@@ -13,6 +13,7 @@ const ViewBill = React.forwardRef((props, ref) => {
   const [subTotal, setSubTotal] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState(0);
+  const [subTotalWithDiscount, setSubTotalWithDiscount] = useState(0);
   const [tax, setTax] = useState(0);
 
   useEffect(() => {
@@ -39,13 +40,21 @@ const ViewBill = React.forwardRef((props, ref) => {
       state.bill.forEach((item) => {
         subTotal += item.price * item.quantity;
         discount += ((item.price * item.discount) / 100) * item.quantity;
-        tax += ((item.price * item.tax) / 100) * item.quantity;
+        tax += parseFloat(
+          ((item.price - (item.price * item.discount) / 100) *
+            item.quantity *
+            item.tax) /
+            100
+        );
+        // tax += ((item.price * item.tax) / 100) * item.quantity;
       });
+    let subTotalWithDiscount = 0;
+    subTotalWithDiscount = subTotal - discount;
     let totalDiscount = 0;
     totalDiscount =
-      (subTotal * parseFloat(state.tableTotalDiscount || 0).toFixed(2) || "0") /
-      100;
-    let total = subTotal + tax - discount - totalDiscount;
+      (subTotalWithDiscount *
+        parseFloat(state.tableTotalDiscount || 0).toFixed(2) || "0") / 100;
+    let total = subTotalWithDiscount + tax - totalDiscount;
     let temp = total;
     total += (total * state.gst) / 100;
     total += (temp * state.cgst) / 100;
@@ -56,6 +65,7 @@ const ViewBill = React.forwardRef((props, ref) => {
 
     setTotal(total);
     setTotalDiscount(totalDiscount);
+    setSubTotalWithDiscount(subTotalWithDiscount);
     console.log(subTotal);
   }, [state]);
 
@@ -230,26 +240,29 @@ const ViewBill = React.forwardRef((props, ref) => {
                     Subtotal
                   </td>
                   <td style={{ textAlign: "right", padding: "3px 30px" }}>
-                    ₹ {subTotal}
+                    ₹ {subTotalWithDiscount}
                   </td>
                 </tr>
                 <tr>
                   <td style={{ textAlign: "left", padding: "3px 30px" }}>
-                    Total Discount({state.tableTotalDiscount}%)
+                    Total Discount({" "}
+                    {parseFloat(state.tableTotalDiscount || 0).toFixed(2) ||
+                      "0"}
+                    %)
                   </td>
                   <td style={{ textAlign: "right", padding: "3px 30px" }}>
                     ₹ {totalDiscount}
                   </td>
                 </tr>
 
-                <tr>
+                {/* <tr>
                   <td style={{ textAlign: "left", padding: "3px 30px" }}>
                     Discount
                   </td>
                   <td style={{ textAlign: "right", padding: "3px 30px" }}>
                     {discount}
                   </td>
-                </tr>
+                </tr> */}
                 <tr>
                   <td style={{ textAlign: "left", padding: "3px 30px" }}>
                     Extra charges
@@ -574,7 +587,7 @@ const ViewBill = React.forwardRef((props, ref) => {
                           color: "#000000",
                         }}
                       >
-                        ₹ {subTotal}
+                        ₹ {subTotalWithDiscount}
                       </td>
                     </tr>
                     <tr>
@@ -598,7 +611,7 @@ const ViewBill = React.forwardRef((props, ref) => {
                       </td>
                     </tr>
 
-                    <tr>
+                    {/* <tr>
                       <td
                         style={{
                           textAlign: "left",
@@ -617,7 +630,7 @@ const ViewBill = React.forwardRef((props, ref) => {
                       >
                         {discount}
                       </td>
-                    </tr>
+                    </tr> */}
                     <tr>
                       <td
                         style={{

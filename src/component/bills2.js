@@ -75,14 +75,24 @@ const Bills = () => {
             discount += parseFloat(
               ((item.price * item.discount) / 100) * item.quantity
             );
-            tax += parseFloat(((item.price * item.tax) / 100) * item.quantity);
+            tax += parseFloat(
+              ((item.price - (item.price * item.discount) / 100) *
+                item.quantity *
+                item.tax) /
+                100
+            );
+            // tax += parseFloat(((item.price * item.tax) / 100) * item.quantity);
           });
+
+        let subTotalWithDiscount = 0;
+        subTotalWithDiscount = subTotal - discount;
+
         let totalDiscount = 0;
 
         totalDiscount =
-          (subTotal * parseFloat(bill.tableTotalDiscount || 0).toFixed(2) ||
-            "0") / 100;
-        let total = subTotal + tax - discount - totalDiscount;
+          (subTotalWithDiscount *
+            parseFloat(bill.tableTotalDiscount || 0).toFixed(2) || "0") / 100;
+        let total = subTotalWithDiscount + tax - totalDiscount;
         let temp = total;
 
         total += (total * bill.gst) / 100;
@@ -220,14 +230,23 @@ const Bills = () => {
           discount += parseFloat(
             ((item.price * item.discount) / 100) * item.quantity
           );
-          tax += parseFloat(((item.price * item.tax) / 100) * item.quantity);
+          tax += parseFloat(
+            ((item.price - (item.price * item.discount) / 100) *
+              item.quantity *
+              item.tax) /
+              100
+          );
+          // tax += parseFloat(((item.price * item.tax) / 100) * item.quantity);
         });
+      let subTotalWithDiscount = 0;
+      subTotalWithDiscount = subTotal - discount;
+
       let totalDiscount = 0;
 
       totalDiscount =
-        (subTotal * parseFloat(bill.tableTotalDiscount || 0).toFixed(2) ||
-          "0") / 100;
-      let total = subTotal + tax - discount - totalDiscount;
+        (subTotalWithDiscount *
+          parseFloat(bill.tableTotalDiscount || 0).toFixed(2) || "0") / 100;
+      let total = subTotalWithDiscount + tax - totalDiscount;
       let temp = total;
       // total += (total * 2.5) / 100;
       // total += (temp * 2.5) / 100;

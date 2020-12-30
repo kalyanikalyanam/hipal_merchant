@@ -11,6 +11,7 @@ const Orders = () => {
   const [kotNum, setKotNum] = useState(0);
   const [id, setId] = useState();
   const [cartId, setCartId] = useState();
+  const [totalDiscount, setTotalDiscount] = useState(0);
 
   const dbRef = useContext(tableContext);
   const dispatch = useContext(dispatchContext);
@@ -67,10 +68,13 @@ const Orders = () => {
         setOrderList(table.data().orders);
         setId(table.data().orderId);
         setCartId(table.data().liveCartId);
+        setTotalDiscount(table.data().total_discount);
+
         unsubscribe = dbRef.onSnapshot((table) => {
           setOrderList(table.data().orders);
           setId(table.data().orderId);
           setCartId(table.data().liveCartId);
+          setTotalDiscount(table.data().total_discount);
         });
       }
     };
@@ -90,7 +94,12 @@ const Orders = () => {
         }
         total += item.price * item.quantity;
         discount += ((item.price * item.discount) / 100) * item.quantity;
-        tax += ((item.tax * item.price) / 100) * item.quantity;
+        tax +=
+          ((item.price - (item.price * item.discount) / 100) *
+            item.quantity *
+            item.tax) /
+          100;
+        // tax += ((item.tax * item.price) / 100) * item.quantity;
       });
       setKotNum(kot);
       setTotal(parseFloat(total).toFixed(2));
@@ -132,7 +141,7 @@ const Orders = () => {
       });
     }
   };
-
+  console.log(dbRef.total_discount);
   return (
     <div className="order_id_cart_box col-md-12 m-t-20">
       <p className="order_id_cart">Order ID {id && id} </p>
@@ -141,15 +150,18 @@ const Orders = () => {
           <span className="ribbon_cart">
             {kotNum}/{orderList && orderList.length}
           </span>
+
           <div className="cart2_row">
             <div className="cart_head">
               Cart {1} ID:{cartId && cartId}
             </div>
-            <div className="kot_box" onClick={handleKOTCart}>
+            {/* <div className="kot_box" onClick={handleKOTCart}>
               <span className="btn kot">KOT</span>
-            </div>
+            </div> */}
             <div className="kot_box" onClick={handleTotalDiscount}>
-              <span className="btn kot"> Discount</span>
+              <span className="btn kot">Overall Discount</span>
+              {parseFloat(totalDiscount || 0).toFixed(2) || "0"}%
+              {/* {totalDiscount} */}
             </div>
           </div>
           {orderList &&
@@ -178,7 +190,7 @@ const Orders = () => {
               <span className="right">0</span>
             </p>
             <p>
-              <span className="left tax">Tax & Charges</span>{" "}
+              <span className="left tax">Tax </span>{" "}
               <span className="right">₹ {parseFloat(tax).toFixed(2)}</span>
             </p>
             <p>

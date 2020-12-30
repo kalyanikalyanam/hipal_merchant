@@ -121,16 +121,26 @@ const CardView = ({ kots, station }) => {
       orders,
     });
   };
+
   const handleCheckDelete = async (it, kot) => {
+    console.log(it.id);
     let flag = false;
     let newKot = kot;
     let newItems = newKot.items;
-
-    newItems.forEach((item) => {
-      if (item.id === it.id) {
-        item.status = "delete";
-      }
-    });
+    if (it.status === "delete") {
+      flag = true;
+      newItems.forEach((item) => {
+        if (item.id === it.id) {
+          item.status = "cooking";
+        }
+      });
+    } else {
+      newItems.forEach((item) => {
+        if (item.id === it.id) {
+          item.status = "delete";
+        }
+      });
+    }
 
     await db.collection("kotItems").doc(kot.id).update(newKot);
 
@@ -256,14 +266,14 @@ const CardView = ({ kots, station }) => {
                             >
                               Delete
                             </a>
-                            <a
+                            {/*  <a
                               href="#"
                               onClick={() => {
                                 openModalItemNotAvailable(kot);
                               }}
                             >
                               Item Not Available
-                            </a>
+                            </a> */}
                           </div>
                         </div>
                       </span>
@@ -729,7 +739,7 @@ const CardView = ({ kots, station }) => {
                 <button
                   type="button"
                   className="btn btn_print_kot_delete"
-                  onClick={handleDelete}
+                  onClick={() => handleDelete()}
                 >
                   Delete
                 </button>

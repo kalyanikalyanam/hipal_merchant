@@ -13,6 +13,7 @@ const BillPage = () => {
   const [businessLogo, setBusinessLogo] = useState();
   const [total, setTotal] = useState(0);
   const [subTotal, setSubTotal] = useState(0);
+  const [subTotalWithDiscount, setSubTotalWithDiscount] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState(0);
   const [tax, setTax] = useState(0);
   const [discount, setDiscount] = useState(0);
@@ -80,21 +81,29 @@ const BillPage = () => {
       bill.forEach((item) => {
         subTotal += item.price * item.quantity;
         discount += ((item.price * item.discount) / 100) * item.quantity;
-        tax += ((item.price * item.tax) / 100) * item.quantity;
+        tax +=
+          ((item.price - (item.price * item.discount) / 100) *
+            item.quantity *
+            item.tax) /
+          100;
+        // tax += ((item.price * item.tax) / 100) * item.quantity;
       });
+      let subTotalWithDiscount = 0;
+      subTotalWithDiscount = subTotal - discount;
       let totalDiscount = 0;
       totalDiscount =
-        (subTotal * parseFloat(table.total_discount || 0).toFixed(2) || "0") /
-        100;
+        (subTotalWithDiscount *
+          parseFloat(table.total_discount || 0).toFixed(2) || "0") / 100;
       setSubTotal(subTotal);
       setTax(tax);
       setDiscount(discount);
       setTotalDiscount(totalDiscount);
+      setSubTotalWithDiscount(subTotalWithDiscount);
     }
   }, [table]);
 
   useEffect(() => {
-    let total = subTotal + tax - discount - totalDiscount;
+    let total = subTotalWithDiscount + tax - totalDiscount;
     let temp = total;
     total += (total * gst) / 100;
     total += (temp * cGst) / 100;
@@ -108,7 +117,7 @@ const BillPage = () => {
         cGst,
       },
     });
-  }, [subTotal, tax, discount, gst, cGst]);
+  }, [subTotal, tax, discount, gst, cGst, subTotalWithDiscount]);
   const noItem = (
     <tr>
       <td
@@ -174,6 +183,7 @@ const BillPage = () => {
           employee: table.currentEmployee,
           total,
           subTotal,
+          subTotalWithDiscount,
           discount,
           tax,
           gst,
@@ -211,6 +221,7 @@ const BillPage = () => {
         employee: table.currentEmployee,
         total,
         subTotal,
+        subTotalWithDiscount,
         discount,
         tax,
         gst,
@@ -413,7 +424,7 @@ const BillPage = () => {
                           Subtotal
                         </td>
                         <td style={{ textAlign: "right", padding: "3px 10px" }}>
-                          ₹ {subTotal && subTotal}
+                          ₹ {subTotalWithDiscount && subTotalWithDiscount}
                         </td>
                       </tr>
                       <tr>
@@ -430,14 +441,14 @@ const BillPage = () => {
                         </td>
                       </tr>
 
-                      <tr>
+                      {/* <tr>
                         <td style={{ textAlign: "left", padding: "3px 10px" }}>
                           Discount
                         </td>
                         <td style={{ textAlign: "right", padding: "3px 10px" }}>
                           {discount ? discount : `-`}
                         </td>
-                      </tr>
+                      </tr> */}
                       <tr>
                         <td style={{ textAlign: "left", padding: "3px 10px" }}>
                           Extra charges
