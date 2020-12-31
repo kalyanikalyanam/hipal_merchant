@@ -11,7 +11,9 @@ const BillItemModal = ({ item }) => {
           color: "#000000",
         }}
       >
-        <b>{item && item.name}</b>
+        <b>
+          {item && item.name}({item && item.tax}%)
+        </b>
       </td>
       <td
         style={{

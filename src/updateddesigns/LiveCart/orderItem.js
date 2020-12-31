@@ -11,6 +11,7 @@ const Select = ({ item, deleteItem }) => {
           <option value="cooking">Cooking</option>
           <option value="served">Served</option>
           <option value="delete">Delete</option>
+          <option value="itemnotavailable">Item Not Available</option>
         </select>
       </div>
       {(sessionStorage.getItem("role") == "Merchant" ||
@@ -136,6 +137,12 @@ const OrderItem = ({ item, index, dbRef }) => {
             ) : (
               <Select item={item} deleteItem={deleteItem} dbRef={dbRef} />
             )}
+
+            {item.status == "itemnotavailable" ? (
+              <p style={{ color: "red", backgroundColor: "yellow" }}>
+                Item Not Available
+              </p>
+            ) : null}
           </div>
           {item.discount > 0 ? (
             <>

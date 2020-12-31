@@ -165,8 +165,41 @@ const CardView = ({ kots, station }) => {
   };
 
   const handleCheckItemNotAvailable = async (it, kot) => {
-    console.log("handleCheckItemNotAvailable");
-    console.log(it);
+    console.log(it.id);
+    let flag = false;
+    let newKot = kot;
+    let newItems = newKot.items;
+    if (it.status === "itemnotavailable") {
+      flag = true;
+      newItems.forEach((item) => {
+        if (item.id === it.id) {
+          item.status = "cooking";
+        }
+      });
+    } else {
+      newItems.forEach((item) => {
+        if (item.id === it.id) {
+          item.status = "itemnotavailable";
+        }
+      });
+    }
+
+    await db.collection("kotItems").doc(kot.id).update(newKot);
+
+    const ref = db.collection("tables").doc(kot.tableId);
+
+    const table = await ref.get();
+
+    let orders = table.data().orders;
+    orders.forEach((item) => {
+      if (item.orderPageId === it.orderPageId) {
+        if (flag) item.status = "cooking";
+        else item.status = "itemnotavailable";
+      }
+    });
+    ref.update({
+      orders,
+    });
   };
 
   const handleItemNotAvailable = async () => {
@@ -266,14 +299,14 @@ const CardView = ({ kots, station }) => {
                             >
                               Delete
                             </a>
-                            {/*  <a
+                            <a
                               href="#"
                               onClick={() => {
                                 openModalItemNotAvailable(kot);
                               }}
                             >
                               Item Not Available
-                            </a> */}
+                            </a>
                           </div>
                         </div>
                       </span>
@@ -739,7 +772,8 @@ const CardView = ({ kots, station }) => {
                 <button
                   type="button"
                   className="btn btn_print_kot_delete"
-                  onClick={() => handleDelete()}
+                  // onClick={() => handleDelete()}
+                  onClick={closeModalDelete}
                 >
                   Delete
                 </button>
@@ -793,7 +827,7 @@ const CardView = ({ kots, station }) => {
                           <span className="check-icon">
                             <i
                               className={
-                                item.status === "delete"
+                                item.status === "itemnotavailable"
                                   ? "fa fa-check"
                                   : "fa fa"
                               }
@@ -832,7 +866,8 @@ const CardView = ({ kots, station }) => {
                 <button
                   type="button"
                   className="btn btn_print_kot_item-not-available"
-                  onClick={handleItemNotAvailable}
+                  // onClick={handleItemNotAvailable}
+                  onClick={closeModalItemNotAvailable}
                 >
                   Item Not Available
                 </button>

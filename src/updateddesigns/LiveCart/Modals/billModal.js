@@ -293,7 +293,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                               color: "#000000",
                             }}
                           >
-                            <b>Subtotal</b>
+                            <b>Subtotal(WithOut Tax)</b>
                           </td>
                           <td
                             style={{
@@ -304,6 +304,28 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                             }}
                           >
                             <b> ₹ {data && data.subTotalWithDiscount}</b>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style={{
+                              textAlign: "left",
+                              padding: "3px 10px",
+                              fontSize: "32px",
+                              color: "#000000",
+                            }}
+                          >
+                            <b> Subtotal(With Tax)</b>
+                          </td>
+                          <td
+                            style={{
+                              textAlign: "right",
+                              padding: "3px 10px",
+                              fontSize: "32px",
+                              color: "#000000",
+                            }}
+                          >
+                            <b> ₹ {data && data.subTotalTaxWithDiscount}</b>
                           </td>
                         </tr>
                         <tr>
@@ -335,7 +357,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                               {" "}
                               {/* {data && data.table.total_discount}% */}₹
                               {((data &&
-                                data.subTotal *
+                                data.subTotalWithDiscount *
                                   parseFloat(
                                     (data && data.table.total_discount) || 0
                                   ).toFixed(2)) ||
@@ -408,6 +430,28 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                             }}
                           >
                             -
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style={{
+                              textAlign: "left",
+                              padding: "3px 10px",
+                              fontSize: "32px",
+                              color: "#000000",
+                            }}
+                          >
+                            <b>Total</b>
+                          </td>
+                          <td
+                            style={{
+                              textAlign: "right",
+                              padding: "3px 10px",
+                              fontSize: "32px",
+                              color: "#000000",
+                            }}
+                          >
+                            <b>{data ? data.final : `-`}</b>
                           </td>
                         </tr>
 
@@ -701,10 +745,18 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                   <tbody>
                     <tr>
                       <td style={{ textAlign: "left", padding: "3px 10px" }}>
-                        Subtotal
+                        Subtotal(Without Tax)
                       </td>
                       <td style={{ textAlign: "right", padding: "3px 10px" }}>
                         ₹{data && data.subTotalWithDiscount}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ textAlign: "left", padding: "3px 10px" }}>
+                        Subtotal(With Tax)
+                      </td>
+                      <td style={{ textAlign: "right", padding: "3px 10px" }}>
+                        ₹{data && data.subTotalTaxWithDiscount}
                       </td>
                     </tr>
                     <tr>
@@ -718,7 +770,7 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                       <td style={{ textAlign: "right", padding: "3px 10px" }}>
                         ₹
                         {((data &&
-                          data.subTotal *
+                          data.subTotalWithDiscount *
                             parseFloat(
                               (data && data.table.total_discount) || 0
                             ).toFixed(2)) ||
@@ -747,6 +799,14 @@ const BillModal = React.forwardRef(({ data }, ref) => {
                       </td>
                       <td style={{ textAlign: "right", padding: "3px 10px" }}>
                         -
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ textAlign: "left", padding: "3px 10px" }}>
+                        Total
+                      </td>
+                      <td style={{ textAlign: "right", padding: "3px 10px" }}>
+                        {data ? data.final : `-`}
                       </td>
                     </tr>
 

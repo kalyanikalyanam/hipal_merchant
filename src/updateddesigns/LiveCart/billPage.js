@@ -14,7 +14,11 @@ const BillPage = () => {
   const [total, setTotal] = useState(0);
   const [subTotal, setSubTotal] = useState(0);
   const [subTotalWithDiscount, setSubTotalWithDiscount] = useState(0);
+  const [subTotalTaxWithDiscount, setSubTotalTaxWithDiscount] = useState(0);
+  const [subTotalWithOutTax, setSubTotalWithOutTax] = useState(0);
+  const [subTotalWithTax, setSubTotalWithTax] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState(0);
+  const [final, setFinal] = useState(0);
   const [tax, setTax] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [table, setTable] = useState();
@@ -76,34 +80,55 @@ const BillPage = () => {
       let bill = table.bill;
       let subTotal = 0,
         discount = 0,
+        subTotalTax = 0,
+        discountTax = 0,
         tax = 0;
       if (!bill) bill = [];
       bill.forEach((item) => {
-        subTotal += item.price * item.quantity;
-        discount += ((item.price * item.discount) / 100) * item.quantity;
-        tax +=
-          ((item.price - (item.price * item.discount) / 100) *
-            item.quantity *
-            item.tax) /
-          100;
-        // tax += ((item.price * item.tax) / 100) * item.quantity;
+        if (item.tax == "0.00") {
+          subTotal += item.price * item.quantity;
+          discount += ((item.price * item.discount) / 100) * item.quantity;
+        } else {
+          subTotalTax += item.price * item.quantity;
+          discountTax += ((item.price * item.discount) / 100) * item.quantity;
+          tax +=
+            ((item.price - (item.price * item.discount) / 100) *
+              item.quantity *
+              item.tax) /
+            100;
+        }
       });
       let subTotalWithDiscount = 0;
       subTotalWithDiscount = subTotal - discount;
+
+      let subTotalTaxWithDiscount = 0;
+      subTotalTaxWithDiscount = subTotalTax - discountTax;
+
       let totalDiscount = 0;
       totalDiscount =
         (subTotalWithDiscount *
           parseFloat(table.total_discount || 0).toFixed(2) || "0") / 100;
+      let subTotalWithOutTax = 0;
+      subTotalWithOutTax = subTotalWithDiscount - totalDiscount;
+      let subTotalWithTax = 0;
+      subTotalWithTax = subTotalTaxWithDiscount + tax;
+      let final = 0;
+      final = subTotalWithOutTax + subTotalWithTax;
+
       setSubTotal(subTotal);
       setTax(tax);
       setDiscount(discount);
       setTotalDiscount(totalDiscount);
       setSubTotalWithDiscount(subTotalWithDiscount);
+      setSubTotalTaxWithDiscount(subTotalTaxWithDiscount);
+      setSubTotalWithTax(subTotalWithTax);
+      setSubTotalWithOutTax(subTotalWithOutTax);
+      setFinal(final);
     }
   }, [table]);
 
   useEffect(() => {
-    let total = subTotalWithDiscount + tax - totalDiscount;
+    let total = subTotalWithOutTax + subTotalWithTax;
     let temp = total;
     total += (total * gst) / 100;
     total += (temp * cGst) / 100;
@@ -117,7 +142,18 @@ const BillPage = () => {
         cGst,
       },
     });
-  }, [subTotal, tax, discount, gst, cGst, subTotalWithDiscount]);
+  }, [
+    subTotal,
+    tax,
+    discount,
+    gst,
+    cGst,
+    subTotalWithDiscount,
+    subTotalTaxWithDiscount,
+    subTotalWithTax,
+    subTotalWithOutTax,
+    final,
+  ]);
   const noItem = (
     <tr>
       <td
@@ -184,6 +220,10 @@ const BillPage = () => {
           total,
           subTotal,
           subTotalWithDiscount,
+          subTotalTaxWithDiscount,
+          subTotalWithTax,
+          subTotalWithOutTax,
+          final,
           discount,
           tax,
           gst,
@@ -222,6 +262,10 @@ const BillPage = () => {
         total,
         subTotal,
         subTotalWithDiscount,
+        subTotalTaxWithDiscount,
+        subTotalWithTax,
+        subTotalWithOutTax,
+        final,
         discount,
         tax,
         gst,
@@ -421,10 +465,18 @@ const BillPage = () => {
                     <tbody>
                       <tr>
                         <td style={{ textAlign: "left", padding: "3px 10px" }}>
-                          Subtotal
+                          Subtotal(With Tax)
                         </td>
                         <td style={{ textAlign: "right", padding: "3px 10px" }}>
                           ₹ {subTotalWithDiscount && subTotalWithDiscount}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style={{ textAlign: "left", padding: "3px 10px" }}>
+                          Subtotal(Without Tax)
+                        </td>
+                        <td style={{ textAlign: "right", padding: "3px 10px" }}>
+                          ₹ {subTotalTaxWithDiscount && subTotalTaxWithDiscount}
                         </td>
                       </tr>
                       <tr>
@@ -463,6 +515,14 @@ const BillPage = () => {
                         </td>
                         <td style={{ textAlign: "right", padding: "3px 10px" }}>
                           -
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style={{ textAlign: "left", padding: "3px 10px" }}>
+                          Total
+                        </td>
+                        <td style={{ textAlign: "right", padding: "3px 10px" }}>
+                          {final ? final : `-`}
                         </td>
                       </tr>
                       <tr>
