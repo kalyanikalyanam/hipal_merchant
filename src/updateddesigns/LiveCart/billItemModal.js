@@ -40,6 +40,7 @@ const BillItemModal = ({ item }) => {
             {`(Discount ₹ ${parseFloat(
               ((item.price * item.discount) / 100) * item.quantity
             ).toFixed(2)} )`}
+            ({item.discount}%)
           </b>
         ) : null}
       </td>

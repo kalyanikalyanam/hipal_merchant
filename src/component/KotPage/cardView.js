@@ -2,16 +2,19 @@ import React, { useEffect, useRef, useState } from "react";
 import Timer from "react-compound-timer";
 import { db } from "../../config";
 import { Modal } from "react-bootstrap";
+import LoginForm from "./loginform";
 import { useReactToPrint } from "react-to-print";
 const CardView = ({ kots, station }) => {
   const [kotItems, setKotItems] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const [modalShowPrint, setModalShowPrint] = useState(false);
   const [modalShowDelete, setModalShowDelete] = useState(false);
+  const [modalShowDeleteLogin, setModalShowDeleteLogin] = useState(false);
   const [modalShowItemNotAvailable, setModalShowItemNotAvailable] = useState(
     false
   );
-
+  const [authenticate, setAuthenticate] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [modalKot, setModalKot] = useState({});
   const componentRef = useRef();
   const handlePrint = useReactToPrint({
@@ -160,10 +163,6 @@ const CardView = ({ kots, station }) => {
     });
   };
 
-  const handleDelete = async () => {
-    console.log("handleDelete");
-  };
-
   const handleCheckItemNotAvailable = async (it, kot) => {
     console.log(it.id);
     let flag = false;
@@ -244,6 +243,46 @@ const CardView = ({ kots, station }) => {
   const closeModalItemNotAvailable = () => {
     setModalKot({});
     setModalShowItemNotAvailable(false);
+  };
+
+  const openModalDeleteLogin = (kot) => {
+    setModalKot(kot);
+    setModalShowDeleteLogin(true);
+  };
+
+  const closeModalDeleteLogin = () => {
+    setModalKot({});
+    setModalShowDeleteLogin(false);
+  };
+  const handleDelete = async (it, kot) => {
+    console.log("kots", kot);
+    if (!authenticate) {
+      alert("login To Delete This");
+    } else {
+      setLoading(true);
+      console.log(kots);
+      const table = await kots.get();
+      let orders = table
+        .data()
+        .orders.filter((item) => item.status == "delete");
+      const ref = await db.collection("kotItems").doc(it.kotId.toString());
+      const kot = await ref.get();
+      let items = kot.data().items.filter((item) => item.status == "delete");
+      if (items.length > 0) {
+        ref.update({
+          items,
+        });
+      } else {
+        await ref.delete();
+      }
+      kots.update({
+        orders: orders,
+      });
+      setLoading(false);
+      // dispatch({
+      //   type: "DeleteModalHide",
+      // });
+    }
   };
 
   return (
@@ -694,95 +733,6 @@ const CardView = ({ kots, station }) => {
         </div>
       </Modal>
 
-      <Modal show={modalShowDelete} onHide={closeModalDelete}>
-        <div className="modal-content">
-          <div className="modal-body">
-            <div className="col-12 w-100-row kot_head">
-              Table: {modalKot.tableName}
-              <span onClick={closeModalDelete}>X</span>
-            </div>
-            <div className="col-12 w-100-row kot_waiter">
-              Waiter: {modalKot.employee}
-            </div>
-            <div className="col-12 w-100-row kot_date">
-              Items{" "}
-              <span>
-                {" "}
-                {modalKot.createdOn &&
-                  dateString(new Date(modalKot.createdOn))[0]}
-                |{" "}
-                {modalKot.createdOn &&
-                  dateString(new Date(modalKot.createdOn))[1]}
-              </span>
-            </div>
-            {modalKot.items &&
-              modalKot.items
-                .filter((item) => {
-                  let flag = false;
-                  item.station.forEach((sta) => {
-                    if (station === "") flag = true;
-                    else if (sta == station) {
-                      flag = true;
-                    }
-                  });
-                  return flag;
-                })
-                .map((item) => {
-                  return (
-                    <div key={item.orderPageId}>
-                      <div className="col-12 w-100-row bdr-top1">
-                        <div className="w-10 no">
-                          <span className="check-icon">
-                            <i
-                              className={
-                                item.status === "delete"
-                                  ? "fa fa-check"
-                                  : "fa fa"
-                              }
-                              onClick={() => handleCheckDelete(item, modalKot)}
-                              aria-hidden="true"
-                            ></i>
-                          </span>
-                        </div>
-                        <div className="w-80 table_kotdata">
-                          <h5>{item.name}</h5>
-                        </div>
-                        <div className="w-10 text-right">
-                          x<span className="big_font">{item.quantity}</span>
-                        </div>
-                      </div>
-                      {item.instructions && item.instructions !== "" && (
-                        <div className="col-12 w-100-row p-0">
-                          <div className="w-10 no pb-10">
-                            <i
-                              className="fa fa-info-circle info-circle"
-                              aria-hidden="true"
-                            ></i>
-                          </div>
-                          <div className="w-90 color_black">
-                            {item.instructions}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-            <div className="col-12 w-100-row bdr-top1">
-              <div className="col-12 p-0 text-center">
-                <button
-                  type="button"
-                  className="btn btn_print_kot_delete"
-                  // onClick={() => handleDelete()}
-                  onClick={closeModalDelete}
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Modal>
-
       <Modal
         show={modalShowItemNotAvailable}
         onHide={closeModalItemNotAvailable}
@@ -872,6 +822,118 @@ const CardView = ({ kots, station }) => {
                   Item Not Available
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal show={modalShowDelete} onHide={closeModalDelete}>
+        <div className="modal-content">
+          <div className="modal-body">
+            <div className="col-12 w-100-row kot_head">
+              Table: {modalKot.tableName}
+              <span onClick={closeModalDelete}>X</span>
+            </div>
+            <div className="col-12 w-100-row kot_waiter">
+              Waiter: {modalKot.employee}
+            </div>
+            <div className="col-12 w-100-row kot_date">
+              Items{" "}
+              <span>
+                {" "}
+                {modalKot.createdOn &&
+                  dateString(new Date(modalKot.createdOn))[0]}
+                |{" "}
+                {modalKot.createdOn &&
+                  dateString(new Date(modalKot.createdOn))[1]}
+              </span>
+            </div>
+            {modalKot.items &&
+              modalKot.items
+                .filter((item) => {
+                  let flag = false;
+                  item.station.forEach((sta) => {
+                    if (station === "") flag = true;
+                    else if (sta == station) {
+                      flag = true;
+                    }
+                  });
+                  return flag;
+                })
+                .map((item) => {
+                  return (
+                    <div key={item.orderPageId}>
+                      <div className="col-12 w-100-row bdr-top1">
+                        <div className="w-10 no">
+                          <span className="check-icon">
+                            <i
+                              className={
+                                item.status === "delete"
+                                  ? "fa fa-check"
+                                  : "fa fa"
+                              }
+                              onClick={() => handleCheckDelete(item, modalKot)}
+                              aria-hidden="true"
+                            ></i>
+                          </span>
+                        </div>
+                        <div className="w-80 table_kotdata">
+                          <h5>{item.name}</h5>
+                        </div>
+                        <div className="w-10 text-right">
+                          x<span className="big_font">{item.quantity}</span>
+                        </div>
+                      </div>
+                      {item.instructions && item.instructions !== "" && (
+                        <div className="col-12 w-100-row p-0">
+                          <div className="w-10 no pb-10">
+                            <i
+                              className="fa fa-info-circle info-circle"
+                              aria-hidden="true"
+                            ></i>
+                          </div>
+                          <div className="w-90 color_black">
+                            {item.instructions}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+            <div className="col-12 w-100-row bdr-top1">
+              <div className="col-12 p-0 text-center">
+                <button
+                  type="button"
+                  className="btn btn_print_kot_delete"
+                  // onClick={() => handleDelete()}
+                  onClick={openModalDeleteLogin}
+                >
+                  Proceed to Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal show={modalShowDeleteLogin} onHide={closeModalDeleteLogin}>
+        <div className="modal-dialog modal-sm hipal_pop" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Login to Delete</h5>
+            </div>
+            <div className="modal-body product-edit">
+              <LoginForm auth={setAuthenticate} />
+              {authenticate && <div>You Have Logged in now delete</div>}
+            </div>
+            <div className="modal-footer">
+              <button
+                onClick={handleDelete}
+                className="btn close_btn"
+                disabled={!authenticate || loading}
+              >
+                Delete
+              </button>
             </div>
           </div>
         </div>
