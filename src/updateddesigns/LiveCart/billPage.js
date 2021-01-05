@@ -210,6 +210,35 @@ const BillPage = () => {
           });
         });
       }
+      const temp = table.status.split(" ");
+      var Table2;
+      console.log(temp);
+      if (temp[0] === "Merge") {
+        Table2 = temp[2];
+        db.collection("tables")
+          .where("businessId", "==", table.businessId)
+          .where("table_name", "==", Table2)
+          .limit(1)
+          .get()
+          .then((query) => {
+            const thing = query.docs[0];
+
+            thing.ref.update({
+              bill: [],
+              liveCart: [],
+              order: [],
+              customers: [],
+              status: "Vacant",
+              occupency: 0,
+              currentEmployee: "",
+              billId: null,
+              orderId: null,
+              liveCartId: null,
+              total_discount: "0.00",
+            });
+          });
+      }
+
       await db.collection("bills").add(bill);
 
       dispatch({

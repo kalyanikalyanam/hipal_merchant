@@ -254,34 +254,11 @@ const CardView = ({ kots, station }) => {
     setModalKot({});
     setModalShowDeleteLogin(false);
   };
-  const handleDelete = async (it, kot) => {
-    console.log("kots", kot);
+  const handleDelete = async () => {
     if (!authenticate) {
       alert("login To Delete This");
     } else {
-      setLoading(true);
-      console.log(kots);
-      const table = await kots.get();
-      let orders = table
-        .data()
-        .orders.filter((item) => item.status == "delete");
-      const ref = await db.collection("kotItems").doc(it.kotId.toString());
-      const kot = await ref.get();
-      let items = kot.data().items.filter((item) => item.status == "delete");
-      if (items.length > 0) {
-        ref.update({
-          items,
-        });
-      } else {
-        await ref.delete();
-      }
-      kots.update({
-        orders: orders,
-      });
-      setLoading(false);
-      // dispatch({
-      //   type: "DeleteModalHide",
-      // });
+      console.log("kots", kotItems);
     }
   };
 
