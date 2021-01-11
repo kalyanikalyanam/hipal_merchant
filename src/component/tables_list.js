@@ -408,7 +408,7 @@ class TablesList extends React.Component {
   tablenameChange = (e) => {
     var businessId = sessionStorage.getItem("businessId");
     this.setState({
-      table_name: e.target.value,
+      table_name: e.target.value.trim(),
     });
     if (this.state.validError != true) {
       db.collection("tables")

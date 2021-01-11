@@ -32,7 +32,7 @@ const MoveModal = () => {
           tables.push({ ...table.data(), id: table.id });
       });
       tables = tables.filter((table) => {
-        if (table.orders.length > 0) return false;
+        if (table.orders && table.orders.length > 0) return false;
         if (table.status !== "Vacant") return false;
         return true;
       });
@@ -62,7 +62,8 @@ const MoveModal = () => {
         Customers
       </div>
       <div className="right">
-        <span>14</span>Orders
+        <span>{tableData.orders ? tableData.orders.length : "0"}</span>
+        Orders
       </div>
     </div>
   );
@@ -126,6 +127,12 @@ const MoveModal = () => {
       occupency: "",
       customers: [],
     });
+    dispatch({
+      type: "MoveModalHide",
+    });
+    dispatch({
+      type: "AdvanceOptionsModalHide",
+    });
   };
   return (
     <div className="modal-dialog modal-sm hipal_pop" role="document">
@@ -165,7 +172,13 @@ const MoveModal = () => {
                       Customers
                     </div>
                     <div className="right">
-                      <span>14</span>Orders
+                      <span>
+                        {" "}
+                        {currentTable &&
+                          currentTable.orders &&
+                          currentTable.orders.length}
+                      </span>
+                      Orders
                     </div>
                   </div>
                 </div>
