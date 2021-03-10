@@ -1,3 +1,5 @@
+//This is the code for updating  categories
+
 import React from "react";
 // import firebase from "../config";
 import Sidebar from "./sidebar";
@@ -289,15 +291,11 @@ class EditCategoryMenu extends React.Component {
           loading: false,
         });
       });
-    // let data2 = await firebase
-    //   .firestore()
-    //   .collection("menuitems2")
-    //   .where("sessionId", "==", sessionId)
-    //   .where("businessId", "==", businessId).get().then(snapshot=>{
-
-    //   });
   };
-
+  // here is the working logic of explore button in the list of categories page ,
+  //if the particular category is having sub or child categories then below that category,
+  // explore button will display,if we press on that explore button ,
+  //in the next page that paticular category related (sub categories) will displayed.
   explore = async (e, name) => {
     var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
@@ -356,7 +354,7 @@ class EditCategoryMenu extends React.Component {
         // console.log(err);
       });
   };
-
+  // this is for getting the list of items
   itemMenuList = async () => {
     var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");

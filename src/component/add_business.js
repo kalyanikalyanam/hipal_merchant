@@ -1,3 +1,6 @@
+//This is the code for creating a new business   , where merchant can create multiple businesses
+//this page is all about adding information about business(name,email,uploading logo,timezone......)
+
 import React from "react";
 import firebase from "../config";
 import BusinessSidebar from "./business_list_sidebar";
@@ -18,25 +21,18 @@ class AddBusiness extends React.Component {
       business_legal_name: "",
       business_nick_name: "",
       business_automatic_id: "",
-
       business_email: "",
       business_secondary_email: "",
       business_phone_number: "",
       business_address: "",
-
       business_logo: "",
-
       status: "InActive",
-
       business_currency: "",
-
       business_fssai_number: "",
       business_fssai_form: "",
-
       business_account_name: "",
       business_account_number: "",
       business_ifsc_code: "",
-
       employer_sevice_message: "",
       validError: false,
       mobile_message: "",
@@ -51,12 +47,12 @@ class AddBusiness extends React.Component {
       businessurl: "",
       timezone: {},
       created_on: new Date().toLocaleString(),
-
       business_gst_number: "",
       business_gst_value: 0,
       business_cgst_value: 0,
     };
     this.onChange = this.onChange.bind(this);
+    //this is the code for validation based on the input fields
     this.validator = new SimpleReactValidator({
       className: "text-danger",
       validators: {
@@ -144,9 +140,6 @@ class AddBusiness extends React.Component {
     });
   }
 
-  handleUploadStart = () =>
-    this.setState({ isUploading: true, uploadProgress: 0 });
-
   handleFrontImageUploadStart = () =>
     this.setState({ isUploading: true, uploadProgress: 0, avatarURL: "" });
   handleProgress = (progress) => this.setState({ uploadProgress: progress });
@@ -157,7 +150,7 @@ class AddBusiness extends React.Component {
     });
     console.error(error);
   };
-
+  //for uploading logo
   handleBusinessLogoSuccess = (filename) => {
     firebase
       .storage()
@@ -167,6 +160,7 @@ class AddBusiness extends React.Component {
       .then((url) => this.setState({ business_logo: url }));
   };
 
+  //for uploading a fssai form
   handlebusinessformSuccess = (filename) => {
     firebase
       .storage()
@@ -181,19 +175,20 @@ class AddBusiness extends React.Component {
       [event.target.name]: event.target.value,
     });
   };
+  // time zone
   timezone = (data) => {
     this.setState({
       timezone: data,
     });
   };
-
+  // submitting  data into database
   handleSubmit = async (event) => {
     event.preventDefault();
     if (this.validator.allValid()) {
       var sessionId = sessionStorage.getItem("RoleId");
       var username = sessionStorage.getItem("username");
       var key = Math.round(new Date().getTime() / 1000);
-      let dbCon = await firebase
+      await firebase
         .firestore()
         .collection("/businessdetails")
 
@@ -239,13 +234,14 @@ class AddBusiness extends React.Component {
           username: username,
         });
 
-      // window.location.href = "/BusinessList";
       this.props.history.push("/BusinessList");
     } else {
       this.validator.showMessages();
       this.forceUpdate();
     }
   };
+  // this logic is for handling ,when we enter the business name ,
+  //if that business name is already exist then it will show error message (name alreacy exist)
   businessNameChange = async (e) => {
     var sessionId = sessionStorage.getItem("RoleId");
     this.setState({

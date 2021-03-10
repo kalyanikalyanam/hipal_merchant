@@ -1,3 +1,5 @@
+//This is the code for editing business details of merchant
+
 import React from "react";
 import firebase from "../config";
 import BusinessSidebar from "./business_list_sidebar";
@@ -194,9 +196,6 @@ class EditBusiness extends React.Component {
       });
   };
 
-  handleUploadStart = () =>
-    this.setState({ isUploading: true, uploadProgress: 0 });
-
   handleFrontImageUploadStart = () =>
     this.setState({ isUploading: true, uploadProgress: 0, avatarURL: "" });
   handleProgress = (progress) => this.setState({ uploadProgress: progress });
@@ -208,7 +207,7 @@ class EditBusiness extends React.Component {
     });
     console.error(error);
   };
-
+  //uploaging logo
   handleBusinessLogoSuccess = (filename) => {
     firebase
       .storage()
@@ -217,7 +216,7 @@ class EditBusiness extends React.Component {
       .getDownloadURL()
       .then((url) => this.setState({ business_logo: url }));
   };
-
+  //uploading business from
   handlebusinessformSuccess = (filename) => {
     firebase
       .storage()
@@ -295,8 +294,7 @@ class EditBusiness extends React.Component {
   };
   businessNameChange = async (e) => {
     var sessionId = sessionStorage.getItem("RoleId");
-    var username = sessionStorage.getItem("username");
-    var businessId = sessionStorage.getItem("businessId");
+
     this.setState({
       business_name: e.target.value,
     });
