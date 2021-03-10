@@ -1,3 +1,7 @@
+//This is the code for creating a new categories ,
+//this page is all about adding categories(parent,child and main category)
+//adding parent category and also adding child category to a parent caregory(in one case the parent category can act as a child category to another parent category and  child category can act as a parent category to another child category(vice versa))
+//we can add items to each and every categories
 import React from "react";
 // import firebase from "../config";
 import Sidebar from "./sidebar";
@@ -214,7 +218,10 @@ class AddCategoryMenuDuplicate extends React.Component {
       })
       .catch((err) => {});
   };
-
+  // here is the working logic of explore button in the list of categories page ,
+  //if the particular category is having sub or child categories then below that category,
+  // explore button will display,if we press on that explore button ,
+  //in the next page that paticular category related (sub categories) will displayed.
   explore = async (e, name) => {
     var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
@@ -268,7 +275,7 @@ class AddCategoryMenuDuplicate extends React.Component {
       })
       .catch((err) => {});
   };
-
+  // this is for getting the list of items
   itemMenuList = async () => {
     var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
@@ -421,7 +428,7 @@ class AddCategoryMenuDuplicate extends React.Component {
       this.forceUpdate();
     }
   };
-
+  // for selecting the parent category name
   selectcategory = async (id, name) => {
     this.setState({ parentName: name });
 
@@ -429,10 +436,13 @@ class AddCategoryMenuDuplicate extends React.Component {
       parentId: id,
     });
   };
+  // for selecting or assiging items to a particular category
   selectItem = async (id) => {
     console.log("selected id", id);
+    // total item list
     let menu = this.state.itemMenuList;
     for (let i = 0; i < this.state.itemMenuList.length; i++) {
+      //if the selected item (id) is already there in this category it will remove the item (vice versa)
       if (this.state.itemMenuList[i].itemmenuid === id) {
         menu[i].isSelected = !menu[i].isSelected;
         break;
@@ -486,6 +496,8 @@ class AddCategoryMenuDuplicate extends React.Component {
       [event.target.name]: !this.state.IsParent,
     });
   };
+  // this logic is for handling ,when we enter the category name ,
+  //if that category name is already exist then it will show error message (name alreacy exist)
   categoryNameChange = async (e) => {
     var businessId = sessionStorage.getItem("businessId");
 
