@@ -1,3 +1,4 @@
+//this page is for viewing particular item
 import React from "react";
 import firebase, { db } from "../config";
 import Sidebar from "./sidebar";

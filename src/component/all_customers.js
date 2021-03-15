@@ -1,3 +1,4 @@
+//this is the code for adding ,editing and viewing  customers details
 import React from "react";
 import { db } from "../config";
 import Sidebar from "./sidebar";
@@ -157,6 +158,7 @@ class AllCustomers extends React.Component {
 
     this.customersList();
   }
+  //here is the code for getting the list of customers
   customersList = async () => {
     var businessId = sessionStorage.getItem("businessId");
 
@@ -227,7 +229,7 @@ class AllCustomers extends React.Component {
       this.forceUpdate();
     }
   };
-
+  // here is the code,when we add the email id ,if that email id is already exist then this function takes action and replies the message ,email id already exist
   customeremailchange = (e) => {
     var businessId = sessionStorage.getItem("businessId");
     this.setState({
@@ -253,6 +255,7 @@ class AllCustomers extends React.Component {
         });
     }
   };
+  // here is the code,when we add the phone number ,if that phone number is already exist then this function takes action and replies the message ,phone number already exist
 
   customerphonenumberchange = (e) => {
     var businessId = sessionStorage.getItem("businessId");
@@ -303,6 +306,7 @@ class AllCustomers extends React.Component {
       [event.target.name]: event.target.value,
     });
   };
+  // this is the code for view the particular details of the customer which we had selected
   viewCustomer = (id) => {
     this.setState({ viewCustomer: true });
 
@@ -321,7 +325,7 @@ class AllCustomers extends React.Component {
       customerId: id,
     });
   };
-
+  // this is for editing the customer details
   editCustomer = (id) => {
     this.setState({ editCustomer: true });
     var customer;
@@ -340,6 +344,7 @@ class AllCustomers extends React.Component {
       customerId: id,
     });
   };
+  // this functionality is for updating the edited data
   onEditSubmit = async (e) => {
     e.preventDefault();
     await db.collection("customers").doc(this.state.customerId).update({

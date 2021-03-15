@@ -1,3 +1,7 @@
+//This is the code for adding the stations.
+//when we add the new item ,we need to add the station name also  (bar,pizza,...).
+//In add item menu page we add the button called  add station , when we click on that button  this page will take action.
+// added stations will be listed and we can choose multiple stations for one single item.
 import React from "react";
 import firebase from "../config";
 import { Form } from "reactstrap";
@@ -117,6 +121,7 @@ class AddStation extends React.Component {
     await this.setState({ printeridList: temp });
     this.forceUpdate();
   };
+  //here we get the list of printers , when we create a station name we need to add a printer id to that particular station
   printeridList = async () => {
     var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
@@ -225,6 +230,8 @@ class AddStation extends React.Component {
       this.forceUpdate();
     }
   };
+  //if already exist name is entered again then this fuction will take action and replied message called name already exist
+
   stationNameChange = (e) => {
     var sessionId = sessionStorage.getItem("RoleId");
     var username = sessionStorage.getItem("username");

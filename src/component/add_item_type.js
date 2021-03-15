@@ -1,3 +1,7 @@
+//This is the code for adding the item type.
+//when we add the new item ,we need to add the item type also (veg,nonveg,...).
+//In add item menu page we add the button called add item type , when we click on button  this page will take action.
+// added item types will be listed and we need to choose any one item type.
 import React from "react";
 import firebase from "../config";
 import { Form } from "reactstrap";
@@ -142,7 +146,7 @@ class AddItemType extends React.Component {
       this.forceUpdate();
     }
   };
-
+  //if already exist name is entered again then this fuction will take action and replied message called name already exist
   itemTypeChange = async (e) => {
     var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");

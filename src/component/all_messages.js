@@ -1,3 +1,5 @@
+// this page is for getting the messages if, user enters the messages
+//but now, user module is not started at .
 import React from "react";
 import firebase from "../config";
 import Sidebar from "./sidebar";

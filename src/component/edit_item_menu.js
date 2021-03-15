@@ -1,3 +1,5 @@
+//This is the code for editing the items ,
+
 import React from "react";
 import firebase from "../config";
 import Sidebar from "./sidebar";
@@ -32,7 +34,7 @@ class EditItemMenu extends React.Component {
       item_hash_tags: [],
       input: "",
       bestrecommendation: "UnSelect",
-      item_price:0,
+      item_price: 0,
       item_tax: 0,
 
       category: "",
@@ -221,7 +223,7 @@ class EditItemMenu extends React.Component {
     await this.itemMenuList();
     this.itemCategoryList();
   }
-
+  // here we get list of items
   itemMenuList = async () => {
     const { itemmenuid } = this.props.match.params;
     this.setState({ loading: true });
@@ -314,6 +316,9 @@ class EditItemMenu extends React.Component {
         console.log(this.state.categoryitemId);
       });
   };
+  //here we get the list of categories ,when we add the new item then we should choose the categories to that related item
+  //we can choose multiple categories
+  //it is depend on the selected categories
   itemCategoryList = () => {
     var businessId = sessionStorage.getItem("businessId");
     this.setState({ loading: true });
@@ -367,7 +372,7 @@ class EditItemMenu extends React.Component {
       })
       .catch((err) => {});
   };
-
+  //here we get the list of iten type
   onItemType = async (data) => {
     console.log(data);
     let temp = this.state.itemTypeList;
@@ -408,9 +413,10 @@ class EditItemMenu extends React.Component {
         console.log(err);
       });
   };
-
+  //this is the code for selecting categories
   selectCategoryList = async (id) => {
     console.log("selected id", id);
+    //if selected category is selected again then it will remove and if we select the category which is not selected then it will add(vive versa)
 
     let menu = this.state.CategoryList;
     for (let i = 0; i < this.state.CategoryList.length; i++) {

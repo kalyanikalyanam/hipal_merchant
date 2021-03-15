@@ -28,17 +28,12 @@ import EditEmployeeRole from "./component/edit_employee_role";
 
 import AllCustomers from "./component/all_customers";
 
-import BillDuplicate from "./component/bills_duplicate";
-import ViewBillDuplicate from "./component/view_bills_duplicate";
-
 import Bills2 from "./component/bills2";
 import ViewBill from "./component/view_bill";
 
 import KOT from "./component/KotPage/index";
-import Test from "./component/test";
-import Home from "./component/home";
 
-import BillPrintPage from "./component/bill_print_page";
+import Home from "./component/home";
 
 import FloorList from "./component/floor_List";
 import TablesList from "./component/tables_list";
@@ -52,12 +47,6 @@ import Settings from "./component/settings";
 import AllMessages from "./component/all_messages";
 
 import CategoryList from "./component/category_list";
-
-import Order from "./updateddesigns/order";
-
-import Bill from "./updateddesigns/bill";
-import CategorySettings from "./updateddesigns/category_settings";
-import Settele from "./updateddesigns/settele";
 
 import SettingsAddStation from "./settings/settings_add_station";
 import SettingsEditStation from "./settings/settings_edit_station";
@@ -153,15 +142,9 @@ class Routing extends React.Component {
         />
         <PrivateRoute path="/Bills" component={Bills2} />
         <PrivateRoute path="/ViewBill/:billid" component={ViewBill} />
-        <PrivateRoute path="/BillDuplicate" component={BillDuplicate} />
-        <PrivateRoute
-          path="/ViewBillDuplicate/:billid"
-          component={ViewBillDuplicate}
-        />
 
-        <PrivateRoute path="/Test" component={Test} />
         <PrivateRoute path="/Home" component={Home} />
-        <PrivateRoute path="/BillPrintPage" component={BillPrintPage} />
+
         <PrivateRoute path="/FloorList" component={FloorList} />
         <PrivateRoute path="/TablesList" component={TablesList} />
         <PrivateRoute path="/AddStation" component={AddStation} />
@@ -169,11 +152,9 @@ class Routing extends React.Component {
         <PrivateRoute path="/Dashboard" component={Dashboard} />
         <PrivateRoute path="/Settings" component={Settings} />
         <PrivateRoute path="/AllMessages" component={AllMessages} />
-        <PrivateRoute path="/Order" component={Order} />
+
         <PrivateRoute path="/LiveCart/:tableId" component={MainPage} />
-        <PrivateRoute path="/Bill" component={Bill} />
-        <PrivateRoute path="/CategorySettings" component={CategorySettings} />
-        <PrivateRoute path="/Settele" component={Settele} />
+
         <PrivateRoute
           path="/SettingsAddStation"
           component={SettingsAddStation}

@@ -1,3 +1,4 @@
+//this page is for getting th list of items to select the best recommended item(used for the best recommended page in settings)
 import React from "react";
 import "../index.css";
 

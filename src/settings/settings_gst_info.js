@@ -1,3 +1,4 @@
+//this is the page for entering the gst informations
 import React from "react";
 import firebase from "../config";
 import Sidebar from "../component/sidebar";

@@ -1,3 +1,5 @@
+// here in this page we can add stations data
+// we can add stations from add menu item page and from settigs page  also
 import React from "react";
 import firebase from "../config";
 import Sidebar from "../component/sidebar";

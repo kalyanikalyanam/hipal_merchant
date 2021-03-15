@@ -1,3 +1,4 @@
+// here in this page we can edit settings media data
 import React from "react";
 import firebase from "../config";
 import Sidebar from "../component/sidebar";

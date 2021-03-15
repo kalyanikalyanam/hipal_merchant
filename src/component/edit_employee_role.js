@@ -1,3 +1,5 @@
+// previously we are having employee roles page sepearetely
+// but now,these employee roles are combined in the employee page only.
 import React from "react";
 import firebase from "../config";
 import Sidebar from "./sidebar";

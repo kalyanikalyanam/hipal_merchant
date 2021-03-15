@@ -1,3 +1,4 @@
+//this page is to enter the daily timings of a particular business
 import React from "react";
 import firebase from "../config";
 import Sidebar from "../component/sidebar";

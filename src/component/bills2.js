@@ -1,3 +1,8 @@
+// this page is for listing the bills,
+//this bills are listed based on today
+// here we can use filters to get the particulat date bills
+// here we can get the total amount on particular date bills
+
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { db } from "../config";

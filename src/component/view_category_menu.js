@@ -1,3 +1,4 @@
+//this page is for viewing particular  category
 import React from "react";
 // import firebase from "../config";
 import Sidebar from "./sidebar";

@@ -1,3 +1,5 @@
+//in add item page we are having the button add stations, in the add station button we are having the button add printer ,when we click on the add printer button this page will take action there
+//we can add printer in the setting pageor from the add items page also(ih add station button)
 import React from "react";
 import firebase from "../config";
 import Sidebar from "../component/sidebar";

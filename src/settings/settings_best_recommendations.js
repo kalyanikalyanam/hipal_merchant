@@ -1,3 +1,4 @@
+//this is the page for selecting the best recommended items
 import React from "react";
 import firebase from "../config";
 import Sidebar from "../component/sidebar";

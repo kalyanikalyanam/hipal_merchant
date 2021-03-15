@@ -1,3 +1,4 @@
+// login page for merchant
 import React from "react";
 import { Link } from "react-router-dom";
 import { Form } from "reactstrap";

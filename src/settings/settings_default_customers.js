@@ -1,3 +1,4 @@
+//this is the page for setting the default customers
 import React from "react";
 import firebase from "../config";
 import SimpleReactValidator from "simple-react-validator";

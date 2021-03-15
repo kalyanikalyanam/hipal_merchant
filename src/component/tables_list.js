@@ -1,3 +1,4 @@
+// this is for add,edit,delete,view,list tables
 import React from "react";
 import firebase from "../config";
 import { db } from "../config";

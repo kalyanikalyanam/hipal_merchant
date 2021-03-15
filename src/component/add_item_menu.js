@@ -1,3 +1,9 @@
+//This is the code for adding the items ,
+//this page is all about adding items to particular categories
+//adding particulat item type ( veg,nonveg,egg,vegan...),here we can create the item type there in the same page.
+// adding stations to items, we acn add multiple stations to single item , we can create sation here itself.
+//items can be added based on portions
+
 import React from "react";
 import firebase from "../config";
 import Sidebar from "./sidebar";
@@ -223,7 +229,7 @@ class AddItemMenu extends React.Component {
     this.itemMenuList();
     this.itemCategoryList();
   }
-
+  // here we get list of items
   itemMenuList = async () => {
     var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
@@ -305,6 +311,8 @@ class AddItemMenu extends React.Component {
     await this.setState({ itemTypeList: temp });
     this.forceUpdate();
   };
+
+  //here we get the list of itemtype
   itemTypeList = async () => {
     var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
@@ -339,7 +347,8 @@ class AddItemMenu extends React.Component {
         console.log(err);
       });
   };
-
+  //here we get the list of categories ,when we add the new item then we should choose the categories to that related item
+  //we can choose multiple categories
   itemCategoryList = () => {
     var businessId = sessionStorage.getItem("businessId");
     this.setState({ loading: true });
@@ -387,6 +396,8 @@ class AddItemMenu extends React.Component {
     await this.setState({ stationList: temp });
     this.forceUpdate();
   };
+
+  //list of station
   stationList = async () => {
     var sessionId = sessionStorage.getItem("RoleId");
     var businessId = sessionStorage.getItem("businessId");
@@ -725,7 +736,7 @@ class AddItemMenu extends React.Component {
         });
     }
   };
-
+  //code for printing the selected stations
   updateSelectedStations = async (e) => {
     let val = e.target.id;
     let arr = this.state.selectedstations;
@@ -738,6 +749,7 @@ class AddItemMenu extends React.Component {
     console.log(arr);
     await this.setState({ selectedstations: arr });
   };
+  //code for viewing the list of stations to be selected
   updateSelectedStations1 = async (e) => {
     console.log("dropdown select", e.target.value);
     let val = e.target.value;
@@ -748,9 +760,11 @@ class AddItemMenu extends React.Component {
     console.log(arr);
     this.setState({ selectedstations: arr });
   };
+  //this is the code for selecting categories
   selectCategoryList = async (id) => {
     console.log("selected id", id);
     let menu = this.state.CategoryList;
+    //if selected category is selected again then it will remove and if we select the category which is not selected then it will add(vive versa)
     for (let i = 0; i < this.state.CategoryList.length; i++) {
       if (this.state.CategoryList[i].categoryId === id) {
         menu[i].isSelected = !menu[i].isSelected;

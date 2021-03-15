@@ -1,3 +1,4 @@
+// in bills list page there is option called view bill , this page will take action wne we click on the particular bill.
 import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { db } from "../config";

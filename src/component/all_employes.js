@@ -1,3 +1,5 @@
+//this is the code for adding ,editing and viewing  employee details
+
 import React from "react";
 import { db } from "../config";
 import firebase from "../config";
@@ -203,7 +205,8 @@ class AllEmployees extends React.Component {
     this.employeePositionsList();
     this.employeeList();
   }
-
+  // employee position list
+  // when we add new employee we need to choose the employee position also, for that purpose we need to get the employee position list
   employeePositionsList = async () => {
     var businessId = sessionStorage.getItem("businessId");
 
@@ -241,7 +244,7 @@ class AllEmployees extends React.Component {
         console.log(err);
       });
   };
-
+  //employee list
   employeeList = async () => {
     var businessId = sessionStorage.getItem("businessId");
 
@@ -387,6 +390,7 @@ class AllEmployees extends React.Component {
       this.forceUpdate();
     }
   };
+  // here is the code,when we add the email id ,if that email id is already exist then this function takes action and replies the message ,email id already exist
 
   employeemailChange = async (e) => {
     var businessId = sessionStorage.getItem("businessId");
@@ -416,6 +420,7 @@ class AllEmployees extends React.Component {
         });
     }
   };
+  // here is the code,when we add the phone number ,if that phone number is already exist then this function takes action and replies the message ,phone number already exist
 
   employeemobileChange = async (e) => {
     var businessId = sessionStorage.getItem("businessId");
@@ -467,7 +472,7 @@ class AllEmployees extends React.Component {
       [event.target.name]: event.target.value,
     });
   };
-
+  // this is for editing the employee  details
   editEmployee = (id) => {
     this.setState({ editEmployee: true });
     var employee;
@@ -527,6 +532,7 @@ class AllEmployees extends React.Component {
       deleteitemafterkot: employee.deleteitemafterkot,
     });
   };
+  // this functionality is for updating the edited data
   onEditSubmit = async (e) => {
     var sessionId = sessionStorage.getItem("RoleId");
     var username = sessionStorage.getItem("username");

@@ -1,3 +1,4 @@
+//when we click on the orders link  in the sidebar this page will take action and livecart component pages will take actions
 import React from "react";
 import firebase, { db } from "../config";
 import Sidebar from "../component/sidebar";

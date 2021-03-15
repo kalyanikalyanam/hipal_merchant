@@ -1,3 +1,4 @@
+//this is the code for adding ,editing and viewing  employee positions
 import React from "react";
 import { db } from "../config";
 import firebase from "../config";
@@ -165,7 +166,7 @@ class AllEmployeePositions extends React.Component {
 
     this.employeePositionsList();
   }
-
+  //here is the code for getting the list of employee positions , when we add a new employee we need to select the position to that employee ,for that purpose we add the employee positions
   employeePositionsList = async () => {
     var businessId = sessionStorage.getItem("businessId");
 
@@ -264,7 +265,7 @@ class AllEmployeePositions extends React.Component {
       this.forceUpdate();
     }
   };
-
+  //if the added employee position name is already exist in the database ,then this function takes action and then we get the message called employee position already exist
   employeePositionChange = async (e) => {
     var businessId = sessionStorage.getItem("businessId");
     this.setState({
@@ -314,7 +315,7 @@ class AllEmployeePositions extends React.Component {
       [event.target.name]: event.target.value,
     });
   };
-
+  // this is the code for view the particular details of the employee position which we had selected
   viewEmployeePosition = (id) => {
     this.setState({ viewEmployeePosition: true });
 
@@ -333,7 +334,7 @@ class AllEmployeePositions extends React.Component {
       employeePositionId: id,
     });
   };
-
+  // this is for editing the employee position details
   editEmployeePosition = (id) => {
     this.setState({ editEmployeePosition: true });
     var employeeposition;
@@ -352,6 +353,7 @@ class AllEmployeePositions extends React.Component {
       employeePositionId: id,
     });
   };
+  // this functionality is for updating the edited data
   onEditSubmit = async (e) => {
     e.preventDefault();
     await db

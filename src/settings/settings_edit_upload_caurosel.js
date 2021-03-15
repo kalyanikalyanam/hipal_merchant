@@ -1,3 +1,4 @@
+// here in this page we can edit caurosel
 import React from "react";
 import firebase from "../config";
 import Sidebar from "../component/sidebar";

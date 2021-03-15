@@ -1,3 +1,5 @@
+//list of buisnesses
+// a merchant can add multiple businesses
 import React from "react";
 import firebase from "../config";
 import BusinessSidebar from "./business_list_sidebar";

@@ -1,3 +1,4 @@
+// this is for add,edit,delete,view,list floors
 import React from "react";
 import firebase from "../config";
 import Sidebar from "./sidebar";

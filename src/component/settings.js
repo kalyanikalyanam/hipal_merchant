@@ -1,3 +1,4 @@
+// in dashboard we are having a option called settings ,these all functionality is in the settings components
 import React from "react";
 import firebase from "../config";
 import Sidebar from "./sidebar";

@@ -1,3 +1,4 @@
+//list of categories
 import React from "react";
 import firebase, { db } from "../config";
 import Sidebar from "./sidebar";

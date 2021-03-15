@@ -1,3 +1,4 @@
+//there is two sidebars in this module one is business sidebar and one is inside business sidebar
 import React from "react";
 import firebase from "../config";
 import { Link, withRouter } from "react-router-dom";

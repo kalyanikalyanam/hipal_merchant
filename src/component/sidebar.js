@@ -1,3 +1,4 @@
+//sidebar inside the business page
 import React from "react";
 import firebase from "../config";
 import { Link, withRouter } from "react-router-dom";

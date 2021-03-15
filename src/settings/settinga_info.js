@@ -1,3 +1,4 @@
+// here in this page we can add and update the info of a business
 import React from "react";
 import firebase from "../config";
 import SimpleReactValidator from "simple-react-validator";
