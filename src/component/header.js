@@ -1,8 +1,6 @@
 //header page with dynamic data
 import React from "react";
-import { Link } from "react-router-dom";
 import firebase from "../config";
-import Sidebar from "./sidebar";
 class Header extends React.Component {
   constructor(props) {
     super(props);
