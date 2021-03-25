@@ -11,6 +11,7 @@ import Register from "./Auth/register";
 import BusinessList from "./Business/business_list";
 import AddBusiness from "./Business/add_business";
 import EditBusiness from "./Business/edit_business";
+import AddEditBusiness from "./Business/add_edit_business";
 
 //Dashboard it is in the component Folder
 import Dashboard from "./component/dashboard";
@@ -106,25 +107,31 @@ class Routing extends React.Component {
         <Route exact strict path="/" component={Login1} />
         <Route path="/EmployeeLogin" component={EmployeeLogin} />
         <Route path="/Register" component={Register} />
-
         {/* Business */}
         <PrivateRoute path="/BusinessList" component={BusinessList} />
-        <PrivateRoute path="/AddBusiness" component={AddBusiness} />
+        {/* <PrivateRoute path="/AddBusiness" component={AddBusiness} />
         <PrivateRoute
           path="/EditBusiness/:businessId"
           component={EditBusiness}
-        />
+        /> */}
 
+        <PrivateRoute
+          path="/AddEditBusiness/:businessId"
+          component={AddEditBusiness}
+        />
+        <PrivateRoute path="/AddEditBusiness" component={AddEditBusiness} />
+
+        {/* <PrivateRoute
+          path="/AddEditBusiness/:add"
+          component={AddEditBusiness}
+        /> */}
         {/* Dashboard */}
         <PrivateRoute path="/Dashboard" component={Dashboard} />
-
         {/* OrdersPages(LiveCart) */}
         <PrivateRoute path="/LiveCart/:tableId" component={MainPage} />
         <PrivateRoute path="/Table" component={Table} />
-
         {/* Customers */}
         <PrivateRoute path="/AllCustomers" component={AllCustomers} />
-
         {/* Item Menu */}
         <PrivateRoute path="/ViewItemMenu" component={ViewItemMenu} />
         <PrivateRoute path="/AddItemMenu" component={AddItemMenu} />
@@ -134,7 +141,6 @@ class Routing extends React.Component {
         />
         <PrivateRoute path="/AddItemType" component={AddItemType} />
         <PrivateRoute path="/AddStation" component={AddStation} />
-
         {/* Category */}
         <PrivateRoute path="/CategoryList" component={CategoryList} />
         <PrivateRoute
@@ -149,7 +155,6 @@ class Routing extends React.Component {
           path="/ViewCategoryMenu/:categoryId"
           component={ViewCategoryMenu}
         />
-
         {/* Employees */}
         <PrivateRoute path="/AllEmployees" component={AllEmployees} />
         <PrivateRoute
@@ -161,23 +166,17 @@ class Routing extends React.Component {
           path="/EditEmployeeRole/:employeeRoleId"
           component={EditEmployeeRole}
         />
-
         {/* Messages */}
         <PrivateRoute path="/AllMessages" component={AllMessages} />
-
         {/* Bills */}
         <PrivateRoute path="/Bills" component={Bills2} />
         <PrivateRoute path="/ViewBill/:billid" component={ViewBill} />
-
         {/* Tables */}
         <PrivateRoute path="/TablesList" component={TablesList} />
-
         {/* Floors */}
         <PrivateRoute path="/FloorList" component={FloorList} />
-
         {/* KotPage */}
         <PrivateRoute path="/KOT" component={KOT} />
-
         {/* Settings */}
         <PrivateRoute path="/Settings" component={Settings} />
         <PrivateRoute

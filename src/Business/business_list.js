@@ -209,7 +209,8 @@ class BusinessList extends React.Component {
 
                                             <span className="right_box">
                                               <Link
-                                                to={`/EditBusiness/${business.businessId}`}
+                                                to={`/AddEditBusiness/${business.businessId}`}
+                                                data={business.businessId}
                                               >
                                                 <img
                                                   src="/images/icon/edit_icon_blue.svg"
@@ -287,7 +288,7 @@ class BusinessList extends React.Component {
                           <div className="col-md-6">
                             <div className="business_register pad-30">
                               <div className="w-100-row text-center add_busi_icon">
-                                <Link to="/AddBusiness">
+                                <Link to="/AddEditBusiness">
                                   <p>
                                     <img src="/images/icon/add_business_icon.svg" />
                                   </p>

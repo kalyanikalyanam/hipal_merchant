@@ -198,3 +198,19 @@
   color: #fff;
   padding: 7.5px 30px;
 }
+.red {
+  color: #fff;
+  margin-bottom: 10px;
+  display: inline-block;
+  border-radius: 7.5px;
+  padding: 0px;
+  background: rgb(209, 25, 25);
+  position: relative;
+  padding: 10px 30px;
+  width: 160px;
+  margin-right: 2px;
+  font-weight: 400;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+}
