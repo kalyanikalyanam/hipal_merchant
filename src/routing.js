@@ -9,8 +9,6 @@ import Register from "./Auth/register";
 
 //Business
 import BusinessList from "./Business/business_list";
-import AddBusiness from "./Business/add_business";
-import EditBusiness from "./Business/edit_business";
 import AddEditBusiness from "./Business/add_edit_business";
 
 //Dashboard it is in the component Folder
@@ -38,8 +36,6 @@ import AddStation from "./ItemMenu/add_station";
 //Employees
 import AllEmployees from "./Employees/all_employes";
 import AllEmployeePositions from "./Employees/all_employee_positions";
-import AllEmplopyesRoles from "./Employees/all_employee_roles";
-import EditEmployeeRole from "./Employees/edit_employee_role";
 
 //Messages
 import AllMessages from "./Messages/all_messages";
@@ -64,13 +60,7 @@ import SettingsAddStation from "./settings/settings_add_station";
 import SettingsEditStation from "./settings/settings_edit_station";
 import AddPrinterId from "./settings/add_printer_id";
 
-import SettingsAddUploadCaurosel from "./settings/settings_add_upload_caurosel";
-import SettingsEditUploadCaurosel from "./settings/settings_edit_upload_caurosel";
-
 import SettingsItemsList from "./settings/settings_items_list";
-
-import SettingsAddImageMedia from "./settings/settings_add_media image";
-import SettingsEditImageMedia from "./settings/settings_edit_media_page";
 
 export const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route
@@ -107,31 +97,24 @@ class Routing extends React.Component {
         <Route exact strict path="/" component={Login1} />
         <Route path="/EmployeeLogin" component={EmployeeLogin} />
         <Route path="/Register" component={Register} />
+
         {/* Business */}
         <PrivateRoute path="/BusinessList" component={BusinessList} />
-        {/* <PrivateRoute path="/AddBusiness" component={AddBusiness} />
         <PrivateRoute
-          path="/EditBusiness/:businessId"
-          component={EditBusiness}
-        /> */}
-
-        <PrivateRoute
-          path="/AddEditBusiness/:businessId"
+          path="/AddEditBusiness/:businessId?"
           component={AddEditBusiness}
         />
-        <PrivateRoute path="/AddEditBusiness" component={AddEditBusiness} />
 
-        {/* <PrivateRoute
-          path="/AddEditBusiness/:add"
-          component={AddEditBusiness}
-        /> */}
         {/* Dashboard */}
         <PrivateRoute path="/Dashboard" component={Dashboard} />
+
         {/* OrdersPages(LiveCart) */}
         <PrivateRoute path="/LiveCart/:tableId" component={MainPage} />
         <PrivateRoute path="/Table" component={Table} />
+
         {/* Customers */}
         <PrivateRoute path="/AllCustomers" component={AllCustomers} />
+
         {/* Item Menu */}
         <PrivateRoute path="/ViewItemMenu" component={ViewItemMenu} />
         <PrivateRoute path="/AddItemMenu" component={AddItemMenu} />
@@ -141,6 +124,7 @@ class Routing extends React.Component {
         />
         <PrivateRoute path="/AddItemType" component={AddItemType} />
         <PrivateRoute path="/AddStation" component={AddStation} />
+
         {/* Category */}
         <PrivateRoute path="/CategoryList" component={CategoryList} />
         <PrivateRoute
@@ -155,30 +139,34 @@ class Routing extends React.Component {
           path="/ViewCategoryMenu/:categoryId"
           component={ViewCategoryMenu}
         />
+
         {/* Employees */}
         <PrivateRoute path="/AllEmployees" component={AllEmployees} />
         <PrivateRoute
           path="/AllEmployeePositions"
           component={AllEmployeePositions}
         />
-        <PrivateRoute path="/AllEmplopyesRoles" component={AllEmplopyesRoles} />
-        <PrivateRoute
-          path="/EditEmployeeRole/:employeeRoleId"
-          component={EditEmployeeRole}
-        />
+
         {/* Messages */}
         <PrivateRoute path="/AllMessages" component={AllMessages} />
+
         {/* Bills */}
         <PrivateRoute path="/Bills" component={Bills2} />
         <PrivateRoute path="/ViewBill/:billid" component={ViewBill} />
+
         {/* Tables */}
         <PrivateRoute path="/TablesList" component={TablesList} />
+
         {/* Floors */}
         <PrivateRoute path="/FloorList" component={FloorList} />
+
         {/* KotPage */}
         <PrivateRoute path="/KOT" component={KOT} />
+
         {/* Settings */}
         <PrivateRoute path="/Settings" component={Settings} />
+
+        {/* Settings Stations */}
         <PrivateRoute
           path="/SettingsAddStation"
           component={SettingsAddStation}
@@ -188,23 +176,9 @@ class Routing extends React.Component {
           component={SettingsEditStation}
         />
         <PrivateRoute path="/AddPrinterId" component={AddPrinterId} />
-        <PrivateRoute
-          path="/SettingsAddUploadCaurosel"
-          component={SettingsAddUploadCaurosel}
-        />
-        <PrivateRoute
-          path="/SettingsEditUploadCaurosel/:uploadcauroselIdId"
-          component={SettingsEditUploadCaurosel}
-        />
+
+        {/* Settings Items List */}
         <PrivateRoute path="/SettingsItemsList" component={SettingsItemsList} />
-        <PrivateRoute
-          path="/SettingsAddImageMedia"
-          component={SettingsAddImageMedia}
-        />
-        <PrivateRoute
-          path="/SettingsEditImageMedia/:mediaimageId"
-          component={SettingsEditImageMedia}
-        />
       </Router>
     );
   }

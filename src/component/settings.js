@@ -7,8 +7,7 @@ import SettingsInfo from "../settings/settinga_info";
 import SettingsGstInfo from "../settings/settings_gst_info";
 import SettingsFssaiInfo from "../settings/settings_fssai_info";
 import SettingsStation from "../settings/settings_stations";
-import SettingsUploadCaurosel from "../settings/settings_upload_caurosel";
-import SettingsBestRecommendations from "../settings/settings_best_recommendations";
+import SettingsUploadCaurosel from "../settings/settings_uploadcaurosel";
 import SettingsDefaultCustomers from "../settings/settings_default_customers";
 import SettingsMedia from "../settings/settings_media";
 import SimpleReactValidator from "simple-react-validator";
@@ -211,11 +210,6 @@ class Settings extends React.Component {
         ),
       });
       window.location.href = "/Settings";
-
-      // this
-      //     .props
-      //     .history
-      //     .push("/AllCustomers");
     } else {
       this.validator.showMessages();
       this.forceUpdate();
@@ -326,10 +320,6 @@ class Settings extends React.Component {
                           <hr></hr>
 
                           <SettingsUploadCaurosel />
-
-                          {/* <hr></hr> */}
-
-                          {/* <SettingsBestRecommendations /> */}
 
                           <hr></hr>
 
